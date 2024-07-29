@@ -39,4 +39,13 @@ module.exports = {
     ],
     mode: 'development',
     watch: true,
+    devServer: {
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+        },
+        compress: true,
+        port: 9000,
+        historyApiFallback: true,
+        open: true,
+    }
 };
