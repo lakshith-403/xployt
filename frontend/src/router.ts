@@ -1,4 +1,5 @@
-import { checkQueryParamExists, getQueryParamValue, updateQueryParams } from './globals';
+import { checkQueryParamExists, getQueryParamValue, parseQueryParams, updateQueryParams } from './queryParamHandler';
+import { parsePathParams, updatePathParams } from './pathParamHandler';
 
 class Router {
     private routes: Record<string, any> = {
@@ -22,30 +23,30 @@ class Router {
 
     public router = () => {
         const path = window.location.pathname
-        // const route = this.routes[path] || (() => `<h1>404 Not Found</h1>`)
-        /////
         const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-
-        const params: Record<string, string> = {};
-        urlParams.forEach((value, key) => {
-            params[key] = value;
-        });
-
-        updateQueryParams(params);
-        const route = this.routes[path] || (() => this.displayObject(params))
-        console.log(getQueryParamValue('name'))
-        console.log(checkQueryParamExists('name'))
-        /////
+        
+        const queryParams = parseQueryParams(queryString);
+        updateQueryParams(queryParams);
+        const pathParams = parsePathParams(path);
+        updatePathParams(pathParams);
+        
+        // const route = this.routes[path] || (() => `<h1>404 Not Found</h1>`)
+        const route = this.routes[path] || (() => this.displayObject(pathParams, queryParams))
+        
+        // console.log(queryParams)
+        // console.log(path)
+        // console.log(pathParams)
+        // console.log(getQueryParamValue('name'))
+        // console.log(checkQueryParamExists('name'))
         
         document.getElementById('root').innerHTML = route()
 
     };
-    /////
-    private displayObject = (params: Record<string, string>) => {
-        return `<pre>${JSON.stringify(params, null, 2)}</pre>`;
+    private displayObject = (pathParams: Record<string, string>, queryParams: Record<string, string>) => {
+        return ( 
+        `<pre>${JSON.stringify(pathParams, null, 2)}\n${JSON.stringify(queryParams, null, 2)}</pre>`
+        )
     }
-    /////
 }
 
 const router = new Router()
