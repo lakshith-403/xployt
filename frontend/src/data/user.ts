@@ -45,7 +45,7 @@ export class UserCache extends CacheObject<User> {
 /**
  * Use this instead of UserCache to mock the user data.
  *
- * i.e. `import {UserCache as UserCache} from "./user"`
+ * i.e. `import {UserCacheMock as UserCache} from "./user"`
  * */
 export class UserCacheMock extends CacheObject<User> {
     async load(): Promise<User> {
