@@ -1,15 +1,26 @@
 import { QuarkFunction as $, Quark } from '../ui_lib/quark';
 import { View, ViewHandler } from '../ui_lib/view';
 import './../styles/projectInfo.scss';
+import { Project, ProjectCacheMock } from '../data/project';
 
 class ProjectInfoView implements View {
   params: { type: string };
+  projectCache: ProjectCacheMock;
+  ProjectInformation: Project | {} = {};
 
   constructor(params: { type: string }) {
     this.params = params;
+    this.projectCache = new ProjectCacheMock();
+  }
+
+    async loadProjectData(): Promise<void> {
+    try {
+      this.ProjectInformation = await this.projectCache.get();
+    } catch (error) {
+      console.error("Failed to load project data:", error);
+    }
   }
   selectedButton: string = "Prohect Information";
-  ProjectInformation = {"Project Name": "Project 1", "Project Description": "This is a project"};
   ProjectScope = {"Scope": "This is a scope"};
   ProjectTeam = {"Team": "This is a team"};
 
@@ -22,15 +33,16 @@ class ProjectInfoView implements View {
   updateRightChild(q: Quark, selected: string):void {
     this.rightChild.innerHTML = "";
     if (selected === "Project Information") {
+      console.log(this.ProjectInformation);
       $(q, 'h2', 'section-title', {}, (q) => {
         q.innerHTML = "Project Information";
       });
       for (const [key, value] of Object.entries(this.ProjectInformation)) {
-        $(q, 'div', 'project-info', {}, (q) => {
-          $(q, 'div', 'key', {}, (q) => {
+        $(q, 'div', 'row', {}, (q) => {
+          $(q, 'span', 'key', {}, (q) => {
             q.innerHTML = key;
           });
-          $(q, 'div', 'value', {}, (q) => {
+          $(q, 'span', 'value', {}, (q) => {
             q.innerHTML = value;
           });
         });
@@ -40,11 +52,11 @@ class ProjectInfoView implements View {
         q.innerHTML = "Project Scope";
       });
       for (const [key, value] of Object.entries(this.ProjectScope)) {
-        $(q, 'div', 'project-info', {}, (q) => {
-          $(q, 'div', 'key', {}, (q) => {
+        $(q, 'div', 'row', {}, (q) => {
+          $(q, 'span', 'key', {}, (q) => {
             q.innerHTML = key;
           });
-          $(q, 'div', 'value', {}, (q) => {
+          $(q, 'span', 'value', {}, (q) => {
             q.innerHTML = value;
           });
         });
@@ -54,11 +66,11 @@ class ProjectInfoView implements View {
         q.innerHTML = "Project  Team";
       });
       for (const [key, value] of Object.entries(this.ProjectTeam)) {
-        $(q, 'div', 'project-info', {}, (q) => {
-          $(q, 'div', 'key', {}, (q) => {
+        $(q, 'div', 'row', {}, (q) => {
+          $(q, 'span', 'key', {}, (q) => {
             q.innerHTML = key;
           });
-          $(q, 'div', 'value', {}, (q) => {
+          $(q, 'span', 'value', {}, (q) => {
             q.innerHTML = value;
           });
         });
@@ -83,7 +95,9 @@ class ProjectInfoView implements View {
       });
     });
   };
-  render(q: Quark): void {
+  async render(q: Quark): Promise<void> {
+
+    await this.loadProjectData();
     $(q, 'div', 'project-info validator', {}, (q) => {
       $(q, 'div', 'container', {}, (q) => {
         $(q, 'div', 'left child', {}, (q) => {

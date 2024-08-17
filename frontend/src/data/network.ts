@@ -80,6 +80,9 @@ class Network {
             xhr.send(JSON.stringify(data))
         })
     }
+    async getAllProjects(): Promise<Response> {
+        return this.sendHttpRequest('GET', '/api/projects/:id')
+    }
 }
 
 /**

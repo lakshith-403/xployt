@@ -47,6 +47,11 @@ body {
                 font-weight: bold;
                 margin-bottom: 1rem;
             }
+            .row {
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+            }
         }
         
     }
