@@ -41,3 +41,28 @@ export class UserCache extends CacheObject<User> {
         this.invalidate_cache()
     }
 }
+
+/**
+ * Use this instead of UserCache to mock the user data.
+ *
+ * i.e. `import {UserCache as UserCache} from "./user"`
+ * */
+export class UserCacheMock extends CacheObject<User> {
+    async load(): Promise<User> {
+        return new User({
+            id: 1,
+            username: "mock",
+            email: "mock@mock.com"})
+    }
+
+    async signIn(username: string, password: string): Promise<User> {
+        return new User({
+            id: 1,
+            username: username,
+            email: "mock@mock.com"})
+    }
+
+    async signOut(): Promise<void> {
+        this.invalidate_cache()
+    }
+}
