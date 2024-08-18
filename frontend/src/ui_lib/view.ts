@@ -9,7 +9,7 @@ export abstract class View {
 export class ViewHandler {
     route: string
     private readonly builder:  new (params: any) => View
-    private view: View
+    private view?: View
 
     constructor(route: string, builder: new (params: any) => View) {
         this.route = route
@@ -18,9 +18,13 @@ export class ViewHandler {
 
     setView(params?: Record<string, string>) {
         let root = document.getElementById('root')
+        if (root == null) {
+            throw new Error("Root element not found")
+        }
+
         root.innerHTML = ''
 
         this.view = new this.builder(params)
-        this.view.render(root)
+        this.view!.render(root)
     }
 }

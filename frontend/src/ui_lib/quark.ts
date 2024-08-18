@@ -23,7 +23,10 @@ export function QuarkFunction(parent: Quark, tagName: string, className: string 
 
     parent.appendChild(element)
 
-    q(element)
+    if (q != null) {
+        q(element)
+    }
+
 
     return element
 }
