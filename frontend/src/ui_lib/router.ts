@@ -14,7 +14,7 @@ export class Router {
     }
 
     public navigateTo = (url: string) => {
-        history.pushState(null, null, url)
+        history.pushState(null, "", url)
         this.router()
     }
 
