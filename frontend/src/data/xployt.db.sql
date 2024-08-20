@@ -58,12 +58,23 @@ CREATE TABLE validators (
     first_name VARCHAR(15),
     last_name VARCHAR(15),
     email VARCHAR(20),
+    phone VARCHAR(20),
+    dob DATE,
     skills TEXT,
     experience TEXT,
+    cv_link VARCHAR(255),
     approved BOOLEAN DEFAULT FALSE,
+    linkedin VARCHAR(255), // check
+    referenc 
     FOREIGN KEY (validator_id) REFERENCES users(user_id)
 );
-
+CREATE TABLE validator_certifications (
+    validator_id INT,
+    certification_name VARCHAR(25),
+    link VARCHAR(255),
+    PRIMARY KEY (validator_id, certification_name),
+    FOREIGN KEY (validator_id) REFERENCES validators(validator_id)
+);
 -- Admins table
 CREATE TABLE admins (
     admin_id INT PRIMARY KEY,
@@ -83,6 +94,7 @@ CREATE TABLE projects (
     status ENUM('Pending', 'Active', 'Completed') DEFAULT 'Pending',
     start_date DATE,
     end_date DATE,
+    pending_reports INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(client_id),
@@ -96,6 +108,13 @@ CREATE TABLE project_scope (
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
 
+CREATE TABLE project_validators (
+    project_id INT,
+    validator_id INT,
+    PRIMARY KEY (project_id, validator_id),
+    FOREIGN KEY (project_id) REFERENCES projects(project_id),
+    FOREIGN KEY (validator_id) REFERENCES validators(validator_id)
+); 
 -- Project Hackers table (many-to-many relationship between projects and hackers)
 CREATE TABLE project_hackers (
     project_hacker_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -121,7 +140,7 @@ CREATE TABLE bug_reports (
     impact TEXT, // Check
     status ENUM('Pending', 'Validated', 'Rejected', 'More Info') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP O N UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects(project_id),
     FOREIGN KEY (hacker_id) REFERENCES hackers(hacker_id),
     FOREIGN KEY (validator_id) REFERENCES validators(validator_id),
@@ -132,10 +151,28 @@ CREATE TABLE bug_reproduce_steps (
     version VARCHAR(15),
     step_number INT,
     step_description TEXT,
+    attachment VARCHAR(255),
     PRIMARY KEY (report_id, step_number),
     FOREIGN KEY (report_id) REFERENCES bug_reports(report_id)
 );
 
+CREATE TABLE chat_room {
+  chat_room_id INT,
+  project_id INT,
+  type ENUM('Main', 'Project Lead - Client', '')
+
+}
+CREATE TABLE primary_chat_messages (
+    project_id INT,
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT,
+    chat_type ENUM('Main', 'Project Lead', 'Hacker', 'Validator', 'Admin') NOT NULL,
+    user_role ENUM('Client', 'Project Lead', 'Hacker', 'Validator', 'Admin') NOT NULL, // check
+    message TEXT,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id)
+);
 -- Payments table
 CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -173,4 +210,13 @@ CREATE TABLE ratings (
     FOREIGN KEY (rated_by) REFERENCES users(user_id),
     FOREIGN KEY (rated_user_id) REFERENCES users(user_id),
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
+);
+
+// check
+CREATE TABLE policies (
+    policy_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
