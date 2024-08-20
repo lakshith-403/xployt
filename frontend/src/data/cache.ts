@@ -1,29 +1,33 @@
-import {UserCache} from "./user";
-import {ProjectInfoCacheMock, ProjectInfoCache} from "./projectInfo";
+import { UserCache } from './user';
+import { ProjectInfoCacheMock, ProjectInfoCache } from './projectInfo';
+import { ProjectsCacheMock, ProjectsCache } from './projects';
 
 class CacheStore {
-    private readonly userMap: Map<string, UserCache>
-    private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>
+  private readonly userMap: Map<string, UserCache>;
+  private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
+  private readonly projectsMap: Map<string, ProjectsCache>;
 
-    constructor() {
-        this.userMap = new Map()
-        this.projectInfoMap = new Map()
+  constructor() {
+    this.userMap = new Map();
+    this.projectInfoMap = new Map();
+    this.projectsMap = new Map();
+  }
+
+  public getUser(username: string): UserCache {
+    if (!this.userMap.has(username)) {
+      this.userMap.set(username, new UserCache());
     }
 
-    public getUser(username: string): UserCache {
-        if (!this.userMap.has(username)) {
-            this.userMap.set(username, new UserCache())
-        }
-
-        return this.userMap.get(username)!
+    return this.userMap.get(username)!;
+  }
+  public getProjectInfo(projectId: string): ProjectInfoCache {
+    if (!this.projectInfoMap.has(projectId)) {
+      this.projectInfoMap.set(projectId, new ProjectInfoCacheMock());
     }
-    public getProjectInfo(projectId: string): ProjectInfoCache {
-        if (!this.projectInfoMap.has(projectId)) {
-            this.projectInfoMap.set(projectId, new ProjectInfoCacheMock())
-        }
-
-        return this.projectInfoMap.get(projectId)!
-    }
+    console.log('projectInfoMap', this.projectInfoMap);
+    console.log('projectInfoMap projectId', projectId);
+    return this.projectInfoMap.get(projectId)!;
+  }
 }
 
-export const CACHE_STORE = new CacheStore()
+export const CACHE_STORE = new CacheStore();

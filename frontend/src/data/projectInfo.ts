@@ -1,14 +1,14 @@
-import NETWORK from "./network"
-import {CacheObject, DataFailure} from "./cacheBase"
+import NETWORK from './network'
+import { CacheObject, DataFailure } from './cacheBase'
 
 export class ProjectInfo {
-  id: number;
-  title: string;
-  client: string;
-  startDate: string;
-  endDate: string;
-  description: string;
-  scope: string;
+  id: number
+  title: string
+  client: string
+  startDate: string
+  endDate: string
+  description: string
+  scope: string
 
   constructor(data: any) {
     this.id = data['id']
@@ -22,27 +22,39 @@ export class ProjectInfo {
 }
 
 export class ProjectInfoCache extends CacheObject<ProjectInfo> {
-  async load(): Promise<ProjectInfo> {
-    const response = await NETWORK.getAllProjects();
+  async load(arg: string[]): Promise<ProjectInfo> {
+    const response = await NETWORK.getAllProjects(arg[0])
 
     if (!response.is_successful)
-      throw new DataFailure("load project", response.error ?? "")
+      throw new DataFailure('load project', response.error ?? '')
 
     return new ProjectInfo(response.data)
   }
 }
 
 export class ProjectInfoCacheMock extends CacheObject<ProjectInfo> {
-  async load(): Promise<ProjectInfo> {
-    console.log("Mocking project data");
-    return new ProjectInfo({    
-      id: 1,
-      title: "Project 1",
-      client: "Client 1",
-      startDate: "2021-01-01",
-      endDate: "2021-12-31",
-      description: "Description of project 1",
-      scope: "Scope of project 1"
-    });
+  async load(arg: string[]): Promise<ProjectInfo> {
+    // console.log('Mocking project data');
+    // console.log('projetID', arg);
+    if (arg[0] === '1') {
+      return new ProjectInfo({
+        id: 1,
+        title: 'Project 1',
+        client: 'Client 1',
+        startDate: '2021-01-01',
+        endDate: '2021-12-31',
+        description: 'Description of project 1',
+        scope: 'Scope of project 1',
+      })
+    }
+    return new ProjectInfo({
+      id: 2,
+      title: 'Project 2',
+      client: 'Client 2',
+      startDate: '2021-01-01',
+      endDate: '2021-12-31',
+      description: 'Description of project 1',
+      scope: 'Scope of project 1',
+    })
   }
 }

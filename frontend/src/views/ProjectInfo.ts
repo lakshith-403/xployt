@@ -2,29 +2,33 @@ import { QuarkFunction as $, Quark } from '../ui_lib/quark';
 import { View, ViewHandler } from '../ui_lib/view';
 import './../styles/projectInfo.scss';
 import { ProjectInfo, ProjectInfoCacheMock } from '../data/projectInfo';
-import {UserCache, UserCacheMock} from "../data/user";
-import {CACHE_STORE} from "../data/cache";
+import { UserCache, UserCacheMock } from '../data/user';
+import { CACHE_STORE } from '../data/cache';
 
 class ProjectInfoView implements View {
-  params: { type: string };
+  params: { projectId: string };
   projectCache: ProjectInfoCacheMock;
   ProjectInformation: ProjectInfo | {} = {};
-  
-  constructor(params: { type: string }) {
+
+  constructor(params: { projectId: string }) {
     this.params = params;
-    this.projectCache = CACHE_STORE.getProjectInfo("2");
+    this.projectCache = CACHE_STORE.getProjectInfo(this.params.projectId);
+    console.log('param is', params);
   }
 
-    async loadProjectData(): Promise<void> {
+  async loadProjectData(): Promise<void> {
     try {
-      this.ProjectInformation = await this.projectCache.get();
+      this.ProjectInformation = await this.projectCache.get(
+        false,
+        this.params.projectId
+      );
     } catch (error) {
-      console.error("Failed to load project data:", error);
+      console.error('Failed to load project data:', error);
     }
   }
-  selectedButton: string = "Prohect Information";
-  ProjectScope = {"Scope": "This is a scope"};
-  ProjectTeam = {"Team": "This is a team"};
+  selectedButton: string = 'Prohect Information';
+  ProjectScope = { Scope: 'This is a scope' };
+  ProjectTeam = { Team: 'This is a team' };
   rightChild: HTMLElement | null = null;
   buttons: HTMLElement[] = [];
 
@@ -32,13 +36,12 @@ class ProjectInfoView implements View {
     this.selectedButton = button.innerHTML;
   }
 
-
-  updateRightChild(q: Quark, selected: string):void {
-    this.rightChild.innerHTML = "";
-    if (selected === "Project Information") {
+  updateRightChild(q: Quark, selected: string): void {
+    this.rightChild!.innerHTML = '';
+    if (selected === 'Project Information') {
       console.log(this.ProjectInformation);
       $(q, 'h2', 'section-title', {}, (q) => {
-        q.innerHTML = "Project Information";
+        q.innerHTML = 'Project Information';
       });
       for (const [key, value] of Object.entries(this.ProjectInformation)) {
         $(q, 'div', 'row', {}, (q) => {
@@ -50,9 +53,9 @@ class ProjectInfoView implements View {
           });
         });
       }
-    } else if (selected === "Project Scope") {
-         $(q, 'h2', 'section-title', {}, (q) => {
-        q.innerHTML = "Project Scope";
+    } else if (selected === 'Project Scope') {
+      $(q, 'h2', 'section-title', {}, (q) => {
+        q.innerHTML = 'Project Scope';
       });
       for (const [key, value] of Object.entries(this.ProjectScope)) {
         $(q, 'div', 'row', {}, (q) => {
@@ -64,9 +67,9 @@ class ProjectInfoView implements View {
           });
         });
       }
-    } else if (selected === "Project Team") {
-         $(q, 'h2', 'section-title', {}, (q) => {
-        q.innerHTML = "Project  Team";
+    } else if (selected === 'Project Team') {
+      $(q, 'h2', 'section-title', {}, (q) => {
+        q.innerHTML = 'Project  Team';
       });
       for (const [key, value] of Object.entries(this.ProjectTeam)) {
         $(q, 'div', 'row', {}, (q) => {
@@ -85,12 +88,10 @@ class ProjectInfoView implements View {
       q.innerHTML = text;
       this.buttons.push(q);
       if (selected) {
-        q.classList.add("selected");
+        q.classList.add('selected');
       }
       q.addEventListener('click', () => {
-        this.buttons.forEach((button) =>
-          button.classList.remove('selected')
-        );
+        this.buttons.forEach((button) => button.classList.remove('selected'));
         q.classList.add('selected');
         console.log(q);
         this.updateRightChild(this.rightChild!, q.innerHTML);
@@ -98,28 +99,24 @@ class ProjectInfoView implements View {
     });
   };
   async render(q: Quark): Promise<void> {
-
     await this.loadProjectData();
     $(q, 'div', 'project-info validator', {}, (q) => {
       $(q, 'div', 'container', {}, (q) => {
         $(q, 'div', 'left child', {}, (q) => {
-        
-
-            this.createButton('Project Information', q,  "selected");
-            this.createButton('Project Scope', q);
-            this.createButton('Project Team', q);
-      
+          this.createButton('Project Information', q, 'selected');
+          this.createButton('Project Scope', q);
+          this.createButton('Project Team', q);
         });
 
-        this.rightChild = $(q, 'div', 'right child', {}, (q) => {
-     
-        });
+        this.rightChild = $(q, 'div', 'right child', {}, (q) => {});
 
-        this.updateRightChild(this.rightChild!, "Project Information");
+        this.updateRightChild(this.rightChild!, 'Project Information');
       });
     });
   }
-  
 }
 
-export const projectInfoViewHandler = new ViewHandler('/project', ProjectInfoView);
+export const projectInfoViewHandler = new ViewHandler(
+  '/project/{projectId}',
+  ProjectInfoView
+);
