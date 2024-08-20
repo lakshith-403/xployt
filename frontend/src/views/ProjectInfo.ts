@@ -39,7 +39,7 @@ class ProjectInfoView implements View {
   updateRightChild(q: Quark, selected: string): void {
     this.rightChild!.innerHTML = '';
     if (selected === 'Project Information') {
-      console.log(this.ProjectInformation);
+      // console.log(this.ProjectInformation);
       $(q, 'h2', 'section-title', {}, (q) => {
         q.innerHTML = 'Project Information';
       });
@@ -99,16 +99,24 @@ class ProjectInfoView implements View {
     });
   };
   async render(q: Quark): Promise<void> {
+    const waiting = $(q, 'div', 'loading-screen', {}, (q) => {
+      $(q, 'div', 'spinner', {}, (q) => {});
+    });
     await this.loadProjectData();
+    waiting.innerHTML = '';
+    waiting.remove();
+    // $(waiting, 'div', 'loading-screen', {}, (q) => {
+    //   q.innerHTML = '';
+    // });
     $(q, 'div', 'project-info validator', {}, (q) => {
       $(q, 'div', 'container', {}, (q) => {
-        $(q, 'div', 'left child', {}, (q) => {
+        $(q, 'div', 'header', {}, (q) => {
           this.createButton('Project Information', q, 'selected');
           this.createButton('Project Scope', q);
           this.createButton('Project Team', q);
         });
 
-        this.rightChild = $(q, 'div', 'right child', {}, (q) => {});
+        this.rightChild = $(q, 'div', 'body', {}, (q) => {});
 
         this.updateRightChild(this.rightChild!, 'Project Information');
       });

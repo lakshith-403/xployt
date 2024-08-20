@@ -24,8 +24,7 @@ class CacheStore {
     if (!this.projectInfoMap.has(projectId)) {
       this.projectInfoMap.set(projectId, new ProjectInfoCacheMock());
     }
-    console.log('projectInfoMap', this.projectInfoMap);
-    console.log('projectInfoMap projectId', projectId);
+
     return this.projectInfoMap.get(projectId)!;
   }
 }
