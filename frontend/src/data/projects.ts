@@ -1,5 +1,5 @@
 import NETWORK from "./network"
-import {CacheObject, DataFailure} from "./cache"
+import {CacheObject, DataFailure} from "./cacheBase"
 
 interface ProjectResponse {
   data: { [key: string]: ProjectDetails };

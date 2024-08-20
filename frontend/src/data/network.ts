@@ -44,7 +44,13 @@ class Network {
     async signOut(): Promise<Response> {
         return this.sendHttpRequest('POST', '/api/signout')
     }
-
+    async getAllProjects(): Promise<Response> {
+        return this.sendHttpRequest('GET', '/api/validator/projects/:validator-id')
+    }  
+    async getProjectInfo(): Promise<Response> {
+        return this.sendHttpRequest('GET', '/api/validator/project-info/:project-id')
+    }
+    
     /**
      * Sends an HTTP request using XMLHttpRequest.
      *
@@ -79,9 +85,6 @@ class Network {
 
             xhr.send(JSON.stringify(data))
         })
-    }
-    async getAllProjects(): Promise<Response> {
-        return this.sendHttpRequest('GET', '/api/projects/:id')
     }
 }
 

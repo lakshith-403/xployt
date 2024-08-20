@@ -1,16 +1,18 @@
 import { QuarkFunction as $, Quark } from '../ui_lib/quark';
 import { View, ViewHandler } from '../ui_lib/view';
 import './../styles/projectInfo.scss';
-import { Project, ProjectCacheMock } from '../data/project';
+import { ProjectInfo, ProjectInfoCacheMock } from '../data/projectInfo';
+import {UserCache, UserCacheMock} from "../data/user";
+import {CACHE_STORE} from "../data/cache";
 
 class ProjectInfoView implements View {
   params: { type: string };
-  projectCache: ProjectCacheMock;
-  ProjectInformation: Project | {} = {};
-
+  projectCache: ProjectInfoCacheMock;
+  ProjectInformation: ProjectInfo | {} = {};
+  
   constructor(params: { type: string }) {
     this.params = params;
-    this.projectCache = new ProjectCacheMock();
+    this.projectCache = CACHE_STORE.getProjectInfo("2");
   }
 
     async loadProjectData(): Promise<void> {
@@ -23,11 +25,12 @@ class ProjectInfoView implements View {
   selectedButton: string = "Prohect Information";
   ProjectScope = {"Scope": "This is a scope"};
   ProjectTeam = {"Team": "This is a team"};
+  rightChild: HTMLElement | null = null;
+  buttons: HTMLElement[] = [];
 
   setSelectedButton(button: HTMLElement): void {
     this.selectedButton = button.innerHTML;
   }
-  rightChild: HTMLElement | null = null;
 
 
   updateRightChild(q: Quark, selected: string):void {
@@ -77,7 +80,6 @@ class ProjectInfoView implements View {
       }
     }
   }
-  buttons: HTMLElement[] = [];
   createButton = (text: string, q: Quark, selected?: string) => {
     $(q, 'button', 'section-button', {}, (q) => {
       q.innerHTML = text;

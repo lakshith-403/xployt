@@ -1,7 +1,7 @@
 import NETWORK from "./network"
-import {CacheObject, DataFailure} from "./cache"
+import {CacheObject, DataFailure} from "./cacheBase"
 
-export class Project {
+export class ProjectInfo {
   id: number;
   title: string;
   client: string;
@@ -21,21 +21,21 @@ export class Project {
   }
 }
 
-export class ProjectCache extends CacheObject<Project> {
-  async load(): Promise<Project> {
+export class ProjectInfoCache extends CacheObject<ProjectInfo> {
+  async load(): Promise<ProjectInfo> {
     const response = await NETWORK.getAllProjects();
 
     if (!response.is_successful)
       throw new DataFailure("load project", response.error ?? "")
 
-    return new Project(response.data)
+    return new ProjectInfo(response.data)
   }
 }
 
-export class ProjectCacheMock extends CacheObject<Project> {
-  async load(): Promise<Project> {
+export class ProjectInfoCacheMock extends CacheObject<ProjectInfo> {
+  async load(): Promise<ProjectInfo> {
     console.log("Mocking project data");
-    return new Project({    
+    return new ProjectInfo({    
       id: 1,
       title: "Project 1",
       client: "Client 1",
