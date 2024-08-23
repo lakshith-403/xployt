@@ -1,5 +1,5 @@
-import NETWORK from './network';
-import { CacheObject, DataFailure } from './cacheBase';
+import NETWORK from './../network';
+import { CacheObject, DataFailure } from './../cacheBase';
 
 export class ProjectInfo {
   id: number;
@@ -25,7 +25,8 @@ export class ProjectInfoCache extends CacheObject<ProjectInfo> {
   async load(arg: string[]): Promise<ProjectInfo> {
     const response = await NETWORK.getAllProjects(arg[0]);
 
-    if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
+    if (!response.is_successful)
+      throw new DataFailure('load project', response.error ?? '');
 
     return new ProjectInfo(response.data);
   }

@@ -1,3 +1,13 @@
 body {
   background-color: #c4e6ff;
+  --background-primary: #252726;
+  --background-secondary: #1a1a1a;
+
+  --color-primary: white;
+
+  font-family: 'Montserrat', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }

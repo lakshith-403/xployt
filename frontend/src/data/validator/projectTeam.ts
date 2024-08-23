@@ -1,5 +1,5 @@
-import NETWORK from './network';
-import { CacheObject, DataFailure } from './cacheBase';
+import NETWORK from './../network';
+import { CacheObject, DataFailure } from './../cacheBase';
 
 export class ProjectTeam {
   id: number;
