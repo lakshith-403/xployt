@@ -1,6 +1,6 @@
-type Attributes = { [key: string]: string }
+type Attributes = { [key: string]: any };
 
-export type Quark = HTMLElement
+export type Quark = HTMLElement;
 
 /**
  * Creates a new HTML element, sets its attributes, and appends it to the parent element.
@@ -12,7 +12,13 @@ export type Quark = HTMLElement
  * @param {(q: Quark) => void} [q] - An optional callback function to be executed with the new element as its argument.
  * @returns {HTMLElement} The newly created HTML element.
  */
-export function QuarkFunction(parent: Quark, tagName: string, className: string, attributes: Attributes, q?: (q: Quark) => void): Quark
+export function QuarkFunction(
+  parent: Quark,
+  tagName: string,
+  className: string,
+  attributes: Attributes,
+  q?: (q: Quark) => void
+): Quark;
 
 /**
  * Creates a new HTML element, sets its attributes, and appends it to the parent element.
@@ -24,24 +30,40 @@ export function QuarkFunction(parent: Quark, tagName: string, className: string,
  * @param {string} [innerText] - An optional string to be set as the inner text of the new element.
  * @returns {HTMLElement} The newly created HTML element.
  */
-export function QuarkFunction(parent: Quark, tagName: string, className: string, attributes: Attributes, innerText?: string): Quark
+export function QuarkFunction(
+  parent: Quark,
+  tagName: string,
+  className: string,
+  attributes: Attributes,
+  innerText?: string
+): Quark;
 
-export function QuarkFunction(parent: Quark, tagName: string, className: string = '', attributes: Attributes = {}, qOrInnerText?: ((q: Quark) => void) | string): Quark {
-    const element = document.createElement(tagName);
+export function QuarkFunction(
+  parent: Quark,
+  tagName: string,
+  className: string = '',
+  attributes: Attributes = {},
+  qOrInnerText?: ((q: Quark) => void) | string
+): Quark {
+  const element = document.createElement(tagName);
 
-    element.className = className;
+  element.className = className;
 
-    for (const [key, value] of Object.entries(attributes)) {
-        element.setAttribute(key, value);
+  for (const [key, value] of Object.entries(attributes)) {
+    if (key.startsWith('on') && typeof value === 'function') {
+      // Add event listener if the attribute is an event handler
+      element.addEventListener(key.slice(2), value as EventListener);
+    } else {
+      element.setAttribute(key, value);
     }
+  }
+  parent.appendChild(element);
 
-    parent.appendChild(element);
+  if (typeof qOrInnerText === 'function') {
+    qOrInnerText(element);
+  } else if (typeof qOrInnerText === 'string') {
+    element.innerText = qOrInnerText;
+  }
 
-    if (typeof qOrInnerText === 'function') {
-        qOrInnerText(element);
-    } else if (typeof qOrInnerText === 'string') {
-        element.innerText = qOrInnerText;
-    }
-
-    return element;
+  return element;
 }
