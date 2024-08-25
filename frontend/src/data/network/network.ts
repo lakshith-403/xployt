@@ -14,38 +14,6 @@ class Network {
     }
 
     /**
-     * Sends a GET request to the server to get the current user.
-     *
-     * @returns {Promise<Response>} A promise that resolves with the user data.
-     */
-    async getCurrentUser(): Promise<Response> {
-        return this.sendHttpRequest('GET', '/api/user')
-    }
-
-    /**
-     * Sends a POST request to the server to sign in a user.
-     *
-     * @param {string} username - The username of the user.
-     * @param {string} password - The password of the user.
-     * @returns {Promise<Response>} A promise that resolves with the user data.
-     */
-    async signIn(username: string, password: string): Promise<Response> {
-        return this.sendHttpRequest('POST', '/api/signin', {
-            username
-            , password
-        })
-    }
-
-    /**
-     * Sends a POST request to the server to sign out the current user.
-     *
-     * @returns {Promise<Response>} A promise that resolves with the response data.
-     */
-    async signOut(): Promise<Response> {
-        return this.sendHttpRequest('POST', '/api/signout')
-    }
-
-    /**
      * Sends an HTTP request using XMLHttpRequest.
      *
      * @param {string} method - The HTTP method (e.g., 'GET', 'POST').
@@ -53,7 +21,7 @@ class Network {
      * @param {object} [data={}] - The data to be sent with the request.
      * @returns {Promise<any>} A promise that resolves with the response data.
      */
-    private sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
+    public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
         const xhr = new XMLHttpRequest()
         return new Promise((resolve, reject) => {
             xhr.withCredentials = true
