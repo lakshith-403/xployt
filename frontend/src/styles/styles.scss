@@ -1,3 +1,37 @@
 body {
   background-color: #c4e6ff;
 }
+
+#navbar {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+#root {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100vh;
+  widows: 100vw;
+}
+
+#sidebar {
+  flex: 0 0 20%;
+  background-color: #6b6969;
+  padding: 20px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+#content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

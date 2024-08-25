@@ -17,7 +17,7 @@ export class ViewHandler {
     }
 
     setView(params?: Record<string, string>) {
-        let root = document.getElementById('root')
+        let root = document.getElementById('content')
         if (root == null) {
             throw new Error("Root element not found")
         }

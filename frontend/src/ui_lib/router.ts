@@ -1,13 +1,25 @@
-import {ViewHandler} from "./view"
+import {Quark as $} from "./quark" 
+import { RouteHandler } from "./route"
+
+export interface NavigationView {
+    baseURL: string
+    willUpdate: () => void
+    render: ($: $) => void
+}
 
 export class Router {
-    private readonly viewHandlers: ViewHandler[]
+    private readonly routeHandlers: RouteHandler[]
 
-    constructor(viewHandlers: ViewHandler[] = []) {
-        this.viewHandlers = viewHandlers
+    constructor(routeHandlers: RouteHandler[] = [], topNavigationView: NavigationView) {
+        this.routeHandlers = routeHandlers
+        this.routeHandlers.sort((a, b) => b.route.length - a.route.length);
 
         document.addEventListener('DOMContentLoaded', () => {
             this.router()
+            if (document.getElementById('navbar') == null) {
+                throw new Error('Navbar element not found')
+            }
+            topNavigationView.render(document.getElementById('navbar')!)
         })
 
         window.addEventListener('popstate', this.router);
@@ -21,50 +33,13 @@ export class Router {
     public router = () => {
         const path = window.location.pathname + window.location.search
 
-        for (const viewHandler of this.viewHandlers) {
-            const match = this.matchUrl(path, viewHandler.route)
-            console.log(viewHandler.route, match)
-            if (match.matched) {
-                viewHandler.setView(match.params)
+        for (const routeHandler of this.routeHandlers) {
+            if (routeHandler.doesMatch(path)) {
+                routeHandler.render(path)
                 return
             }
         }
 
-    };
-
-    private matchUrl(url: string, pattern: string): { matched: boolean, params?: Record<string, string> } {
-        const [path, queryString] = url.split('?')
-        const queryParams = this.extractQueryParams(queryString || '')
-
-        const regex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$')
-        const match = path.match(regex)
-
-        if (match) {
-            const paramNames = (pattern.match(/{\w+}/g) || []).map(param => param.slice(1, -1))
-            const params: Record<string, string> = {}
-
-            paramNames.forEach((name, index) => {
-                params[name] = match[index + 1]
-            })
-
-            return { matched: true, params: { ...params, ...queryParams } }
-        }
-
-        return {matched: false, params: {}}
-    }
-
-    private extractQueryParams(queryString: string): Record<string, string> {
-        const queryParams: Record<string, string> = {}
-        if (!queryString) {
-            return queryParams
-        }
-
-        const pairs = queryString.split('&')
-        for (const pair of pairs) {
-            const [key, value] = pair.split('=')
-            queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '')
-        }
-
-        return queryParams
+        throw new Error('No route handler found for path: ' + path)
     }
 }
