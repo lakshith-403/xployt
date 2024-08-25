@@ -2,7 +2,8 @@ import './styles/styles.scss'
 import { Quark, QuarkFunction as $ } from './ui_lib/quark'
 import { RouteHandler } from './ui_lib/route'
 import './ui_lib/router'
-import {NavigationView, Router} from "./ui_lib/router"
+import {Router} from "./ui_lib/router"
+import { NavigationView } from './ui_lib/view'
 import {homeViewHandler} from "./views/home"
 import {loginViewHandler} from "./views/Login"
 
