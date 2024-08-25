@@ -1,70 +1,58 @@
-import {ViewHandler} from "./view"
+import { RouteHandler } from "./route"
+import { NavigationView } from "./view";
 
+
+/**
+ * Represents a Router that manages navigation and route handling.
+ */
 export class Router {
-    private readonly viewHandlers: ViewHandler[]
+    private readonly routeHandlers: RouteHandler[]
 
-    constructor(viewHandlers: ViewHandler[] = []) {
-        this.viewHandlers = viewHandlers
+    /**
+     * Creates an instance of the Router.
+     * 
+     * @param routeHandlers - An array of route handlers to manage navigation.
+     * @param topNavigationView - The navigation view to render in the navbar.
+     */
+    constructor(routeHandlers: RouteHandler[] = [], topNavigationView: NavigationView) {
+        this.routeHandlers = routeHandlers
+        this.routeHandlers.sort((a, b) => b.route.length - a.route.length);
 
         document.addEventListener('DOMContentLoaded', () => {
             this.router()
+            if (document.getElementById('navbar') == null) {
+                throw new Error('Navbar element not found')
+            }
+            topNavigationView.render(document.getElementById('navbar')!)
         })
 
         window.addEventListener('popstate', this.router);
     }
 
+    /**
+     * Navigates to a specified URL and updates the router.
+     * 
+     * @param url - The URL to navigate to.
+     */
     public navigateTo = (url: string) => {
         history.pushState(null, "", url)
         this.router()
     }
 
+    /**
+     * Handles the routing logic based on the current path.
+     * Throws an error if no route handler matches the path.
+     */
     public router = () => {
         const path = window.location.pathname + window.location.search
 
-        for (const viewHandler of this.viewHandlers) {
-            const match = this.matchUrl(path, viewHandler.route)
-            console.log(viewHandler.route, match)
-            if (match.matched) {
-                viewHandler.setView(match.params)
+        for (const routeHandler of this.routeHandlers) {
+            if (routeHandler.doesMatch(path)) {
+                routeHandler.render(path)
                 return
             }
         }
 
-    };
-
-    private matchUrl(url: string, pattern: string): { matched: boolean, params?: Record<string, string> } {
-        const [path, queryString] = url.split('?')
-        const queryParams = this.extractQueryParams(queryString || '')
-
-        const regex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$')
-        const match = path.match(regex)
-
-        if (match) {
-            const paramNames = (pattern.match(/{\w+}/g) || []).map(param => param.slice(1, -1))
-            const params: Record<string, string> = {}
-
-            paramNames.forEach((name, index) => {
-                params[name] = match[index + 1]
-            })
-
-            return { matched: true, params: { ...params, ...queryParams } }
-        }
-
-        return {matched: false, params: {}}
-    }
-
-    private extractQueryParams(queryString: string): Record<string, string> {
-        const queryParams: Record<string, string> = {}
-        if (!queryString) {
-            return queryParams
-        }
-
-        const pairs = queryString.split('&')
-        for (const pair of pairs) {
-            const [key, value] = pair.split('=')
-            queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '')
-        }
-
-        return queryParams
+        throw new Error('No route handler found for path: ' + path)
     }
 }

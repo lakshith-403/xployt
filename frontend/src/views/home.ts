@@ -15,4 +15,4 @@ class HomeView implements View {
     }
 }
 
-export const homeViewHandler = new ViewHandler('/', HomeView)
+export const homeViewHandler = new ViewHandler('', HomeView)
