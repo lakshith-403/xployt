@@ -1,4 +1,4 @@
-import { extractQueryParams, matchUrl, matchUrlWithBase } from "./utils"
+import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from "./utils"
 import { ViewHandler } from "./view"
 import { NavigationView } from "./view"
 
@@ -44,7 +44,10 @@ export class RouteHandler {
 
       for (const viewHandler of this.viewHandlers) {
         if (matchUrl(url, this.route + viewHandler.route)) {
-          viewHandler.setView(extractQueryParams(url))
+          viewHandler.setView({
+            ...extractQueryParams(url),
+            ...extractPathParams(url, this.route + viewHandler.route)
+          })
           return
         }
       }
