@@ -1,5 +1,5 @@
-import NETWORK from "./network"
 import {CacheObject, DataFailure} from "./cacheBase"
+import { AuthEndpoints } from "./network/auth.network"
 
 export class User {
     id: number
@@ -15,7 +15,7 @@ export class User {
 
 export class UserCache extends CacheObject<User> {
     async load(): Promise<User> {
-        const response = await NETWORK.getCurrentUser()
+        const response = await AuthEndpoints.getCurrentUser()
 
         if (!response.is_successful)
             throw new DataFailure("load user", response.error ?? "")
@@ -24,7 +24,7 @@ export class UserCache extends CacheObject<User> {
     }
 
     async signIn(username: string, password: string): Promise<User> {
-        const response = await NETWORK.signIn(username, password)
+        const response = await AuthEndpoints.signIn(username, password)
 
         if (!response.is_successful)
             throw new DataFailure("load user", response.error ?? "")
@@ -33,7 +33,7 @@ export class UserCache extends CacheObject<User> {
     }
 
     async signOut(): Promise<void> {
-        const response = await NETWORK.signOut()
+        const response = await AuthEndpoints.signOut()
 
         if (!response.is_successful)
             throw new DataFailure("load user", response.error ?? "")
