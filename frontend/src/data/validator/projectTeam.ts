@@ -1,4 +1,4 @@
-import NETWORK from './../network';
+import NETWORK from './../network/network';
 import { CacheObject, DataFailure } from './../cacheBase';
 
 export class ProjectTeam {
