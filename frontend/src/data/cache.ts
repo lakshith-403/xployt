@@ -1,9 +1,6 @@
-import { UserCache } from './user';
-import {
-  ProjectInfoCacheMock,
-  ProjectInfoCache,
-} from './validator/cache/projectInfo';
-import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects';
+import { UserCache, UserCacheMock } from './user';
+import { ProjectInfoCacheMock, ProjectInfoCache } from './validator/cache/projectInfo';
+import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cache';
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
@@ -13,13 +10,13 @@ class CacheStore {
   constructor() {
     this.userMap = new Map();
     this.projectInfoMap = new Map();
-    this.projects = new ProjectsCache();
+    this.projects = new ProjectsCacheMock();
     // this.projects = [];
   }
 
   public getUser(username: string): UserCache {
     if (!this.userMap.has(username)) {
-      this.userMap.set(username, new UserCache());
+      this.userMap.set(username, new UserCacheMock());
     }
 
     return this.userMap.get(username)!;

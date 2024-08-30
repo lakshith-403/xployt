@@ -57,27 +57,17 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'ul', '', {}, (q) => {
-      $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', { href: '/' }, 'Home');
-        $(q, 'a', '', { href: '/about' }, 'About');
+    $(q, 'span', '', {}, 'Icon');
+    $(q, 'div', 'buttons', {}, (q) => {
+        $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
+        $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
+
       });
-    });
+    // prettier-ignore
   }
 }
 
-const HomeRouteHandler = new RouteHandler(
-  '/',
-  [homeViewHandler, projectsViewHandler, projectInfoViewHandler],
-  new SidebarView('/', HomeSidebar)
-);
-const AboutRouteHandler = new RouteHandler(
-  '/about',
-  [homeViewHandler, loginViewHandler],
-  new AboutSidebarView()
-);
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
-const router = new Router(
-  [HomeRouteHandler, AboutRouteHandler],
-  new TopNavigationView()
-);
+const router = new Router([HomeRouteHandler, AboutRouteHandler], new TopNavigationView());

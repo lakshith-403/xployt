@@ -1,14 +1,12 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './projects.scss';
-import {
-  ProjectInfo,
-  ProjectInfoCache,
-} from '../../../data/validator/cache/projectInfo';
-import { Project, ProjectsCache } from '../../../data/validator/cache/projects';
+// import './../../../components/loadingScreen/loadingScreen.scss';
+
+import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
-
+import loadingScreen from '../../../components/loadingScreen/loadingScreen';
 class ProjectsView implements View {
   params: { projectId: string };
   projectsCache: ProjectsCache;
@@ -32,15 +30,18 @@ class ProjectsView implements View {
   }
 
   async render(q: Quark): Promise<void> {
-    const waiting = $(q, 'div', 'loading-screen', {}, (q) => {
-      $(q, 'div', 'spinner', {}, (q) => {});
-    });
+    const loading = new loadingScreen(q);
+    loading.show();
     await this.loadProjects();
-    waiting.innerHTML = '';
-    waiting.remove();
-    // $(waiting, 'div', 'loading-screen', {}, (q) => {
-    //   q.innerHTML = '';
-    // });
+    loading.hide();
+    this.Projects[0]!.forEach((project: Project) => {
+      $(q, 'div', 'project', {}, (q) => {
+        $(q, 'span', 'project-title', {}, project.title);
+        $(q, 'span', 'project-client', {}, project.client);
+        $(q, 'span', 'project-status', {}, project.status);
+        $(q, 'span', 'project-reports', {}, project.pendingReports.toString());
+      });
+    });
   }
 }
 

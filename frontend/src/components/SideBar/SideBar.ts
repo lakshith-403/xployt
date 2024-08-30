@@ -73,13 +73,3 @@ export class SidebarView implements NavigationView {
     this.updateSidebarVisibility();
   }
 }
-
-// export const sidebarViewHandler = (
-//   baseUrl: string,
-//   sidebarTabs: SidebarTab[]
-// ) => ({
-//   render: (q: Quark) => {
-//     const sidebarView = new SidebarView(baseUrl, sidebarTabs);
-//     sidebarView.render(q);
-//   },
-// });
