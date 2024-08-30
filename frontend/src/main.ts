@@ -9,21 +9,15 @@ import { loginViewHandler } from './views/Login';
 
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
+import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
-class HomeSidebarView implements NavigationView {
-  baseURL: string = '';
-
-  willUpdate: () => void = () => {};
-
-  render(q: Quark): void {
-    q.innerHTML = '';
-    $(q, 'ul', '', {}, (q) => {
-      $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', { href: this.baseURL + '/' }, 'Home');
-      });
-    });
-  }
-}
+const HomeSidebar: SidebarTab[] = [
+  {
+    id: 'home',
+    title: 'Home',
+    url: '/',
+  },
+];
 
 class AboutSidebarView implements NavigationView {
   baseURL: string = '/about';
@@ -59,7 +53,7 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler(
   '/',
   [homeViewHandler],
-  new HomeSidebarView()
+  new SidebarView('/', HomeSidebar)
 );
 const AboutRouteHandler = new RouteHandler(
   '/about',

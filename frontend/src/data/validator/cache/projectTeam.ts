@@ -1,5 +1,5 @@
-import NETWORK from './../network/network';
-import { CacheObject, DataFailure } from './../cacheBase';
+import { projectInfoEndpoints } from './../network/projectInfo.network';
+import { CacheObject, DataFailure } from '../../cacheBase';
 
 export class ProjectTeam {
   id: number;
@@ -35,16 +35,14 @@ export class ProjectTeam {
   }
 }
 
-export class ProjectTeamCache extends CacheObject<ProjectTeam> {
-  async load(arg: string[]): Promise<ProjectTeam> {
-    const response = await NETWORK.getAllProjects(arg[0]);
-
-    if (!response.is_successful)
-      throw new DataFailure('load project', response.error ?? '');
-
-    return new ProjectTeam(response.data);
-  }
-}
+// export class ProjectTeamCache extends CacheObject<ProjectTeam> {
+//   async load(arg: string[]): Promise<ProjectTeam> {
+//     // const response = await NETWORK.getAllProjects(arg[0]);
+//     // if (!response.is_successful)
+//     //   throw new DataFailure('load project', response.error ?? '');
+//     // return new ProjectTeam(response.data);
+//   }
+// }
 
 export class ProjectTeamCacheMock extends CacheObject<ProjectTeam> {
   async load(arg: string[]): Promise<ProjectTeam> {

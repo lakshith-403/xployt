@@ -1,5 +1,5 @@
-import NETWORK from './../network/network';
-import { CacheObject, DataFailure } from './../cacheBase';
+import { CacheObject, DataFailure } from '../../cacheBase';
+import { projectInfoEndpoints } from './../network/projectInfo.network';
 
 interface ProjectResponse {
   data: [ProjectDetails[], ProjectDetails[]];
@@ -35,7 +35,7 @@ export class Project {
 
 export class ProjectsCache extends CacheObject<Project[][]> {
   async load(validatorId: string): Promise<Project[][]> {
-    const response = (await NETWORK.getAllProjects(
+    const response = (await projectInfoEndpoints.getProjectInfo(
       validatorId
     )) as ProjectResponse;
 

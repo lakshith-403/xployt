@@ -1,19 +1,22 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import './SideBar.scss';
-
+// import { Router } from '../../ui_lib/router';
+import { NavigationView } from '../../ui_lib/view';
 export interface SidebarTab {
   id: string;
   title: string;
-  content: (q: Quark) => void;
+  url: string;
 }
 
-class SidebarView {
+export class SidebarView implements NavigationView {
+  baseURL: string;
   private isOpen: boolean = true;
   private activeTab: string;
   private tabs: SidebarTab[];
   private buttons: HTMLElement[] = [];
 
-  constructor(tabs: SidebarTab[]) {
+  constructor(baseurl: string, tabs: SidebarTab[]) {
+    this.baseURL = baseurl;
     this.tabs = tabs;
     this.activeTab = tabs[0]?.id || '';
   }
@@ -25,8 +28,7 @@ class SidebarView {
 
   private updateSidebarVisibility(): void {
     const sidebar = document.querySelector('.sidebar') as HTMLElement;
-    const mainContent = document.querySelector('.main-content') as HTMLElement;
-    if (sidebar && mainContent) {
+    if (sidebar) {
       sidebar.style.transform = this.isOpen
         ? 'translateX(0)'
         : 'translateX(-100%)';
@@ -38,55 +40,30 @@ class SidebarView {
     this.buttons.forEach((btn) => btn.classList.remove('active'));
     this.buttons.find((btn) => btn.id === tabId)?.classList.add('active');
     this.activeTab = tabId;
-    this.renderContent();
-  }
-
-  private renderContent(): void {
-    const contentContainer = document.querySelector(
-      '.content-container'
-    ) as HTMLElement;
-    if (contentContainer) {
-      contentContainer.innerHTML = '';
-      const activeTabContent = this.tabs.find(
-        (tab) => tab.id === this.activeTab
-      )?.content;
-      if (activeTabContent) {
-        $(contentContainer, 'div', 'active-content', {}, activeTabContent);
-      }
-    }
+    window.location.href = this.tabs.find((tab) => tab.id === tabId)!.url;
   }
 
   render(q: Quark): void {
-    $(q, 'div', 'layout', {}, (q) => {
-      // Sidebar
-      $(q, 'div', 'sidebar', {}, (q) => {
-        $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
-          q.innerHTML = '☰';
-        });
-        $(q, 'nav', 'sidebar-nav', {}, (q) => {
-          this.tabs.forEach((tab) => {
-            $(
-              q,
-              'button',
-              `nav-btn ${this.activeTab === tab.id ? 'active' : ''}`,
-              {
-                onclick: () => this.setActiveTab(tab.id),
-                id: tab.id,
-              },
-              (q) => {
-                q.innerHTML = tab.title;
-                this.buttons.push(q);
-              }
-            );
-          });
-        });
+    // Sidebar
+    $(q, 'div', 'side-bar', {}, (q) => {
+      $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
+        q.innerHTML = '☰';
       });
-
-      // Main content
-      $(q, 'div', 'main-content', {}, (q) => {
-        $(q, 'div', 'content-container', {}, (q) => {
-          // Initial content render
-          this.renderContent();
+      $(q, 'nav', 'sidebar-nav', {}, (q) => {
+        this.tabs.forEach((tab) => {
+          $(
+            q,
+            'button',
+            `nav-btn ${this.activeTab === tab.id ? 'active' : ''}`,
+            {
+              onclick: () => this.setActiveTab(tab.id),
+              id: tab.id,
+            },
+            (q) => {
+              q.innerHTML = tab.title;
+              this.buttons.push(q);
+            }
+          );
         });
       });
     });
@@ -96,9 +73,12 @@ class SidebarView {
   }
 }
 
-export const sidebarViewHandler = (sidebarTabs: SidebarTab[]) => ({
-  render: (q: Quark) => {
-    const sidebarView = new SidebarView(sidebarTabs);
-    sidebarView.render(q);
-  },
-});
+// export const sidebarViewHandler = (
+//   baseUrl: string,
+//   sidebarTabs: SidebarTab[]
+// ) => ({
+//   render: (q: Quark) => {
+//     const sidebarView = new SidebarView(baseUrl, sidebarTabs);
+//     sidebarView.render(q);
+//   },
+// });

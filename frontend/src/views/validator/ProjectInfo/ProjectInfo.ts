@@ -4,7 +4,7 @@ import './projectInfo.scss';
 import {
   ProjectInfo,
   ProjectInfoCacheMock,
-} from '../../../data/validator/projectInfo';
+} from '../../../data/validator/cache/projectInfo';
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 

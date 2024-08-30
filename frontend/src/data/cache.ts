@@ -2,8 +2,8 @@ import { UserCache } from './user';
 import {
   ProjectInfoCacheMock,
   ProjectInfoCache,
-} from './validator/projectInfo';
-import { ProjectsCacheMock, ProjectsCache } from './validator/projects';
+} from './validator/cache/projectInfo';
+import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects';
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;

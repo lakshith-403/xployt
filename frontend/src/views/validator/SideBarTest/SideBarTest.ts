@@ -1,24 +1,22 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './sideBarTest.scss';
-import {
-  sidebarViewHandler,
-  SidebarTab,
-} from './../../../components/SideBar/SideBar';
-import ProjectInfo from './C_ProjectInfo';
-import ProjectTeam from './C_ProjectTeam';
-import ProjectScope from './C_ProjectScope';
+import { SidebarTab } from './../../../components/SideBar/SideBar';
+// import ProjectInfo from './C_ProjectInfo';
+// import ProjectTeam from './C_ProjectTeam';
+// import ProjectScope from './C_ProjectScope';
+
 class SideBarTestView implements View {
   params: { type: string };
-  handler: ReturnType<typeof sidebarViewHandler>;
+  // handler: ReturnType<typeof sidebarViewHandler>;
 
   constructor(params: { type: string }) {
     this.params = params;
-    this.handler = sidebarViewHandler(sidebarTabs);
+    // this.handler = sidebarViewHandler(sidebarTabs);
   }
   render(q: Quark): void {
     $(q, 'div', 'sideBarTest validator', {}, (q) => {
-      this.handler.render(q);
+      // this.handler.render(q);
     });
   }
 }
@@ -33,16 +31,16 @@ const sidebarTabs: SidebarTab[] = [
   {
     id: 'projectInfo',
     title: 'Project Information',
-    content: ProjectInfo,
+    url: '/sidebartest/projectInfo',
   },
   {
     id: 'projectScope',
     title: 'Project Scope',
-    content: ProjectTeam,
+    url: '/sidebartest/projectScope',
   },
   {
     id: 'projectTeam',
     title: 'Project Team',
-    content: ProjectScope,
+    url: '/sidebartest/projectTeam',
   },
 ];
