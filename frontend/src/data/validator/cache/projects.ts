@@ -34,9 +34,9 @@ export class Project {
 }
 
 export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(validatorId: string): Promise<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     const response = (await projectInfoEndpoints.getProjectInfo(
-      validatorId
+      userId
     )) as ProjectResponse;
 
     if (!response.is_successful)
@@ -54,7 +54,7 @@ export class ProjectsCache extends CacheObject<Project[][]> {
 }
 
 export class ProjectsCacheMock extends CacheObject<Project[][]> {
-  async load(validatorId: string): Promise<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     return [
       [
         new Project({

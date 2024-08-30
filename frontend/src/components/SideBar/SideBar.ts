@@ -40,7 +40,8 @@ export class SidebarView implements NavigationView {
     this.buttons.forEach((btn) => btn.classList.remove('active'));
     this.buttons.find((btn) => btn.id === tabId)?.classList.add('active');
     this.activeTab = tabId;
-    window.location.href = this.tabs.find((tab) => tab.id === tabId)!.url;
+    window.location.href =
+      this.baseURL + this.tabs.find((tab) => tab.id === tabId)!.url;
   }
 
   render(q: Quark): void {

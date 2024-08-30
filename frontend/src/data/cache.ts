@@ -8,12 +8,13 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects';
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
-  private readonly projectsMap: Map<string, ProjectsCache>;
+  private projects: ProjectsCache;
 
   constructor() {
     this.userMap = new Map();
     this.projectInfoMap = new Map();
-    this.projectsMap = new Map();
+    this.projects = new ProjectsCache();
+    // this.projects = [];
   }
 
   public getUser(username: string): UserCache {
@@ -29,6 +30,9 @@ class CacheStore {
     }
 
     return this.projectInfoMap.get(projectId)!;
+  }
+  public getProjects(): ProjectsCache {
+    return this.projects;
   }
 }
 

@@ -16,12 +16,22 @@ const HomeSidebar: SidebarTab[] = [
   {
     id: 'home',
     title: 'Home',
-    url: '/',
+    url: '',
   },
   {
     id: 'projects',
     title: 'Projects',
-    url: '/projects',
+    url: 'projects',
+  },
+  {
+    id: 'reports',
+    title: 'Reports',
+    url: 'reports',
+  },
+  {
+    id: 'projectInfo',
+    title: 'Project Info',
+    url: 'project/1',
   },
 ];
 
@@ -58,7 +68,7 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler],
+  [homeViewHandler, projectsViewHandler, projectInfoViewHandler],
   new SidebarView('/', HomeSidebar)
 );
 const AboutRouteHandler = new RouteHandler(
