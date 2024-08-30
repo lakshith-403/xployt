@@ -1,4 +1,4 @@
-type Attributes = { [key: string]: string }
+type Attributes = { [key: string]: any }
 
 export type Quark = HTMLElement
 
