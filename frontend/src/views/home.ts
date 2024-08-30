@@ -1,16 +1,27 @@
+import { IconButton } from '../components/button/icon.button'
 import {QuarkFunction as $, Quark} from '../ui_lib/quark'
 import {View, ViewHandler} from "../ui_lib/view"
 
 class HomeView implements View {
+
+    private iconButton: IconButton
+    
     constructor() {
+        this.iconButton = new IconButton(
+            {
+                icon: 'fa-solid fa-house',
+                label: 'Home',
+                onClick: () => {
+                    alert('Home button clicked')
+                }
+            }
+        )
     }
 
     render(q: Quark): void {
          console.log('HomeView render')
         $(q, 'h1', '', {}, (q) => {
-            $(q, 'span', '', {}, (q) => {
-              q.innerHTML = "Home"
-            })
+            this.iconButton.render(q)
         })
     }
 }
