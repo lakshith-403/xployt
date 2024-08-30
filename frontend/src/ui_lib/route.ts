@@ -48,10 +48,13 @@ export class RouteHandler {
    * @param url - The URL to render the view for.
    * @throws Error if no view handler is found for the route.
    */
-  public render(url: string): void {
-    document.getElementById('sidebar')!.innerHTML = '';
-    this.navigationView.render(document.getElementById('sidebar')!);
-    console.log('rendering route:', url);
+  public render(url: string, currentRoute: string): void {
+    if (currentRoute !== this.route) {
+      console.log('CurrentRoute:', currentRoute, 'Route:', this.route);
+      document.getElementById('sidebar')!.innerHTML = '';
+      this.navigationView.render(document.getElementById('sidebar')!);
+    }
+    console.log('rendering sub route:', url);
     for (const viewHandler of this.viewHandlers) {
       if (matchUrl(url, this.route + viewHandler.route)) {
         viewHandler.setView({

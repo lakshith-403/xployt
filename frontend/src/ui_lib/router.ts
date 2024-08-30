@@ -6,7 +6,7 @@ import { NavigationView } from './view';
  */
 export class Router {
   private readonly routeHandlers: RouteHandler[];
-
+  public currentRoute: string = '';
   /**
    * Creates an instance of the Router.
    *
@@ -47,10 +47,13 @@ export class Router {
    */
   public router = () => {
     const path = window.location.pathname + window.location.search;
-
+    console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
       if (routeHandler.doesMatch(path)) {
-        routeHandler.render(path);
+        routeHandler.render(path, this.currentRoute);
+        this.currentRoute = routeHandler.route;
+        console.log('rendering route matched:', routeHandler.route);
+        console.log('rendering route matched stored:', this.currentRoute);
         return;
       }
     }

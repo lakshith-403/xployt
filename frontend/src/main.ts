@@ -8,6 +8,7 @@ import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
 
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
+import { projectsViewHandler } from './views/validator/projects/Projects';
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
@@ -16,6 +17,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'home',
     title: 'Home',
     url: '/',
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    url: '/projects',
   },
 ];
 
@@ -52,7 +58,7 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler],
+  [homeViewHandler, projectsViewHandler],
   new SidebarView('/', HomeSidebar)
 );
 const AboutRouteHandler = new RouteHandler(

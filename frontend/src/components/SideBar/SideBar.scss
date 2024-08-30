@@ -9,6 +9,7 @@ $accent-color: #3498db;
 .side-bar {
   width: 100%;
   height: 100%;
+  padding-top: 1rem;
   background-color: $sidebar-bg;
   color: $sidebar-text;
   transition: transform 0.3s ease-in-out;
@@ -33,6 +34,7 @@ $accent-color: #3498db;
     padding: 20px 0 0 2rem;
 
     .nav-btn {
+      margin-bottom: 0.5rem;
       display: block;
       width: 100%;
       padding: 10px 20px;

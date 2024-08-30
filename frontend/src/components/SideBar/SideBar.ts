@@ -46,9 +46,9 @@ export class SidebarView implements NavigationView {
   render(q: Quark): void {
     // Sidebar
     $(q, 'div', 'side-bar', {}, (q) => {
-      $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
-        q.innerHTML = '☰';
-      });
+      // $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
+      //   q.innerHTML = '☰';
+      // });
       $(q, 'nav', 'sidebar-nav', {}, (q) => {
         this.tabs.forEach((tab) => {
           $(
