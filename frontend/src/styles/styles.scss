@@ -12,9 +12,9 @@ html {
     margin: 0;
     --background-primary: #252726;
     --background-secondary: #1a1a1a;
-
+    --nav-bar-background: #131313;
     --color-primary: white;
-
+    --light-green: #86ebd9;
     font-family: 'Montserrat', sans-serif;
   }
 }
@@ -22,13 +22,32 @@ html {
 #navbar {
   height: var(--navbar-height);
   width: 100%;
-  background-color: #007bff;
+  background-color: var(--nav-bar-background);
   color: white;
   padding: 1rem 0;
   text-align: center;
   top: 0;
   left: 0;
   z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-right: 2rem;
+    button {
+      outline: none;
+      color: white;
+      border: none;
+      font-size: 0.9rem;
+      background-color: var(--nav-bar-background);
+    }
+  }
 }
 
 #root {
@@ -51,6 +70,10 @@ html {
 
 #content {
   flex: 1;
-  padding: 20px;
+  // padding: 20px;
   overflow-y: auto;
+  min-height: calc(100vh - var(--navbar-height));
+  background-color: var(--background-primary);
+  color: var(--color-primary);
+  position: relative;
 }

@@ -1,5 +1,5 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
-import { projectInfoEndpoints } from './../network/projectInfo.network';
+import { projectEndpoints } from '../network/project.network';
 
 interface ProjectResponse {
   data: [ProjectDetails[], ProjectDetails[]];
@@ -34,13 +34,10 @@ export class Project {
 }
 
 export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(validatorId: string): Promise<Project[][]> {
-    const response = (await projectInfoEndpoints.getProjectInfo(
-      validatorId
-    )) as ProjectResponse;
+  async load(userId: string): Promise<Project[][]> {
+    const response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
 
-    if (!response.is_successful)
-      throw new DataFailure('load project', response.error ?? '');
+    if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
 
     return [
       response['data'].slice(0, 1).map((projectDetails: ProjectDetails[]) => {
@@ -54,7 +51,7 @@ export class ProjectsCache extends CacheObject<Project[][]> {
 }
 
 export class ProjectsCacheMock extends CacheObject<Project[][]> {
-  async load(validatorId: string): Promise<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     return [
       [
         new Project({

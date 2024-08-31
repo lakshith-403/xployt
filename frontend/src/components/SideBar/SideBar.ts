@@ -18,7 +18,7 @@ export class SidebarView implements NavigationView {
   constructor(baseurl: string, tabs: SidebarTab[]) {
     this.baseURL = baseurl;
     this.tabs = tabs;
-    this.activeTab = tabs[0]?.id || '';
+    this.activeTab = tabs[0]?.id;
   }
 
   private toggleSidebar = (): void => {
@@ -29,9 +29,7 @@ export class SidebarView implements NavigationView {
   private updateSidebarVisibility(): void {
     const sidebar = document.querySelector('.sidebar') as HTMLElement;
     if (sidebar) {
-      sidebar.style.transform = this.isOpen
-        ? 'translateX(0)'
-        : 'translateX(-100%)';
+      sidebar.style.transform = this.isOpen ? 'translateX(0)' : 'translateX(-100%)';
       // mainContent.style.marginLeft = this.isOpen ? '250px' : '0';
     }
   }
@@ -40,10 +38,11 @@ export class SidebarView implements NavigationView {
     this.buttons.forEach((btn) => btn.classList.remove('active'));
     this.buttons.find((btn) => btn.id === tabId)?.classList.add('active');
     this.activeTab = tabId;
-    window.location.href = this.tabs.find((tab) => tab.id === tabId)!.url;
+    window.location.href = this.baseURL + this.tabs.find((tab) => tab.id === tabId)!.url;
   }
 
-  render(q: Quark): void {
+  render(q: Quark, currentRoute: string): void {
+    console.log('currentRoute', currentRoute);
     // Sidebar
     $(q, 'div', 'side-bar', {}, (q) => {
       // $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
@@ -54,7 +53,7 @@ export class SidebarView implements NavigationView {
           $(
             q,
             'button',
-            `nav-btn ${this.activeTab === tab.id ? 'active' : ''}`,
+            `nav-btn ${currentRoute === tab.id ? 'active' : ''}`,
             {
               onclick: () => this.setActiveTab(tab.id),
               id: tab.id,
@@ -72,13 +71,3 @@ export class SidebarView implements NavigationView {
     this.updateSidebarVisibility();
   }
 }
-
-// export const sidebarViewHandler = (
-//   baseUrl: string,
-//   sidebarTabs: SidebarTab[]
-// ) => ({
-//   render: (q: Quark) => {
-//     const sidebarView = new SidebarView(baseUrl, sidebarTabs);
-//     sidebarView.render(q);
-//   },
-// });

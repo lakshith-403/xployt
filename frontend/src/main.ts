@@ -12,26 +12,34 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
-import {
-  vulnReportViewHandler,
-} from './views/hacker/VulnerabilityReport/VulnerabilityReport';
+import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
   {
-    id: 'home',
+    id: '',
     title: 'Home',
-    url: '/',
+    url: '',
   },
   {
     id: 'projects',
     title: 'Projects',
-    url: '/projects',
+    url: 'projects',
   },
   {
-    id: 'report',
-    title: 'Report',
-    url: '/report',
+    id: 'reports',
+    title: 'Reports',
+    url: '',
   },
+  {
+    id: 'project/{projectId}',
+    title: 'Project Info',
+    url: 'project/1',
+  },
+  {
+    id: 'report/{projectId}',
+    title: 'New Report',
+    url: 'report/1'
+  }
 ];
 
 class AboutSidebarView implements NavigationView {
@@ -56,35 +64,17 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'ul', '', {}, (q) => {
-      $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', { href: '/' }, 'Home');
-        $(q, 'a', '', { href: '/about' }, 'About');
+    $(q, 'span', '', {}, 'Icon');
+    $(q, 'div', 'buttons', {}, (q) => {
+        $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
+        $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
+
       });
-    });
+    // prettier-ignore
   }
 }
 
-const HomeRouteHandler = new RouteHandler(
-  '/',
-  [homeViewHandler, projectsViewHandler, vulnReportViewHandler],
-  new SidebarView('/', HomeSidebar)
-);
-const AboutRouteHandler = new RouteHandler(
-  '/about',
-  [homeViewHandler, loginViewHandler],
-  new AboutSidebarView()
-);
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler], new SidebarView('/', HomeSidebar));
+const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
-// const ReportRouteHandler = new RouteHandler(
-//     '/report',
-//     [homeViewHandler, vulnReportViewHandler],
-//     new SidebarView('/report', HomeSidebar)
-// );
-
-const router = new Router(
-  [HomeRouteHandler, AboutRouteHandler,
-    // ReportRouteHandler
-    ],
-  new TopNavigationView()
-);
+const router = new Router([HomeRouteHandler, AboutRouteHandler], new TopNavigationView());

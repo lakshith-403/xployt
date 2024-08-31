@@ -3,14 +3,14 @@ import { View, ViewHandler } from '../../../ui_lib/view';
 import './projectInfo.scss';
 import {
   ProjectInfo,
-  ProjectInfoCacheMock,
+  ProjectInfoCache,
 } from '../../../data/validator/cache/projectInfo';
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 
 class ProjectInfoView implements View {
   params: { projectId: string };
-  projectCache: ProjectInfoCacheMock;
+  projectCache: ProjectInfoCache;
   ProjectInformation: ProjectInfo | {} = {};
 
   constructor(params: { projectId: string }) {
@@ -128,6 +128,6 @@ class ProjectInfoView implements View {
 }
 
 export const projectInfoViewHandler = new ViewHandler(
-  '/project/{projectId}',
+  'project/{projectId}',
   ProjectInfoView
 );

@@ -12,13 +12,7 @@ export type Quark = HTMLElement;
  * @param {(q: Quark) => void} [q] - An optional callback function to be executed with the new element as its argument.
  * @returns {HTMLElement} The newly created HTML element.
  */
-export function QuarkFunction(
-  parent: Quark,
-  tagName: string,
-  className: string,
-  attributes: Attributes,
-  q?: (q: Quark) => void
-): Quark;
+export function QuarkFunction(parent: Quark, tagName: string, className: string, attributes: Attributes, q?: (q: Quark) => void): Quark;
 
 /**
  * Creates a new HTML element, sets its attributes, and appends it to the parent element.
@@ -30,13 +24,7 @@ export function QuarkFunction(
  * @param {string} [innerText] - An optional string to be set as the inner text of the new element.
  * @returns {HTMLElement} The newly created HTML element.
  */
-export function QuarkFunction(
-  parent: Quark,
-  tagName: string,
-  className: string,
-  attributes: Attributes,
-  innerText?: string
-): Quark;
+export function QuarkFunction(parent: Quark, tagName: string, className: string, attributes: Attributes, innerText?: string): Quark;
 
 export function QuarkFunction(
   parent: Quark,
