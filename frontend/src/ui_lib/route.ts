@@ -39,7 +39,7 @@ export class RouteHandler {
    * @param url - The URL to render the view for.
    * @throws Error if no view handler is found for the route.
    */
-  public render(url: string, currentRoute: string): void {
+  public render(url: string): void {
     // if (currentRoute !== this.route) {
     // console.log('CurrentRoute:', currentRoute, 'Route:', this.route);
     // }
