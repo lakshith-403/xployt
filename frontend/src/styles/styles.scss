@@ -75,5 +75,6 @@ html {
   overflow-y: auto;
   min-height: calc(100vh - var(--navbar-height));
   background-color: var(--background-primary);
+  color: var(--color-primary);
   position: relative;
 }

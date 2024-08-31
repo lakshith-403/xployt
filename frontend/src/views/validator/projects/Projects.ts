@@ -7,6 +7,7 @@ import { Project, ProjectsCache } from '../../../data/validator/cache/projects.c
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import loadingScreen from '../../../components/loadingScreen/loadingScreen';
+import { projectsCollabsible } from '../../../components/Collapsible/projectsCollapsible';
 class ProjectsView implements View {
   params: { projectId: string };
   projectsCache: ProjectsCache;
@@ -18,7 +19,7 @@ class ProjectsView implements View {
     this.params = params;
     this.userCache = CACHE_STORE.getUser('1');
     this.projectsCache = CACHE_STORE.getProjects();
-    console.log('param is', params);
+    // console.log('param is', params);
   }
   async loadProjects(): Promise<void> {
     try {
@@ -30,18 +31,15 @@ class ProjectsView implements View {
   }
 
   async render(q: Quark): Promise<void> {
+    $(q, 'h2', 'Projects', {}, 'Projects');
     const loading = new loadingScreen(q);
     loading.show();
     await this.loadProjects();
     loading.hide();
-    this.Projects[0]!.forEach((project: Project) => {
-      $(q, 'div', 'project', {}, (q) => {
-        $(q, 'span', 'project-title', {}, project.title);
-        $(q, 'span', 'project-client', {}, project.client);
-        $(q, 'span', 'project-status', {}, project.status);
-        $(q, 'span', 'project-reports', {}, project.pendingReports.toString());
-      });
-    });
+
+    const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
+    new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader);
+    new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader);
   }
 }
 
