@@ -1,6 +1,6 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
-import './projects.scss';
+import './Projects.scss';
 // import './../../../components/loadingScreen/loadingScreen.scss';
 
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
@@ -31,15 +31,18 @@ class ProjectsView implements View {
   }
 
   async render(q: Quark): Promise<void> {
-    $(q, 'h2', 'Projects', {}, 'Projects');
     const loading = new loadingScreen(q);
     loading.show();
     await this.loadProjects();
     loading.hide();
 
-    const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
-    new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader);
-    new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader);
+    $(q, 'div', 'projects validator', {}, (q) => {
+      $(q, 'h2', 'Projects', {}, 'Projects');
+
+      const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
+      new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader, 'tables');
+      new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader, 'tables');
+    });
   }
 }
 

@@ -11,9 +11,10 @@ export abstract class CollapsibleBase<T> {
     protected q: Quark,
     protected title: string,
     protected contentData: T[],
-    protected tableHeaders?: string[]
+    protected tableHeaders?: string[],
+    protected className?: string
   ) {
-    this.container = $(this.q, 'div', 'collapsible-container', {}, (q) => {});
+    this.container = $(this.q, 'div', `collapsible-container ${className}`, {}, (q) => {});
     this.header = this.createHeader();
     this.button = this.createButton();
     this.tableHeader = this.createTableHeader();
