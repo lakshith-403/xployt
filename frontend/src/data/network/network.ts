@@ -2,110 +2,121 @@
  * Class representing a network service for making HTTP requests.
  */
 class Network {
-    baseURL: string
+  baseURL: string;
 
-    /**
-     * Creates an instance of Network.
-     *
-     * @param {string} baseURL - The base URL for the network requests.
-     */
-    constructor(baseURL: string) {
-        this.baseURL = baseURL
-    }
+  /**
+   * Creates an instance of Network.
+   *
+   * @param {string} baseURL - The base URL for the network requests.
+   */
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
+  }
 
-    /**
-     * Sends an HTTP request using XMLHttpRequest.
-     *
-     * @param {string} method - The HTTP method (e.g., 'GET', 'POST').
-     * @param {string} url - The URL endpoint for the request.
-     * @param {object} [data={}] - The data to be sent with the request.
-     * @returns {Promise<any>} A promise that resolves with the response data.
-     */
-    public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
-        const xhr = new XMLHttpRequest()
-        return new Promise((resolve, reject) => {
-            xhr.withCredentials = true
-            xhr.open(method, this.baseURL + url)
-            xhr.responseType = 'json'
+  /**
+   * Sends an HTTP request using XMLHttpRequest.
+   *
+   * @param {string} method - The HTTP method (e.g., 'GET', 'POST').
+   * @param {string} url - The URL endpoint for the request.
+   * @param {object} [data={}] - The data to be sent with the request.
+   * @returns {Promise<any>} A promise that resolves with the response data.
+   */
+  public sendHttpRequest = (
+    method: string,
+    url: string,
+    data: object = {}
+  ): Promise<any> => {
+    const xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+      xhr.withCredentials = true;
+      xhr.open(method, this.baseURL + url);
+      xhr.responseType = 'json';
 
-            if (data) {
-                xhr.setRequestHeader('Content-Type', 'application/json')
-            }
+      if (data) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+      }
 
-            xhr.onload = async () => {
-                if (xhr.status >= 400) {
-                    reject(new NetworkError(xhr.status, url, xhr.response))
-                } else {
-                    resolve(xhr.response)
-                }
-            }
+      xhr.onload = async () => {
+        if (xhr.status >= 400) {
+          reject(new NetworkError(xhr.status, url, xhr.response));
+        } else {
+          resolve(xhr.response);
+        }
+      };
 
-            xhr.onerror = (event) => {
-                reject(new NetworkError(xhr.status, url, xhr.responseText,
-                    `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`))
-            }
+      xhr.onerror = (event) => {
+        reject(
+          new NetworkError(
+            xhr.status,
+            url,
+            xhr.responseText,
+            `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`
+          )
+        );
+      };
 
-            xhr.send(JSON.stringify(data))
-        })
-    }
+      xhr.send(JSON.stringify(data));
+    });
+  };
 }
 
 /**
  * Interface representing a network response.
  */
 export interface Response {
-    is_successful: boolean
-    data?: object
-    error?: string
-    trace?: string
+  is_successful: boolean;
+  data?: object;
+  error?: string;
+  trace?: string;
 }
 
 /**
  * Class representing a network error.
  */
 export class NetworkError {
-    statusCode: number
-    url: string
-    errorDescription?: string
-    stackTrace?: string
-    message?: string
+  statusCode: number;
+  url: string;
+  errorDescription?: string;
+  stackTrace?: string;
+  message?: string;
 
-    /**
-     * Creates an instance of NetworkError.
-     *
-     * @param {number} statusCode - The HTTP status code of the error.
-     * @param {string} url - The URL that caused the error.
-     * @param {any} [data] - Additional data about the error.
-     * @param {string} [message] - An optional error message.
-     */
-    constructor(statusCode: number, url: string, data?: any, message?: string) {
-        this.statusCode = statusCode
-        this.url = url
-        this.message = message
-        if (data) {
-            try {
-                this.errorDescription = data['error']
-                this.stackTrace = data['trace']
-            } catch (e: any) {
-                this.stackTrace = e.stack
-                this.errorDescription = "Failed to extract data from network error: " + e.message
-            }
-        }
+  /**
+   * Creates an instance of NetworkError.
+   *
+   * @param {number} statusCode - The HTTP status code of the error.
+   * @param {string} url - The URL that caused the error.
+   * @param {any} [data] - Additional data about the error.
+   * @param {string} [message] - An optional error message.
+   */
+  constructor(statusCode: number, url: string, data?: any, message?: string) {
+    this.statusCode = statusCode;
+    this.url = url;
+    this.message = message;
+    if (data) {
+      try {
+        this.errorDescription = data['error'];
+        this.stackTrace = data['trace'];
+      } catch (e: any) {
+        this.stackTrace = e.stack;
+        this.errorDescription =
+          'Failed to extract data from network error: ' + e.message;
+      }
     }
+  }
 
-    /**
-     * Returns a string representation of the network error.
-     *
-     * @returns {string} A string describing the network error.
-     */
-    toString(): string {
-        return `Status Code: ${this.statusCode}\n
+  /**
+   * Returns a string representation of the network error.
+   *
+   * @returns {string} A string describing the network error.
+   */
+  toString(): string {
+    return `Status Code: ${this.statusCode}\n
         URL: ${this.url}\n
         Description: ${this.errorDescription}\n
         StackTrace: ${this.stackTrace},
-        Message: ${this.message}`
-    }
+        Message: ${this.message}`;
+  }
 }
 
-const NETWORK = new Network("localhost:8001")
-export default NETWORK
+const NETWORK = new Network('localhost:8001');
+export default NETWORK;

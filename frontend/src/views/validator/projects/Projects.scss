@@ -1,0 +1,16 @@
+.projects.validator {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    margin-bottom: 1rem;
+    width: 100%;
+    padding-left: 2rem;
+  }
+  .tables {
+    margin-bottom: 2rem;
+    width: 80%;
+  }
+}

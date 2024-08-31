@@ -1,65 +1,73 @@
-import './styles/styles.scss'
-import { Quark, QuarkFunction as $ } from './ui_lib/quark'
-import { RouteHandler } from './ui_lib/route'
-import './ui_lib/router'
-import {Router} from "./ui_lib/router"
-import { NavigationView } from './ui_lib/view'
-import {homeViewHandler} from "./views/home"
-import {loginViewHandler} from "./views/Login"
+import './styles/styles.scss';
+import { Quark, QuarkFunction as $ } from './ui_lib/quark';
+import { RouteHandler } from './ui_lib/route';
+import './ui_lib/router';
+import { Router } from './ui_lib/router';
+import { NavigationView } from './ui_lib/view';
+import { homeViewHandler } from './views/home';
+import { loginViewHandler } from './views/Login';
 
-class HomeSidebarView implements NavigationView {
-    baseURL: string = ''
+import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
+import { projectsViewHandler } from './views/validator/projects/Projects';
+import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
+import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
-    willUpdate: () => void = () => {
-    }
-
-    render(q: Quark): void {
-        q.innerHTML = ''
-        $(q, 'ul', '', {}, (q) => {
-            $(q, 'li', '', {}, (q) => {
-            $(q, 'a', '', {href: this.baseURL + '/'}, "Home")
-            })
-        })
-    }
-}
+const HomeSidebar: SidebarTab[] = [
+  {
+    id: '',
+    title: 'Home',
+    url: '',
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    url: 'projects',
+  },
+  {
+    id: 'reports',
+    title: 'Reports',
+    url: '',
+  },
+  {
+    id: 'project/{projectId}',
+    title: 'Project Info',
+    url: 'project/1',
+  },
+];
 
 class AboutSidebarView implements NavigationView {
-    baseURL: string = '/about'
+  baseURL: string = '/about';
 
-    willUpdate: () => void = () => {
-    }
+  willUpdate: () => void = () => {};
 
-    render(q: Quark): void {
-        q.innerHTML = ''
-        $(q, 'ul', '', {}, (q) => {
-            $(q, 'li', '', {}, (q) => {
-                $(q, 'a', '', {href: this.baseURL + '/login/user'}, "Login")
-            })
-        })
-    }
+  render(q: Quark): void {
+    q.innerHTML = '';
+    $(q, 'ul', '', {}, (q) => {
+      $(q, 'li', '', {}, (q) => {
+        $(q, 'a', '', { href: this.baseURL + '/login/user' }, 'Login');
+      });
+    });
+  }
 }
 
 class TopNavigationView implements NavigationView {
-    baseURL: string = ''
+  baseURL: string = '';
 
-    willUpdate: () => void = () => {
-    }
+  willUpdate: () => void = () => {};
 
-    render(q: Quark): void {
-        q.innerHTML = ''
-        $(q, 'ul', '', {}, (q) => {
-            $(q, 'li', '', {}, (q) => {
-                $(q, 'a', '', {href: '/'}, "Home") 
-                $(q, 'a', '', {href: '/about'}, "About")
-            })
-        })
-    }
+  render(q: Quark): void {
+    q.innerHTML = '';
+    $(q, 'span', '', {}, 'Icon');
+    $(q, 'div', 'buttons', {}, (q) => {
+        $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
+        $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
+
+      });
+    // prettier-ignore
+  }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], new HomeSidebarView())
-const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView())
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
-const router = new Router([
-    HomeRouteHandler,
-    AboutRouteHandler
-], new TopNavigationView())
+const router = new Router([HomeRouteHandler, AboutRouteHandler], new TopNavigationView());
