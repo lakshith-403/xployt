@@ -14,7 +14,7 @@ import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
 const HomeSidebar: SidebarTab[] = [
   {
-    id: 'home',
+    id: '',
     title: 'Home',
     url: '',
   },
@@ -26,10 +26,10 @@ const HomeSidebar: SidebarTab[] = [
   {
     id: 'reports',
     title: 'Reports',
-    url: 'reports',
+    url: '',
   },
   {
-    id: 'projectInfo',
+    id: 'project/{projectId}',
     title: 'Project Info',
     url: 'project/1',
   },

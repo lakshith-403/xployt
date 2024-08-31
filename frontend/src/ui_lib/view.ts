@@ -54,5 +54,5 @@ export class ViewHandler {
 export interface NavigationView {
   baseURL: string;
   // willUpdate: () => void
-  render: ($: Quark) => void;
+  render: ($: Quark, currentRoute: string) => void;
 }

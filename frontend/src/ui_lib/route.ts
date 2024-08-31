@@ -1,9 +1,4 @@
-import {
-  extractPathParams,
-  extractQueryParams,
-  matchUrl,
-  matchUrlWithBase,
-} from './utils';
+import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from './utils';
 import { ViewHandler } from './view';
 import { NavigationView } from './view';
 
@@ -22,11 +17,7 @@ export class RouteHandler {
    * @param viewHandlers - An array of sub view handlers associated with this route.
    * @param navigationView - The sidebar navigation view to render for this route.
    */
-  constructor(
-    route: string,
-    viewHandlers: ViewHandler[],
-    navigationView: NavigationView
-  ) {
+  constructor(route: string, viewHandlers: ViewHandler[], navigationView: NavigationView) {
     this.route = route;
     this.viewHandlers = viewHandlers;
     this.navigationView = navigationView;
@@ -49,14 +40,14 @@ export class RouteHandler {
    * @throws Error if no view handler is found for the route.
    */
   public render(url: string, currentRoute: string): void {
-    if (currentRoute !== this.route) {
-      console.log('CurrentRoute:', currentRoute, 'Route:', this.route);
-      document.getElementById('sidebar')!.innerHTML = '';
-      this.navigationView.render(document.getElementById('sidebar')!);
-    }
-    console.log('rendering sub route:', url);
+    // if (currentRoute !== this.route) {
+    // console.log('CurrentRoute:', currentRoute, 'Route:', this.route);
+    // }
+    // console.log('rendering sub route:', url);
     for (const viewHandler of this.viewHandlers) {
       if (matchUrl(url, this.route + viewHandler.route)) {
+        document.getElementById('sidebar')!.innerHTML = '';
+        this.navigationView.render(document.getElementById('sidebar')!, viewHandler.route);
         viewHandler.setView({
           ...extractQueryParams(url),
           ...extractPathParams(url, this.route + viewHandler.route),

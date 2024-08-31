@@ -13,10 +13,7 @@ export class Router {
    * @param routeHandlers - An array of route handlers to manage navigation.
    * @param topNavigationView - The navigation view to render in the navbar.
    */
-  constructor(
-    routeHandlers: RouteHandler[] = [],
-    topNavigationView: NavigationView
-  ) {
+  constructor(routeHandlers: RouteHandler[] = [], topNavigationView: NavigationView) {
     this.routeHandlers = routeHandlers;
     this.routeHandlers.sort((a, b) => b.route.length - a.route.length);
 
@@ -25,7 +22,7 @@ export class Router {
       if (document.getElementById('navbar') == null) {
         throw new Error('Navbar element not found');
       }
-      topNavigationView.render(document.getElementById('navbar')!);
+      topNavigationView.render(document.getElementById('navbar')!, '');
     });
 
     window.addEventListener('popstate', this.router);
@@ -47,13 +44,13 @@ export class Router {
    */
   public router = () => {
     const path = window.location.pathname + window.location.search;
-    console.log('current route', this.currentRoute);
+    // console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
       if (routeHandler.doesMatch(path)) {
         routeHandler.render(path, this.currentRoute);
         this.currentRoute = routeHandler.route;
-        console.log('rendering route matched:', routeHandler.route);
-        console.log('rendering route matched stored:', this.currentRoute);
+        // console.log('rendering route matched:', routeHandler.route);
+        // console.log('rendering route matched stored:', this.currentRoute);
         return;
       }
     }
