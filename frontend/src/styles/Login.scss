@@ -1,0 +1,32 @@
+.login-container {
+  background-color: #1a1a1a; /* Dark background */
+  color: #e0e0e0; /* Light text */
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.login-title {
+  font-size: 2.5em;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.login-description {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-button-container {
+  text-align: center;
+}
+
+button {
+  background-color: #00bcd4; /* Button color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
