@@ -2,8 +2,17 @@
 
 @import 'Login.scss';
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 body {
   background-color: #c4e6ff;
+  margin: 0;
+  color: var(--light-gray, #E4DEE0);
+  font-family: "Montserrat", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 #navbar {
@@ -36,6 +45,37 @@ body {
 
 #content {
   flex: 1;
-  padding: 20px;
   overflow-y: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.spaced-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 20px 30px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  resize: vertical;
+  background-color: $input-field-bg;
+}
+
+button {
+  background-color: $light-green;
+  color: $dark-gray;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 600;
 }

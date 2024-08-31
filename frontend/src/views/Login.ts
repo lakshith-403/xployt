@@ -11,11 +11,11 @@ export class LoginView extends View {
   constructor() {
     super();
     this.emailField = new TextField({
-      label: 'Email',
+      label: '',
       placeholder: 'Enter your email'
     });
     this.passwordField = new TextField({
-      label: 'Password',
+      label: '',
       placeholder: 'Enter your password',
       type: 'password'
     });
@@ -27,23 +27,32 @@ export class LoginView extends View {
   }
 
   public render(q: Quark): void {
-    const container = $(q, 'div', 'login-container', {}, q => {
-        $(q, 'h1', 'login-title', {}, 'X PLOYT');
-        $(q, 'p', 'login-description', {}, 
-            'Log in to a straight to point description about what happens when you log in');
-
-        this.emailField.render(q);
-        this.passwordField.render(q);
-
-        $(q, 'div', 'remember-me', {}, q => {
-            $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
-            $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
+    $(q, 'div', 'login-view', {}, q => {
+        $(q, 'div', 'login-left', {}, q => {
+            $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
+            $(q, 'p', 'login-description', {}, 
+                'Log in to a straight to point description about what happens when you log in');
         });
+        $(q, 'div', 'login-container', {}, q => {
+            $(q, 'h1', 'login-title', {}, 'Sign in');
+            
+            this.emailField.render(q);
+            this.passwordField.render(q);
 
-        $(q, 'div', 'login-button-container', {}, q => {
-            this.loginButton.render(q);
+            $(q, 'div', 'spaced-row', {}, q => {
+                $(q, 'div', 'remember-me', {}, q => {
+                    $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
+                    $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
+                });
+
+            $(q, 'a', 'label', {}, 'Forgot password?');
+            });
+    
+            $(q, 'div', 'login-button-container', {}, q => {
+                this.loginButton.render(q);
+            });
         });
-    });
+    })
   }
 
   private handleLogin(): void {

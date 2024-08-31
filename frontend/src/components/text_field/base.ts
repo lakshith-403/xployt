@@ -24,7 +24,9 @@ export class TextField {
   render(parent: Quark): void {
     const container = $(parent, 'div', 'text-field-container', {});
     
-    $(container, 'label', 'text-field-label', {}, this.label);
+    if (this.label) {
+      $(container, 'label', 'text-field-label', {}, this.label);
+    }
     
     this.element = $(container, 'input', 'text-field-input', {
       type: this.type,
