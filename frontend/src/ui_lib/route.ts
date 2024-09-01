@@ -1,15 +1,15 @@
-import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from "./utils"
-import { ViewHandler } from "./view"
-import { NavigationView } from "./view"
+import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from './utils';
+import { ViewHandler } from './view';
+import { NavigationView } from './view';
 
 /**
  * Handles routing logic for a specific route and its associated view handlers.
  */
 export class RouteHandler {
-    route: string
-    viewHandlers: ViewHandler[]
-    navigationView?: NavigationView
-    hideTopNavigation: boolean = false
+  route: string;
+  viewHandlers: ViewHandler[];
+  navigationView?: NavigationView;
+  hideTopNavigation: boolean = false
 
     /**
      * Creates an instance of RouteHandler.
@@ -18,22 +18,21 @@ export class RouteHandler {
      * @param viewHandlers - An array of sub view handlers associated with this route.
      * @param navigationView - The sidebar navigation view to render for this route.
      */
-    constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false) {
+    constructor(route: string, viewHandlers: ViewHandler[], navigationView: NavigationView, hideTopNavigation: boolean = false) {
       this.route = route
       this.viewHandlers = viewHandlers
       this.navigationView = navigationView
-      this.hideTopNavigation = hideTopNavigation
     }
 
-    /**
-     * Checks if the given URL matches the route.
-     * 
-     * @param url - The URL to check against the route.
-     * @returns True if the URL matches the route; otherwise, false.
-     */
-    public doesMatch(url: string): boolean {
-      return matchUrlWithBase(url, this.route)
-    }
+  /**
+   * Checks if the given URL matches the route.
+   *
+   * @param url - The URL to check against the route.
+   * @returns True if the URL matches the route; otherwise, false.
+   */
+  public doesMatch(url: string): boolean {
+    return matchUrlWithBase(url, this.route);
+  }
 
     /**
      * Renders the appropriate view based on the provided URL.
@@ -42,25 +41,24 @@ export class RouteHandler {
      * @throws Error if no view handler is found for the route.
      */
     public render(url: string): void {
-      console.log('rendering route', this.route)
-      if (this.navigationView) {
-        document.getElementById('sidebar')!.innerHTML = ''
-        document.getElementById('sidebar')!.style.display = ''
-        this.navigationView.render(document.getElementById('sidebar')!)
-      } else {
-        document.getElementById('sidebar')!.innerHTML = ''
-        document.getElementById('sidebar')!.style.display = 'none'
-        console.log('no navigation view')
-      }
-
-      if (this.hideTopNavigation) {
-        document.getElementById('navbar')!.style.display = 'none'
-      } else {
-        document.getElementById('navbar')!.style.display = ''
-      }
-
       for (const viewHandler of this.viewHandlers) {
         if (matchUrl(url, this.route + viewHandler.route)) {
+          if (this.navigationView) {
+            document.getElementById('sidebar')!.innerHTML = ''
+            document.getElementById('sidebar')!.style.display = ''
+            this.navigationView.render(document.getElementById('sidebar')!, viewHandler.route)
+          } else {
+            document.getElementById('sidebar')!.innerHTML = ''
+            document.getElementById('sidebar')!.style.display = 'none'
+            console.log('no navigation view')
+          }
+    
+          if (this.hideTopNavigation) {
+            document.getElementById('navbar')!.style.display = 'none'
+          } else {
+            document.getElementById('navbar')!.style.display = ''
+          }
+
           viewHandler.setView({
             ...extractQueryParams(url),
             ...extractPathParams(url, this.route + viewHandler.route)
@@ -69,6 +67,6 @@ export class RouteHandler {
         }
       }
 
-      throw new Error('No view handler found for route: ' + url)
-    }
+    throw new Error('No view handler found for route: ' + url);
+  }
 }
