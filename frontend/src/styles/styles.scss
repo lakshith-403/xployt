@@ -1,8 +1,13 @@
+@import 'variables.scss';
+@import 'Login.scss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   box-sizing: border-box;
   --navbar-height: 4rem;
   --sidebar-width: 12rem;
 }
+
 html {
   margin: 0;
   padding: 0;
@@ -71,7 +76,7 @@ html {
 
 #content {
   flex: 1;
-  // padding: 20px;
+  padding: 20px;
   overflow-y: auto;
   min-height: calc(100vh - var(--navbar-height));
   background-color: var(--background-primary);
