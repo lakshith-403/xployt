@@ -18,10 +18,12 @@ export class RouteHandler {
      * @param viewHandlers - An array of sub view handlers associated with this route.
      * @param navigationView - The sidebar navigation view to render for this route.
      */
-    constructor(route: string, viewHandlers: ViewHandler[], navigationView: NavigationView, hideTopNavigation: boolean = false) {
+    constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false) {
       this.route = route
       this.viewHandlers = viewHandlers
       this.navigationView = navigationView
+
+      this.hideTopNavigation = hideTopNavigation
     }
 
   /**
