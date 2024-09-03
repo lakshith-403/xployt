@@ -1,8 +1,13 @@
+@import 'variables.scss';
+@import 'Login.scss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   box-sizing: border-box;
   --navbar-height: 4rem;
   --sidebar-width: 12rem;
 }
+
 html {
   margin: 0;
   padding: 0;
@@ -70,10 +75,40 @@ html {
 
 #content {
   flex: 1;
-  // padding: 20px;
+  padding: 20px;
   overflow-y: auto;
   min-height: calc(100vh - var(--navbar-height));
   background-color: var(--background-primary);
   color: var(--color-primary);
   position: relative;
+}
+
+.spaced-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 20px 30px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  resize: vertical;
+  background-color: $input-field-bg;
+}
+
+button {
+  background-color: $light-green;
+  color: $dark-gray;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 600;
 }

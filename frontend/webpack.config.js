@@ -34,9 +34,9 @@ module.exports = {
       template: './src/index.html',
       filename: 'index.html',
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [{ from: 'assets', to: '' }],
-    // }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'assets', to: 'assets' }],
+    }),
   ],
   mode: 'development',
   watch: true,

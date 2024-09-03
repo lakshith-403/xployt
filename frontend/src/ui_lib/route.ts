@@ -8,20 +8,23 @@ import { NavigationView } from './view';
 export class RouteHandler {
   route: string;
   viewHandlers: ViewHandler[];
-  navigationView: NavigationView;
+  navigationView?: NavigationView;
+  hideTopNavigation: boolean = false
 
-  /**
-   * Creates an instance of RouteHandler.
-   *
-   * @param route - The route path that this handler manages.
-   * @param viewHandlers - An array of sub view handlers associated with this route.
-   * @param navigationView - The sidebar navigation view to render for this route.
-   */
-  constructor(route: string, viewHandlers: ViewHandler[], navigationView: NavigationView) {
-    this.route = route;
-    this.viewHandlers = viewHandlers;
-    this.navigationView = navigationView;
-  }
+    /**
+     * Creates an instance of RouteHandler.
+     * 
+     * @param route - The route path that this handler manages.
+     * @param viewHandlers - An array of sub view handlers associated with this route.
+     * @param navigationView - The sidebar navigation view to render for this route.
+     */
+    constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false) {
+      this.route = route
+      this.viewHandlers = viewHandlers
+      this.navigationView = navigationView
+
+      this.hideTopNavigation = hideTopNavigation
+    }
 
   /**
    * Checks if the given URL matches the route.
@@ -33,28 +36,38 @@ export class RouteHandler {
     return matchUrlWithBase(url, this.route);
   }
 
-  /**
-   * Renders the appropriate view based on the provided URL.
-   *
-   * @param url - The URL to render the view for.
-   * @throws Error if no view handler is found for the route.
-   */
-  public render(url: string): void {
-    // if (currentRoute !== this.route) {
-    // console.log('CurrentRoute:', currentRoute, 'Route:', this.route);
-    // }
-    // console.log('rendering sub route:', url);
-    for (const viewHandler of this.viewHandlers) {
-      if (matchUrl(url, this.route + viewHandler.route)) {
-        document.getElementById('sidebar')!.innerHTML = '';
-        this.navigationView.render(document.getElementById('sidebar')!, viewHandler.route);
-        viewHandler.setView({
-          ...extractQueryParams(url),
-          ...extractPathParams(url, this.route + viewHandler.route),
-        });
-        return;
+    /**
+     * Renders the appropriate view based on the provided URL.
+     * 
+     * @param url - The URL to render the view for.
+     * @throws Error if no view handler is found for the route.
+     */
+    public render(url: string): void {
+      for (const viewHandler of this.viewHandlers) {
+        if (matchUrl(url, this.route + viewHandler.route)) {
+          if (this.navigationView) {
+            document.getElementById('sidebar')!.innerHTML = ''
+            document.getElementById('sidebar')!.style.display = ''
+            this.navigationView.render(document.getElementById('sidebar')!, viewHandler.route)
+          } else {
+            document.getElementById('sidebar')!.innerHTML = ''
+            document.getElementById('sidebar')!.style.display = 'none'
+            console.log('no navigation view')
+          }
+    
+          if (this.hideTopNavigation) {
+            document.getElementById('navbar')!.style.display = 'none'
+          } else {
+            document.getElementById('navbar')!.style.display = ''
+          }
+
+          viewHandler.setView({
+            ...extractQueryParams(url),
+            ...extractPathParams(url, this.route + viewHandler.route)
+          })
+          return
+        }
       }
-    }
 
     throw new Error('No view handler found for route: ' + url);
   }

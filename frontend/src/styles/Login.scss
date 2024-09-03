@@ -1,0 +1,93 @@
+.login-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: $dark-gray;
+  gap: 30px;
+
+  .login-left {
+    width: min(300px, 40%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    .login-icon-image {
+      width: 200px;
+      height: auto;
+      margin-right: auto;
+    }
+
+    .login-description {
+      color: $light-gray;
+      font-size: 0.8rem;
+      font-weight: 100;
+      text-align: left;
+    }
+  }
+
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: min(400px, 40%);
+
+    .label {
+      font-size: 0.8rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+    }
+
+    .text-field-container {
+      width: 100%;
+    }
+
+    .login-button-container {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+
+  .login-view {
+    flex-direction: column;
+    padding: 15px;
+
+    .login-container {
+      padding: 15px; /* Adjust padding for smaller screens */
+      width: 100%; /* Full width on mobile */
+    }
+  
+    .login-left {
+      width: 100%;
+
+      .login-icon-image {
+        margin-left: auto;
+      }
+  
+      .login-description {
+        color: $light-gray;
+        font-size: 0.8rem;
+        font-weight: 100;
+        text-align: center;
+      }
+    }
+  
+    .login-title {
+      font-size: 2em; /* Adjust title size for mobile */
+    }
+  
+    .login-description {
+      font-size: 0.9rem; /* Adjust description size for mobile */
+    }
+  }
+}

@@ -76,5 +76,6 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler], new SidebarView('/', HomeSidebar));
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true)
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler], new TopNavigationView());
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler], new TopNavigationView());
