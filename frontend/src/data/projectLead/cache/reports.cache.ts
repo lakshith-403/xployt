@@ -22,6 +22,7 @@ export class Report {
   title: string;
   client: string;
   pendingReports: number;
+  color: string; // Add color based on pending_reports
   // severity: "critical" | "minor" | "informational"
 
   constructor(data: any) {
@@ -30,6 +31,7 @@ export class Report {
     this.title = data['title'];
     this.client = data['client'];
     this.pendingReports = data['pending_reports'];
+    this.color = data['color'];
   }
 }
 
@@ -93,5 +95,4 @@ export class ReportsCacheMock extends CacheObject<Report[][]> {
       return 'green';
     }
   }
-  
 }

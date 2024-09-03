@@ -8,10 +8,17 @@ export class reportsCollabsible extends CollapsibleBase<Record<string, any>> {
   }
 
   protected renderContentItem(q: Quark, item: Record<string, any>): HTMLElement {
+    console.log('item:', item);
     const row = $(q, 'div', 'collapsible-row', {});
     Object.values(item).forEach((element) => {
+      if (element === item.color) {
+        return;
+      }
       const cell = $(row, 'span', 'collapsible-cell', {}, element!.toString());
-      if (element === item.pending_reports) {
+      // console.log('element:', element);
+      console.log('item:', item.pending_reports);
+      if (element === item.pendingReports) {
+        console.log('pending_reports:', item.pending_reports);
         cell.style.backgroundColor = item.color; // Set background color based on color property
       }
     });
