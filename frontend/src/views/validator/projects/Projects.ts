@@ -8,7 +8,9 @@ import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import loadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { projectsCollabsible } from '../../../components/Collapsible/projectsCollapsible';
-import { CollapsibleBase } from '../../../components/Collapsible/Collap';
+import { CollapsibleBase } from '../../../components/Collapsible/collap';
+import { tableBase } from '../../../components/table/table.base';
+
 class ProjectsView implements View {
   params: { projectId: string };
   projectsCache: ProjectsCache;
@@ -43,8 +45,11 @@ class ProjectsView implements View {
       const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
       new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader, 'tables');
       new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader, 'tables');
-      const collapsile = new CollapsibleBase(q, 'Pending Projects', div);
+
+      const collapsile = new CollapsibleBase('Pending Projects');
       collapsile.render(q);
+      const onGoingProjects = new tableBase(this.Projects[0]!, tableHeader, 'tables');
+      onGoingProjects.render(collapsile.getContent());
     });
   }
 }

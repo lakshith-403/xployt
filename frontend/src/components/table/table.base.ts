@@ -1,13 +1,31 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import './Collapsible.scss';
+import './table.base.scss';
 
 export class tableBase {
-  constructor(q: Quark, title: string, content: Record<string, any>[], headers: string[], className?: string) {}
+  content: Record<string, any>[];
+  headers?: string[];
+  className?: string;
+  constructor(content: Record<string, any>[], headers: string[], className: string = '') {
+    this.content = content;
+    this.headers = headers;
+    this.className = className;
+  }
 
-  protected renderContentItem(q: Quark, item: Record<string, any>): void {
-    $(q, 'div', 'collapsible-row', {}, (q) => {
-      Object.values(item).forEach((element) => {
-        $(q, 'span', 'collapsible-cell', {}, element!.toString());
+  render(q: Quark): void {
+    $(q, 'div', `table ${this.className}`, {}, (q) => {
+      if (this.headers && this.headers.length > 0) {
+        $(q, 'div', 'table-header', {}, (q) => {
+          this.headers!.forEach((header) => {
+            $(q, 'span', 'table-header-cell', {}, header);
+          });
+        });
+      }
+      this.content.forEach((item) => {
+        $(q, 'div', 'table-row', {}, (q) => {
+          Object.values(item).forEach((element) => {
+            $(q, 'span', 'table-cell', {}, element!.toString());
+          });
+        });
       });
     });
   }

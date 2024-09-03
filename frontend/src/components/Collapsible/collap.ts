@@ -2,23 +2,35 @@ import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 
 export class CollapsibleBase {
   protected container?: HTMLElement;
-  protected content?: HTMLElement;
-  protected button?: HTMLElement;
+  public content?: HTMLElement;
+  private button?: HTMLElement;
+  private title: string;
+  private className: string;
 
-  constructor(protected q: Quark, protected title: string, protected child: HTMLElement, protected className?: string) {
+  constructor(title: string, className: string = '') {
     this.className = className;
+    this.title = title;
   }
-  render(parent: Quark) {
-    this.container = $(parent, 'div', `collapsible-container ${this.className}`, {}, (q) => {
+  render(q: Quark) {
+    this.container = $(q, 'div', `collapsible-container ${this.className}`, {}, (q) => {
       $(q, 'div', 'collapsible-header', {}, (q) => {
         $(q, 'span', 'collapsible-title', {}, this.title);
-        this.button = $(q, 'button', 'collapsible-button', { onclick: () => this.toggle() }, '▼');
+        this.button = $(
+          q,
+          'button',
+          'collapsible-button',
+          {
+            onclick: () => {
+              this.toggle();
+            },
+          },
+          '▼'
+        );
       });
-      this.content = $(q, 'div', 'collapsible-content', {}, (q) => {
-        q.appendChild(this.child);
-      });
-      this.hideContent();
     });
+    this.content = $(this.container!, 'div', 'collapsible-content', {}, '');
+    this.hideContent();
+    return this.container;
   }
 
   private toggle() {
@@ -29,13 +41,16 @@ export class CollapsibleBase {
     }
   }
 
-  protected showContent() {
+  private showContent() {
     this.content!.style.display = 'flex';
     this.button!.textContent = '▲';
   }
 
-  protected hideContent() {
+  private hideContent() {
     this.content!.style.display = 'none';
     this.button!.textContent = '▼';
+  }
+  public getContent() {
+    return this.content!;
   }
 }
