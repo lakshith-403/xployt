@@ -9,7 +9,7 @@ import { loginViewHandler } from './views/Login';
 
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectsViewHandler } from './views/validator/projects/Projects';
-import { reportViewHandler } from './views/validator/Reports/Reports'
+import { reportViewHandler } from './views/projectLead/Reports/Reports'
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 
