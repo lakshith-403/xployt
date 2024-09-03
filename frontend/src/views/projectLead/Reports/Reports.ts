@@ -1,6 +1,7 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './Reports.scss';
+
 // import './../../../components/loadingScreen/loadingScreen.scss';
 
 import { Report, ReportsCache } from '../../../data/projectLead/cache/reports.cache';
@@ -43,6 +44,8 @@ class ReportsView implements View {
       const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
       new reportsCollabsible(q, 'On-going Reports', this.Reports[0]!, tableHeader, 'tables');
       new reportsCollabsible(q, 'Completed Reports', this.Reports[1]!, tableHeader, 'tables');
+
+    
     });
   }
 }

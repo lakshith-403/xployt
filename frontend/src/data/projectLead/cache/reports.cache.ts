@@ -57,9 +57,10 @@ export class ReportsCacheMock extends CacheObject<Report[][]> {
         new Report({
           id: 1,
           status: 'pending',
-          title: ' 1',
+          title: 'Report 1',
           client: 'Client 1',
           pending_reports: 3,
+          color: this.getColor(3), // Add color based on pending_reports
         }),
         new Report({
           id: 2,
@@ -67,6 +68,7 @@ export class ReportsCacheMock extends CacheObject<Report[][]> {
           title: 'Report 2',
           client: 'Client 2',
           pending_reports: 0,
+          color: this.getColor(0), // Add color based on pending_reports
         }),
       ],
       [
@@ -76,8 +78,20 @@ export class ReportsCacheMock extends CacheObject<Report[][]> {
           title: 'Report 3',
           client: 'Client 3',
           pending_reports: 1,
+          color: this.getColor(1), // Add color based on pending_reports
         }),
       ],
     ];
   }
+
+  private getColor(pendingReports: number): string {
+    if (pendingReports > 2) {
+      return 'red';
+    } else if (pendingReports > 0) {
+      return 'yellow';
+    } else {
+      return 'green';
+    }
+  }
+  
 }
