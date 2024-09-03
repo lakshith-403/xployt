@@ -46,10 +46,10 @@ class ProjectsView implements View {
       new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader, 'tables');
       new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader, 'tables');
 
-      const collapsile = new CollapsibleBase('Pending Projects');
-      collapsile.render(q);
-      const onGoingProjects = new tableBase(this.Projects[0]!, tableHeader, 'tables');
-      onGoingProjects.render(collapsile.getContent());
+      // const collapsile = new CollapsibleBase('Pending Projects');
+      // collapsile.render(q);
+      // const onGoingProjects = new tableBase(this.Projects[0]!, tableHeader, 'tables');
+      // onGoingProjects.render(collapsile.getContent());
     });
   }
 }
