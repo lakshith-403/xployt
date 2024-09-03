@@ -3,7 +3,7 @@ import { View, ViewHandler } from '../../../ui_lib/view';
 import './Reports.scss';
 // import './../../../components/loadingScreen/loadingScreen.scss';
 
-import { Report, ReportsCache } from '../../../data/validator/cache/reports.cache';
+import { Report, ReportsCache } from '../../../data/projectLead/cache/reports.cache';
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import loadingScreen from '../../../components/loadingScreen/loadingScreen';
