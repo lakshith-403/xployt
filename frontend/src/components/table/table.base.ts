@@ -11,7 +11,7 @@ export class tableBase {
     this.className = className;
   }
 
-  render(q: Quark): void {
+  public render(q: Quark): void {
     $(q, 'div', `table ${this.className}`, {}, (q) => {
       if (this.headers && this.headers.length > 0) {
         $(q, 'div', 'table-header', {}, (q) => {
