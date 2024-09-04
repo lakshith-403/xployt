@@ -6,7 +6,7 @@ import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import loadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { FilterableTable } from '../../../components/table/filerable.table';
+import { FilterableTable } from '../../../components/table/filterable.table';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 
 class ProjectsView implements View {
