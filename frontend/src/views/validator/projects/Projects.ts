@@ -20,7 +20,6 @@ class ProjectsView implements View {
     this.params = params;
     this.userCache = CACHE_STORE.getUser('1');
     this.projectsCache = CACHE_STORE.getProjects();
-    // console.log('param is', params);
   }
   async loadProjects(): Promise<void> {
     try {
