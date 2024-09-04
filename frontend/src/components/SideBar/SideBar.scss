@@ -13,6 +13,8 @@ $accent-color: #3498db;
   background-color: $sidebar-bg;
   color: $sidebar-text;
   transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: var(--navbar-height);
   // overflow-y: auto;
 
   .toggle-btn {
