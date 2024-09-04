@@ -5,10 +5,8 @@ import { Project, ProjectsCache } from '../../../data/validator/cache/projects.c
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import loadingScreen from '../../../components/loadingScreen/loadingScreen';
-import { projectsCollabsible } from '../../../components/Collapsible/projectsCollapsible';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { FilterableTable } from '../../../components/table/filerable.table';
-import { tableBase } from '../../../components/table/table.base';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 
 class ProjectsView implements View {
@@ -40,27 +38,35 @@ class ProjectsView implements View {
     loading.hide();
 
     $(q, 'div', 'projects validator', {}, (q) => {
-      const div = $(q, 'h2', 'Projects', {}, 'Projects');
-
       const tableHeader = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
-      new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader, 'tables');
-      new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader, 'tables');
 
-      const collapsile = new CollapsibleBase('Pending Projects');
-      collapsile.render(q);
-      const onGoingProjects = new tableBase(this.Projects[0]!, tableHeader, 'tables');
-      onGoingProjects.render(collapsile.getContent());
-
-      const filterableTable = new FilterableTable(this.Projects[0]!, tableHeader, {}, 'status', 'tables');
-
-      const onCheckboxChange = (checkboxValues: { [key: string]: boolean }) => {
+      const collapsible_1 = new CollapsibleBase('Pending Projects', '');
+      collapsible_1.render(q);
+      const onGoingProjects = new FilterableTable(this.Projects[0]!, tableHeader, {}, 'status', '');
+      const onCheckboxChange_1 = (checkboxValues: { [key: string]: boolean }) => {
         console.log(checkboxValues);
-        filterableTable.updateRows(checkboxValues);
+        onGoingProjects.updateRows(checkboxValues);
       };
-      const checkboxManager = new CheckboxManager(['pending', 'closed', 'in progress'], onCheckboxChange);
-      checkboxManager.render(q);
+      const checkboxManager_1 = new CheckboxManager(['pending', 'closed', 'in progress'], onCheckboxChange_1);
+      $(collapsible_1.getContent(), 'div', 'filter-bar', {}, (q) => {
+        $(q, 'span', 'filter-bar-title', {}, 'Filter:');
+        checkboxManager_1.render(q);
+      });
+      onGoingProjects.render(collapsible_1.getContent());
 
-      filterableTable.render(q);
+      const collapsible_2 = new CollapsibleBase('Completed Projects', '');
+      collapsible_2.render(q);
+      const closedProjects = new FilterableTable(this.Projects[0]!, tableHeader, {}, 'status', '');
+      const onCheckboxChange_2 = (checkboxValues: { [key: string]: boolean }) => {
+        console.log(checkboxValues);
+        closedProjects.updateRows(checkboxValues);
+      };
+      const checkboxManager_2 = new CheckboxManager(['pending', 'closed', 'in progress'], onCheckboxChange_2);
+      $(collapsible_2.getContent(), 'div', 'filter-bar', {}, (q) => {
+        $(q, 'span', 'filter-bar-title', {}, 'Filter:');
+        checkboxManager_2.render(q);
+      });
+      closedProjects.render(collapsible_2.getContent());
     });
   }
 }

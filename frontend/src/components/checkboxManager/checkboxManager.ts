@@ -1,5 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-
+import './checkboxManager.scss';
 export class CheckboxManager {
   private state: { [key: string]: boolean } = {};
   private onChangeCallback: (checkboxValues: { [key: string]: boolean }) => void;
@@ -12,7 +12,7 @@ export class CheckboxManager {
   }
 
   render(q: Quark) {
-    const container = document.createElement('div');
+    const container = document.createElement('span');
     container.className = 'checkbox-container';
 
     Object.keys(this.state).forEach((key) => {

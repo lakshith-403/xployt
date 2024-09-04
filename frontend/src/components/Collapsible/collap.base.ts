@@ -1,5 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-
+import './collap.base.scss';
 export class CollapsibleBase {
   protected container?: HTMLElement;
   public content?: HTMLElement;
@@ -12,13 +12,13 @@ export class CollapsibleBase {
     this.title = title;
   }
   render(q: Quark) {
-    this.container = $(q, 'div', `collapsible-container ${this.className}`, {}, (q) => {
-      $(q, 'div', 'collapsible-header', {}, (q) => {
-        $(q, 'span', 'collapsible-title', {}, this.title);
+    this.container = $(q, 'div', `collapsible ${this.className}`, {}, (q) => {
+      $(q, 'div', 'header', {}, (q) => {
+        $(q, 'span', 'title', {}, this.title);
         this.button = $(
           q,
           'button',
-          'collapsible-button',
+          'toggle-button',
           {
             onclick: () => {
               this.toggle();
@@ -28,7 +28,7 @@ export class CollapsibleBase {
         );
       });
     });
-    this.content = $(this.container!, 'div', 'collapsible-content', {}, '');
+    this.content = $(this.container!, 'div', 'content', {}, '');
     this.hideContent();
     return this.container;
   }
