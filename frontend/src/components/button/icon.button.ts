@@ -11,6 +11,7 @@ export class IconButton extends Button {
   constructor(options: IconButtonOptions) {
     super(options)
     this.icon = options.icon
+    this.label = options.label || ''
   }
   
   render(parent: Quark) {
@@ -21,5 +22,6 @@ export class IconButton extends Button {
 
     this.element!.innerHTML = ''
     this.element!.appendChild(icon)
+    this.element!.appendChild(this.label ? document.createTextNode(this.label) : document.createTextNode(''))
   }
 }
