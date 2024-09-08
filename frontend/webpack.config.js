@@ -39,7 +39,7 @@ module.exports = {
     }),
   ],
   mode: 'development',
-  watch: true,
+  // watch: true,
   devServer: {
     static: {
       directory: path.resolve(__dirname, 'dist'),

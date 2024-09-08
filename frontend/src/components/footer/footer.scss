@@ -1,0 +1,35 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+    .content-left {
+      flex: 2;
+      .footer-content-logo {
+        .icons {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          i {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            margin: 0 0.5rem;
+          }
+        }
+      }
+    }
+    .content-middle {
+      flex: 1;
+    }
+    .content-right {
+      flex: 1;
+    }
+  }
+}
