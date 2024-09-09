@@ -57,7 +57,7 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'img', 'icon-image', { src: 'assets/xployt-logo.png' });
+    $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
         $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
         $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
