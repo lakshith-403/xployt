@@ -11,7 +11,6 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
-
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
