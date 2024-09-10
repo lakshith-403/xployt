@@ -4,9 +4,9 @@ import { RouteHandler } from './ui_lib/route';
 import './ui_lib/router';
 import { Router } from './ui_lib/router';
 import { NavigationView } from './ui_lib/view';
+
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
-
 import { projectsViewHandler } from './views/validator/projects/Projects';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';

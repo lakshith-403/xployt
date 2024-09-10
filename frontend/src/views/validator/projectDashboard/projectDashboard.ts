@@ -6,16 +6,16 @@ import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
 class projectDashboardView implements View {
-  params: { type: string };
+  params: { projectId: string };
 
-  constructor(params: { type: string }) {
+  constructor(params: { projectId: string }) {
     this.params = params;
   }
 
   render(q: Quark): void {
-    const overviewTab = new OverviewTab();
-    const discussionTab = new DiscussionTab();
-    const teamTab = new TeamTab();
+    const overviewTab = new OverviewTab(this.params.projectId);
+    const discussionTab = new DiscussionTab(this.params.projectId);
+    const teamTab = new TeamTab(this.params.projectId);
 
     const tabs = [
       {
