@@ -68,7 +68,6 @@ export class Router {
       console.log('no view handler found');
       document.getElementById('navbar')!.style.display = 'none';
       document.getElementById('sidebar')!.style.display = 'none';
-      document.getElementById('footer')!.style.display = 'none';
       document.getElementById('content')!.innerHTML = '';
       new NotFound().render(document.getElementById('content')!);
     }

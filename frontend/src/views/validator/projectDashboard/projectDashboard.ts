@@ -40,10 +40,12 @@ class projectDashboardView implements View {
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
-      $(q, 'span', 'projectDashboard__title', {}, 'Project Dashboard');
-      $(q, 'span', '', {}, 'project_Number');
+      $(q, 'span', 'project-title', {}, 'Project Dashboard');
+      $(q, 'span', 'project-number', {}, ' - #2306');
+      $(q, 'div', 'info', {}, (q) => {
+        tabsComponent.render(q);
+      });
     });
-    tabsComponent.render(q);
   }
 }
 

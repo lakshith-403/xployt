@@ -57,11 +57,13 @@ export class RouteHandler {
         } else {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = 'none';
+          document.getElementById('root')!.querySelector('#content')!.classList.add('no-sidebar');
           console.log('no navigation view');
         }
 
         if (this.hideTopNavigation) {
           document.getElementById('navbar')!.style.display = 'none';
+          document.getElementById('root')!.querySelector('#content')!.classList.add('no-navbar');
         } else {
           document.getElementById('navbar')!.style.display = '';
         }

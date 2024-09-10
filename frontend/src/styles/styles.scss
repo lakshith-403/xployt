@@ -104,7 +104,12 @@ html {
   color: var(--color-primary);
   position: relative;
 }
-
+.no-sidebar#content {
+  margin-left: 0 !important;
+}
+.no-navbar#content {
+  margin-top: 0 !important;
+}
 .spaced-row {
   display: flex;
   flex-direction: row;
