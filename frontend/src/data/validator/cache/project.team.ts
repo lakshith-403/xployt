@@ -1,7 +1,7 @@
-import { projectInfoEndpoints } from './../network/projectInfo.network';
+import { projectInfoEndpoints } from '../network/projectInfo.network';
 import { CacheObject, DataFailure } from '../../cacheBase';
 
-interface ProjectTeam {
+export interface ProjectTeam {
   id: number;
   title: string;
   startDate: string;
