@@ -26,18 +26,28 @@ export class FilterableTable extends tableBase {
       this.rows = $(q, 'div', 'table-rows', {}, (q) => {
         this.content.forEach((item) => {
           for (const key of this.falseKeys) {
-            // console.log('key check', key);
-            // console.log('item check', item[this.filteredField]);
             if (key === item[this.filteredField]) {
               return;
             }
           }
           $(q, 'div', 'table-row', {}, (q) => {
-            Object.values(item).forEach((element) => {
-              $(q, 'span', 'table-cell', {}, element!.toString());
+            Object.entries(item).forEach(([key, element]) => {
+              // Skip rendering the 'color' field
+              if (key === 'color') {
+                return;
+              }
+        
+              const cell = $(q, 'span', 'table-cell', {}, element!.toString());
+              
+              // Apply background color based on 'pendingReports' value
+              if (item.pendingReports && key === 'pendingReports') {
+                console.log('pending_reports:', item.pendingReports);
+                cell.style.backgroundColor = item.color; // Use color for background only
+              }
             });
           });
         });
+        
       });
     });
   }
