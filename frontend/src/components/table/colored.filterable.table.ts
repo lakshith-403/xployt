@@ -1,18 +1,9 @@
-
+import { FilterableTable } from './filterable.table';
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import { tableBase } from './table.base';
 
-export class FilterableTable extends tableBase {
-  checkboxState: { [key: string]: boolean };
-  falseKeys: string[] = [];
-  filteredField: string = '';
-  rows?: HTMLElement;
-
-  constructor(content: Record<string, any>[], headers: string[], checkboxState: { [key: string]: boolean }, filteredFiled: string, className: string = '') {
-    super(content, headers, className);
-    this.checkboxState = checkboxState;
-    this.falseKeys = this.getFalseKeys(checkboxState);
-    this.filteredField = filteredFiled;
+export class ColoredFilterableTable extends FilterableTable {
+  constructor(content: Record<string, any>[], headers: string[], checkboxState: { [key: string]: boolean }, filteredField: string, className: string = '') {
+    super(content, headers, checkboxState, filteredField);
   }
 
   public render(q: Quark): void {
@@ -27,21 +18,26 @@ export class FilterableTable extends tableBase {
       this.rows = $(q, 'div', 'table-rows', {}, (q) => {
         this.content.forEach((item) => {
           for (const key of this.falseKeys) {
-            // console.log('key check', key);
-            // console.log('item check', item[this.filteredField]);
             if (key === item[this.filteredField]) {
               return;
             }
           }
           $(q, 'div', 'table-row', {}, (q) => {
-            Object.values(item).forEach((element) => {
-              $(q, 'span', 'table-cell', {}, element!.toString());
+            Object.entries(item).forEach(([key, element]) => {
+              if (key === 'color') {
+                return;
+              }
+              const cell = $(q, 'span', 'table-cell', {}, element!.toString());
+              if (item.pendingReports && key === 'pendingReports') {
+                cell.style.backgroundColor = item.color;
+              }
             });
           });
         });
       });
     });
   }
+
   public updateRows(checkboxState: { [key: string]: boolean }): void {
     this.falseKeys = this.getFalseKeys(checkboxState);
     if (!this.rows) {
@@ -54,16 +50,17 @@ export class FilterableTable extends tableBase {
           return;
         }
       }
-      $(this.rows!, 'div', 'table-row', {}, (q) => {
-        Object.values(item).forEach((element) => {
-          $(q, 'span', 'table-cell', {}, element!.toString());
+      $(this.rows! , 'div', 'table-row', {}, (q) => {
+        Object.entries(item).forEach(([key, element]) => {
+          if (key === 'color') {
+            return;
+          }
+          const cell = $(q, 'span', 'table-cell', {}, element!.toString());
+          if (item.pendingReports && key === 'pendingReports') {
+            cell.style.backgroundColor = item.color;
+          }
         });
       });
     });
-  }
-  protected getFalseKeys(obj: { [key: string]: boolean }): string[] {
-    const keys = Object.keys(obj).filter((key) => !obj[key]);
-    console.log('keys', keys);
-    return keys;
   }
 }

@@ -6,7 +6,7 @@ import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { FilterableTable } from '../../../components/table/filterable.table';
+import { ColoredFilterableTable } from '../../../components/table/colored.filterable.table';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 
 class ReportsView implements View {
@@ -39,7 +39,7 @@ class ReportsView implements View {
       const collapsible = new CollapsibleBase(title, '');
       collapsible.render(q);
   
-      const table = new FilterableTable(reports, ReportsView.TABLE_HEADERS, {}, 'status', '');
+      const table = new ColoredFilterableTable(reports, ReportsView.TABLE_HEADERS, {}, 'status', '');
   
       $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
         $(q, 'span', 'filter-bar-title', {}, 'Filter:');
