@@ -8,16 +8,17 @@ export enum ButtonType {
 }
 
 export interface ButtonOptions {
-  label: string;
-  onClick: () => void;
-  type?: ButtonType;
+  label: string
+  onClick: (event: Event) => void
+  type?: ButtonType
 }
 
 export class Button {
-  protected label: string;
-  protected onClick: () => void;
-  protected type: ButtonType;
-  protected element?: Quark;
+  protected label: string
+  protected onClick: (event: Event) => void
+  protected type: ButtonType
+  protected element?: Quark
+
 
   constructor(options: ButtonOptions) {
     this.label = options.label;

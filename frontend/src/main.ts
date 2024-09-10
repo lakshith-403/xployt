@@ -4,14 +4,16 @@ import { RouteHandler } from './ui_lib/route';
 import './ui_lib/router';
 import { Router } from './ui_lib/router';
 import { NavigationView } from './ui_lib/view';
+
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
-
-import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectsViewHandler } from './views/validator/projects/Projects';
-import { reportsViewHandler } from './views/projectLead/Reports/Report'
-import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
+
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
+import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
+import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
+
+import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -33,6 +35,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'project/{projectId}',
     title: 'Project Info',
     url: 'project/1',
+  },
+  {
+    id: 'report/{projectId}',
+    title: 'New Report',
+    url: 'report/1',
   },
 ];
 
@@ -68,8 +75,13 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler], new SidebarView('/', HomeSidebar));
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
-const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true);
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler], new TopNavigationView());
+// const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+// const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
+// const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());
