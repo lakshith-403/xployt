@@ -1,6 +1,7 @@
 import { RouteHandler } from './route';
 import { NavigationView } from './view';
-
+import { Quark, QuarkFunction as $ } from './quark';
+import { Footer } from '../components/footer/footer';
 /**
  * Represents a Router that manages navigation and route handling.
  */
@@ -23,6 +24,11 @@ export class Router {
         throw new Error('Navbar element not found');
       }
       topNavigationView.render(document.getElementById('navbar')!, '');
+      if (document.getElementById('footer') == null) {
+        throw new Error('Footer element not found');
+      }
+      document.getElementById('footer')!.innerHTML = '';
+      new Footer().render(document.getElementById('footer')!);
     });
 
     window.addEventListener('popstate', this.router);

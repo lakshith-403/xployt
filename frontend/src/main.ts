@@ -58,7 +58,7 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'span', '', {}, 'Icon');
+    $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
         $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
         $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
@@ -70,6 +70,6 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, reportViewHandler], new SidebarView('/', HomeSidebar));
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
-const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true)
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true);
 
 const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler], new TopNavigationView());
