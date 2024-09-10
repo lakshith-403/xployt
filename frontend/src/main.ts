@@ -8,10 +8,9 @@ import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
 
 import { projectsViewHandler } from './views/validator/projects/Projects';
-// import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
-import { tabsTestViewHandler } from './views/validator/tabsTest/TabsTest';
+import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -69,7 +68,7 @@ class TopNavigationView implements NavigationView {
 }
 
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
-const ProjectRouteHandler = new RouteHandler('/projects', [tabsTestViewHandler], undefined);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
