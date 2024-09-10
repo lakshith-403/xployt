@@ -10,7 +10,7 @@ export default class Team {
   }
   private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCacheMock;
 
-  async loadProjectData(): Promise<void> {
+  async loadData(): Promise<void> {
     try {
       this.projectTeam = await this.projectTeamCache.get(false, this.projectId);
       console.log('projectTeam', this.projectTeam);
@@ -22,7 +22,7 @@ export default class Team {
   async render(q: Quark): Promise<void> {
     const loading = new LoadingScreen(q);
     loading.show();
-    await this.loadProjectData();
+    await this.loadData();
     loading.hide();
 
     console.log('projectTeamCache', this.projectTeamCache);
