@@ -25,15 +25,15 @@ class projectDashboardView implements View {
         },
       },
       {
-        title: 'Discussion',
-        render: (q: Quark) => {
-          discussionTab.render(q);
-        },
-      },
-      {
         title: 'Team',
         render: (q: Quark) => {
           teamTab.render(q);
+        },
+      },
+      {
+        title: 'Discussion',
+        render: (q: Quark) => {
+          discussionTab.render(q);
         },
       },
     ];
