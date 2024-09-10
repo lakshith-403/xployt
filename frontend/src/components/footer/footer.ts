@@ -13,28 +13,28 @@ export class Footer {
           $(q, 'div', 'icons', {}, (q) => {
             new IconButton({
               icon: 'fa-brands fa-instagram',
-              label: 'Twitter',
+              label: '',
               onClick: () => {
                 window.open('https://instagram.com/', '_blank');
               },
             }).render(q);
             new IconButton({
               icon: 'fa-brands fa-facebook',
-              label: 'Twitter',
+              label: '',
               onClick: () => {
                 window.open('https://twitter.com/', '_blank');
               },
             }).render(q);
             new IconButton({
               icon: 'fa-brands fa-linkedin',
-              label: 'Twitter',
+              label: '',
               onClick: () => {
                 window.open('https://twitter.com/', '_blank');
               },
             }).render(q);
             new IconButton({
               icon: 'fa-brands fa-discord',
-              label: 'Twitter',
+              label: '',
               onClick: () => {
                 window.open('https://twitter.com/', '_blank');
               },
