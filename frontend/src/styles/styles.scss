@@ -15,6 +15,7 @@ html {
     min-height: 100vh;
     padding: 0;
     margin: 0;
+    background-color: #c4e6ff;
     --background-primary: #252726;
     --background-secondary: #1a1a1a;
     --nav-bar-background: #131313;
@@ -25,6 +26,7 @@ html {
 }
 
 #navbar {
+  position: fixed;
   height: var(--navbar-height);
   width: 100%;
   background-color: var(--nav-bar-background);
@@ -38,6 +40,13 @@ html {
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
+
+  .icon-image {
+    font-size: 1.5rem;
+    height: 60%;
+    margin: 0.4rem;
+    cursor: pointer;
+  }
 
   .buttons {
     display: flex;
@@ -61,7 +70,7 @@ html {
   justify-content: space-between;
   align-items: flex-start;
   height: calc(100vh - var(--navbar-height));
-  width: 100vw;
+  // width: 100vw;
 }
 
 #sidebar {
@@ -75,6 +84,7 @@ html {
 
 #content {
   flex: 1;
+  margin-top: var(--navbar-height);
   padding: 20px;
   overflow-y: auto;
   min-height: calc(100vh - var(--navbar-height));
@@ -91,8 +101,8 @@ html {
   width: 100%;
 }
 
-input[type="text"],
-input[type="password"] {
+input[type='text'],
+input[type='password'] {
   width: 100%;
   padding: 20px 30px;
   margin: 5px 0;
@@ -102,7 +112,7 @@ input[type="password"] {
   background-color: $input-field-bg;
 }
 
-button {
+button.button-component {
   background-color: $light-green;
   color: $dark-gray;
   border: none;
