@@ -46,8 +46,8 @@ export class RouteHandler {
    */
   public render(url: string): boolean {
     for (const viewHandler of this.viewHandlers) {
-      console.log('checking view:', viewHandler.route);
-      console.log('checking url:', url, this.route, '+', viewHandler.route);
+      // console.log('checking view:', viewHandler.route);
+      // console.log('checking url:', url, this.route, '+', viewHandler.route);
       if (matchUrl(url, this.route + viewHandler.route)) {
         console.log('rendering view:', viewHandler.route);
         if (this.navigationView) {

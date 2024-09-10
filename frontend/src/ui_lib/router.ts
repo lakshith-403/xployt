@@ -54,13 +54,11 @@ export class Router {
     const path = window.location.pathname + window.location.search;
     // console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
-      console.log('checking route:', routeHandler.route);
+      // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
         console.log('rendering route matched:', routeHandler.route);
         this.pathFound = routeHandler.render(path);
-        // this.currentRoute = routeHandler.route;
-        // console.log('rendering route matched:', routeHandler.route);
-        // console.log('rendering route matched stored:', this.currentRoute);
+
         if (this.pathFound) {
           break;
         }
