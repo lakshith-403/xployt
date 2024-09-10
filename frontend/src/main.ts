@@ -12,7 +12,7 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
-
+import { reportsViewHandler } from './views/projectLead/Reports/Report';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
@@ -75,7 +75,7 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler], new SidebarView('/', HomeSidebar));
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
