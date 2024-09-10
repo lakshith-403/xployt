@@ -1,7 +1,6 @@
 import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from './utils';
 import { ViewHandler } from './view';
 import { NavigationView } from './view';
-import NotFound from '../components/notFound/notFound';
 /**
  * Handles routing logic for a specific route and its associated view handlers.
  */
@@ -45,9 +44,12 @@ export class RouteHandler {
    * @param url - The URL to render the view for.
    * @throws Error if no view handler is found for the route.
    */
-  public render(url: string): void {
+  public render(url: string): boolean {
     for (const viewHandler of this.viewHandlers) {
+      console.log('checking view:', viewHandler.route);
+      console.log('checking url:', url, this.route, '+', viewHandler.route);
       if (matchUrl(url, this.route + viewHandler.route)) {
+        console.log('rendering view:', viewHandler.route);
         if (this.navigationView) {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = '';
@@ -73,16 +75,11 @@ export class RouteHandler {
           ...extractQueryParams(url),
           ...extractPathParams(url, this.route + viewHandler.route),
         });
-        return;
+        return true;
       }
     }
-    console.log('no view handler found');
-    document.getElementById('navbar')!.style.display = 'none';
-    document.getElementById('sidebar')!.style.display = 'none';
-    document.getElementById('footer')!.style.display = 'none';
-    document.getElementById('content')!.innerHTML = '';
-    new NotFound().render(document.getElementById('content')!);
-    return;
+
+    return false;
 
     // throw new Error('No view handler found for route: ' + url);
   }

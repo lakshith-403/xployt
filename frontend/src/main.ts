@@ -8,7 +8,7 @@ import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
 
 import { projectsViewHandler } from './views/validator/projects/Projects';
-import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
+// import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { tabsTestViewHandler } from './views/validator/tabsTest/TabsTest';
@@ -73,4 +73,4 @@ const ProjectRouteHandler = new RouteHandler('/projects', [tabsTestViewHandler],
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
-const router = new Router([AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler, HomeRouteHandler], new TopNavigationView());
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());
