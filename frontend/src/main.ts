@@ -7,10 +7,11 @@ import { NavigationView } from './ui_lib/view';
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
 
-import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectsViewHandler } from './views/validator/projects/Projects';
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
+import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
+import { tabsTestViewHandler } from './views/validator/tabsTest/TabsTest';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -68,7 +69,8 @@ class TopNavigationView implements NavigationView {
 }
 
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+const ProjectRouteHandler = new RouteHandler('/projects', [tabsTestViewHandler], undefined, true, true);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
-const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true);
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler], new TopNavigationView());
+const router = new Router([AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler, HomeRouteHandler], new TopNavigationView());
