@@ -8,10 +8,11 @@ import { NavigationView } from './ui_lib/view';
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
 import { projectsViewHandler } from './views/validator/projects/Projects';
+
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
-
+import { reportsViewHandler } from './views/projectLead/Reports/Report';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
@@ -28,7 +29,7 @@ const HomeSidebar: SidebarTab[] = [
   {
     id: 'reports',
     title: 'Reports',
-    url: '',
+    url: 'reports',
   },
   {
     id: 'project/{projectId}',
@@ -74,9 +75,13 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler], new SidebarView('/', HomeSidebar));
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+
+// const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+// const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
+// const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
 const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());

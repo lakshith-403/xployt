@@ -15,10 +15,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 1.3rem;
-    border-bottom: 1px white solid;
+    border-bottom: 100px white solid;
     color: white;
     cursor: pointer;
     transition: background-color var(--table-transition-duration);
+    margin-bottom: 0rem;
     background-color: var(--background-secondary);
     border-bottom: 1px solid var(--light-green);
     font-weight: bold;

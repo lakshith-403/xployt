@@ -1,3 +1,4 @@
+
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { tableBase } from './table.base';
 
