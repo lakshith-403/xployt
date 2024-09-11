@@ -1,0 +1,60 @@
+@import './variables';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+.custom-button {
+
+padding: 8px 15px;
+margin: 10px;
+border: 1px solid transparent;
+border-radius: 10px;
+font-size: 16px;
+cursor: pointer;
+box-shadow: 1px 1px 0px #888888;
+font-family: 'Montserrat';
+
+  &.button-secondary {
+    background-color: var(--secondary-button-background-color);
+    color: var(--secondary-button-text-color);
+
+    &:hover {
+      background-color: var(--secondary-button-hover-background-color);
+      box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
+    }
+
+    &:active {
+      background-color: var(--secondary-button-active-background-color);
+      box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
+    }
+  }
+
+  &.button-primary {
+    background-color: var(--primary-button-background-color);
+    color: var(--primary-button-text-color);
+
+    &:hover {
+      background-color: var(--primary-button-hover-background-color);
+      box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
+    }
+
+    &:active {
+      background-color: var(--primary-button-active-background-color);
+      box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
+    }
+  }
+
+  &.button-alt {
+    background-color: var(--alt-button-background-color);
+    color: var(--alt-button-text-color);
+    border: 1px solid var(--primary-button-text-bordercolor);
+
+    &:hover {
+      background-color: var(--alt-button-hover-background-color);
+      box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
+    }
+
+    &:active {
+      background-color: var(--alt-button-active-background-color);
+      box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
+    }
+  }
+}

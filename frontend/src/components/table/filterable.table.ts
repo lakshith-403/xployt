@@ -1,3 +1,4 @@
+
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { tableBase } from './table.base';
 
@@ -60,7 +61,7 @@ export class FilterableTable extends tableBase {
       });
     });
   }
-  private getFalseKeys(obj: { [key: string]: boolean }): string[] {
+  protected getFalseKeys(obj: { [key: string]: boolean }): string[] {
     const keys = Object.keys(obj).filter((key) => !obj[key]);
     console.log('keys', keys);
     return keys;
