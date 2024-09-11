@@ -27,9 +27,21 @@ export class ColoredFilterableTable extends FilterableTable {
               if (key === 'color') {
                 return;
               }
-              const cell = $(q, 'span', 'table-cell', {}, element!.toString());
+              const cell = $(q, 'span', 'table-cell', {}, (q) => {
+                $(q, 'span', 'table-cell-text', {}, element!.toString());
+              });
+              
               if (item.pendingReports && key === 'pendingReports') {
                 cell.style.backgroundColor = item.color;
+                cell.style.padding = '5px 10px';
+                cell.style.borderRadius = '5px';
+                cell.style.fontWeight = 'bold';
+                cell.style.textAlign = 'center';
+                cell.style.display = 'inline-block'; // Make it behave like a floating button
+                cell.style.position = 'relative'; // Allows for z-index and float effect
+                cell.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)'; // Add shadow for float effect
+                cell.style.margin = '5px'; // Add space around the cell to enhance the floating look
+                
               }
             });
           });
@@ -55,9 +67,20 @@ export class ColoredFilterableTable extends FilterableTable {
           if (key === 'color') {
             return;
           }
-          const cell = $(q, 'span', 'table-cell', {}, element!.toString());
+          const cell = $(q, 'span', 'table-cell', {}, (q) => {
+            $(q, 'span', 'table-cell-text', {}, element!.toString());
+          });
+          
           if (item.pendingReports && key === 'pendingReports') {
             cell.style.backgroundColor = item.color;
+            cell.style.padding = '5px 10px';
+            cell.style.borderRadius = '5px';
+            cell.style.fontWeight = 'bold';
+            cell.style.textAlign = 'center';
+            cell.style.display = 'inline-block'; // Make it behave like a floating button
+            cell.style.position = 'relative'; // Allows for z-index and float effect
+            cell.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)'; // Add shadow for float effect
+            cell.style.margin = '5px';
           }
         });
       });
