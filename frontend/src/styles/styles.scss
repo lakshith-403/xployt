@@ -95,8 +95,9 @@ html {
   // width: 100vw;
 }
 #breadcrumbs-container {
-  background-color: inherit;
-  margin-left: var(--sidebar-width);
+  background-color: black;
+  color: var(--color-primary);
+  margin-left: 2rem;
   width: calc(100% - var(--sidebar-width));
   height: 2rem;
   position: relative;

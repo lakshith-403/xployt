@@ -21,14 +21,7 @@ export class RouteHandler {
    * @param hideTopNavigation - Whether to hide the top navigation bar.
    * @param hideFooter - Whether to hide the footer.
    */
-  constructor(
-    route: string,
-    viewHandlers: ViewHandler[],
-    navigationView?: NavigationView,
-    hideTopNavigation: boolean = false,
-    hideFooter: boolean = false,
-    hideBreadCrumbs: boolean = false
-  ) {
+  constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false, hideFooter: boolean = false, hideBreadCrumbs: boolean = true) {
     this.route = route;
     this.viewHandlers = viewHandlers;
     this.navigationView = navigationView;

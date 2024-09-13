@@ -5,6 +5,7 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
+import { BREADCRUMBS } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView implements View {
   params: { projectId: string };
 
@@ -16,6 +17,7 @@ class projectDashboardView implements View {
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
+    BREADCRUMBS.render();
 
     const tabs = [
       {

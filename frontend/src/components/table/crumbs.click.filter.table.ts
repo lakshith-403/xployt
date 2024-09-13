@@ -1,18 +1,14 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ClickableFilterableTable } from './clickable.filter.table';
-import Breadcrumbs from '../breadCrumbs/breadCrumbs';
-
+import { BREADCRUMBS } from '../breadCrumbs/breadCrumbs';
 interface ContentItem {
   id: number; // or string, depending on your requirements
   [key: string]: any; // Allow other fields
 }
 
 export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable {
-  private breadcrumbs: Breadcrumbs;
-
   constructor(content: ContentItem[], headers: string[], checkboxState: { [key: string]: boolean }, filteredField: string, className: string = '') {
     super(content, headers, checkboxState, filteredField, className);
-    this.breadcrumbs = new Breadcrumbs();
   }
 
   public render(q: Quark): void {
@@ -54,12 +50,10 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
       });
     });
   }
-  protected updateCrumbs(id: string, url: string): () => void {
+  protected updateCrumbs(id: string, url: string): void {
     console.log('updateCrumbs', id, url);
-    return () => {
-      this.breadcrumbs.addBreadcrumb({ label: 'Projects' + id, link: '/projects' + id });
-      this.breadcrumbs.addBreadcrumb({ label: id, link: url });
-    };
+    BREADCRUMBS.addBreadcrumb({ label: 'Projects' + id, link: '/projects' + id });
+    BREADCRUMBS.addBreadcrumb({ label: id, link: url });
   }
   public updateRows(checkboxState: { [key: string]: boolean }): void {
     this.falseKeys = this.getFalseKeys(checkboxState);

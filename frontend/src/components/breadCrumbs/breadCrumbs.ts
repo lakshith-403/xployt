@@ -7,12 +7,15 @@ interface Breadcrumb {
   clickable?: boolean;
 }
 
-export default class Breadcrumbs {
+class Breadcrumbs {
   private breadcrumbs: Breadcrumb[] = [];
 
   // Method to add a breadcrumb
   public addBreadcrumb(breadcrumb: Breadcrumb): void {
-    this.breadcrumbs.push({ ...breadcrumb, clickable: breadcrumb.clickable ?? true });
+    console.log('adding breadcrumb', breadcrumb.label, breadcrumb.link);
+    const lengthOfBreadcrumbs = this.breadcrumbs.length;
+    this.breadcrumbs[lengthOfBreadcrumbs] = { label: breadcrumb.label, link: breadcrumb.link, clickable: breadcrumb.clickable ?? true };
+    console.log('breadcrumbs', this.breadcrumbs.toString());
     this.render();
   }
 
@@ -30,9 +33,10 @@ export default class Breadcrumbs {
 
   // Method to render the breadcrumbs
   public render(): void {
-    const container = document.querySelector('#breadcrumbs-container') as HTMLElement;
+    console.log('rendering breadcrumbs');
+    const container = document.getElementById('breadcrumbs-container') as HTMLElement;
     if (!container) return;
-
+    console.log('inside breadcrumbs', this.breadcrumbs);
     container.innerHTML = ''; // Clear existing breadcrumbs
 
     // Render breadcrumbs from bottom to top
@@ -61,3 +65,5 @@ export default class Breadcrumbs {
     }
   }
 }
+
+export const BREADCRUMBS = new Breadcrumbs();
