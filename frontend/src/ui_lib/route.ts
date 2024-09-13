@@ -10,6 +10,7 @@ export class RouteHandler {
   navigationView?: NavigationView;
   hideTopNavigation: boolean = false;
   hideFooter: boolean = false;
+  hideBreadCrumbs: boolean = true;
 
   /**
    * Creates an instance of RouteHandler.
@@ -20,12 +21,13 @@ export class RouteHandler {
    * @param hideTopNavigation - Whether to hide the top navigation bar.
    * @param hideFooter - Whether to hide the footer.
    */
-  constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false, hideFooter: boolean = false) {
+  constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false, hideFooter: boolean = false, hideBreadCrumbs: boolean = true) {
     this.route = route;
     this.viewHandlers = viewHandlers;
     this.navigationView = navigationView;
     this.hideTopNavigation = hideTopNavigation;
     this.hideFooter = hideFooter;
+    this.hideBreadCrumbs = hideBreadCrumbs;
   }
 
   /**
@@ -57,11 +59,13 @@ export class RouteHandler {
         } else {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = 'none';
+          document.getElementById('root')!.querySelector('#content')!.classList.add('no-sidebar');
           console.log('no navigation view');
         }
 
         if (this.hideTopNavigation) {
           document.getElementById('navbar')!.style.display = 'none';
+          document.getElementById('root')!.querySelector('#content')!.classList.add('no-navbar');
         } else {
           document.getElementById('navbar')!.style.display = '';
         }
@@ -71,6 +75,12 @@ export class RouteHandler {
         } else {
           document.getElementById('footer')!.style.display = '';
         }
+        if (this.hideBreadCrumbs) {
+          document.getElementById('breadcrumbs-container')!.style.display = 'none';
+        } else {
+          document.getElementById('breadcrumbs-container')!.style.display = '';
+        }
+
         viewHandler.setView({
           ...extractQueryParams(url),
           ...extractPathParams(url, this.route + viewHandler.route),

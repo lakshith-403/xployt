@@ -1,6 +1,6 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { View, ViewHandler } from '../../ui_lib/view';
-import './Tabs.scss';
+import './tabs.scss';
 
 interface Tab {
   title: string;
@@ -11,6 +11,7 @@ class TabsComponent {
   tabs: Tab[];
   activeTabIndex: number;
   contentElement!: HTMLElement;
+  tabsButtons!: HTMLElement;
 
   constructor(tabs: Tab[]) {
     this.tabs = tabs;
@@ -20,7 +21,7 @@ class TabsComponent {
   render(q: Quark): void {
     $(q, 'div', 'tabs-container', {}, (q) => {
       // Render tab headers
-      $(q, 'div', 'tabs-header', {}, (q) => {
+      this.tabsButtons = $(q, 'div', 'tabs-header', {}, (q) => {
         this.tabs.forEach((tab, index) => {
           $(q, 'button', 'tab-button', { onclick: () => this.switchTab(index) }, (q) => {
             q.innerHTML = tab.title;
@@ -34,9 +35,13 @@ class TabsComponent {
         this.renderActiveTabContent();
       });
     });
+
+    this.tabsButtons.children[this.activeTabIndex].classList.add('selected');
   }
 
   switchTab(index: number): void {
+    this.tabsButtons.children[this.activeTabIndex].classList.remove('selected');
+    this.tabsButtons.children[index].classList.add('selected');
     this.activeTabIndex = index;
     this.renderActiveTabContent();
   }

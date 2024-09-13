@@ -5,6 +5,7 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
+import { BREADCRUMBS } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView implements View {
   params: { projectId: string };
 
@@ -16,6 +17,7 @@ class projectDashboardView implements View {
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
+    BREADCRUMBS.render();
 
     const tabs = [
       {
@@ -25,25 +27,27 @@ class projectDashboardView implements View {
         },
       },
       {
-        title: 'Discussion',
-        render: (q: Quark) => {
-          discussionTab.render(q);
-        },
-      },
-      {
         title: 'Team',
         render: (q: Quark) => {
           teamTab.render(q);
+        },
+      },
+      {
+        title: 'Discussion',
+        render: (q: Quark) => {
+          discussionTab.render(q);
         },
       },
     ];
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
-      $(q, 'span', 'projectDashboard__title', {}, 'Project Dashboard');
-      $(q, 'span', '', {}, 'project_Number');
+      $(q, 'span', 'project-title', {}, 'Project Dashboard');
+      $(q, 'span', 'project-number', {}, ' - #2306');
+      $(q, 'div', 'info', {}, (q) => {
+        tabsComponent.render(q);
+      });
     });
-    tabsComponent.render(q);
   }
 }
 
