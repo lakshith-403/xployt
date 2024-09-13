@@ -4,14 +4,17 @@ import { RouteHandler } from './ui_lib/route';
 import './ui_lib/router';
 import { Router } from './ui_lib/router';
 import { NavigationView } from './ui_lib/view';
+
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
-
-import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectsViewHandler } from './views/validator/projects/Projects';
-import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
+
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
+import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
+import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
+import { reportsViewHandler } from './views/projectLead/Reports/Report';
+import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -27,12 +30,17 @@ const HomeSidebar: SidebarTab[] = [
   {
     id: 'reports',
     title: 'Reports',
-    url: '',
+    url: 'reports',
   },
   {
     id: 'project/{projectId}',
     title: 'Project Info',
     url: 'project/1',
+  },
+  {
+    id: 'report/{projectId}',
+    title: 'New Report',
+    url: 'report/1',
   },
 ];
 
@@ -58,7 +66,7 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'span', '', {}, 'Icon');
+    $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
         $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
         $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
@@ -68,9 +76,16 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
-const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true)
-const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, RegisterRouteHandler], new TopNavigationView());
+const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+
+// const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
+// const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
+// const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());
+

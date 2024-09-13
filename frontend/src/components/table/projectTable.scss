@@ -1,0 +1,30 @@
+.table {
+  a.table-row-link {
+    text-decoration: none;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px solid var(--color-primary);
+    text-decoration: none;
+    &:hover {
+      background-color: var(--background-secondary);
+    }
+  }
+  .table-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.last-cell {
+      span.count {
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        background-color: var(--dark-green);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}

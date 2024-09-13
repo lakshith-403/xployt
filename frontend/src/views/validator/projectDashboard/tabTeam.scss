@@ -1,0 +1,27 @@
+.projectDashboard {
+  --margin-left: 1.5rem;
+  .collapsible {
+    width: 50%;
+    min-width: 40rem;
+
+    .header {
+      background-color: var(--background-secondary);
+      border-radius: 20px 20px 0 0;
+    }
+    .content {
+      background-color: var(--background-secondary);
+      border-radius: 0 0 20px 20px;
+      padding: 1.2rem;
+      padding-bottom: 2rem;
+    }
+  }
+  .nested-div {
+    margin-left: calc(var(--margin-left) * 0.8);
+    .nested-div {
+      margin-left: var(--margin-left);
+      .nested-div {
+        margin-left: var(--margin-left);
+      }
+    }
+  }
+}
