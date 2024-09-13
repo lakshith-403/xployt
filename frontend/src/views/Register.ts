@@ -8,6 +8,9 @@ export class RegisterView extends View {
   private emailField: TextField;
   private passwordField: TextField;
   private confirmPasswordField: TextField;
+  private companyNameField: TextField;
+  private companyDomainField: TextField;
+  private companySizeField: TextField;
   private registerButton: Button;
 
   constructor() {
@@ -35,6 +38,18 @@ export class RegisterView extends View {
       onClick: this.handleRegister.bind(this),
       type: ButtonType.PRIMARY
     });
+    this.companyNameField = new TextField({
+      label: '',
+      placeholder: 'Enter your company name'
+    });
+    this.companyDomainField = new TextField({
+      label: '',
+      placeholder: 'Enter your company domain'
+    });
+    this.companySizeField = new TextField({
+      label: '',
+      placeholder: 'Enter your company size'
+    });
   }
 
   public render(q: Quark): void {
@@ -51,6 +66,9 @@ export class RegisterView extends View {
             this.emailField.render(q);
             this.passwordField.render(q);
             this.confirmPasswordField.render(q);
+            this.companyNameField.render(q);
+            this.companyDomainField.render(q);
+            this.companySizeField.render(q);
 
             $(q, 'div', 'login-button-container', {}, q => {
                 this.registerButton.render(q);
