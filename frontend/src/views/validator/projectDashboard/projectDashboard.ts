@@ -5,19 +5,19 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import { BREADCRUMBS } from '../../../components/breadCrumbs/breadCrumbs';
+import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView implements View {
   params: { projectId: string };
 
   constructor(params: { projectId: string }) {
     this.params = params;
+    Breadcrumbs.render();
   }
 
   render(q: Quark): void {
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
-    BREADCRUMBS.render();
 
     const tabs = [
       {

@@ -7,41 +7,55 @@ interface Breadcrumb {
   clickable?: boolean;
 }
 
-class Breadcrumbs {
+export class Breadcrumbs {
+  private static instance: Breadcrumbs;
   private breadcrumbs: Breadcrumb[] = [];
+
+  // Private constructor to prevent direct instantiation
+  private constructor() {
+    console.log('Breadcrumbs constructor');
+  }
+
+  // Static method to get the single instance of the class
+  public static getInstance(): Breadcrumbs {
+    if (!Breadcrumbs.instance) {
+      Breadcrumbs.instance = new Breadcrumbs();
+    }
+    return Breadcrumbs.instance;
+  }
 
   // Method to add a breadcrumb
   public addBreadcrumb(breadcrumb: Breadcrumb): void {
     console.log('adding breadcrumb', breadcrumb.label, breadcrumb.link);
-    const lengthOfBreadcrumbs = this.breadcrumbs.length;
-    this.breadcrumbs[lengthOfBreadcrumbs] = { label: breadcrumb.label, link: breadcrumb.link, clickable: breadcrumb.clickable ?? true };
-    console.log('breadcrumbs', this.breadcrumbs.toString());
-    this.render();
+    const lengthOfBreadcrumbs = Breadcrumbs.instance.breadcrumbs.length;
+    Breadcrumbs.instance.breadcrumbs[lengthOfBreadcrumbs] = { label: breadcrumb.label, link: breadcrumb.link, clickable: breadcrumb.clickable ?? true };
+    console.log('breadcrumbs', Breadcrumbs.instance.breadcrumbs.toString());
+    Breadcrumbs.render();
   }
 
   // Method to remove the last breadcrumb
   public popBreadcrumb(): void {
-    this.breadcrumbs.pop();
-    this.render();
+    Breadcrumbs.instance.breadcrumbs.pop();
+    Breadcrumbs.render();
   }
 
   // Method to clear all breadcrumbs
   public clearBreadcrumbs(): void {
-    this.breadcrumbs = [];
-    this.render();
+    Breadcrumbs.instance.breadcrumbs = [];
+    Breadcrumbs.render();
   }
 
   // Method to render the breadcrumbs
-  public render(): void {
+  public static render(): void {
     console.log('rendering breadcrumbs');
     const container = document.getElementById('breadcrumbs-container') as HTMLElement;
     if (!container) return;
-    console.log('inside breadcrumbs', this.breadcrumbs);
+    console.log('inside breadcrumbs', Breadcrumbs.instance.breadcrumbs);
     container.innerHTML = ''; // Clear existing breadcrumbs
 
     // Render breadcrumbs from bottom to top
-    for (let i = this.breadcrumbs.length - 1; i >= 0; i--) {
-      const breadcrumb = this.breadcrumbs[i];
+    for (let i = Breadcrumbs.instance.breadcrumbs.length - 1; i >= 0; i--) {
+      const breadcrumb = Breadcrumbs.instance.breadcrumbs[i];
       const breadcrumbElement = document.createElement('span');
       breadcrumbElement.className = 'breadcrumb';
 
@@ -66,4 +80,5 @@ class Breadcrumbs {
   }
 }
 
-export const BREADCRUMBS = new Breadcrumbs();
+// Export the singleton instance
+export const BREADCRUMBS = Breadcrumbs.getInstance();
