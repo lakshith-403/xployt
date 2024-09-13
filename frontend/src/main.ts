@@ -10,6 +10,7 @@ import { loginViewHandler } from './views/Login';
 import { projectsViewHandler } from './views/validator/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
+import { registerViewHandler } from './views/Register';
 import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
@@ -78,6 +79,8 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
+
+const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
 // const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
@@ -85,3 +88,4 @@ const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefin
 // const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
 const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());
+
