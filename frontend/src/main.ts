@@ -11,6 +11,7 @@ import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInf
 import { projectsViewHandler } from './views/validator/projects/Projects';
 import { sideBarTestViewHandler } from './views/validator/SideBarTest/SideBarTest';
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
+import { registerViewHandler } from './views/Register';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -70,5 +71,6 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true)
+const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler], new TopNavigationView());
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, RegisterRouteHandler], new TopNavigationView());
