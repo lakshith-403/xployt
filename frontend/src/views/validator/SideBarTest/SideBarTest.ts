@@ -21,10 +21,7 @@ class SideBarTestView implements View {
   }
 }
 
-export const sideBarTestViewHandler = new ViewHandler(
-  '/sidebartest',
-  SideBarTestView
-);
+export const sideBarTestViewHandler = new ViewHandler('/sidebartest', SideBarTestView);
 
 // Example usage
 const sidebarTabs: SidebarTab[] = [

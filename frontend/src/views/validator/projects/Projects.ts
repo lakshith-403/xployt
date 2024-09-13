@@ -1,47 +1,68 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './Projects.scss';
-// import './../../../components/loadingScreen/loadingScreen.scss';
-
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
-import { UserCache, UserCacheMock } from '../../../data/user';
+import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
-import loadingScreen from '../../../components/loadingScreen/loadingScreen';
-import { projectsCollabsible } from '../../../components/Collapsible/projectsCollapsible';
+import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
+import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
+import { ProjectTable } from '../../../components/table/projectsTable';
+import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
+
 class ProjectsView implements View {
-  params: { projectId: string };
-  projectsCache: ProjectsCache;
-  userCache: UserCache;
-  Projects: Project[][] | [][] = [[]];
-  userId: number | null = null;
+  private params: { projectId: string };
+  private projectsCache: ProjectsCache;
+  private userCache: UserCache;
+  private projects: Project[][] = [];
+  private userId: number | null = null;
+
+  private static readonly TABLE_HEADERS = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
+  private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
 
   constructor(params: { projectId: string }) {
     this.params = params;
     this.userCache = CACHE_STORE.getUser('1');
     this.projectsCache = CACHE_STORE.getProjects();
-    // console.log('param is', params);
   }
-  async loadProjects(): Promise<void> {
+
+  private async loadProjects(): Promise<void> {
     try {
-      this.userId = (await this.userCache.get()).id;
-      this.Projects = await this.projectsCache.get(false, this.userId);
+      const user = await this.userCache.get();
+      this.userId = user.id;
+      this.projects = await this.projectsCache.get(false, this.userId);
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
   }
 
+  private renderProjectSection(q: Quark, title: string, projects: Project[]): void {
+    const collapsible = new CollapsibleBase(title, '');
+    collapsible.render(q);
+
+    const table = new ProjectTable(projects, ProjectsView.TABLE_HEADERS, {}, 'status', '');
+
+    $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
+      $(q, 'span', 'filter-bar-title', {}, 'Filter:');
+      const checkboxManager = new CheckboxManager(ProjectsView.FILTER_OPTIONS, (checkboxValues) => {
+        table.updateRows(checkboxValues);
+      });
+      checkboxManager.render(q);
+    });
+    table.render(collapsible.getContent());
+  }
+
   async render(q: Quark): Promise<void> {
-    const loading = new loadingScreen(q);
+    const loading = new LoadingScreen(q);
     loading.show();
     await this.loadProjects();
     loading.hide();
 
     $(q, 'div', 'projects validator', {}, (q) => {
-      $(q, 'h2', 'Projects', {}, 'Projects');
+      const pendingProjects = this.projects[0]!;
+      const completedProjects = this.projects[1]!;
 
-      const tableHeader = ['ID', 'Title', 'Client', 'Status', 'Pending Reports'];
-      new projectsCollabsible(q, 'On-going Projects', this.Projects[0]!, tableHeader, 'tables');
-      new projectsCollabsible(q, 'Completed Projects', this.Projects[1]!, tableHeader, 'tables');
+      this.renderProjectSection(q, 'Pending Projects', pendingProjects);
+      this.renderProjectSection(q, 'Completed Projects', completedProjects);
     });
   }
 }

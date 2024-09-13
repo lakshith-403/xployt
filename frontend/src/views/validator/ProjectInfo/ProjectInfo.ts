@@ -1,11 +1,8 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './projectInfo.scss';
-import {
-  ProjectInfo,
-  ProjectInfoCache,
-} from '../../../data/validator/cache/projectInfo';
-import { UserCache, UserCacheMock } from '../../../data/user';
+import { ProjectInfo, ProjectInfoCache } from '../../../data/validator/cache/projectInfo';
+// import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 
 class ProjectInfoView implements View {
@@ -21,10 +18,7 @@ class ProjectInfoView implements View {
 
   async loadProjectData(): Promise<void> {
     try {
-      this.ProjectInformation = await this.projectCache.get(
-        false,
-        this.params.projectId
-      );
+      this.ProjectInformation = await this.projectCache.get(false, this.params.projectId);
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
@@ -127,7 +121,4 @@ class ProjectInfoView implements View {
   }
 }
 
-export const projectInfoViewHandler = new ViewHandler(
-  'project/{projectId}',
-  ProjectInfoView
-);
+export const projectInfoViewHandler = new ViewHandler('project/{projectId}', ProjectInfoView);
