@@ -15,6 +15,7 @@ import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInf
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
+import { profileViewHandler } from './views/Profile';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -70,7 +71,7 @@ class TopNavigationView implements NavigationView {
     $(q, 'div', 'buttons', {}, (q) => {
         $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
         $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
-
+        $(q, 'button', '', { onclick: () => { window.location.href = '/profile'; } }, 'Profile');
       });
     // prettier-ignore
   }
@@ -82,10 +83,11 @@ const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginView
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
 
 // const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
 // const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 // const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler], new TopNavigationView());
+const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler, RegisterRouteHandler, ProfileRouteHandler], new TopNavigationView());
 

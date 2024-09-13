@@ -1,5 +1,6 @@
 @import 'variables.scss';
 @import 'Login.scss';
+@import '../views/Profile.scss';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -127,7 +128,9 @@ html {
   width: 100%;
 }
 
+input,
 input[type='text'],
+input[type='email'],
 input[type='password'] {
   width: 100%;
   padding: 20px 30px;
