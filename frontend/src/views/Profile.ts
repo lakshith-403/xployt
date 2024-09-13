@@ -4,10 +4,15 @@ import { TextField } from "../components/text_field/base";
 import { IconButton } from "../components/button/icon.button";
 import { Button, ButtonType } from "../components/button/base";
 import "./Profile.scss";
+import { CollapsibleBase } from "../components/Collapsible/collap.base";
 
 export class ProfileView extends View {
+
+  private userInfoCollapsible: CollapsibleBase;
+
   constructor() {
     super();
+    this.userInfoCollapsible = new CollapsibleBase("User Info", "user-info");
   }
 
   public render(q: Quark): void {
@@ -15,7 +20,6 @@ export class ProfileView extends View {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
         $(q, 'h1', '', {}, 'Hello Lakshith!');
-        
         $(q, 'div', 'profile-picture-container', {}, (q) => {
           $(q, 'img', 'profile-picture', { src: 'path/to/profile-picture.jpg', alt: '' });
           
@@ -29,7 +33,10 @@ export class ProfileView extends View {
         });
       });
 
-      // Profile details
+      this.userInfoCollapsible.render(q);
+    });
+
+    $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
       $(q, 'div', 'profile-details', {}, (q) => {
         new TextField({ label: 'Name' }).render(q);
         new TextField({ label: 'Email', type: 'email' }).render(q);
