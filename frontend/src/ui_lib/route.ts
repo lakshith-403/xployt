@@ -10,6 +10,7 @@ export class RouteHandler {
   navigationView?: NavigationView;
   hideTopNavigation: boolean = false;
   hideFooter: boolean = false;
+  hideBreadCrumbs: boolean = true;
 
   /**
    * Creates an instance of RouteHandler.
@@ -20,12 +21,20 @@ export class RouteHandler {
    * @param hideTopNavigation - Whether to hide the top navigation bar.
    * @param hideFooter - Whether to hide the footer.
    */
-  constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false, hideFooter: boolean = false) {
+  constructor(
+    route: string,
+    viewHandlers: ViewHandler[],
+    navigationView?: NavigationView,
+    hideTopNavigation: boolean = false,
+    hideFooter: boolean = false,
+    hideBreadCrumbs: boolean = false
+  ) {
     this.route = route;
     this.viewHandlers = viewHandlers;
     this.navigationView = navigationView;
     this.hideTopNavigation = hideTopNavigation;
     this.hideFooter = hideFooter;
+    this.hideBreadCrumbs = hideBreadCrumbs;
   }
 
   /**
@@ -73,6 +82,12 @@ export class RouteHandler {
         } else {
           document.getElementById('footer')!.style.display = '';
         }
+        if (this.hideBreadCrumbs) {
+          document.getElementById('breadcrumbs-container')!.style.display = 'none';
+        } else {
+          document.getElementById('breadcrumbs-container')!.style.display = '';
+        }
+
         viewHandler.setView({
           ...extractQueryParams(url),
           ...extractPathParams(url, this.route + viewHandler.route),

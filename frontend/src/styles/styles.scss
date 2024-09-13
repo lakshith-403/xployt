@@ -86,21 +86,28 @@ html {
 }
 #root {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   top: var(--navbar-height);
-
+  position: relative;
   // height: calc(100vh - var(--navbar-height));
   // width: 100vw;
 }
+#breadcrumbs-container {
+  background-color: inherit;
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  height: 2rem;
+  position: relative;
+}
 #content {
   flex: 1;
-  margin-top: var(--navbar-height);
   margin-left: var(--sidebar-width);
   padding: 20px;
   overflow-y: auto;
   min-height: calc(100vh - (var(--navbar-height) + var(--footer-height)) + 10rem);
+  width: calc(100% - var(--sidebar-width));
   background-color: var(--background-primary);
   color: var(--color-primary);
   position: relative;
