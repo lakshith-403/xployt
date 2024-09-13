@@ -1,3 +1,6 @@
 /frontend/dist/
 /frontend/node_modules/
 /.idea/
+/.DS_Store
+/scratch.md
+/frontend/.DS_Store

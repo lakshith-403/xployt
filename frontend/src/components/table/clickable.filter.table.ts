@@ -1,4 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+import { router } from '../../ui_lib/router';
 import { FilterableTable } from './filterable.table';
 
 interface ContentItem {
@@ -28,12 +29,14 @@ export class ClickableFilterableTable extends FilterableTable {
             }
           }
           const url = '/projects/' + item.id;
-          $(q, 'a', 'table-row-link', { href: url }, (q) => {
+          $(q, 'a', 'table-row-link', { }, (q) => {
             $(q, 'div', 'table-row', {}, (q) => {
               Object.values(item).forEach((element) => {
                 $(q, 'span', 'table-cell', {}, element!.toString());
               });
             });
+          }).addEventListener('click', () => {
+            router.navigateTo(url);
           });
         });
       });
@@ -53,12 +56,14 @@ export class ClickableFilterableTable extends FilterableTable {
         }
       }
       const url = item.url; // Assuming the URL is stored in the 'url' field
-      $(this.rows!, 'a', 'table-row-link', { href: url }, (q) => {
+      $(this.rows!, 'a', 'table-row-link', { }, (q) => {
         $(q, 'div', 'table-row', {}, (q) => {
           Object.values(item).forEach((element) => {
             $(q, 'span', 'table-cell', {}, element!.toString());
           });
         });
+      }).addEventListener('click', () => {
+        router.navigateTo(url);
       });
     });
   }

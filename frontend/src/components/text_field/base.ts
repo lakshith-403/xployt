@@ -21,6 +21,10 @@ export class TextField {
     this.onChange = options.onChange;
   }
 
+  public get value() {
+    return (this.element as HTMLInputElement)?.value || '';
+  }
+
   render(parent: Quark): void {
     const container = $(parent, 'div', 'text-field-container', {});
     
