@@ -69,7 +69,36 @@
     }
   }
 
-  .user-info {
+  .collapsible {
     width: 100%;
+  }
+
+  .funds-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 5rem;
+
+    .fund-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .amount {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--color-secondary);
+      }
+
+      &.button-container {
+        margin-left: auto;
+        justify-content: space-around;
+      }
+    }
   }
 }
