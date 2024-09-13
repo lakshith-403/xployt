@@ -1,0 +1,23 @@
+.projectDashboard {
+  padding: 2rem 0;
+  --title-size: 2.2rem;
+  .project-title {
+    font-size: var(--title-size);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    margin-left: 20%;
+  }
+  .project-number {
+    font-size: var(--title-size);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}

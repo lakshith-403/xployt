@@ -1,11 +1,14 @@
 import { RouteHandler } from './route';
 import { NavigationView } from './view';
-
+// import { Quark, QuarkFunction as $ } from './quark';
+import NotFound from '../components/notFound/notFound';
+import { Footer } from '../components/footer/footer';
 /**
  * Represents a Router that manages navigation and route handling.
  */
 export class Router {
   private readonly routeHandlers: RouteHandler[];
+  private pathFound: boolean = false;
   public currentRoute: string = '';
   /**
    * Creates an instance of the Router.
@@ -23,6 +26,11 @@ export class Router {
         throw new Error('Navbar element not found');
       }
       topNavigationView.render(document.getElementById('navbar')!, '');
+      if (document.getElementById('footer') == null) {
+        throw new Error('Footer element not found');
+      }
+      document.getElementById('footer')!.innerHTML = '';
+      new Footer().render(document.getElementById('footer')!);
     });
 
     window.addEventListener('popstate', this.router);
@@ -46,15 +54,25 @@ export class Router {
     const path = window.location.pathname + window.location.search;
     // console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
+      // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
-        routeHandler.render(path);
-        this.currentRoute = routeHandler.route;
-        // console.log('rendering route matched:', routeHandler.route);
-        // console.log('rendering route matched stored:', this.currentRoute);
-        return;
+        console.log('rendering route matched:', routeHandler.route);
+        this.pathFound = routeHandler.render(path);
+
+        if (this.pathFound) {
+          break;
+        }
       }
     }
+    if (!this.pathFound) {
+      console.log('no view handler found');
+      document.getElementById('navbar')!.style.display = 'none';
+      document.getElementById('sidebar')!.style.display = 'none';
+      document.getElementById('breadcrumbs-container')!.style.display = 'none';
+      document.getElementById('content')!.innerHTML = '';
+      new NotFound().render(document.getElementById('content')!);
+    }
 
-    throw new Error('No route handler found for path: ' + path);
+    // throw new Error('No route handler found for path: ' + path);
   };
 }

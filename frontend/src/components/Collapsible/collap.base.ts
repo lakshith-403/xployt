@@ -13,20 +13,20 @@ export class CollapsibleBase {
   }
   render(q: Quark) {
     this.container = $(q, 'div', `collapsible ${this.className}`, {}, (q) => {
-      $(q, 'div', 'header', {}, (q) => {
-        $(q, 'span', 'title', {}, this.title);
-        this.button = $(
-          q,
-          'button',
-          'toggle-button',
-          {
-            onclick: () => {
-              this.toggle();
-            },
+      $(
+        q,
+        'div',
+        'header',
+        {
+          onclick: () => {
+            this.toggle();
           },
-          '▼'
-        );
-      });
+        },
+        (q) => {
+          $(q, 'span', 'title', {}, this.title);
+          this.button = $(q, 'button', 'toggle-button', {}, '▼');
+        }
+      );
     });
     this.content = $(this.container!, 'div', 'content', {}, '');
     this.hideContent();
