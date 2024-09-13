@@ -22,7 +22,7 @@ export class TextField {
   }
 
   public get value() {
-    return this.element?.value || '';
+    return (this.element as HTMLInputElement)?.value || '';
   }
 
   render(parent: Quark): void {
