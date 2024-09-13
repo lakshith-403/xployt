@@ -2,6 +2,7 @@ import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import './SideBar.scss';
 // import { Router } from '../../ui_lib/router';
 import { NavigationView } from '../../ui_lib/view';
+import { router } from '../../ui_lib/router';
 export interface SidebarTab {
   id: string;
   title: string;
@@ -38,7 +39,7 @@ export class SidebarView implements NavigationView {
     this.buttons.forEach((btn) => btn.classList.remove('active'));
     this.buttons.find((btn) => btn.id === tabId)?.classList.add('active');
     this.activeTab = tabId;
-    window.location.href = this.baseURL + this.tabs.find((tab) => tab.id === tabId)!.url;
+    router.navigateTo(this.baseURL + this.tabs.find((tab) => tab.id === tabId)!.url);
   }
 
   render(q: Quark, currentRoute: string): void {

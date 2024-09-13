@@ -2,7 +2,7 @@ import './styles/styles.scss';
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from './ui_lib/route';
 import './ui_lib/router';
-import { Router } from './ui_lib/router';
+import { router } from './ui_lib/router';
 import { NavigationView } from './ui_lib/view';
 
 import { homeViewHandler } from './views/home';
@@ -54,7 +54,9 @@ class AboutSidebarView implements NavigationView {
     q.innerHTML = '';
     $(q, 'ul', '', {}, (q) => {
       $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', { href: this.baseURL + '/login/user' }, 'Login');
+        $(q, 'a', '', { }, 'Login').addEventListener('click', () => {
+          router.navigateTo(this.baseURL + '/login/user');
+        });
       });
     });
   }
@@ -69,9 +71,9 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
-        $(q, 'button', '', { onclick: () => { window.location.href = '/'; } }, 'Home');
-        $(q, 'button', '', { onclick: () => { window.location.href = '/about'; } }, 'About');
-        $(q, 'button', '', { onclick: () => { window.location.href = '/profile'; } }, 'Profile');
+        $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
+        $(q, 'button', '', { onclick: () => { router.navigateTo('/about'); } }, 'About');
+        $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
       });
     // prettier-ignore
   }
@@ -89,5 +91,11 @@ const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
 // const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 // const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
-const router = new Router([HomeRouteHandler, AboutRouteHandler, LoginRouteHandler, ProjectRouteHandler, RegisterRouteHandler, ProfileRouteHandler], new TopNavigationView());
+router.setTopNavigationView(new TopNavigationView());
 
+router.addRouteHandler(HomeRouteHandler);
+router.addRouteHandler(ProjectRouteHandler);
+router.addRouteHandler(AboutRouteHandler);
+router.addRouteHandler(RegisterRouteHandler);
+router.addRouteHandler(LoginRouteHandler);
+router.addRouteHandler(ProfileRouteHandler);

@@ -6,9 +6,10 @@ import { Footer } from '../components/footer/footer';
 /**
  * Represents a Router that manages navigation and route handling.
  */
-export class Router {
+class Router {
   private readonly routeHandlers: RouteHandler[];
-  private pathFound: boolean = false;
+  private topNavigationView?: NavigationView;
+  
   public currentRoute: string = '';
   /**
    * Creates an instance of the Router.
@@ -16,16 +17,17 @@ export class Router {
    * @param routeHandlers - An array of route handlers to manage navigation.
    * @param topNavigationView - The navigation view to render in the navbar.
    */
-  constructor(routeHandlers: RouteHandler[] = [], topNavigationView: NavigationView) {
+  constructor(routeHandlers: RouteHandler[] = [], topNavigationView?: NavigationView) {
     this.routeHandlers = routeHandlers;
     this.routeHandlers.sort((a, b) => b.route.length - a.route.length);
+    this.topNavigationView = topNavigationView;
 
     document.addEventListener('DOMContentLoaded', () => {
       this.router();
       if (document.getElementById('navbar') == null) {
         throw new Error('Navbar element not found');
       }
-      topNavigationView.render(document.getElementById('navbar')!, '');
+      this.topNavigationView?.render(document.getElementById('navbar')!, '');
       if (document.getElementById('footer') == null) {
         throw new Error('Footer element not found');
       }
@@ -34,6 +36,15 @@ export class Router {
     });
 
     window.addEventListener('popstate', this.router);
+  }
+
+  public addRouteHandler(routeHandler: RouteHandler): void {
+    this.routeHandlers.push(routeHandler);
+    this.routeHandlers.sort((a, b) => b.route.length - a.route.length);
+  }
+
+  public setTopNavigationView(topNavigationView: NavigationView): void {
+    this.topNavigationView = topNavigationView;
   }
 
   /**
@@ -51,20 +62,21 @@ export class Router {
    * Throws an error if no route handler matches the path.
    */
   public router = () => {
+    let pathFound = false;
     const path = window.location.pathname + window.location.search;
     // console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
       // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
         console.log('rendering route matched:', routeHandler.route);
-        this.pathFound = routeHandler.render(path);
+        pathFound = routeHandler.render(path);
 
-        if (this.pathFound) {
+        if (pathFound) {
           break;
         }
       }
     }
-    if (!this.pathFound) {
+    if (!pathFound) {
       console.log('no view handler found');
       document.getElementById('navbar')!.style.display = 'none';
       document.getElementById('sidebar')!.style.display = 'none';
@@ -76,3 +88,6 @@ export class Router {
     // throw new Error('No route handler found for path: ' + path);
   };
 }
+
+export const router = new Router([]);
+
