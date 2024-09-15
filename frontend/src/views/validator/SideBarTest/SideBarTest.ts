@@ -6,22 +6,23 @@ import { SidebarTab } from './../../../components/SideBar/SideBar';
 // import ProjectTeam from './C_ProjectTeam';
 // import ProjectScope from './C_ProjectScope';
 
-class SideBarTestView implements View {
-  params: { type: string };
-  // handler: ReturnType<typeof sidebarViewHandler>;
+// class SideBarTestView extends View {
+//   // params: { type: string };
+//   // handler: ReturnType<typeof sidebarViewHandler>;
 
-  constructor(params: { type: string }) {
-    this.params = params;
-    // this.handler = sidebarViewHandler(sidebarTabs);
-  }
-  render(q: Quark): void {
-    $(q, 'div', 'sideBarTest validator', {}, (q) => {
-      // this.handler.render(q);
-    });
-  }
-}
+//   constructor(params: { type: string }) {
+//     super();
+//     // this.params = params;
+//     // this.handler = sidebarViewHandler(sidebarTabs);
+//   }
+//   render(q: Quark): void {
+//     $(q, 'div', 'sideBarTest validator', {}, (q) => {
+//       // this.handler.render(q);
+//     });
+//   }
+// }
 
-export const sideBarTestViewHandler = new ViewHandler('/sidebartest', SideBarTestView);
+// export const sideBarTestViewHandler = new ViewHandler('/sidebartest', SideBarTestView);
 
 // Example usage
 const sidebarTabs: SidebarTab[] = [

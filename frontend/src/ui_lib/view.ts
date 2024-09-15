@@ -1,16 +1,41 @@
-import { Quark, QuarkFunction as $ } from './quark';
+import { Quark } from './quark';
+import { Breadcrumbs, Breadcrumb } from '../components/breadCrumbs/breadCrumbs';
 
 /**
  * Abstract class representing a generic view.
  * Subclasses must implement the render method to define how the view is displayed.
  */
 export abstract class View {
-  /**
+   /**
    * Renders the view using the provided Quark instance.
    *
    * @param q - An instance of Quark used for rendering the view.
    */
+  protected breadcrumbs?: Breadcrumbs;
+
+  constructor(params?: any) {
+    if (this.shouldRenderBreadcrumbs()) {
+      this.breadcrumbs = Breadcrumbs.getInstance();
+      this.setupBreadcrumbs(params);
+    }
+  }
+
+  protected shouldRenderBreadcrumbs(): boolean {
+    return false; // Default to not rendering breadcrumbs
+  }
+
+  protected setupBreadcrumbs(params?: any): void {
+    // Default empty implementation
+  }
+
   public abstract render(q: Quark): void;
+
+  protected updateBreadcrumbs(breadcrumbInfo: Breadcrumb[]) {
+    if (this.breadcrumbs) {
+      this.breadcrumbs.clearBreadcrumbs();
+      breadcrumbInfo.forEach(info => this.breadcrumbs!.addBreadcrumb(info));
+    }
+  }
 }
 
 /**

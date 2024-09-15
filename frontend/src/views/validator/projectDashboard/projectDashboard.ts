@@ -5,13 +5,29 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
-class projectDashboardView implements View {
+// import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
+class projectDashboardView extends View {
   params: { projectId: string };
 
   constructor(params: { projectId: string }) {
+    super(params);
     this.params = params;
-    Breadcrumbs.render();
+  }
+
+  protected shouldRenderBreadcrumbs(): boolean {
+    return true;
+  }
+
+  protected setupBreadcrumbs(params: { projectId: string }): void {
+    this.breadcrumbs?.clearBreadcrumbs();
+      this.breadcrumbs?.addBreadcrumb({
+      label: `Projects`,
+      link: `/projects`,
+    });
+    this.breadcrumbs?.addBreadcrumb({
+      label: `Project #${params.projectId}`,
+      link: `/projects/${params.projectId}`,
+    });
   }
 
   render(q: Quark): void {

@@ -2,11 +2,12 @@ import { IconButton } from '../components/button/icon.button'
 import {QuarkFunction as $, Quark} from '../ui_lib/quark'
 import {View, ViewHandler} from "../ui_lib/view"
 
-class HomeView implements View {
+class HomeView extends View {
 
     private iconButton: IconButton
     
     constructor() {
+        super();
         this.iconButton = new IconButton(
             {
                 icon: 'fa-solid fa-house',
