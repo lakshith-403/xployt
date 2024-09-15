@@ -1,5 +1,5 @@
-import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import './breadcrumbs.scss';
+import './breadCrumbs.scss';
+import { QuarkFunction as $ } from '../../ui_lib/quark';
 
 export interface Breadcrumb {
   label: string;
@@ -7,7 +7,7 @@ export interface Breadcrumb {
   clickable?: boolean;
 }
 
-  export class Breadcrumbs {
+export class Breadcrumbs {
   private static instance: Breadcrumbs;
   private breadcrumbs: Breadcrumb[] = [];
 
@@ -36,31 +36,30 @@ export interface Breadcrumb {
   }
 
   private render(): void {
-    const container = document.getElementById('breadcrumbs-container');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    this.breadcrumbs.slice().forEach((breadcrumb, index) => {
-      const breadcrumbElement = document.createElement('span');
-      breadcrumbElement.className = 'breadcrumb';
-
-      if (breadcrumb.clickable) {
-        const linkElement = document.createElement('a');
-        linkElement.href = breadcrumb.link;
-        linkElement.textContent = breadcrumb.label;
-        breadcrumbElement.appendChild(linkElement);
+    const q = document.getElementById('breadcrumbs-container');
+    if (!q) return;
+    q.innerHTML = '';
+    this.breadcrumbs.forEach((breadcrumb, index) => {
+      const isLast = index === this.breadcrumbs.length - 1;
+      let className = '';
+      if (isLast) {
+        className += ' last';
       } else {
-        breadcrumbElement.textContent = breadcrumb.label;
+        className += ' pre-crumb';
       }
 
-      container.appendChild(breadcrumbElement);
+      $(q, 'span', 'breadcrumb', {}, (q) => {
+        if (breadcrumb.clickable) {
+          $(q, 'a', className, { href: breadcrumb.link }, breadcrumb.label);
+        } else {
+          $(q, 'span', className, {}, breadcrumb.label);
+        }
+      });
 
-      if (index < this.breadcrumbs.length - 1) {
-        const separator = document.createElement('span');
-        separator.className = 'breadcrumb-separator';
-        separator.textContent = ' > ';
-        container.appendChild(separator);
+      if (!isLast) {
+        $(q, 'span', 'breadcrumb-separator', {}, (q) => {
+          $(q, 'span', '', {}, ' > ');
+        });
       }
     });
   }

@@ -95,14 +95,7 @@ html {
   // height: calc(100vh - var(--navbar-height));
   // width: 100vw;
 }
-#breadcrumbs-container {
-  background-color: black;
-  color: var(--color-primary);
-  margin-left: 2rem;
-  width: calc(100% - var(--sidebar-width));
-  height: 2rem;
-  position: relative;
-}
+
 #content {
   flex: 1;
   margin-left: var(--sidebar-width);
