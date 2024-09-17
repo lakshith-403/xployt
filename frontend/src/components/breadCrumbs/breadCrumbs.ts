@@ -1,69 +1,68 @@
-import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import './breadcrumbs.scss';
+import './breadCrumbs.scss';
+import { QuarkFunction as $ } from '../../ui_lib/quark';
 
-interface Breadcrumb {
+export interface Breadcrumb {
   label: string;
   link: string;
   clickable?: boolean;
 }
 
-class Breadcrumbs {
+export class Breadcrumbs {
+  private static instance: Breadcrumbs;
   private breadcrumbs: Breadcrumb[] = [];
 
-  // Method to add a breadcrumb
+  private constructor() {}
+
+  public static getInstance(): Breadcrumbs {
+    if (!Breadcrumbs.instance) {
+      Breadcrumbs.instance = new Breadcrumbs();
+    }
+    return Breadcrumbs.instance;
+  }
+
   public addBreadcrumb(breadcrumb: Breadcrumb): void {
-    console.log('adding breadcrumb', breadcrumb.label, breadcrumb.link);
-    const lengthOfBreadcrumbs = this.breadcrumbs.length;
-    this.breadcrumbs[lengthOfBreadcrumbs] = { label: breadcrumb.label, link: breadcrumb.link, clickable: breadcrumb.clickable ?? true };
-    console.log('breadcrumbs', this.breadcrumbs.toString());
+    this.breadcrumbs.push({ ...breadcrumb, clickable: breadcrumb.clickable ?? true });
     this.render();
   }
 
-  // Method to remove the last breadcrumb
   public popBreadcrumb(): void {
     this.breadcrumbs.pop();
     this.render();
   }
 
-  // Method to clear all breadcrumbs
   public clearBreadcrumbs(): void {
     this.breadcrumbs = [];
     this.render();
   }
 
-  // Method to render the breadcrumbs
-  public render(): void {
-    console.log('rendering breadcrumbs');
-    const container = document.getElementById('breadcrumbs-container') as HTMLElement;
-    if (!container) return;
-    console.log('inside breadcrumbs', this.breadcrumbs);
-    container.innerHTML = ''; // Clear existing breadcrumbs
-
-    // Render breadcrumbs from bottom to top
-    for (let i = this.breadcrumbs.length - 1; i >= 0; i--) {
-      const breadcrumb = this.breadcrumbs[i];
-      const breadcrumbElement = document.createElement('span');
-      breadcrumbElement.className = 'breadcrumb';
-
-      if (breadcrumb.clickable) {
-        const linkElement = document.createElement('a');
-        linkElement.href = breadcrumb.link;
-        linkElement.textContent = breadcrumb.label;
-        breadcrumbElement.appendChild(linkElement);
+  private render(): void {
+    const q = document.getElementById('breadcrumbs-container');
+    if (!q) return;
+    q.innerHTML = '';
+    this.breadcrumbs.forEach((breadcrumb, index) => {
+      const isLast = index === this.breadcrumbs.length - 1;
+      let className = '';
+      if (isLast) {
+        className += ' last';
       } else {
-        breadcrumbElement.textContent = breadcrumb.label;
+        className += ' pre-crumb';
       }
 
-      container.appendChild(breadcrumbElement);
+      $(q, 'span', 'breadcrumb', {}, (q) => {
+        if (breadcrumb.clickable) {
+          $(q, 'a', className, { href: breadcrumb.link }, breadcrumb.label);
+        } else {
+          $(q, 'span', className, {}, breadcrumb.label);
+        }
+      });
 
-      if (i > 0) {
-        const separator = document.createElement('span');
-        separator.className = 'breadcrumb-separator';
-        separator.textContent = ' > ';
-        container.appendChild(separator);
+      if (!isLast) {
+        $(q, 'span', 'breadcrumb-separator', {}, (q) => {
+          $(q, 'span', '', {}, ' > ');
+        });
       }
-    }
+    });
   }
 }
 
-export const BREADCRUMBS = new Breadcrumbs();
+export const BREADCRUMBS = Breadcrumbs.getInstance();

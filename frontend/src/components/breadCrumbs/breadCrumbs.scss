@@ -1,0 +1,30 @@
+#breadcrumbs-container {
+  display: flex;
+  align-items: center;
+  padding: 2rem 5rem;
+  font-size: 14px;
+
+  .breadcrumb {
+    display: inline-block;
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+      &.pre-crumb {
+        color: var(--color-primary);
+        transition: color 0.2s ease;
+      }
+      &.last {
+        font-weight: bold;
+        color: var(--light-green);
+      }
+    }
+  }
+
+  .breadcrumb-separator {
+    margin: 0 8px;
+    color: var(--color-primary);
+  }
+}
