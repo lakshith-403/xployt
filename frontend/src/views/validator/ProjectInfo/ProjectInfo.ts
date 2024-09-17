@@ -5,12 +5,13 @@ import { ProjectInfo, ProjectInfoCache } from '../../../data/validator/cache/pro
 // import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 
-class ProjectInfoView implements View {
+class ProjectInfoView extends View {
   params: { projectId: string };
   projectCache: ProjectInfoCache;
   ProjectInformation: ProjectInfo | {} = {};
 
   constructor(params: { projectId: string }) {
+    super();
     this.params = params;
     this.projectCache = CACHE_STORE.getProjectInfo(this.params.projectId);
     console.log('param is', params);

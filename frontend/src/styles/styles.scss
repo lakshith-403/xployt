@@ -1,5 +1,6 @@
 @import 'variables.scss';
 @import 'Login.scss';
+@import '../views/Profile.scss';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -94,14 +95,7 @@ html {
   // height: calc(100vh - var(--navbar-height));
   // width: 100vw;
 }
-#breadcrumbs-container {
-  background-color: black;
-  color: var(--color-primary);
-  margin-left: 2rem;
-  width: calc(100% - var(--sidebar-width));
-  height: 2rem;
-  position: relative;
-}
+
 #content {
   flex: 1;
   margin-left: var(--sidebar-width);
@@ -127,7 +121,9 @@ html {
   width: 100%;
 }
 
+input,
 input[type='text'],
+input[type='email'],
 input[type='password'] {
   width: 100%;
   padding: 20px 30px;
@@ -136,6 +132,7 @@ input[type='password'] {
   border-radius: 10px;
   resize: vertical;
   background-color: $input-field-bg;
+  color: $light-gray;
 }
 
 button.button-component {

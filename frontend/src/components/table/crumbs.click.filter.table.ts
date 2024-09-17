@@ -1,6 +1,7 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ClickableFilterableTable } from './clickable.filter.table';
 import { BREADCRUMBS } from '../breadCrumbs/breadCrumbs';
+import { router } from '../../ui_lib/router';
 interface ContentItem {
   id: number; // or string, depending on your requirements
   [key: string]: any; // Allow other fields
@@ -33,9 +34,9 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
             'a',
             'table-row-link',
             {
-              href: url,
               onclick: () => {
                 this.updateCrumbs(item.id, url);
+                router.navigateTo(url);
               },
             },
             (q) => {
@@ -68,12 +69,14 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
         }
       }
       const url = item.url; // Assuming the URL is stored in the 'url' field
-      $(this.rows!, 'a', 'table-row-link', { href: url }, (q) => {
+      $(this.rows!, 'a', 'table-row-link', { }, (q) => {
         $(q, 'div', 'table-row', {}, (q) => {
           Object.values(item).forEach((element) => {
             $(q, 'span', 'table-cell', {}, element!.toString());
           });
         });
+      }).addEventListener('click', () => {
+        router.navigateTo(url);
       });
     });
   }

@@ -9,7 +9,7 @@ import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { ColoredFilterableTable } from '../../../components/table/colored.filterable.table';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 
-class ReportsView implements View {
+class ReportsView extends View {
     private params: { reportId: string };
     private reportsCache: ReportsCache;
     private userCache: UserCache;
@@ -20,6 +20,7 @@ class ReportsView implements View {
     private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
   
     constructor(params: { reportId: string }) {
+      super();
       this.params = params;
       this.userCache = CACHE_STORE.getUser('1');
       this.reportsCache = CACHE_STORE.getReports();

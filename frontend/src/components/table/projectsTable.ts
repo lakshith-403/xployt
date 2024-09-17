@@ -1,4 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+import { router } from '../../ui_lib/router';
 import { ClickableFilterableTableWithCrumbs } from './crumbs.click.filter.table';
 import './projectTable.scss';
 
@@ -29,7 +30,7 @@ export class ProjectTable extends ClickableFilterableTableWithCrumbs {
             }
           }
           const url = '/projects/' + item.id;
-          $(q, 'a', 'table-row-link', { href: url, onclick: () => this.updateCrumbs(item.id, url) }, (q) => {
+          $(q, 'a', 'table-row-link', { onclick: () => {this.updateCrumbs(item.id, url); router.navigateTo(url) } }, (q) => {
             $(q, 'div', 'table-row', {}, (q) => {
               const values = Object.values(item);
               values.forEach((element, index) => {
