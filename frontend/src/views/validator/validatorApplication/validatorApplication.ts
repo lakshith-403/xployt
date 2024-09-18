@@ -11,7 +11,11 @@ class ValidatorApplication extends View {
     mobile: '',
     country: '',
     linkedin: '',
-    dateOfBirth: '',
+    dateOfBirth: {
+      day: '',
+      month: '',
+      year: '',
+    },
   };
 
   render(q: Quark): void {
