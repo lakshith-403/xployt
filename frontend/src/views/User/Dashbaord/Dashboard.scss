@@ -1,0 +1,57 @@
+.dashboard.projectLead {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .earnings-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    width: 80%;
+  }
+
+  .earning-box {
+    background-color: #222;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+
+  .earning-box h3 {
+    color: #1b8d64;
+  }
+
+  .tables {
+    margin-bottom: 2rem;
+    width: 80%;
+  }
+
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.2rem 1rem;
+  }
+
+ 
+
+  .accept-btn {
+    background-color: #1b8d64;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .accept-btn:hover {
+    background-color: #136b4e;
+  }
+
+  .projects-table {
+    margin-top: 2rem;
+  }
+}
