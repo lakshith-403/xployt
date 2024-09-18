@@ -11,7 +11,6 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
-import { projectInfoViewHandler } from './views/validator/ProjectInfo/ProjectInfo';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
@@ -33,11 +32,6 @@ const HomeSidebar: SidebarTab[] = [
     id: 'reports',
     title: 'Reports',
     url: 'reports',
-  },
-  {
-    id: 'project/{projectId}',
-    title: 'Project Info',
-    url: 'project/1',
   },
   {
     id: 'report/{projectId}',
@@ -87,7 +81,7 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler],
+  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler],
   new SidebarView('/', HomeSidebar)
 );
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
