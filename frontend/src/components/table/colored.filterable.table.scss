@@ -1,0 +1,13 @@
+.table-cell-pending-reports {
+  background-color: var(--cell-color); // Use CSS variable for dynamic color
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  display: flex; // Use flexbox for centering
+  align-items: center; // Center vertically
+  justify-content: center; // Center horizontally
+  position: relative; // Allows for z-index and float effect
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); // Add shadow for float effect
+  margin: 5px; // Add space around the cell to enhance the floating look
+}

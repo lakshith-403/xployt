@@ -1,5 +1,6 @@
 import { FilterableTable } from './filterable.table';
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+import './colored.filterable.table.scss';
 
 export class ColoredFilterableTable extends FilterableTable {
   constructor(content: Record<string, any>[], headers: string[], checkboxState: { [key: string]: boolean }, filteredField: string, className: string = '') {
@@ -32,17 +33,8 @@ export class ColoredFilterableTable extends FilterableTable {
               });
 
               if (item.pendingReports && key === 'pendingReports') {
-                cell.style.backgroundColor = item.color;
-                cell.style.padding = '5px 10px';
-                cell.style.borderRadius = '5px';
-                cell.style.fontWeight = 'bold';
-                cell.style.textAlign = 'center';
-                cell.style.display = 'flex'; // Use flexbox for centering
-                cell.style.alignItems = 'center'; // Center vertically
-                cell.style.justifyContent = 'center'; // Center horizontally
-                cell.style.position = 'relative'; // Allows for z-index and float effect
-                cell.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)'; // Add shadow for float effect
-                cell.style.margin = '5px'; // Add space around the cell to enhance the floating look
+                cell.classList.add('table-cell-pending-reports');
+                cell.style.setProperty('--cell-color', item.color); // Set the dynamic color
               }
             });
           });
@@ -73,17 +65,8 @@ export class ColoredFilterableTable extends FilterableTable {
           });
 
           if (item.pendingReports && key === 'pendingReports') {
-            cell.style.backgroundColor = item.color;
-            cell.style.padding = '5px 10px';
-            cell.style.borderRadius = '5px';
-            cell.style.fontWeight = 'bold';
-            cell.style.textAlign = 'center';
-            cell.style.display = 'flex'; // Use flexbox for centering
-            cell.style.alignItems = 'center'; // Center vertically
-            cell.style.justifyContent = 'center'; // Center horizontally
-            cell.style.position = 'relative'; // Allows for z-index and float effect
-            cell.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)'; // Add shadow for float effect
-            cell.style.margin = '5px'; // Add space around the cell to enhance the floating look
+            cell.classList.add('table-cell-pending-reports');
+            cell.style.setProperty('--cell-color', item.color); // Set the dynamic color
           }
         });
       });
