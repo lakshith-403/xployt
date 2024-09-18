@@ -16,6 +16,7 @@ import { projectDashboardViewHandler } from './views/validator/projectDashboard/
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
+import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -43,6 +44,11 @@ const HomeSidebar: SidebarTab[] = [
     title: 'New Report',
     url: 'report/1',
   },
+  {
+    id: 'validator/application',
+    title: 'Application',
+    url: 'validator/application',
+  },
 ];
 
 class AboutSidebarView implements NavigationView {
@@ -54,7 +60,7 @@ class AboutSidebarView implements NavigationView {
     q.innerHTML = '';
     $(q, 'ul', '', {}, (q) => {
       $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', { }, 'Login').addEventListener('click', () => {
+        $(q, 'a', '', {}, 'Login').addEventListener('click', () => {
           router.navigateTo(this.baseURL + '/login/user');
         });
       });
@@ -79,11 +85,15 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler], new SidebarView('/', HomeSidebar));
+const HomeRouteHandler = new RouteHandler(
+  '/',
+  [homeViewHandler, projectsViewHandler, projectInfoViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler],
+  new SidebarView('/', HomeSidebar)
+);
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
-const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true)
+const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
 
