@@ -2,15 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 .custom-button {
-
-padding: 8px 15px;
-margin: 10px;
-border: 1px solid transparent;
-border-radius: 10px;
-font-size: 16px;
-cursor: pointer;
-box-shadow: 1px 1px 0px #888888;
-font-family: 'Montserrat';
+  padding: 8px 15px;
+  margin: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 1px 1px 0px #888888;
+  font-family: 'Montserrat';
 
   &.button-secondary {
     background-color: var(--secondary-button-background-color);
