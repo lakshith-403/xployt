@@ -1,0 +1,27 @@
+.multistep-form {
+  .personal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .dob {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .dob-fields {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    .form-field {
+      gap: 10px;
+      &.text-field-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+  }
+}
