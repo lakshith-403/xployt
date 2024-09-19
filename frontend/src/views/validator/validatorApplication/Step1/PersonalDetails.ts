@@ -31,9 +31,12 @@ class PersonalDetails implements Step {
       this.renderFieldFullWidth(q, this.linkedinField, state.linkedin);
 
       $(q, 'div', 'dob', {}, (q) => {
-        this.renderCustomField(q, this.dobDayField, state.dateOfBirth?.day, 1 / 3);
-        this.renderCustomField(q, this.dobMonthField, state.dateOfBirth?.month, 1 / 3);
-        this.renderCustomField(q, this.dobYearField, state.dateOfBirth?.year, 1 / 3);
+        $(q, 'span', '', {}, 'Date of Birth');
+        $(q, 'div', 'dob-fields', {}, (q) => {
+          this.renderCustomField(q, this.dobDayField, state.dateOfBirth?.day, 1 / 3);
+          this.renderCustomField(q, this.dobMonthField, state.dateOfBirth?.month, 1 / 3);
+          this.renderCustomField(q, this.dobYearField, state.dateOfBirth?.year, 1 / 3);
+        });
       });
     });
 

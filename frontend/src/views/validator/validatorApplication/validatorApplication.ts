@@ -19,6 +19,8 @@ class ValidatorApplication extends View {
     },
   };
 
+  private onSubmit: (formState: any) => void = () => {};
+
   render(q: Quark): void {
     const steps = [
       {
@@ -31,7 +33,7 @@ class ValidatorApplication extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', this.onSubmit);
     $(q, 'div', 'validator-application', {}, (q) => {
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);

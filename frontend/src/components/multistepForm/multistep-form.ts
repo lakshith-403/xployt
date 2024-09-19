@@ -5,7 +5,6 @@ import './multistep-form.scss';
 
 export abstract class Step {
   abstract render: (q: Quark, formState: any, onValidityChange: (isValid: boolean) => void, updateParentState: (newState: any) => void) => void;
-  // abstract checkValidity: () => void;
 }
 
 interface Steps {
@@ -19,26 +18,31 @@ class MultistepForm {
   contentElement!: HTMLElement;
   tabsButtons!: HTMLElement;
   private stage: number = 0;
+  private numOfSteps: number = 0;
   private nextButton: FormButton | null = null;
   private prevButton: FormButton | null = null;
+  private submitButton: FormButton | null = null;
   private tabValidityStates: boolean[] = [];
   private formState: any = {};
+  private lastAction: 'Submit' | 'Apply' = 'Submit';
+  private onSubmit: (formState: any) => void;
 
-  constructor(steps: Steps[], formState: any) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', onSubmit: (formState: any) => void) {
     this.steps = steps;
     this.activeTabIndex = 0;
     this.tabValidityStates = new Array(steps.length).fill(false);
     this.formState = formState;
+    this.numOfSteps = steps.length;
+    this.lastAction = lastAction;
+    this.onSubmit = onSubmit;
   }
 
   render(q: Quark): void {
-    $(q, 'div', 'tabs-container', {}, (q) => {
-      $(q, 'div', 'tabs-header', {}, (q) => {
-        this.tabsButtons = $(q, 'div', 'tabs-header', {}, (q) => {
-          this.steps.forEach((step, index) => {
-            $(q, 'button', 'tab-button', { onclick: () => this.jumpToTab(index) }, (q) => {
-              $(q, 'span', 'dot', {}, step.title);
-            });
+    $(q, 'div', 'multistep-form', {}, (q) => {
+      this.tabsButtons = $(q, 'div', 'tabs-header', {}, (q) => {
+        this.steps.forEach((step, index) => {
+          $(q, 'button', 'tab-button', { onclick: () => this.jumpToTab(index) }, (q) => {
+            $(q, 'span', 'dot', {}, step.title);
           });
         });
       });
@@ -48,21 +52,33 @@ class MultistepForm {
         this.renderActiveTabContent();
       });
 
-      // this.nextButton = $(q, 'button', 'next-button', { onclick: () => this.nextTab() }, 'Next') as HTMLButtonElement;
-      this.nextButton = new FormButton({
-        label: 'Next',
-        onClick: () => this.nextTab(),
-        type: ButtonType.PRIMARY,
-      });
-      this.nextButton.render(q);
+      $(q, 'div', 'form-buttons', {}, (q) => {
+        this.prevButton = new FormButton({
+          label: 'Prev',
+          onClick: () => this.prevTab(),
+          type: ButtonType.SECONDARY,
+        });
+        this.prevButton.render(q);
+        this.prevButton.setClass('prev-button');
+        this.prevButton.hide();
 
-      this.prevButton = new FormButton({
-        label: 'Prev',
-        onClick: () => this.prevTab(),
-        type: ButtonType.SECONDARY,
+        this.nextButton = new FormButton({
+          label: 'Next',
+          onClick: () => this.nextTab(),
+          type: ButtonType.PRIMARY,
+        });
+        this.nextButton.render(q);
+        this.nextButton.setClass('next-button');
+
+        this.submitButton = new FormButton({
+          label: 'Submit',
+          onClick: () => this.onSubmit(this.formState),
+          type: ButtonType.PRIMARY,
+        });
+        this.submitButton.render(q);
+        this.submitButton.setClass('submit-button');
+        this.submitButton.hide();
       });
-      this.prevButton.render(q);
-      this.prevButton.hide();
     });
 
     this.tabsButtons.children[this.activeTabIndex].classList.add('selected');
@@ -86,7 +102,7 @@ class MultistepForm {
   }
 
   jumpToTab(index: number): void {
-    if (index >= this.stage) {
+    if (index > this.stage) {
       return;
     }
     this.switchTab(index);
@@ -98,8 +114,16 @@ class MultistepForm {
     this.activeTabIndex = index;
     if (index === 0) {
       this.prevButton!.hide();
+      this.nextButton!.show();
+      this.submitButton!.hide();
+    } else if (index === this.numOfSteps - 1) {
+      this.prevButton!.show();
+      this.nextButton!.hide();
+      this.submitButton!.show();
     } else {
       this.prevButton!.show();
+      this.nextButton!.show();
+      this.submitButton!.hide();
     }
     this.renderActiveTabContent();
   }
