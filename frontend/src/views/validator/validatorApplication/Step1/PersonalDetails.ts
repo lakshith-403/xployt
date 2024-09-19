@@ -17,8 +17,7 @@ class PersonalDetails implements Step {
   private onValidityChange?: (isValid: boolean) => void;
   private updateParentState?: (newState: any) => void;
 
-  render(q: Quark, state: any, onValidityChange: (isValid: boolean) => void, updateParentState: (newState: any) => void): void {
-    this.onValidityChange = onValidityChange;
+  render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
 
     $(q, 'div', 'personal-details', {}, (q) => {
@@ -39,8 +38,6 @@ class PersonalDetails implements Step {
         });
       });
     });
-
-    this.checkValidity();
   }
 
   private renderFieldFullWidth(q: Quark, field: FormTextField, value: any): void {
@@ -61,20 +58,6 @@ class PersonalDetails implements Step {
 
   private updateState(state: any): void {
     this.updateParentState!(state);
-    this.checkValidity();
-  }
-
-  private checkValidity(): void {
-    const isValid =
-      this.nameField.getValue().trim() !== '' &&
-      this.emailField.getValue().trim() !== '' &&
-      this.mobileField.getValue().trim() !== '' &&
-      this.countryField.getValue().trim() !== '' &&
-      this.linkedinField.getValue().trim() !== '' &&
-      this.dobDayField.getValue().trim() !== '' &&
-      this.dobMonthField.getValue().trim() !== '' &&
-      this.dobYearField.getValue().trim() !== '';
-    this.onValidityChange!(isValid);
   }
 }
 

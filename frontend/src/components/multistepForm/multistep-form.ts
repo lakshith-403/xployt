@@ -4,11 +4,12 @@ import { FormButton } from '../button/form.button';
 import './multistep-form.scss';
 
 export abstract class Step {
-  abstract render: (q: Quark, formState: any, onValidityChange: (isValid: boolean) => void, updateParentState: (newState: any) => void) => void;
+  abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 
 interface Steps {
   title: string;
+  stateUsed: { [key: string]: 'optional' | 'required' };
   step: Step;
 }
 
@@ -134,6 +135,25 @@ class MultistepForm {
     return this.tabValidityStates[this.activeTabIndex];
   }
 
+  private checkIfRequiredFieldsAreFilled(): boolean {
+    return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
+      if (value === 'required') {
+        const fieldValue = this.formState[key];
+        if (fieldValue === undefined || fieldValue === '') {
+          // console.log('Field is required but is empty');
+          return false;
+        }
+        if (typeof fieldValue === 'object') {
+          // console.log('Field is required but is an object');
+          return Object.values(fieldValue).every((val) => val !== undefined && val !== '');
+        }
+        // console.log('Field is required and is filled');
+      }
+      // console.log('Field is optional or filled');
+      return true;
+    });
+  }
+
   private updateTabValidity(index: number, isValid: boolean): void {
     this.tabValidityStates[index] = isValid;
   }
@@ -171,19 +191,21 @@ class MultistepForm {
         }
       }
     }
-    console.log('Updated form state:', this.formState);
+    // console.log('Updated form state:', this.formState);
+    if (this.checkIfRequiredFieldsAreFilled()) {
+      console.log('Required fields are filled');
+      this.updateTabValidity(this.activeTabIndex, true);
+    } else {
+      console.log('Required fields are not filled');
+      this.updateTabValidity(this.activeTabIndex, false);
+    }
   }
 
   renderActiveTabContent(): void {
     if (this.contentElement) {
       console.log('Render Active Tab Content');
       this.contentElement.innerHTML = '';
-      this.steps[this.activeTabIndex].step.render(
-        this.contentElement,
-        this.formState,
-        (isValid: boolean) => this.updateTabValidity(this.activeTabIndex, isValid),
-        (newState: any) => this.updateFormState(newState)
-      );
+      this.steps[this.activeTabIndex].step.render(this.contentElement, this.formState, (newState: any) => this.updateFormState(newState));
     }
   }
 }

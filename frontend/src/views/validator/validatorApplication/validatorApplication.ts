@@ -5,6 +5,12 @@ import MultistepForm from '@/components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
 
+interface Step {
+  title: string;
+  step: any;
+  stateUsed: { [key: string]: 'optional' | 'required' };
+}
+
 class ValidatorApplication extends View {
   private formState: any = {
     name: '',
@@ -22,14 +28,25 @@ class ValidatorApplication extends View {
   private onSubmit: (formState: any) => void = () => {};
 
   render(q: Quark): void {
-    const steps = [
+    const steps: Step[] = [
       {
         title: 'Project Details',
         step: new ProjectDetails(),
+        stateUsed: {
+          name: 'required',
+          email: 'required',
+          mobile: 'required',
+          country: 'required',
+          linkedin: 'required',
+          dateOfBirth: 'required',
+        },
       },
       {
         title: 'Preferences',
         step: new Preferences(),
+        stateUsed: {
+          preferences: 'optional',
+        },
       },
     ];
 
