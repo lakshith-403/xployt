@@ -5,6 +5,7 @@ export class tableBase {
   content: Record<string, any>[];
   headers?: string[];
   className?: string;
+
   constructor(content: Record<string, any>[], headers: string[], className: string = '') {
     this.content = content;
     this.headers = headers;
@@ -23,7 +24,13 @@ export class tableBase {
       this.content.forEach((item) => {
         $(q, 'div', 'table-row', {}, (q) => {
           Object.values(item).forEach((element) => {
-            $(q, 'span', 'table-cell', {}, element!.toString());
+            $(q, 'span', 'table-cell', {}, (q) => {
+              if (typeof element === 'string' && element.startsWith('<button')) {
+                q.innerHTML = element; // Use innerHTML to render the button
+              } else {
+                q.textContent = element!.toString();
+              }
+            });
           });
         });
       });
