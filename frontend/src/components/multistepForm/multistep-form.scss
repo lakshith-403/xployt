@@ -2,12 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  --margin-from-edge: 20px;
+  --margin-from-edge: 3rem;
 
   .tabs-header {
     display: flex;
     justify-content: center;
-    margin: 1.5rem 0 2rem 0;
+    margin: 1rem 0 1rem 0;
     gap: 1.8rem;
     .tab-button {
       background-color: inherit;
@@ -26,8 +26,8 @@
   .form-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
     position: relative;
+    margin-bottom: 2rem;
 
     .prev-button {
       left: 0;

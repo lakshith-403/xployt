@@ -11,8 +11,8 @@ export interface TextAreaProps {
   maxLength?: number;
   disabled?: boolean;
   readOnly?: boolean;
-  onChange?: (event: Event) => void;
-  onFocus?: (event: Event) => void;
+  onChange?: (value: string) => void;
+  onFocus?: (value: string) => void;
 }
 
 export class TextAreaBase {
@@ -32,8 +32,16 @@ export class TextAreaBase {
     if (props.maxLength) this.element!.maxLength = props.maxLength;
     if (props.disabled) this.element!.disabled = props.disabled;
     if (props.readOnly) this.element!.readOnly = props.readOnly;
-    if (props.onChange) this.element!.addEventListener('input', props.onChange);
-    if (props.onFocus) this.element!.addEventListener('focus', props.onFocus);
+    if (props.onChange) {
+      this.element!.addEventListener('input', (e) => {
+        props.onChange!((e.target as HTMLInputElement).value);
+      });
+    }
+    if (props.onFocus) {
+      this.element!.addEventListener('focus', () => {
+        props.onFocus!(this.element!.value);
+      });
+    }
   }
 
   public render(parent: Quark): void {

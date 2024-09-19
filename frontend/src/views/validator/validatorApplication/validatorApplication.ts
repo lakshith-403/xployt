@@ -24,7 +24,7 @@ class ValidatorApplication extends View {
       year: '',
     },
     skills: '',
-    certificate: '',
+    certificates: '',
     cv: null as File | null,
     references: '',
     termsAndConditions: [false, false, false, false],

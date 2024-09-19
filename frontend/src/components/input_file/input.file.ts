@@ -40,9 +40,11 @@ export class FileInputBase {
   public getElement(): HTMLInputElement {
     return this.element!;
   }
-  public setValue(value: any): void {
-    this.element!.value = value;
+
+  public clearValue(): void {
+    this.element!.value = '';
   }
+
   public setDisabled(disabled: boolean): void {
     this.element!.disabled = disabled;
   }

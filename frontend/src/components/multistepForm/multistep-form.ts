@@ -176,6 +176,7 @@ class MultistepForm {
    * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
    */
   private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
+    console.log('Update form state', keyOrState, value);
     if (typeof keyOrState === 'string') {
       if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
         this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
@@ -191,7 +192,7 @@ class MultistepForm {
         }
       }
     }
-    // console.log('Updated form state:', this.formState);
+    console.log('Updated form state:', this.formState);
     if (this.checkIfRequiredFieldsAreFilled()) {
       console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);

@@ -16,18 +16,18 @@ class Expertise implements Step {
     label: 'Certificate',
     placeholder: 'Enter your certificate',
     onChange: (value) => {
-      this.updateParentState!({ certificate: value });
+      this.updateParentState!({ certificates: value });
     },
   });
   private referenceField?: TextAreaBase = new TextAreaBase({
     label: 'Reference',
     placeholder: 'Enter your reference',
     onChange: (value) => {
-      this.updateParentState!({ reference: value });
+      this.updateParentState!({ references: value });
     },
   });
   private fileInput?: FileInputBase = new FileInputBase({
-    label: 'Upload File',
+    label: 'Upload CV',
     onChange: (value) => {
       this.updateParentState!({ file: value });
     },
@@ -44,16 +44,15 @@ class Expertise implements Step {
       });
       $(q, 'div', 'form-field', {}, (q) => {
         this.certificateField!.render(q);
-        this.certificateField?.setValue(state.certificate);
+        this.certificateField?.setValue(state.certificates);
       });
       $(q, 'div', 'form-field', {}, (q) => {
         this.referenceField!.render(q);
-        this.referenceField?.setValue(state.reference);
+        this.referenceField?.setValue(state.references);
       });
       $(q, 'div', 'form-field-container', {}, (q) => {
         $(q, 'div', 'form-field', {}, (q) => {
           this.fileInput!.render(q);
-          this.fileInput?.setValue(state.file);
         });
       });
     });
