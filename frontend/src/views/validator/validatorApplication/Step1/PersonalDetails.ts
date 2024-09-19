@@ -4,7 +4,6 @@ import './PersonalDetails.scss';
 import { Step } from '@/components/multistepForm/multistep-form';
 
 class PersonalDetails implements Step {
-  title = 'Personal Details';
   private nameField: FormTextField = new FormTextField({ label: 'Name', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });
   private emailField: FormTextField = new FormTextField({ label: 'Email', placeholder: 'Enter your email', onChange: (value) => this.updateState({ email: value }) });
   private mobileField: FormTextField = new FormTextField({ label: 'Mobile', placeholder: 'Enter your mobile number', onChange: (value) => this.updateState({ mobile: value }) });

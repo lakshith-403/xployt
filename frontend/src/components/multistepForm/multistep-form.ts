@@ -87,7 +87,7 @@ class MultistepForm {
 
   nextTab(): void {
     console.log('Next Tab Clicked');
-    if (this.activeTabIndex + 1 <= this.stage) {
+    if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
       this.switchTab(this.activeTabIndex + 1);
     } else if (this.isCurrentTabValid()) {
       this.stage++;

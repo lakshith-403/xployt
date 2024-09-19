@@ -1,10 +1,9 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { TextField } from '../../../../components/text_field/base';
-import './Preferences.scss';
+import './Expertise.scss';
 import { Step } from '@/components/multistepForm/multistep-form';
 
-class Preferences implements Step {
-  title = 'Preferences';
+class Expertise implements Step {
   private nameField?: TextField;
   private descriptionField: TextField = new TextField({
     label: 'Project Description',
@@ -37,4 +36,4 @@ class Preferences implements Step {
   }
 }
 
-export default Preferences;
+export default Expertise;

@@ -1,10 +1,10 @@
 import { View, ViewHandler } from '@ui_lib/view';
 import ProjectDetails from './Step1/PersonalDetails';
-import Preferences from './Step2/Preferences';
+import Preferences from './Step2/Expertise';
+import { TermsAndConditions } from './Step3/TermsAndConditions';
 import MultistepForm from '@/components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
-
 interface Step {
   title: string;
   step: any;
@@ -23,6 +23,11 @@ class ValidatorApplication extends View {
       month: '',
       year: '',
     },
+    skills: '',
+    certificate: '',
+    cv: null as File | null,
+    references: '',
+    termsAndConditions: [false, false, false, false],
   };
 
   private onSubmit: (formState: any) => void = () => {};
@@ -42,10 +47,20 @@ class ValidatorApplication extends View {
         },
       },
       {
-        title: 'Preferences',
+        title: 'Expertise',
         step: new Preferences(),
         stateUsed: {
-          preferences: 'optional',
+          skills: 'optional',
+          certificate: 'optional',
+          cv: 'optional',
+          references: 'optional',
+        },
+      },
+      {
+        title: 'Terms and Conditions',
+        step: new TermsAndConditions(),
+        stateUsed: {
+          termsAndConditions: 'required',
         },
       },
     ];
