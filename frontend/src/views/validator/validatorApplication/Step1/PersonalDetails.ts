@@ -1,18 +1,18 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
-import { TextField } from '../../../../components/text_field/base';
+import { FormTextField } from '../../../../components/text_field/form.text_field';
 import './PersonalDetails.scss';
 import { Step } from '@/components/multistepForm/multistep-form';
 
 class PersonalDetails implements Step {
   title = 'Personal Details';
-  private nameField: TextField = new TextField({ label: 'Name', onChange: (value) => this.updateState({ name: value }) });
-  private emailField: TextField = new TextField({ label: 'Email', onChange: (value) => this.updateState({ email: value }) });
-  private mobileField: TextField = new TextField({ label: 'Mobile', onChange: (value) => this.updateState({ mobile: value }) });
-  private countryField: TextField = new TextField({ label: 'Country', onChange: (value) => this.updateState({ country: value }) });
-  private linkedinField: TextField = new TextField({ label: 'LinkedIn', onChange: (value) => this.updateState({ linkedin: value }) });
-  private dobDayField: TextField = new TextField({ label: 'Date of Birth', onChange: (value) => this.updateState({ dateOfBirth: value }) });
-  private dobMonthField: TextField = new TextField({ label: 'Date of Birth', onChange: (value) => this.updateState({ dateOfBirth: value }) });
-  private dobYearField: TextField = new TextField({ label: 'Date of Birth', onChange: (value) => this.updateState({ dateOfBirth: value }) });
+  private nameField: FormTextField = new FormTextField({ label: 'Name', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });
+  private emailField: FormTextField = new FormTextField({ label: 'Email', placeholder: 'Enter your email', onChange: (value) => this.updateState({ email: value }) });
+  private mobileField: FormTextField = new FormTextField({ label: 'Mobile', placeholder: 'Enter your mobile number', onChange: (value) => this.updateState({ mobile: value }) });
+  private countryField: FormTextField = new FormTextField({ label: 'Country', placeholder: 'Select your country', onChange: (value) => this.updateState({ country: value }) });
+  private linkedinField: FormTextField = new FormTextField({ label: 'LinkedIn', placeholder: 'Enter your LinkedIn profile URL', onChange: (value) => this.updateState({ linkedin: value }) });
+  private dobDayField: FormTextField = new FormTextField({ label: '', placeholder: 'DD', onChange: (value) => this.updateState({ dateOfBirth: { day: value } }) });
+  private dobMonthField: FormTextField = new FormTextField({ label: '', placeholder: 'MM', onChange: (value) => this.updateState({ dateOfBirth: { month: value } }) });
+  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateState({ dateOfBirth: { year: value } }) });
 
   private onValidityChange?: (isValid: boolean) => void;
   private updateParentState?: (newState: any) => void;
@@ -24,26 +24,35 @@ class PersonalDetails implements Step {
     $(q, 'div', 'personal-details', {}, (q) => {
       $(q, 'h2', '', {}, 'Personal Details');
 
-      this.renderField(q, this.nameField, state.name);
-      this.renderField(q, this.emailField, state.email);
-      this.renderField(q, this.mobileField, state.mobile);
-      this.renderField(q, this.countryField, state.country);
-      this.renderField(q, this.linkedinField, state.linkedin);
+      this.renderFieldFullWidth(q, this.nameField, state.name);
+      this.renderFieldFullWidth(q, this.emailField, state.email);
+      this.renderFieldFullWidth(q, this.mobileField, state.mobile);
+      this.renderFieldFullWidth(q, this.countryField, state.country);
+      this.renderFieldFullWidth(q, this.linkedinField, state.linkedin);
 
       $(q, 'div', 'dob', {}, (q) => {
-        this.renderField(q, this.dobDayField, state.dateOfBirth?.day);
-        this.renderField(q, this.dobMonthField, state.dateOfBirth?.month);
-        this.renderField(q, this.dobYearField, state.dateOfBirth?.year);
+        this.renderCustomField(q, this.dobDayField, state.dateOfBirth?.day, 1 / 3);
+        this.renderCustomField(q, this.dobMonthField, state.dateOfBirth?.month, 1 / 3);
+        this.renderCustomField(q, this.dobYearField, state.dateOfBirth?.year, 1 / 3);
       });
     });
 
     this.checkValidity();
   }
 
-  private renderField(q: Quark, field: TextField, value: any): void {
+  private renderFieldFullWidth(q: Quark, field: FormTextField, value: any): void {
     $(q, 'div', 'form-field', {}, (q) => {
       field.render(q);
       field.setValue(value);
+      field.addClass('w-full');
+    });
+  }
+
+  private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
+    $(q, 'div', 'form-field', {}, (q) => {
+      field.render(q);
+      field.setValue(value);
+      field.addClass(`w-${widthFraction}`);
     });
   }
 

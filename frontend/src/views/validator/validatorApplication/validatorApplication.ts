@@ -3,6 +3,7 @@ import ProjectDetails from './Step1/PersonalDetails';
 import Preferences from './Step2/Preferences';
 import MultistepForm from '@/components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import './validatorApplication.scss';
 
 class ValidatorApplication extends View {
   private formState: any = {

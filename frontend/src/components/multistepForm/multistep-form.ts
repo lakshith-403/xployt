@@ -1,4 +1,6 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+import { ButtonType } from '../button/base';
+import { FormButton } from '../button/form.button';
 import './multistep-form.scss';
 
 export abstract class Step {
@@ -17,8 +19,8 @@ class MultistepForm {
   contentElement!: HTMLElement;
   tabsButtons!: HTMLElement;
   private stage: number = 0;
-  private nextButton: HTMLButtonElement | null = null;
-  private prevButton: HTMLButtonElement | null = null;
+  private nextButton: FormButton | null = null;
+  private prevButton: FormButton | null = null;
   private tabValidityStates: boolean[] = [];
   private formState: any = {};
 
@@ -34,7 +36,7 @@ class MultistepForm {
       $(q, 'div', 'tabs-header', {}, (q) => {
         this.tabsButtons = $(q, 'div', 'tabs-header', {}, (q) => {
           this.steps.forEach((step, index) => {
-            $(q, 'button', 'tab-button', { onclick: () => this.switchTab(index) }, (q) => {
+            $(q, 'button', 'tab-button', { onclick: () => this.jumpToTab(index) }, (q) => {
               $(q, 'span', 'dot', {}, step.title);
             });
           });
@@ -46,9 +48,21 @@ class MultistepForm {
         this.renderActiveTabContent();
       });
 
-      this.nextButton = $(q, 'button', 'next-button', { onclick: () => this.nextTab() }, 'Next') as HTMLButtonElement;
-      this.prevButton = $(q, 'button', 'prev-button', { onclick: () => this.prevTab() }, 'Prev') as HTMLButtonElement;
-      this.prevButton.style.display = 'none';
+      // this.nextButton = $(q, 'button', 'next-button', { onclick: () => this.nextTab() }, 'Next') as HTMLButtonElement;
+      this.nextButton = new FormButton({
+        label: 'Next',
+        onClick: () => this.nextTab(),
+        type: ButtonType.PRIMARY,
+      });
+      this.nextButton.render(q);
+
+      this.prevButton = new FormButton({
+        label: 'Prev',
+        onClick: () => this.prevTab(),
+        type: ButtonType.SECONDARY,
+      });
+      this.prevButton.render(q);
+      this.prevButton.hide();
     });
 
     this.tabsButtons.children[this.activeTabIndex].classList.add('selected');
@@ -71,15 +85,21 @@ class MultistepForm {
     }
   }
 
+  jumpToTab(index: number): void {
+    if (index >= this.stage) {
+      return;
+    }
+    this.switchTab(index);
+  }
+
   switchTab(index: number): void {
-    console.log('Switch Tab Clicked 2');
     this.tabsButtons.children[this.activeTabIndex].classList.remove('selected');
     this.tabsButtons.children[index].classList.add('selected');
     this.activeTabIndex = index;
     if (index === 0) {
-      this.prevButton!.style.display = 'none';
+      this.prevButton!.hide();
     } else {
-      this.prevButton!.style.display = 'block';
+      this.prevButton!.show();
     }
     this.renderActiveTabContent();
   }
@@ -92,8 +112,39 @@ class MultistepForm {
     this.tabValidityStates[index] = isValid;
   }
 
-  private updateFormState(newState: any): void {
-    this.formState = { ...this.formState, ...newState };
+  /**
+   * Updates the form state.
+   *
+   * @param keyOrState - The key to update or an object containing multiple key-value pairs to update.
+   * @param value - The value to update for the given key (optional).
+   *
+   * Usage examples:
+   *
+   * // Updating a single key-value pair
+   * updateFormState('username', 'newUsername');
+   *
+   * // Updating multiple key-value pairs with an object
+   * updateFormState({ username: 'newUsername', email: 'newEmail@example.com' });
+   *
+   * // Updating a nested object for a specific key
+   * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
+   */
+  private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
+    if (typeof keyOrState === 'string') {
+      if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
+        this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
+      } else {
+        this.formState[keyOrState] = value;
+      }
+    } else {
+      for (const [key, val] of Object.entries(keyOrState)) {
+        if (this.formState[key] instanceof Object && val instanceof Object) {
+          this.formState[key] = { ...this.formState[key], ...val };
+        } else {
+          this.formState[key] = val;
+        }
+      }
+    }
     console.log('Updated form state:', this.formState);
   }
 
