@@ -1,36 +1,51 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { TextField } from '../../../../components/text_field/base';
+import { TextAreaBase } from '@/components/test_area/textArea.base';
 import './Expertise.scss';
 import { Step } from '@/components/multistepForm/multistep-form';
 
 class Expertise implements Step {
-  private nameField?: TextField;
-  private descriptionField: TextField = new TextField({
-    label: 'Project Description',
-    onChange: () => {
-      return true;
+  private skillsField?: TextAreaBase = new TextAreaBase({
+    label: 'Skills and Proficiencies',
+    placeholder: 'Enter your skills and proficiencies',
+    onChange: (value) => {
+      this.updateParentState!({ skills: value });
     },
   });
-  private updateParentState?: (newState: any) => void;
+  private certificateField?: TextAreaBase = new TextAreaBase({
+    label: 'Certificate',
+    placeholder: 'Enter your certificate',
+    onChange: (value) => {
+      this.updateParentState!({ certificate: value });
+    },
+  });
+  private referenceField?: TextAreaBase = new TextAreaBase({
+    label: 'Reference',
+    placeholder: 'Enter your reference',
+    onChange: (value) => {
+      this.updateParentState!({ reference: value });
+    },
+  });
+  private updateParentState!: (newState: any) => void;
 
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
 
-    $(q, 'div', 'project-details', {}, (q) => {
-      $(q, 'h2', '', {}, 'Project Details');
-
-      $(q, 'div', 'form-field', {}, (q) => {
-        this.nameField = new TextField({
-          label: 'Project Name',
-          onChange: () => {
-            return true;
-          },
+    $(q, 'div', 'expertise-details', {}, (q) => {
+      $(q, 'div', 'form-field-container', {}, (q) => {
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.skillsField!.render(q);
         });
-        this.nameField.render(q);
       });
-
-      $(q, 'div', 'form-field', {}, (q) => {
-        this.descriptionField.render(q);
+      $(q, 'div', 'form-field-container', {}, (q) => {
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.certificateField!.render(q);
+        });
+      });
+      $(q, 'div', 'form-field-container', {}, (q) => {
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.referenceField!.render(q);
+        });
       });
     });
   }

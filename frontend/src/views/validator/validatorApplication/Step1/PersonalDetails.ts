@@ -11,10 +11,9 @@ class PersonalDetails implements Step {
   private linkedinField: FormTextField = new FormTextField({ label: 'LinkedIn', placeholder: 'Enter your LinkedIn profile URL', onChange: (value) => this.updateState({ linkedin: value }) });
   private dobDayField: FormTextField = new FormTextField({ label: '', placeholder: 'DD', onChange: (value) => this.updateState({ dateOfBirth: { day: value } }) });
   private dobMonthField: FormTextField = new FormTextField({ label: '', placeholder: 'MM', onChange: (value) => this.updateState({ dateOfBirth: { month: value } }) });
-  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateState({ dateOfBirth: { year: value } }) });
+  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateParentState({ dateOfBirth: { year: value } }) });
 
-  private onValidityChange?: (isValid: boolean) => void;
-  private updateParentState?: (newState: any) => void;
+  private updateParentState!: (newState: any) => void;
 
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
