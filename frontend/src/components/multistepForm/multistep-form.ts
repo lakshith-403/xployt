@@ -91,6 +91,8 @@ class MultistepForm {
     } else if (this.isCurrentTabValid()) {
       this.stage++;
       this.switchTab(this.activeTabIndex + 1);
+    } else {
+      alert('Please fill in all the required fields.');
     }
   }
 

@@ -65,7 +65,15 @@ class PersonalDetails implements Step {
   }
 
   private checkValidity(): void {
-    const isValid = this.nameField.getValue().trim() !== '' && this.emailField.getValue().trim() !== '';
+    const isValid =
+      this.nameField.getValue().trim() !== '' &&
+      this.emailField.getValue().trim() !== '' &&
+      this.mobileField.getValue().trim() !== '' &&
+      this.countryField.getValue().trim() !== '' &&
+      this.linkedinField.getValue().trim() !== '' &&
+      this.dobDayField.getValue().trim() !== '' &&
+      this.dobMonthField.getValue().trim() !== '' &&
+      this.dobYearField.getValue().trim() !== '';
     this.onValidityChange!(isValid);
   }
 }
