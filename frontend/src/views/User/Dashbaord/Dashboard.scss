@@ -18,11 +18,12 @@
     text-align: center;
     flex: 1;
     margin: 0 0.5rem;
+    color: #fff; /* Ensure text color is visible */
   }
 
-  .earning-box h3 {
-    color: #1b8d64;
-  }
+  // .earning-box h3 {
+  //   color: #1b8d64;
+  // }
 
   .tables {
     margin-bottom: 2rem;
@@ -36,7 +37,18 @@
     margin: 1.2rem 1rem;
   }
 
- 
+  .invitation-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  }
+
+  .invitation-table th,
+  .invitation-table td {
+    border: 1px solid #333;
+    padding: 10px;
+    text-align: center; /* Aligns table headers and cells to the middle */
+  }
 
   .accept-btn {
     background-color: #1b8d64;
@@ -53,5 +65,23 @@
 
   .projects-table {
     margin-top: 2rem;
+  }
+
+  .accept-button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .accept-button:hover {
+    background-color: #45a049;
   }
 }
