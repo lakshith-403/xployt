@@ -1,0 +1,20 @@
+.text-area-container {
+  width: 100%;
+  padding: 20px 30px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  resize: vertical;
+  color: var(--light-gray);
+
+  .text-area-input {
+    width: 100%;
+    padding: 20px 30px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+    resize: vertical;
+    background-color: var(--background-secondary);
+    color: var(--light-gray);
+  }
+}
