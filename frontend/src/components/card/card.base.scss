@@ -2,12 +2,19 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+
   border-radius: 1rem;
+  padding: 1.5rem;
   flex: 1;
   background-color: var(--background-secondary);
 
   .card-title {
+    text-align: left;
+  }
 
+  .card-content {
+    width: 100%;
   }
 }
