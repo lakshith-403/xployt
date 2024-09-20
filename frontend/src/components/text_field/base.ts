@@ -1,4 +1,4 @@
-import { Quark, QuarkFunction as $ } from "../../ui_lib/quark"
+import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
 
 export interface TextFieldOptions {
   label: string;
@@ -12,7 +12,7 @@ export class TextField {
   private placeholder: string;
   private type: string;
   private onChange?: (value: string) => void;
-  private element?: Quark;
+  protected element?: Quark;
 
   constructor(options: TextFieldOptions) {
     this.label = options.label;
@@ -23,14 +23,14 @@ export class TextField {
 
   render(parent: Quark): void {
     const container = $(parent, 'div', 'text-field-container', {});
-    
+
     if (this.label) {
       $(container, 'label', 'text-field-label', {}, this.label);
     }
-    
+
     this.element = $(container, 'input', 'text-field-input', {
       type: this.type,
-      placeholder: this.placeholder
+      placeholder: this.placeholder,
     });
 
     if (this.onChange) {

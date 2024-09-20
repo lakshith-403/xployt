@@ -1,0 +1,49 @@
+.multistep-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  --margin-from-edge: 20px;
+
+  .tabs-header {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0 2rem 0;
+    gap: 1.8rem;
+    .tab-button {
+      background-color: inherit;
+      border: none;
+      color: var(--color-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.8rem 2rem;
+
+      &.selected {
+        box-shadow: 0 1px 0 0 var(--color-primary);
+      }
+    }
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    position: relative;
+
+    .prev-button {
+      left: 0;
+      position: absolute;
+      margin-left: var(--margin-from-edge);
+    }
+    .next-button {
+      right: 0;
+      position: absolute;
+      margin-right: var(--margin-from-edge);
+    }
+
+    .submit-button {
+      right: 0;
+      position: absolute;
+      margin-right: var(--margin-from-edge);
+    }
+  }
+}

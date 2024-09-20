@@ -6,7 +6,7 @@ import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { ProjectTable } from '../../../components/table/projectsTable';
+import { ProjectTable } from './projectsTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 
 class ProjectsView implements View {
@@ -20,6 +20,7 @@ class ProjectsView implements View {
   private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
 
   constructor(params: { projectId: string }) {
+    super();
     this.params = params;
     this.userCache = CACHE_STORE.getUser('1');
     this.projectsCache = CACHE_STORE.getProjects();

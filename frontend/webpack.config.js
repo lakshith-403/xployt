@@ -12,6 +12,14 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@ui_lib': path.resolve(__dirname, 'src/ui_lib'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@data': path.resolve(__dirname, 'src/data'),
+      '@views': path.resolve(__dirname, 'src/views'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
+    },
   },
   module: {
     rules: [
@@ -25,6 +33,9 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
     ],
+  },
+  stats: {
+    errorDetails: true,
   },
   plugins: [
     new MiniCssExtractPlugin({

@@ -1,0 +1,77 @@
+import { View, ViewHandler } from '@ui_lib/view';
+import ProjectDetails from './Step1/PersonalDetails';
+import Preferences from './Step2/Expertise';
+import { TermsAndConditions } from './Step3/TermsAndConditions';
+import MultistepForm from '@/components/multistepForm/multistep-form';
+import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import './validatorApplication.scss';
+interface Step {
+  title: string;
+  step: any;
+  stateUsed: { [key: string]: 'optional' | 'required' };
+}
+
+class ValidatorApplication extends View {
+  private formState: any = {
+    name: '',
+    email: '',
+    mobile: '',
+    country: '',
+    linkedin: '',
+    dateOfBirth: {
+      day: '',
+      month: '',
+      year: '',
+    },
+    skills: '',
+    certificate: '',
+    cv: null as File | null,
+    references: '',
+    termsAndConditions: [false, false, false, false],
+  };
+
+  private onSubmit: (formState: any) => void = () => {};
+
+  render(q: Quark): void {
+    const steps: Step[] = [
+      {
+        title: 'Project Details',
+        step: new ProjectDetails(),
+        stateUsed: {
+          name: 'required',
+          email: 'required',
+          mobile: 'required',
+          country: 'required',
+          linkedin: 'required',
+          dateOfBirth: 'required',
+        },
+      },
+      {
+        title: 'Expertise',
+        step: new Preferences(),
+        stateUsed: {
+          skills: 'optional',
+          certificate: 'optional',
+          cv: 'optional',
+          references: 'optional',
+        },
+      },
+      {
+        title: 'Terms and Conditions',
+        step: new TermsAndConditions(),
+        stateUsed: {
+          termsAndConditions: 'required',
+        },
+      },
+    ];
+
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', this.onSubmit);
+    $(q, 'div', 'validator-application', {}, (q) => {
+      $(q, 'div', 'container', {}, (q) => {
+        multistepForm.render(q);
+      });
+    });
+  }
+}
+
+export const validatorApplicationViewHandler = new ViewHandler('validator/application', ValidatorApplication);
