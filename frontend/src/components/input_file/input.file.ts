@@ -1,4 +1,4 @@
-import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import { QuarkFunction as $, Quark } from './../../ui_lib/quark';
 import './input.file.scss';
 
 export interface FileInputProps {

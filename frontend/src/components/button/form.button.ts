@@ -1,5 +1,5 @@
 import { Button, ButtonOptions } from './base';
-import { Quark } from '@ui_lib/quark';
+import { Quark } from './../../ui_lib/quark';
 import './form.button.scss';
 
 export class FormButton extends Button {

@@ -1,5 +1,5 @@
 import { TextField, TextFieldOptions } from './base';
-import { Quark } from '@ui_lib/quark';
+import { Quark } from './../../ui_lib/quark';
 
 interface FormTextFieldOptions extends TextFieldOptions {
   class?: string;
