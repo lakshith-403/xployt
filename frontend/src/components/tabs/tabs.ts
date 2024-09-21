@@ -1,5 +1,4 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import { View, ViewHandler } from '../../ui_lib/view';
 import './tabs.scss';
 
 interface Tab {

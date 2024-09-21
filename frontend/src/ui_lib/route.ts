@@ -56,11 +56,11 @@ export class RouteHandler {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = '';
           this.navigationView.render(document.getElementById('sidebar')!, viewHandler.route);
+          document.getElementById('root')!.querySelector('#content')!.classList.remove('no-sidebar');
         } else {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = 'none';
           document.getElementById('root')!.querySelector('#content')!.classList.add('no-sidebar');
-          console.log('no navigation view');
         }
 
         if (this.hideTopNavigation) {
