@@ -1,6 +1,7 @@
-import { Step } from '@/components/multistepForm/multistep-form';
-import { TextField } from '@/components/text_field/base';
-import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { Step } from './../../../../components/multistepForm/multistep-form';
+import { TextField } from './../../../../components/text_field/base';
+import { Quark, QuarkFunction as $ } from './../../../../ui_lib/quark';
+
 import './TermsAndConditions.scss';
 
 export class TermsAndConditions implements Step {

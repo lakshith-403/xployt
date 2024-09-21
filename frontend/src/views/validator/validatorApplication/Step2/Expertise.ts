@@ -1,8 +1,9 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
-import { FileInputBase } from '@/components/input_file/input.file';
-import { TextAreaBase } from '@/components/test_area/textArea.base';
+import { FileInputBase } from './../../../../components/input_file/input.file';
+import { TextAreaBase } from './../../../../components/test_area/textArea.base';
 import './Expertise.scss';
-import { Step } from '@/components/multistepForm/multistep-form';
+
+import { Step } from './../../../../components/multistepForm/multistep-form';
 
 class Expertise implements Step {
   private skillsField?: TextAreaBase = new TextAreaBase({
