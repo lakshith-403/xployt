@@ -3,11 +3,38 @@ import { CACHE_STORE } from '../../../data/cache';
 import { ProjectInfoCacheMock, ProjectInfo } from '../../../data/validator/cache/projectInfo';
 import { ProjectTeamCacheMock, ProjectTeam } from '../../../data/validator/cache/project.team';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
+import {Card} from "../../../components/card/card.base";
 import  './tabOverview.scss'
 
 export default class Overview {
   projectInfo: ProjectInfo = {} as ProjectInfo
-  projectTeam: ProjectTeam = {} as ProjectTeam;
+  projectTeam: {
+    projectLead: {
+      name: string;
+      id: number;
+      username: string;
+      email: string;
+    };
+    assignedValidator: {
+      name: string;
+      id: number;
+      username: string;
+      email: string;
+    };
+  } = {
+    projectLead: {
+      name: '',
+      id: 0,
+      username: '',
+      email: ''
+    },
+    assignedValidator: {
+      name: '',
+      id: 0,
+      username: '',
+      email: ''
+    }
+  }
   constructor(private readonly projectId: string) {
     this.projectId = projectId;
   }
@@ -17,8 +44,11 @@ export default class Overview {
   async loadData(): Promise<void> {
     try {
       this.projectInfo = await this.projectInfoCache.get(false, this.projectId)
-      this.projectTeam = await this.projectTeamCache.get(false, this.projectId);
+      const fullTeam = await this.projectTeamCache.get(true, this.projectId);
+      this.projectTeam.projectLead = fullTeam.projectLead;
+      this.projectTeam.assignedValidator = fullTeam.validator[0]
       console.log('Project Info', this.projectInfo)
+      console.log("Project Team", this.projectTeam)
     }catch (error) {
       console.error('Failed to load project data', error);
     }
@@ -43,29 +73,42 @@ export default class Overview {
           })
           $(q, 'span', '', {}, (q) => {
             $(q, 'p', 'key', {}, "Access Link")
-            $(q, 'p', 'key link', {}, 'www.example.com')
+            $(q, 'a', 'key link', {href: '#', target: '_blank'}, 'www.example.com')
           })
         })
         $(q, 'div', '', {}, (q) => {
-          $(q, 'div', 'card', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Project Lead')
-            $(q, 'span', 'description', {}, (q) => {
-              $(q, 'p', 'value', {}, this.projectTeam.projectLead.name)
-              $(q, 'p', 'value caption', {}, this.projectTeam.projectLead.name)
-            })
-            $(q, 'p', 'value link', {}, this.projectTeam.projectLead.contact)
-          })
-          $(q, 'div', 'card', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Assigned Validatorr')
-            $(q, 'span', 'description', {}, (q) => {
-              $(q, 'p', 'value', {}, this.projectTeam.validator[0].name)
-              $(q, 'p', 'value caption', {}, this.projectTeam.validator[0].username)
-            })
-            $(q, 'p', 'value link description', {}, this.projectTeam.validator[0].email)
-          })
-        })
+          Object.entries(this.projectTeam).forEach(([key, teamMember]) => {
+            const title = convertToTitleCase(key);
 
+            new Card({
+              title: title,
+              content: $(q, 'div', 'description', {}, (q) => {
+                $(q, 'span', '', {}, (q) => {
+                  $(q, 'p', 'value', {}, teamMember.name);
+                  $(q, 'p', 'value caption', {}, teamMember.username);
+                })
+                $(q, 'p', 'value link', {}, teamMember.email);
+              })
+            }).render(q);
+          });
+        })
+      })
+
+      $(q, 'section', '', {}, (q) => {
+        $(q, 'h2', '', {}, 'Rules and Scope')
+        $(q, 'ul', '', {}, (q) => {
+            this.projectInfo.scope.forEach((rule) => {
+                $(q, 'li', '', {}, rule)
+            })
+        })
       })
     })
   }
+}
+
+function convertToTitleCase(input: string): string {
+  const words = input.replace(/([A-Z])/g, ' $1').trim();
+  return words.replace(/\w\S*/g, (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
 }
