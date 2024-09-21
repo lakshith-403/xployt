@@ -1,7 +1,7 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { FormTextField } from '../../../../components/text_field/form.text_field';
 import './PersonalDetails.scss';
-import { Step } from '@/components/multistepForm/multistep-form';
+import { Step } from './../../../../components/multistepForm/multistep-form';
 
 class PersonalDetails implements Step {
   private nameField: FormTextField = new FormTextField({ label: 'Name', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });

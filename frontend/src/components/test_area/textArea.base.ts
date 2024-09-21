@@ -1,4 +1,4 @@
-import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import { QuarkFunction as $, Quark } from './../../ui_lib/quark';
 import './textArea.base.scss';
 
 export interface TextAreaProps {

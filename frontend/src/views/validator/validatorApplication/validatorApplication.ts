@@ -2,7 +2,7 @@ import { View, ViewHandler } from '@ui_lib/view';
 import ProjectDetails from './Step1/PersonalDetails';
 import Preferences from './Step2/Expertise';
 import { TermsAndConditions } from './Step3/TermsAndConditions';
-import MultistepForm from '@/components/multistepForm/multistep-form';
+import MultistepForm from './../../../components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
 interface Step {
