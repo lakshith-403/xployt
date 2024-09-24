@@ -1,15 +1,15 @@
-import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
+import {Quark, QuarkFunction as $} from '../../ui_lib/quark';
 import './card.base.scss';
 
 export interface CardOptions {
     title: string;
-    content: HTMLElement;
+    content?: HTMLElement;
     extraInfo?: string;
 }
 
 export class Card {
     protected title: string;
-    protected content: HTMLElement;
+    protected content?: HTMLElement;
     protected extraInfo?: string;
     protected element?: Quark;
 
@@ -22,9 +22,37 @@ export class Card {
     render(parent: Quark) {
         this.element = $(parent, 'div', 'card', {}, (q) => {
             $(q, 'p', 'card-title', {}, this.title);
+
             $(q, 'div', 'card-content', {}, (q) => {
-                q.appendChild(this.content);
+                if (this.content) {
+                    q.appendChild(this.content);
+                }
             });
+
+            if (this.extraInfo) {
+                $(q, 'p', 'card-extra', {}, this.extraInfo);
+            }
+        });
+    }
+}
+
+export interface PriceCardOptions extends CardOptions {
+    amount: number;
+}
+
+export class PriceCard extends Card {
+    protected amount: number;
+
+    constructor(options: PriceCardOptions) {
+        super({title: options.title, extraInfo: options.extraInfo});
+        this.amount = options.amount;
+    }
+
+    // Override the render method to include price and different content style
+    render(parent: Quark) {
+        this.element = $(parent, 'div', 'card price-card', {}, (q) => {
+            $(q, 'p', 'card-title', {}, this.title);
+            $(q, 'p', 'card-price', {}, `$${this.amount.toFixed(2)}`);
             if (this.extraInfo) {
                 $(q, 'p', 'card-extra', {}, this.extraInfo);
             }

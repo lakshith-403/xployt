@@ -8,6 +8,7 @@
   border-radius: 1rem;
   padding: 1.5rem;
   flex: 1;
+  width: 20rem;
   background-color: var(--background-secondary);
 
   .card-title {
@@ -15,6 +16,14 @@
   }
 
   .card-content {
+    width: 100%;
+  }
+
+  .card-price{
+    font-size: 2.5rem;
+    color: var(--light-green);
+    font-weight: 600;
+    text-align: center;
     width: 100%;
   }
 }
