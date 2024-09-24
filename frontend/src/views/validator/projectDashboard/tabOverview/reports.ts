@@ -1,8 +1,7 @@
 import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 import {CACHE_STORE} from "@data/cache";
-import {Report, ReportsCache} from "@data/projectLead/cache/reports.cache";
+import {ReportsCache} from "@data/projectLead/cache/reports.cache";
 import {UserCache} from "@data/user";
-import {ColoredFilterableTable} from "@components/table/colored.filterable.table";
 import {tableBase} from "@components/table/table.base";
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
 import '../tabOverview.scss'
@@ -59,7 +58,6 @@ export class OverviewReports {
         $(q, 'div', '', {}, (q) => {
             new tableBase(this.reports, ['ID', 'Status', 'Title', 'Date']).render(q)
         })
-
 
 
     }

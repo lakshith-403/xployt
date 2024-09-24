@@ -3,9 +3,9 @@ import {CACHE_STORE} from "@data/cache";
 import {ProjectTeamCacheMock} from "@data/validator/cache/project.team";
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
 import {Card} from "@components/card/card.base";
-import  '../tabOverview.scss'
+import '../tabOverview.scss'
 
-export class OverviewBasicInfo{
+export class OverviewBasicInfo {
     projectTeam: {
         [key: string]: {
             name: string;

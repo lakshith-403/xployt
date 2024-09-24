@@ -1,10 +1,8 @@
 import {Quark, QuarkFunction as $} from '../../../ui_lib/quark';
-import {CACHE_STORE} from '../../../data/cache';
+import {CACHE_STORE} from '@data/cache';
 import {router} from "@ui_lib/router";
-import {ProjectInfoCacheMock, ProjectInfo} from '../../../data/validator/cache/projectInfo';
-import {ProjectTeamCacheMock, ProjectTeam} from '@data/validator/cache/project.team';
-import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
-import {Card} from "@components/card/card.base";
+import {ProjectInfoCacheMock, ProjectInfo} from '@data/validator/cache/projectInfo';
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import {IconButton} from "@components/button/icon.button";
 import {OverviewPayments} from "@views/validator/projectDashboard/tabOverview/payments";
 import {OverviewReports} from "@views/validator/projectDashboard/tabOverview/reports";
@@ -13,43 +11,17 @@ import './tabOverview.scss'
 
 export default class Overview {
     projectInfo: ProjectInfo = {} as ProjectInfo
-    projectTeam: {
-        [key: string]: {
-            name: string;
-            id: number;
-            username: string;
-            email: string;
-        }
-    } = {
-        projectLead: {
-            name: '',
-            id: 0,
-            username: '',
-            email: ''
-        },
-        assignedValidator: {
-            name: '',
-            id: 0,
-            username: '',
-            email: ''
-        }
-    }
 
     constructor(private readonly projectId: string) {
         this.projectId = projectId;
     }
 
     private readonly projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId) as ProjectInfoCacheMock
-    private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCacheMock;
 
     async loadData(): Promise<void> {
         try {
             this.projectInfo = await this.projectInfoCache.get(false, this.projectId)
-            const fullTeam = await this.projectTeamCache.get(true, this.projectId);
-            this.projectTeam.projectLead = fullTeam.projectLead;
-            this.projectTeam.assignedValidator = fullTeam.validator[0]
             console.log('Project Info', this.projectInfo)
-            console.log("Project Team", this.projectTeam)
         } catch (error) {
             console.error('Failed to load project data', error);
         }

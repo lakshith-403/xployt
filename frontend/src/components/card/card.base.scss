@@ -1,4 +1,4 @@
-.card{
+.card {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -19,7 +19,7 @@
     width: 100%;
   }
 
-  .card-price{
+  .card-price {
     font-size: 2.5rem;
     color: var(--light-green);
     font-weight: 600;
