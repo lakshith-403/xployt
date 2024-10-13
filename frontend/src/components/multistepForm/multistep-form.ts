@@ -73,7 +73,7 @@ class MultistepForm {
 
         this.submitButton = new FormButton({
           label: 'Submit',
-          onClick: () => this.onSubmit(this.formState),
+          onClick: () => this.checkBeforeSubmit(),
           type: ButtonType.PRIMARY,
         });
         this.submitButton.render(q);
@@ -85,6 +85,15 @@ class MultistepForm {
     this.tabsButtons.children[this.activeTabIndex].classList.add('selected');
   }
 
+  checkBeforeSubmit(): boolean {
+    if (this.isCurrentTabValid()) {
+      this.onSubmit(this.formState);
+      return true;
+    } else {
+      alert('Acccept all terms and conditions');
+      return false;
+    }
+  }
   nextTab(): void {
     console.log('Next Tab Clicked');
     if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
@@ -132,6 +141,10 @@ class MultistepForm {
   }
 
   private isCurrentTabValid(): boolean {
+    if (this.checkIfRequiredFieldsAreFilled()) {
+      console.log('Required fields are filled');
+      this.updateTabValidity(this.activeTabIndex, true);
+    }
     return this.tabValidityStates[this.activeTabIndex];
   }
 
@@ -140,12 +153,15 @@ class MultistepForm {
       if (value === 'required') {
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
-          // console.log('Field is required but is empty');
+          console.log('Field is required but is empty');
           return false;
         }
         if (typeof fieldValue === 'object') {
-          // console.log('Field is required but is an object');
-          return Object.values(fieldValue).every((val) => val !== undefined && val !== '');
+          const ans = Object.values(fieldValue).every((val) => val !== undefined && val !== '' && val !== false);
+          console.log('Field is required but is an object');
+          if (!ans) {
+            return false;
+          }
         }
         // console.log('Field is required and is filled');
       }
