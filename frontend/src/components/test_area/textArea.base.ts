@@ -13,14 +13,16 @@ export interface TextAreaProps {
   readOnly?: boolean;
   onChange?: (value: string) => void;
   onFocus?: (value: string) => void;
+  parentClass?: string;
 }
 
 export class TextAreaBase {
   protected element?: HTMLTextAreaElement;
   private props: TextAreaProps;
+  private container?: Quark;
 
   constructor(props: TextAreaProps) {
-    this.props = props;
+    this.props = { ...props, parentClass: props.parentClass || 'label-left' };
   }
 
   private applyProps(props: TextAreaProps): void {
@@ -32,6 +34,8 @@ export class TextAreaBase {
     if (props.maxLength) this.element!.maxLength = props.maxLength;
     if (props.disabled) this.element!.disabled = props.disabled;
     if (props.readOnly) this.element!.readOnly = props.readOnly;
+    if (props.parentClass) this.container!.classList.add(props.parentClass);
+
     if (props.onChange) {
       this.element!.addEventListener('input', (e) => {
         props.onChange!((e.target as HTMLInputElement).value);
@@ -45,11 +49,11 @@ export class TextAreaBase {
   }
 
   public render(parent: Quark): void {
-    const container = $(parent, 'div', 'text-area-container', {});
+    this.container = $(parent, 'div', 'text-area-container', {});
     if (this.props.label) {
-      $(container, 'span', 'text-area-label', {}, this.props.label);
+      $(this.container, 'span', 'text-area-label', {}, this.props.label);
     }
-    this.element = $(container, 'textarea', 'text-area-input', {}) as HTMLTextAreaElement;
+    this.element = $(this.container, 'textarea', 'text-area-input', {}) as HTMLTextAreaElement;
     this.applyProps(this.props);
   }
 

@@ -16,9 +16,7 @@ export class FormTextField extends TextField {
     super(options);
     this.class = options.class;
     this.onKeyDown = options.onKeyDown;
-    if (options.parentClass) {
-      this.parentClass = options.parentClass;
-    }
+    this.parentClass = options.parentClass || 'label-left';
   }
 
   render(parent: Quark): void {
