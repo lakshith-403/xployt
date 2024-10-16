@@ -1,21 +1,33 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { TagList } from './tagList';
 import { Autocomplete } from './autocomplete';
+import { FormTextField } from '../form.text_field';
 import './tagInput.scss';
 
 interface TagInputOptions {
   suggestions: string[];
+  label: string;
+  placeholder?: string;
+  onChange?: (value: string) => void;
 }
 
 export class TagInput {
   private suggestions: string[];
   private inputValue: string = '';
   private selectedTags: string[] = [];
-  private inputElement?: HTMLInputElement;
+  private textField?: FormTextField;
   private tagList?: TagList;
+  private label?: string;
 
   constructor(options: TagInputOptions) {
     this.suggestions = options.suggestions;
+    this.label = options.label;
+    this.textField = new FormTextField({
+      label: '',
+      placeholder: options.placeholder || 'Add an area of expertise',
+      onChange: (value: string) => this.handleInputChange(value),
+      onKeyDown: (e: KeyboardEvent) => this.handleKeyDown(e),
+    });
   }
 
   private addTag(tag: string) {
@@ -24,20 +36,18 @@ export class TagInput {
       this.tagList?.updateTags(this.selectedTags); // Update the TagList
     }
     this.inputValue = '';
-    if (this.inputElement) {
-      this.inputElement.value = '';
-    }
+    this.textField?.setValue(''); // Clear the input field
     this.renderAutocomplete();
   }
+
   private removeTag(tagToRemove: string) {
     this.selectedTags = this.selectedTags.filter((tag) => tag !== tagToRemove);
     this.tagList?.updateTags(this.selectedTags); // Update the TagList
     this.renderAutocomplete();
   }
 
-  private handleInputChange(e: Event) {
-    const target = e.target as HTMLInputElement;
-    this.inputValue = target.value;
+  private handleInputChange(value: string) {
+    this.inputValue = value;
     this.renderAutocomplete();
   }
 
@@ -62,15 +72,16 @@ export class TagInput {
   }
 
   render(q: Quark) {
-    $(q, 'div', 'tag-input-container', {}, (q) => {
-      this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag) });
-      this.tagList.render(q);
+    $(q, 'div', 'parent-element', {}, (q) => {
+      $(q, 'label', 'tag-input-label', {}, this.label);
+      $(q, 'div', 'tag-input-container', {}, (q) => {
+        this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag) });
+        this.tagList.render(q);
 
-      $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
-        this.inputElement = $(q, 'input', 'tag-input', { type: 'text', placeholder: 'Add an area of expertise' }) as HTMLInputElement;
-        this.inputElement.addEventListener('input', (e: Event) => this.handleInputChange(e));
-        this.inputElement.addEventListener('keydown', (e: KeyboardEvent) => this.handleKeyDown(e));
-        $(q, 'div', 'autocomplete-container', {});
+        $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
+          this.textField?.render(q);
+          $(q, 'div', 'autocomplete-container', {});
+        });
       });
     });
   }

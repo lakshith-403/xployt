@@ -13,6 +13,7 @@ export class TextField {
   private type: string;
   private onChange?: (value: string) => void;
   protected element?: Quark;
+  protected container?: Quark;
 
   constructor(options: TextFieldOptions) {
     this.label = options.label;
@@ -26,13 +27,13 @@ export class TextField {
   }
 
   render(parent: Quark): void {
-    const container = $(parent, 'div', 'text-field-container', {});
+    this.container = $(parent, 'div', 'text-field-container', {});
 
     if (this.label) {
-      $(container, 'label', 'text-field-label', {}, this.label);
+      $(this.container, 'label', 'text-field-label', {}, this.label);
     }
 
-    this.element = $(container, 'input', 'text-field-input', {
+    this.element = $(this.container, 'input', 'text-field-input', {
       type: this.type,
       placeholder: this.placeholder,
     });
