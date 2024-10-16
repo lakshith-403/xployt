@@ -6,48 +6,74 @@
   width: 100%;
   border-radius: 4px;
   position: relative;
-}
+  padding: 20px 30px;
+  margin: 5px 0;
+  border: none;
+  caret-color: transparent;
 
-#tags-container {
-  display: flex;
-  flex-wrap: wrap;
-}
+  // border-radius: 10px;
+  // resize: vertical;
+  background-color: var(--input-field-bg);
+  color: var(--light-gray);
 
-.tag {
-  background-color: var(--light-grey);
-  color: white;
-  padding: 5px 10px;
-  margin: 3px;
-  border-radius: 3px;
-  display: inline-flex;
-  align-items: center;
-}
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
 
-.tag span {
-  margin-right: 5px;
-}
+    .tag {
+      background-color: var(--light-grey);
+      color: white;
+      padding: 5px 10px;
+      margin: 3px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
 
-.tag .remove-tag {
-  cursor: pointer;
-  font-weight: bold;
-}
+      span {
+        margin-right: 5px;
+      }
 
-.autocomplete-items {
-  position: absolute;
-  background-color: var(--background-secondary);
-  border: 1px solid #ccc;
-  z-index: 100;
-  max-height: 150px;
-  overflow-y: auto;
-  width: 400px;
-  margin-top: 5px;
-}
+      .remove-tag {
+        cursor: pointer;
+        font-weight: bold;
+      }
+    }
+  }
 
-.autocomplete-item {
-  padding: 8px;
-  cursor: pointer;
-}
+  .tag-input-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    caret-color: transparent;
 
-.autocomplete-item:hover {
-  background-color: #e9e9e9;
+    .tag-input {
+      max-width: 15rem;
+      caret-color: #e9e9e9;
+      &:focus,
+      &:hover {
+        outline: none;
+        // box-shadow: none;
+      }
+    }
+
+    .autocomplete-items {
+      position: absolute;
+      background-color: var(--background-secondary);
+      // border: 1px solid #ccc;
+      z-index: 100;
+      max-height: 150px;
+      overflow-y: auto;
+      width: 400px;
+      margin-top: 5px;
+
+      .autocomplete-item {
+        padding: 8px;
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: inset 1px 0 0 0 var(--color-primary);
+        }
+      }
+    }
+  }
 }

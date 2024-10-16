@@ -1,0 +1,14 @@
+input,
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  width: 100%;
+  padding: 20px 30px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 10px;
+  resize: vertical;
+  background-color: var(--input-field-bg);
+  color: var(--light-gray);
+}

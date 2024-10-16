@@ -1,5 +1,5 @@
 import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
-
+import './textField.scss';
 export interface TextFieldOptions {
   label: string;
   placeholder?: string;

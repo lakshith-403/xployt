@@ -65,10 +65,13 @@ export class TagInput {
     $(q, 'div', 'tag-input-container', {}, (q) => {
       this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag) });
       this.tagList.render(q);
-      this.inputElement = $(q, 'input', '', { type: 'text', placeholder: 'Add an area of expertise' }) as HTMLInputElement;
-      this.inputElement.addEventListener('input', (e) => this.handleInputChange(e));
-      this.inputElement.addEventListener('keydown', (e) => this.handleKeyDown(e));
-      $(q, 'div', 'autocomplete-container', {});
+
+      $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
+        this.inputElement = $(q, 'input', 'tag-input', { type: 'text', placeholder: 'Add an area of expertise' }) as HTMLInputElement;
+        this.inputElement.addEventListener('input', (e: Event) => this.handleInputChange(e));
+        this.inputElement.addEventListener('keydown', (e: KeyboardEvent) => this.handleKeyDown(e));
+        $(q, 'div', 'autocomplete-container', {});
+      });
     });
   }
 }

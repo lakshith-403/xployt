@@ -61,13 +61,11 @@ html {
 }
 
 #sidebar {
-  // flex: 0 0 20%;
   background-color: var(--background-tertiery);
   position: fixed;
   z-index: 999;
   top: var(--navbar-height);
   min-height: calc(100vh - var(--navbar-height));
-  // padding: 20px;
   overflow-y: auto;
   width: var(--sidebar-width);
 }
@@ -77,6 +75,7 @@ html {
   z-index: 1000;
   width: 100%;
 }
+
 #root {
   display: flex;
   flex-direction: column;
@@ -84,8 +83,6 @@ html {
   align-items: flex-start;
   top: var(--navbar-height);
   position: relative;
-  // height: calc(100vh - var(--navbar-height));
-  // width: 100vw;
 }
 
 #content {
@@ -114,23 +111,9 @@ html {
   width: 100%;
 }
 
-input,
-input[type='text'],
-input[type='email'],
-input[type='password'] {
-  width: 100%;
-  padding: 20px 30px;
-  margin: 5px 0;
-  box-sizing: border-box;
-  border-radius: 10px;
-  resize: vertical;
-  background-color: $input-field-bg;
-  color: $light-gray;
-}
-
 button.button-component {
-  background-color: $light-green;
-  color: $dark-gray;
+  background-color: var(--light-green);
+  color: var(--dark-gray);
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
@@ -150,7 +133,7 @@ button.button-component {
   background-color: var(--background-primary);
   color: var(--color-primary);
   border-radius: 0.5rem;
-  border: 2px solid var(--light-gray, #e4dee0);
+  border: 2px solid var(--light-gray);
   padding: 10px 20px;
   cursor: pointer;
   width: 100%;

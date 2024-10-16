@@ -16,11 +16,13 @@ body {
   --light-grey: #444444; // input-tags
 }
 
-$light-green-linear: linear-gradient(to right, #52d29c, #30404d);
-$dark-green: #006c59;
-$light-green: #86ebd9;
-$light-gray: #e4dee0;
-$dark-green-linear: linear-gradient(to right, #00473a, #000909);
-$green-grey: #30404d;
-$dark-gray: #252726;
-$input-field-bg: #1a1a1a;
+:root {
+  --light-green-linear: linear-gradient(to right, #52d29c, #30404d);
+  --dark-green: #006c59;
+  --light-green: #86ebd9;
+  --light-gray: #e4dee0;
+  --dark-green-linear: linear-gradient(to right, #00473a, #000909);
+  --green-grey: #30404d;
+  --dark-gray: #252726;
+  --input-field-bg: #1a1a1a;
+}
