@@ -4,6 +4,10 @@
     flex-direction: column;
     gap: 10px;
 
+    .title {
+      text-align: center;
+    }
+
     .dob {
       display: flex;
       flex-direction: column;

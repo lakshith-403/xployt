@@ -49,7 +49,7 @@ export class TermsAndConditions implements Step {
     this.updateParentState = updateParentState;
 
     $(q, 'div', 'terms-and-conditions', {}, (q) => {
-      $(q, 'h2', '', {}, 'Terms and Conditions');
+      $(q, 'h3', 'title', {}, 'Terms and Conditions');
       $(q, 'p', '', {}, 'Please read and accept the terms and conditions to proceed.');
 
       $(q, 'div', 'policies', {}, (q) => {

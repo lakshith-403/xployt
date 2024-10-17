@@ -37,7 +37,7 @@ class Expertise implements Step {
 
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
-
+    $(q, 'h3', 'title', {}, 'Validator Capabilities');
     $(q, 'div', 'expertise-details', {}, (q) => {
       $(q, 'div', 'form-field', {}, (q) => {
         this.skillsField!.render(q);

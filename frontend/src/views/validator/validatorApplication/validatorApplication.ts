@@ -74,8 +74,9 @@ class ValidatorApplication extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', this.onSubmit);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'bottom' }, this.onSubmit);
     $(q, 'div', 'validator-application', {}, (q) => {
+      $(q, 'h1', 'title', {}, 'Validator Application');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);
       });

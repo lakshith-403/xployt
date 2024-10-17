@@ -23,7 +23,7 @@ class PersonalDetails implements Step {
     this.updateParentState = updateParentState;
 
     $(q, 'div', 'personal-details', {}, (q) => {
-      $(q, 'h2', '', {}, 'Personal Details');
+      $(q, 'h3', 'title', {}, 'Personal Details');
 
       this.renderFieldFullWidth(q, this.nameField, state.name);
       this.renderFieldFullWidth(q, this.emailField, state.email);
