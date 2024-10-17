@@ -1,24 +1,25 @@
 import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
+import './button.scss';
 
 export enum ButtonType {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
   TERTIARY = 'tertiary',
   QUATERNARY = 'quaternary',
+  ALTERNATE = 'alt',
 }
 
 export interface ButtonOptions {
-  label: string
-  onClick: (event: Event) => void
-  type?: ButtonType
+  label: string;
+  onClick: (event: Event) => void;
+  type?: ButtonType;
 }
 
 export class Button {
-  protected label: string
-  protected onClick: (event: Event) => void
-  protected type: ButtonType
-  protected element?: Quark
-
+  protected label: string;
+  protected onClick: (event: Event) => void;
+  protected type: ButtonType;
+  protected element?: Quark;
 
   constructor(options: ButtonOptions) {
     this.label = options.label;

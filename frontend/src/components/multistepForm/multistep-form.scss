@@ -3,6 +3,8 @@
   flex-direction: column;
   gap: 20px;
   --margin-from-edge: 3rem;
+  width: 100%;
+  max-width: 900px;
 
   &.bottom {
     flex-direction: column-reverse;
@@ -44,14 +46,16 @@
   }
   .form-body {
     border: 1px solid var(--color-primary);
-    padding: 2rem;
+    padding: 2rem 2rem 4rem 2rem;
     border-radius: 1rem;
+    width: 100%;
 
     .form-buttons {
       display: flex;
       justify-content: space-between;
       position: relative;
       margin-bottom: 2rem;
+      margin-top: 2rem;
 
       .prev-button {
         left: 0;

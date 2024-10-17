@@ -110,32 +110,3 @@ html {
   align-items: center;
   width: 100%;
 }
-
-button.button-component {
-  background-color: var(--light-green);
-  color: var(--dark-gray);
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  cursor: pointer;
-  width: 100%;
-  font-weight: 600;
-}
-
-.icon-button {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.button-secondary {
-  background-color: var(--background-primary);
-  color: var(--color-primary);
-  border-radius: 0.5rem;
-  border: 2px solid var(--light-gray);
-  padding: 10px 20px;
-  cursor: pointer;
-  width: 100%;
-  font-weight: 600;
-}

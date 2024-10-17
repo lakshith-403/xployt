@@ -72,7 +72,7 @@ class MultistepForm {
           this.nextButton = new FormButton({
             label: 'Next',
             onClick: () => this.nextTab(),
-            type: ButtonType.PRIMARY,
+            type: ButtonType.SECONDARY,
           });
           this.nextButton.render(q);
           this.nextButton.setClass('next-button');
