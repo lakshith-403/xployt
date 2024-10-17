@@ -16,11 +16,17 @@ input[type='password'] {
 .text-field-container.label-left {
   display: flex;
   gap: 0.5rem;
-  padding: 1rem;
+  // padding: 1rem;
+  border: none;
   align-items: center;
 
   .text-field-label {
     min-width: 8rem;
     width: 8rem;
+  }
+  .text-field-input {
+    border: none;
+    outline: none;
+    caret-color: white;
   }
 }

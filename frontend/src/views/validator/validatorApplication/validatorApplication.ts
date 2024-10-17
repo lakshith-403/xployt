@@ -58,6 +58,8 @@ class ValidatorApplication extends View {
         title: 'Expertise',
         step: new Preferences(),
         stateUsed: {
+          relevantExperience: 'optional',
+          areaOfExpertise: 'optional',
           skills: 'optional',
           certificate: 'optional',
           cv: 'optional',

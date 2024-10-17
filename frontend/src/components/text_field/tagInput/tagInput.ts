@@ -8,7 +8,7 @@ interface TagInputOptions {
   suggestions: string[];
   label: string;
   placeholder?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: string[]) => void;
 }
 
 export class TagInput {
@@ -18,16 +18,21 @@ export class TagInput {
   private textField?: FormTextField;
   private tagList?: TagList;
   private label?: string;
+  private updateTags?: (tags: string[]) => void;
 
   constructor(options: TagInputOptions) {
     this.suggestions = options.suggestions;
     this.label = options.label;
     this.textField = new FormTextField({
       label: '',
+      class: 'tag-input',
       placeholder: options.placeholder || 'Add an area of expertise',
-      onChange: (value: string) => this.handleInputChange(value),
+      onChange: (value: string) => {
+        this.handleInputChange(value);
+      },
       onKeyDown: (e: KeyboardEvent) => this.handleKeyDown(e),
     });
+    this.updateTags = options!.onChange;
   }
 
   private addTag(tag: string) {
@@ -75,7 +80,7 @@ export class TagInput {
     $(q, 'div', 'parent-element', {}, (q) => {
       $(q, 'label', 'tag-input-label', {}, this.label);
       $(q, 'div', 'tag-input-container', {}, (q) => {
-        this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag) });
+        this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag), update: this.updateTags! });
         this.tagList.render(q);
 
         $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {

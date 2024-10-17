@@ -1,5 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
-
+import './autocomplete.scss';
 interface AutocompleteOptions {
   suggestions: string[];
   inputValue: string;
