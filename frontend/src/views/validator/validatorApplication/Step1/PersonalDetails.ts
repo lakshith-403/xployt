@@ -4,21 +4,6 @@ import './PersonalDetails.scss';
 import { Step } from './../../../../components/multistepForm/multistep-form';
 
 class PersonalDetails implements Step {
-  private nameField: FormTextField = new FormTextField({ label: 'Name *', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });
-  private emailField: FormTextField = new FormTextField({ label: 'Email *', placeholder: 'Enter your email', onChange: (value) => this.updateState({ email: value }) });
-  private mobileField: FormTextField = new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', onChange: (value) => this.updateState({ mobile: value }) });
-  private countryField: FormTextField = new FormTextField({ label: 'Country *', placeholder: 'Select your country', onChange: (value) => this.updateState({ country: value }) });
-  private linkedinField: FormTextField = new FormTextField({
-    label: 'LinkedIn *',
-    placeholder: 'Enter your LinkedIn profile URL',
-    onChange: (value) => this.updateState({ linkedin: value }),
-  });
-  private dobDayField: FormTextField = new FormTextField({ label: '', placeholder: 'DD', onChange: (value) => this.updateState({ dateOfBirth: { day: value } }) });
-  private dobMonthField: FormTextField = new FormTextField({ label: '', placeholder: 'MM', onChange: (value) => this.updateState({ dateOfBirth: { month: value } }) });
-  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateParentState({ dateOfBirth: { year: value } }) });
-
-  private updateParentState!: (newState: any) => void;
-
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
 
@@ -49,6 +34,20 @@ class PersonalDetails implements Step {
       field.addClass('w-full');
     });
   }
+  private nameField: FormTextField = new FormTextField({ label: 'Name *', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });
+  private emailField: FormTextField = new FormTextField({ label: 'Email *', placeholder: 'Enter your email', onChange: (value) => this.updateState({ email: value }) });
+  private mobileField: FormTextField = new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', onChange: (value) => this.updateState({ mobile: value }) });
+  private countryField: FormTextField = new FormTextField({ label: 'Country *', placeholder: 'Select your country', onChange: (value) => this.updateState({ country: value }) });
+  private linkedinField: FormTextField = new FormTextField({
+    label: 'LinkedIn *',
+    placeholder: 'Enter your LinkedIn profile URL',
+    onChange: (value) => this.updateState({ linkedin: value }),
+  });
+  private dobDayField: FormTextField = new FormTextField({ label: '', placeholder: 'DD', onChange: (value) => this.updateState({ dateOfBirth: { day: value } }) });
+  private dobMonthField: FormTextField = new FormTextField({ label: '', placeholder: 'MM', onChange: (value) => this.updateState({ dateOfBirth: { month: value } }) });
+  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateParentState({ dateOfBirth: { year: value } }) });
+
+  private updateParentState!: (newState: any) => void;
 
   private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
     $(q, 'div', 'form-field', {}, (q) => {

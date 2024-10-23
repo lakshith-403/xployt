@@ -8,6 +8,46 @@ import './Expertise.scss';
 import { Step } from './../../../../components/multistepForm/multistep-form';
 
 class Expertise implements Step {
+  private updateParentState!: (newState: any) => void;
+
+  render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
+    this.updateParentState = updateParentState;
+
+    $(q, 'section', 'Security Level Payment', {}, (q) => {
+      $(q, 'h3', 'title', {}, 'Security Level Payment');
+
+      $(q, 'div', 'payment-details', {}, (q) => {
+        this.areaOfExpertise.render(q);
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.releventExperienceField!.render(q);
+        });
+      });
+    });
+
+    $(q, 'section', 'Validator Capabilities', {}, (q) => {
+      $(q, 'h3', 'title', {}, 'Validator Capabilities');
+      $(q, 'div', 'expertise-details', {}, (q) => {
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.skillsField!.render(q);
+          this.skillsField?.setValue(state.skills);
+        });
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.certificateField!.render(q);
+          this.certificateField?.setValue(state.certificates);
+        });
+        $(q, 'div', 'form-field', {}, (q) => {
+          this.referenceField!.render(q);
+          this.referenceField?.setValue(state.references);
+        });
+        $(q, 'div', 'form-field-container', {}, (q) => {
+          $(q, 'div', 'form-field', {}, (q) => {
+            this.fileInput!.render(q);
+          });
+        });
+      });
+    });
+  }
+
   private skillsField?: TextAreaBase = new TextAreaBase({
     label: 'Skills and Proficiencies',
     placeholder: 'Enter your skills and proficiencies',
@@ -50,45 +90,6 @@ class Expertise implements Step {
       this.updateParentState!({ areaOfExpertise: value });
     },
   });
-  private updateParentState!: (newState: any) => void;
-
-  render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
-    this.updateParentState = updateParentState;
-
-    $(q, 'section', 'Security Level Payment', {}, (q) => {
-      $(q, 'h3', 'title', {}, 'Security Level Payment');
-
-      $(q, 'div', 'payment-details', {}, (q) => {
-        this.areaOfExpertise.render(q);
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.releventExperienceField!.render(q);
-        });
-      });
-    });
-
-    $(q, 'section', 'Validator Capabilities', {}, (q) => {
-      $(q, 'h3', 'title', {}, 'Validator Capabilities');
-      $(q, 'div', 'expertise-details', {}, (q) => {
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.skillsField!.render(q);
-          this.skillsField?.setValue(state.skills);
-        });
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.certificateField!.render(q);
-          this.certificateField?.setValue(state.certificates);
-        });
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.referenceField!.render(q);
-          this.referenceField?.setValue(state.references);
-        });
-        $(q, 'div', 'form-field-container', {}, (q) => {
-          $(q, 'div', 'form-field', {}, (q) => {
-            this.fileInput!.render(q);
-          });
-        });
-      });
-    });
-  }
 }
 
 export default Expertise;

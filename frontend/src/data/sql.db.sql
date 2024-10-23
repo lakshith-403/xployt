@@ -1,8 +1,8 @@
 -- MySQL dump for Bug Bounty Platform
 
 -- Create the database
-CREATE DATABASE IF NOT EXISTS bug_bounty_platform;
-USE bug_bounty_platform;
+CREATE DATABASE IF NOT EXISTS xployt;
+USE xployt;
 
 -- Users table to store all user types
 CREATE TABLE users (

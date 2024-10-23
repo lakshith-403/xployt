@@ -21,11 +21,7 @@ class Network {
    * @param {object} [data={}] - The data to be sent with the request.
    * @returns {Promise<any>} A promise that resolves with the response data.
    */
-  public sendHttpRequest = (
-    method: string,
-    url: string,
-    data: object = {}
-  ): Promise<any> => {
+  public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
     const xhr = new XMLHttpRequest();
     return new Promise((resolve, reject) => {
       xhr.withCredentials = true;
@@ -45,14 +41,7 @@ class Network {
       };
 
       xhr.onerror = (event) => {
-        reject(
-          new NetworkError(
-            xhr.status,
-            url,
-            xhr.responseText,
-            `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`
-          )
-        );
+        reject(new NetworkError(xhr.status, url, xhr.responseText, `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`));
       };
 
       xhr.send(JSON.stringify(data));
@@ -98,8 +87,7 @@ export class NetworkError {
         this.stackTrace = data['trace'];
       } catch (e: any) {
         this.stackTrace = e.stack;
-        this.errorDescription =
-          'Failed to extract data from network error: ' + e.message;
+        this.errorDescription = 'Failed to extract data from network error: ' + e.message;
       }
     }
   }
@@ -118,5 +106,5 @@ export class NetworkError {
   }
 }
 
-const NETWORK = new Network('localhost:8001');
+const NETWORK = new Network('localhost:8080');
 export default NETWORK;
