@@ -31,9 +31,9 @@ class ProjectsView extends View {
       const user = await this.userCache.get();
       this.userId = user.id;
       this.projects = await this.projectsCache.get(false, 123);
-      if (this.projects.length === 0) {
-        this.projects = [[], []];
-      }
+      // if (this.projects.length === 0) {
+      //   this.projects = [[], []];
+      // }
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
@@ -58,6 +58,7 @@ class ProjectsView extends View {
   async render(q: Quark): Promise<void> {
     const loading = new LoadingScreen(q);
     loading.show();
+    q.innerHTML = '';
     await this.loadProjects();
     loading.hide();
 
