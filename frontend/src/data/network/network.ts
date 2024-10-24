@@ -23,10 +23,9 @@ class Network {
    */
   public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
     const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
     return new Promise((resolve, reject) => {
-      xhr.withCredentials = true;
-
       // Validate method and URL
       if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method.toUpperCase())) {
         return reject(new Error('Invalid HTTP method'));
@@ -34,26 +33,27 @@ class Network {
       if (!url || typeof url !== 'string') {
         return reject(new Error('Invalid URL'));
       }
+
       console.log(`Sending ${method} request to ${url}`);
       xhr.open(method, this.baseURL + url);
-      xhr.responseType = 'json';
-
-      // if (data) {
       xhr.setRequestHeader('Content-Type', 'application/json');
-      // }
 
-      xhr.onload = async () => {
+      xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
-
         if (xhr.status >= 400) {
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
-          resolve(xhr.response);
+          try {
+            const response = xhr.response ? JSON.parse(xhr.response) : null;
+            resolve(response);
+          } catch (e) {
+            reject(new Error('Failed to parse JSON response'));
+          }
         }
       };
 
       xhr.onerror = (event) => {
-        reject(new NetworkError(xhr.status, url, xhr.response, `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`));
+        reject(new NetworkError(xhr.status, url, null, `XHR request failed: ${event.type}`));
       };
 
       xhr.send(JSON.stringify(data));
@@ -112,9 +112,9 @@ export class NetworkError {
   toString(): string {
     return `Status Code: ${this.statusCode}\n
         URL: ${this.url}\n
-        Description: ${this.errorDescription}\n
-        StackTrace: ${this.stackTrace},
-        Message: ${this.message}`;
+        Description: ${this.errorDescription || 'No description'}\n
+        StackTrace: ${this.stackTrace || 'No stack trace'}\n
+        Message: ${this.message || 'No message'}`;
   }
 }
 
