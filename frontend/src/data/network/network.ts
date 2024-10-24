@@ -10,7 +10,7 @@ class Network {
    * @param {string} baseURL - The base URL for the network requests.
    */
   constructor(baseURL: string) {
-    this.baseURL = baseURL;
+    this.baseURL = 'http://' + baseURL;
   }
 
   /**
@@ -23,16 +23,28 @@ class Network {
    */
   public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
     const xhr = new XMLHttpRequest();
+
     return new Promise((resolve, reject) => {
       xhr.withCredentials = true;
+
+      // Validate method and URL
+      if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method.toUpperCase())) {
+        return reject(new Error('Invalid HTTP method'));
+      }
+      if (!url || typeof url !== 'string') {
+        return reject(new Error('Invalid URL'));
+      }
+      console.log(`Sending ${method} request to ${url}`);
       xhr.open(method, this.baseURL + url);
       xhr.responseType = 'json';
 
-      if (data) {
-        xhr.setRequestHeader('Content-Type', 'application/json');
-      }
+      // if (data) {
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      // }
 
       xhr.onload = async () => {
+        console.log(`Request to ${url} completed with status: ${xhr.status}`);
+
         if (xhr.status >= 400) {
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
@@ -41,7 +53,7 @@ class Network {
       };
 
       xhr.onerror = (event) => {
-        reject(new NetworkError(xhr.status, url, xhr.responseText, `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`));
+        reject(new NetworkError(xhr.status, url, xhr.response, `XHR request failed: ${event}\n Type: ${event.type}: ${event.loaded} bytes transferred`));
       };
 
       xhr.send(JSON.stringify(data));
