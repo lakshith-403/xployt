@@ -16,6 +16,7 @@ export class FileInputBase {
   protected element?: HTMLInputElement;
   private props: FileInputProps;
   public name: string;
+  private onChange?: (event: Event) => void;
 
   constructor(props: FileInputProps) {
     this.props = props;
@@ -27,7 +28,7 @@ export class FileInputBase {
     if (props.accept) this.element!.accept = props.accept;
     if (props.multiple) this.element!.multiple = props.multiple;
     if (props.disabled) this.element!.disabled = props.disabled;
-    if (props.onChange) this.element!.addEventListener('change', props.onChange);
+    if (props.onChange) this.onChange = props.onChange;
     if (props.onFocus) this.element!.addEventListener('focus', props.onFocus);
   }
 
@@ -38,6 +39,7 @@ export class FileInputBase {
     }
     this.element = $(container, 'input', 'file-input', { type: 'file', name: this.name }) as HTMLInputElement;
     this.applyProps(this.props);
+    if (this.onChange) this.element!.addEventListener('change', this.onChange);
   }
 
   public getElement(): HTMLInputElement {
@@ -58,5 +60,9 @@ export class FileInputBase {
 
   public setMultiple(multiple: boolean): void {
     this.element!.multiple = multiple;
+  }
+
+  public setOnChange(onChange: (event: Event) => void): void {
+    this.onChange = onChange;
   }
 }

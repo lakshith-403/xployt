@@ -50,7 +50,7 @@ class PersonalDetails implements Step {
 
   constructor() {
     for (const field of Object.values(this.fields)) {
-      field.onChange = (value) => {
+      field.setOnChange((value) => {
         const keys = field.name.split('.');
         console.log(keys);
         if (keys.length > 1) {
@@ -60,7 +60,7 @@ class PersonalDetails implements Step {
         } else {
           this.updateState({ [keys[0]]: value });
         }
-      };
+      });
     }
   }
 

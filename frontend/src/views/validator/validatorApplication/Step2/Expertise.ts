@@ -84,7 +84,8 @@ class Expertise implements Step {
   constructor() {
     console.log('Console in');
     for (const field of Object.values(this.fields)) {
-      field.onChange = (value: string) => {
+      console.log(field);
+      field.setOnChange((value: string) => {
         const keys = field.name.split('.');
         console.log(keys);
         if (keys.length > 1) {
@@ -93,13 +94,9 @@ class Expertise implements Step {
         } else {
           this.updateParentState({ [keys[0]]: value });
         }
-      };
+      });
     }
   }
-
-  // private updateState(state: any): void {
-  //   this.updateParentState!(state);
-  // }
 }
 
 export default Expertise;

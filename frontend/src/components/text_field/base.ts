@@ -1,4 +1,4 @@
-import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import './textField.scss';
 export interface TextFieldOptions {
   label: string;
@@ -12,7 +12,7 @@ export class TextField {
   private label: string;
   private placeholder: string;
   private type: string;
-  public onChange?: (value: string) => void;
+  private onChange?: (value: string) => void;
   protected element?: Quark;
   protected container?: Quark;
   public name!: string;
@@ -56,5 +56,9 @@ export class TextField {
     if (this.element) {
       (this.element as HTMLInputElement).value = value;
     }
+  }
+
+  setOnChange(onChange: (value: string) => void): void {
+    this.onChange = onChange;
   }
 }

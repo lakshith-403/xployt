@@ -9,6 +9,7 @@ interface TagInputOptions {
   label: string;
   placeholder?: string;
   onChange?: (value: string[]) => void;
+  name?: string;
 }
 
 export class TagInput {
@@ -19,10 +20,12 @@ export class TagInput {
   private tagList?: TagList;
   private label?: string;
   private updateTags?: (tags: string[]) => void;
+  public name?: string;
 
   constructor(options: TagInputOptions) {
     this.suggestions = options.suggestions;
     this.label = options.label;
+    this.name = options.name;
     this.textField = new FormTextField({
       label: '',
       class: 'tag-input',
@@ -30,6 +33,7 @@ export class TagInput {
       onChange: (value: string) => {
         this.handleInputChange(value);
       },
+      name: options.name,
       onKeyDown: (e: KeyboardEvent) => this.handleKeyDown(e),
     });
     this.updateTags = options!.onChange;
@@ -75,7 +79,9 @@ export class TagInput {
       }).render(autocompleteContainer as Quark);
     }
   }
-
+  public setOnChange(onChange: (tags: string[]) => void) {
+    this.updateTags = onChange;
+  }
   render(q: Quark) {
     $(q, 'div', 'parent-element', {}, (q) => {
       $(q, 'label', 'tag-input-label', {}, this.label);

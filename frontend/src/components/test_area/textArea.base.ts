@@ -22,7 +22,7 @@ export class TextAreaBase {
   private props: TextAreaProps;
   private container?: Quark;
   public name!: string;
-  public onChange?: (value: string) => void;
+  private onChange?: (value: string) => void;
 
   constructor(props: TextAreaProps) {
     this.props = { ...props, parentClass: props.parentClass || 'label-left' };
@@ -89,5 +89,9 @@ export class TextAreaBase {
 
   public setPlaceholder(placeholder: string): void {
     this.element!.placeholder = placeholder;
+  }
+
+  public setOnChange(onChange: (value: string) => void): void {
+    this.onChange = onChange;
   }
 }
