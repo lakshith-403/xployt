@@ -163,13 +163,13 @@ class MultistepForm {
       if (value === 'required') {
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
-          console.log('Field is required but is empty');
+          console.log(`Field "${key}" is required but is empty`);
           return false;
         }
         if (typeof fieldValue === 'object') {
           const ans = Object.values(fieldValue).every((val) => val !== undefined && val !== '' && val !== false);
-          console.log('Field is required but is an object');
           if (!ans) {
+            console.log(`Field "${key}" is required but contains empty values`);
             return false;
           }
         }

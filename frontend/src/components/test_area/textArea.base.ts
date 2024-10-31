@@ -14,12 +14,15 @@ export interface TextAreaProps {
   onChange?: (value: string) => void;
   onFocus?: (value: string) => void;
   parentClass?: string;
+  name?: string;
 }
 
 export class TextAreaBase {
   protected element?: HTMLTextAreaElement;
   private props: TextAreaProps;
   private container?: Quark;
+  public name!: string;
+  public onChange?: (value: string) => void;
 
   constructor(props: TextAreaProps) {
     this.props = { ...props, parentClass: props.parentClass || 'label-left' };
@@ -35,6 +38,7 @@ export class TextAreaBase {
     if (props.disabled) this.element!.disabled = props.disabled;
     if (props.readOnly) this.element!.readOnly = props.readOnly;
     if (props.parentClass) this.container!.classList.add(props.parentClass);
+    if (props.name) this.name = props.name;
 
     if (props.onChange) {
       this.element!.addEventListener('input', (e) => {
@@ -55,6 +59,12 @@ export class TextAreaBase {
     }
     this.element = $(this.container, 'textarea', 'text-area-input', {}) as HTMLTextAreaElement;
     this.applyProps(this.props);
+
+    if (this.onChange) {
+      this.element.addEventListener('input', (e) => {
+        this.onChange!((e.target as HTMLInputElement).value);
+      });
+    }
   }
 
   public getElement(): HTMLTextAreaElement {

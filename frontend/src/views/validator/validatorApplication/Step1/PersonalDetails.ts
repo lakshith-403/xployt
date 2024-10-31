@@ -10,20 +10,21 @@ class PersonalDetails implements Step {
     $(q, 'div', 'personal-details', {}, (q) => {
       $(q, 'h3', 'title', {}, 'Personal Details');
 
-      this.renderFieldFullWidth(q, this.nameField, state.name);
-      this.renderFieldFullWidth(q, this.emailField, state.email);
-      this.renderFieldFullWidth(q, this.mobileField, state.mobile);
-      this.renderFieldFullWidth(q, this.countryField, state.country);
-      this.renderFieldFullWidth(q, this.linkedinField, state.linkedin);
+      this.renderFieldFullWidth(q, this.fields.name, state.name);
+      this.renderFieldFullWidth(q, this.fields.email, state.email);
+      this.renderFieldFullWidth(q, this.fields.mobile, state.mobile);
+      this.renderFieldFullWidth(q, this.fields.country, state.country);
+      this.renderFieldFullWidth(q, this.fields.linkedin, state.linkedin);
 
       $(q, 'div', 'dob', {}, (q) => {
         $(q, 'span', '', {}, 'Date of Birth *');
         $(q, 'div', 'dob-fields', {}, (q) => {
-          this.renderCustomField(q, this.dobDayField, state.dateOfBirth?.day, 1 / 3);
-          this.renderCustomField(q, this.dobMonthField, state.dateOfBirth?.month, 1 / 3);
-          this.renderCustomField(q, this.dobYearField, state.dateOfBirth?.year, 1 / 3);
+          this.renderCustomField(q, this.fields.dobDay, state.dateOfBirth?.day, 1 / 3);
+          this.renderCustomField(q, this.fields.dobMonth, state.dateOfBirth?.month, 1 / 3);
+          this.renderCustomField(q, this.fields.dobYear, state.dateOfBirth?.year, 1 / 3);
         });
       });
+      // this.renderFieldFullWidth(q, this.fields.dobYearTest, '');
     });
   }
 
@@ -34,18 +35,34 @@ class PersonalDetails implements Step {
       field.addClass('w-full');
     });
   }
-  private nameField: FormTextField = new FormTextField({ label: 'Name *', placeholder: 'Enter your name', onChange: (value) => this.updateState({ name: value }) });
-  private emailField: FormTextField = new FormTextField({ label: 'Email *', placeholder: 'Enter your email', onChange: (value) => this.updateState({ email: value }) });
-  private mobileField: FormTextField = new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', onChange: (value) => this.updateState({ mobile: value }) });
-  private countryField: FormTextField = new FormTextField({ label: 'Country *', placeholder: 'Select your country', onChange: (value) => this.updateState({ country: value }) });
-  private linkedinField: FormTextField = new FormTextField({
-    label: 'LinkedIn *',
-    placeholder: 'Enter your LinkedIn profile URL',
-    onChange: (value) => this.updateState({ linkedin: value }),
-  });
-  private dobDayField: FormTextField = new FormTextField({ label: '', placeholder: 'DD', onChange: (value) => this.updateState({ dateOfBirth: { day: value } }) });
-  private dobMonthField: FormTextField = new FormTextField({ label: '', placeholder: 'MM', onChange: (value) => this.updateState({ dateOfBirth: { month: value } }) });
-  private dobYearField: FormTextField = new FormTextField({ label: '', placeholder: 'YYYY', onChange: (value) => this.updateParentState({ dateOfBirth: { year: value } }) });
+
+  private fields: { [key: string]: FormTextField } = {
+    name: new FormTextField({ label: 'Name *', placeholder: 'Enter your name', name: 'name' }),
+    email: new FormTextField({ label: 'Email *', placeholder: 'Enter your email', name: 'email' }),
+    mobile: new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', name: 'mobile' }),
+    country: new FormTextField({ label: 'Country *', placeholder: 'Select your country', name: 'country' }),
+    linkedin: new FormTextField({ label: 'LinkedIn *', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedin' }),
+    dobDay: new FormTextField({ label: '', placeholder: 'DD', name: 'dateOfBirth.day' }),
+    dobMonth: new FormTextField({ label: '', placeholder: 'MM', name: 'dateOfBirth.month' }),
+    dobYear: new FormTextField({ label: '', placeholder: 'YYYY', name: 'dateOfBirth.year' }),
+    // dobYearTest: new FormTextField({ label: '', placeholder: 'YYYY', name: 'dateOfBirth.month.year.day' }),
+  };
+
+  constructor() {
+    for (const field of Object.values(this.fields)) {
+      field.onChange = (value) => {
+        const keys = field.name.split('.');
+        console.log(keys);
+        if (keys.length > 1) {
+          const nestedState = keys.reduceRight<any>((acc, key) => ({ [key]: acc }), value);
+          // console.log(nestedState);
+          this.updateState(nestedState);
+        } else {
+          this.updateState({ [keys[0]]: value });
+        }
+      };
+    }
+  }
 
   private updateParentState!: (newState: any) => void;
 

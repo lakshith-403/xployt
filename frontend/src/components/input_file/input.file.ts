@@ -9,14 +9,17 @@ export interface FileInputProps {
   disabled?: boolean;
   onChange?: (event: Event) => void;
   onFocus?: (event: Event) => void;
+  name?: string;
 }
 
 export class FileInputBase {
   protected element?: HTMLInputElement;
   private props: FileInputProps;
+  public name: string;
 
   constructor(props: FileInputProps) {
     this.props = props;
+    this.name = props.name || '';
   }
 
   private applyProps(props: FileInputProps): void {
@@ -33,7 +36,7 @@ export class FileInputBase {
     if (this.props.label) {
       $(container, 'span', 'file-input-label', {}, this.props.label);
     }
-    this.element = $(container, 'input', 'file-input', { type: 'file' }) as HTMLInputElement;
+    this.element = $(container, 'input', 'file-input', { type: 'file', name: this.name }) as HTMLInputElement;
     this.applyProps(this.props);
   }
 

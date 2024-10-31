@@ -5,21 +5,24 @@ export interface TextFieldOptions {
   placeholder?: string;
   type?: string;
   onChange?: (value: string) => void;
+  name?: string;
 }
 
 export class TextField {
   private label: string;
   private placeholder: string;
   private type: string;
-  private onChange?: (value: string) => void;
+  public onChange?: (value: string) => void;
   protected element?: Quark;
   protected container?: Quark;
+  public name!: string;
 
   constructor(options: TextFieldOptions) {
     this.label = options.label;
     this.placeholder = options.placeholder || '';
     this.type = options.type || 'text';
     this.onChange = options.onChange;
+    this.name = options.name || '';
   }
 
   public get value() {
