@@ -13,6 +13,10 @@ interface Steps {
   step: Step;
 }
 
+interface Config {
+  [key: string]: any;
+}
+
 class MultistepForm {
   steps: Steps[];
   activeTabIndex: number;
@@ -27,8 +31,9 @@ class MultistepForm {
   private formState: any = {};
   private lastAction: 'Submit' | 'Apply' = 'Submit';
   private onSubmit: (formState: any) => void;
+  private config: { [key: string]: any } = {};
 
-  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', onSubmit: (formState: any) => void) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void) {
     this.steps = steps;
     this.activeTabIndex = 0;
     this.tabValidityStates = new Array(steps.length).fill(false);
@@ -36,55 +41,69 @@ class MultistepForm {
     this.numOfSteps = steps.length;
     this.lastAction = lastAction;
     this.onSubmit = onSubmit;
+    this.config = config || {};
   }
 
   render(q: Quark): void {
-    $(q, 'div', 'multistep-form', {}, (q) => {
-      this.tabsButtons = $(q, 'div', 'tabs-header', {}, (q) => {
+    const form = $(q, 'div', 'multistep-form', {}, (q) => {
+      this.tabsButtons = $(q, 'div', 'progress-bar', {}, (q) => {
         this.steps.forEach((step, index) => {
-          $(q, 'button', 'tab-button', { onclick: () => this.jumpToTab(index) }, (q) => {
-            $(q, 'span', 'dot', {}, step.title);
+          $(q, 'button', 'step-button', { onclick: () => this.jumpToTab(index) }, (q) => {
+            $(q, 'span', 'dot', {}, (q) => {});
           });
         });
       });
-
-      $(q, 'div', 'tabs-content', {}, (q) => {
-        this.contentElement = q;
-        this.renderActiveTabContent();
-      });
-
-      $(q, 'div', 'form-buttons', {}, (q) => {
-        this.prevButton = new FormButton({
-          label: 'Prev',
-          onClick: () => this.prevTab(),
-          type: ButtonType.SECONDARY,
+      $(q, 'div', 'form-body', {}, (q) => {
+        $(q, 'div', 'tabs-content', {}, (q) => {
+          this.contentElement = q;
+          this.renderActiveTabContent();
         });
-        this.prevButton.render(q);
-        this.prevButton.setClass('prev-button');
-        this.prevButton.hide();
 
-        this.nextButton = new FormButton({
-          label: 'Next',
-          onClick: () => this.nextTab(),
-          type: ButtonType.PRIMARY,
-        });
-        this.nextButton.render(q);
-        this.nextButton.setClass('next-button');
+        $(q, 'div', 'form-buttons', {}, (q) => {
+          this.prevButton = new FormButton({
+            label: 'Prev',
+            onClick: () => this.prevTab(),
+            type: ButtonType.SECONDARY,
+          });
+          this.prevButton.render(q);
+          this.prevButton.setClass('prev-button');
+          this.prevButton.hide();
 
-        this.submitButton = new FormButton({
-          label: 'Submit',
-          onClick: () => this.onSubmit(this.formState),
-          type: ButtonType.PRIMARY,
+          this.nextButton = new FormButton({
+            label: 'Next',
+            onClick: () => this.nextTab(),
+            type: ButtonType.SECONDARY,
+          });
+          this.nextButton.render(q);
+          this.nextButton.setClass('next-button');
+
+          this.submitButton = new FormButton({
+            label: 'Submit',
+            onClick: () => this.checkBeforeSubmit(),
+            type: ButtonType.PRIMARY,
+          });
+          this.submitButton.render(q);
+          this.submitButton.setClass('submit-button');
+          this.submitButton.hide();
         });
-        this.submitButton.render(q);
-        this.submitButton.setClass('submit-button');
-        this.submitButton.hide();
       });
     });
 
+    if (this.config.progressBarLocation) {
+      form.classList.add(this.config.progressBarLocation);
+    }
     this.tabsButtons.children[this.activeTabIndex].classList.add('selected');
   }
 
+  checkBeforeSubmit(): boolean {
+    if (this.isCurrentTabValid()) {
+      this.onSubmit(this.formState);
+      return true;
+    } else {
+      alert('Acccept all terms and conditions');
+      return false;
+    }
+  }
   nextTab(): void {
     console.log('Next Tab Clicked');
     if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
@@ -132,21 +151,27 @@ class MultistepForm {
   }
 
   private isCurrentTabValid(): boolean {
+    if (this.checkIfRequiredFieldsAreFilled()) {
+      console.log('Required fields are filled');
+      this.updateTabValidity(this.activeTabIndex, true);
+    }
     return this.tabValidityStates[this.activeTabIndex];
   }
 
   private checkIfRequiredFieldsAreFilled(): boolean {
-    return true;
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
-          // console.log('Field is required but is empty');
+          console.log(`Field "${key}" is required but is empty`);
           return false;
         }
         if (typeof fieldValue === 'object') {
-          // console.log('Field is required but is an object');
-          return Object.values(fieldValue).every((val) => val !== undefined && val !== '');
+          const ans = Object.values(fieldValue).every((val) => val !== undefined && val !== '' && val !== false);
+          if (!ans) {
+            console.log(`Field "${key}" is required but contains empty values`);
+            return false;
+          }
         }
         // console.log('Field is required and is filled');
       }
@@ -177,6 +202,7 @@ class MultistepForm {
    * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
    */
   private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
+    console.log('Update form state', keyOrState, value);
     if (typeof keyOrState === 'string') {
       if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
         this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
@@ -192,7 +218,7 @@ class MultistepForm {
         }
       }
     }
-    // console.log('Updated form state:', this.formState);
+    console.log('Updated form state:', this.formState);
     if (this.checkIfRequiredFieldsAreFilled()) {
       console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);

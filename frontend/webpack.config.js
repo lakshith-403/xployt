@@ -4,6 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  devtool: 'source-map',
+  optimization: {
+    minimize: false,
+  },
+  mode: 'development',
   entry: './src/main.ts',
   output: {
     filename: 'bundle.js',
@@ -55,7 +60,7 @@ module.exports = {
     static: {
       directory: path.resolve(__dirname, 'dist'),
     },
-    compress: true,
+    compress: false,
     port: 9000,
     historyApiFallback: true,
     open: true,

@@ -5,7 +5,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: $dark-gray;
+  background-color: var(--dark-gray);
   gap: 30px;
 
   .login-left {
@@ -23,7 +23,7 @@
     }
 
     .login-description {
-      color: $light-gray;
+      color: var(--light-gray);
       font-size: 0.8rem;
       font-weight: 100;
       text-align: left;
@@ -59,7 +59,6 @@
 }
 
 @media (max-width: 600px) {
-
   .login-view {
     flex-direction: column;
     padding: 15px;
@@ -68,26 +67,26 @@
       padding: 15px; /* Adjust padding for smaller screens */
       width: 100%; /* Full width on mobile */
     }
-  
+
     .login-left {
       width: 100%;
 
       .login-icon-image {
         margin-left: auto;
       }
-  
+
       .login-description {
-        color: $light-gray;
+        color: var(--light-gray);
         font-size: 0.8rem;
         font-weight: 100;
         text-align: center;
       }
     }
-  
+
     .login-title {
       font-size: 2em; /* Adjust title size for mobile */
     }
-  
+
     .login-description {
       font-size: 0.9rem; /* Adjust description size for mobile */
     }

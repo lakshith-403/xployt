@@ -1,10 +1,11 @@
-import { Quark, QuarkFunction as $ } from '../../ui_lib/quark';
-
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import './textField.scss';
 export interface TextFieldOptions {
   label: string;
   placeholder?: string;
   type?: string;
   onChange?: (value: string) => void;
+  name?: string;
 }
 
 export class TextField {
@@ -13,12 +14,15 @@ export class TextField {
   private type: string;
   private onChange?: (value: string) => void;
   protected element?: Quark;
+  protected container?: Quark;
+  public name!: string;
 
   constructor(options: TextFieldOptions) {
     this.label = options.label;
     this.placeholder = options.placeholder || '';
     this.type = options.type || 'text';
     this.onChange = options.onChange;
+    this.name = options.name || '';
   }
 
   public get value() {
@@ -26,13 +30,13 @@ export class TextField {
   }
 
   render(parent: Quark): void {
-    const container = $(parent, 'div', 'text-field-container', {});
+    this.container = $(parent, 'div', 'text-field-container', {});
 
     if (this.label) {
-      $(container, 'label', 'text-field-label', {}, this.label);
+      $(this.container, 'label', 'text-field-label', {}, this.label);
     }
 
-    this.element = $(container, 'input', 'text-field-input', {
+    this.element = $(this.container, 'input', 'text-field-input', {
       type: this.type,
       placeholder: this.placeholder,
     });
@@ -52,5 +56,9 @@ export class TextField {
     if (this.element) {
       (this.element as HTMLInputElement).value = value;
     }
+  }
+
+  setOnChange(onChange: (value: string) => void): void {
+    this.onChange = onChange;
   }
 }

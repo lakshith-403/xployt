@@ -1,0 +1,47 @@
+.parent-element {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+
+  .tag-input-label {
+    padding: 2rem 0rem 0rem 0rem;
+    min-width: 8rem;
+    width: 8rem;
+  }
+  .tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    border-radius: 10px;
+    position: relative;
+    padding: 0.7rem 0.7rem;
+    margin: 5px 0;
+    border: none;
+    caret-color: transparent;
+    background-color: var(--input-field-bg);
+    color: var(--light-gray);
+
+    &:focus-within {
+      outline: 1px solid white;
+    }
+    .tag-input-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      caret-color: transparent;
+
+      .tag-input {
+        max-width: 15rem;
+        padding: 0.5rem;
+        min-height: 3rem;
+        caret-color: #e9e9e9;
+        &:focus,
+        &:hover {
+          outline: none;
+          // box-shadow: none;
+        }
+      }
+    }
+  }
+}

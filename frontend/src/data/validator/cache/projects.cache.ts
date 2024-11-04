@@ -13,7 +13,7 @@ interface ProjectDetails {
   status: 'pending' | 'closed' | 'in progress';
   title: string;
   client: string;
-  pending_reports: number;
+  pendingReports: number;
 }
 
 export class Project {
@@ -29,21 +29,34 @@ export class Project {
     this.status = data['status'];
     this.title = data['title'];
     this.client = data['client'];
-    this.pendingReports = data['pending_reports'];
+    this.pendingReports = data['pendingReports'];
   }
 }
 
 export class ProjectsCache extends CacheObject<Project[][]> {
   async load(userId: string): Promise<Project[][]> {
-    const response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
+    console.log(`Loading projects for user: ${userId}`);
+    let response: ProjectResponse;
 
-    if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
+    try {
+      response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
+    } catch (error) {
+      console.error('Network error while fetching projects:', error);
+      throw new DataFailure('load project', 'Network error');
+    }
+
+    if (!response.is_successful) {
+      console.error('Failed to load projects:', response.error);
+      throw new DataFailure('load project', response.error ?? '');
+    }
+
+    console.log('Projects loaded successfully:', response.data);
 
     return [
-      response['data'].slice(0, 1).map((projectDetails: ProjectDetails[]) => {
+      response['data'][0].map((projectDetails: ProjectDetails) => {
         return new Project({ ...projectDetails });
       }),
-      response['data'].slice(1, 2).map((projectDetails: ProjectDetails[]) => {
+      response['data'][1].map((projectDetails: ProjectDetails) => {
         return new Project({ ...projectDetails });
       }),
     ];
