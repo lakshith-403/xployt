@@ -18,12 +18,12 @@ class CacheStore {
   constructor() {
     this.userMap = new Map();
     this.projectInfoMap = new Map();
-    this.projects = new ProjectsCacheMock();
+    this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
-    this.reports = new ReportsCacheMock(); 
+    this.reports = new ReportsCacheMock();
   }
 
   public getUser(username: string): UserCache {
@@ -43,18 +43,18 @@ class CacheStore {
   public getProjects(): ProjectsCache {
     return this.projects;
   }
-  // Reports part 
+  // Reports part
 
-    public getReportInfo(reportId: string): ReportInfoCache {
-      if (!this.reportInfoMap.has(reportId)) {
-        this.reportInfoMap.set(reportId, new ReportInfoCacheMock());
-      }
+  public getReportInfo(reportId: string): ReportInfoCache {
+    if (!this.reportInfoMap.has(reportId)) {
+      this.reportInfoMap.set(reportId, new ReportInfoCacheMock());
+    }
 
-      return this.reportInfoMap.get(reportId)!;
-    }
-    public getReports(): ReportsCache {
-      return this.reports;
-    }
+    return this.reportInfoMap.get(reportId)!;
+  }
+  public getReports(): ReportsCache {
+    return this.reports;
+  }
 
   public getProjectTeam(projectId: string): ProjectTeamCacheMock {
     if (!this.projectTeamsMap.has(projectId)) {

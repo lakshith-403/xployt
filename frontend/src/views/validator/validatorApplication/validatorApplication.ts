@@ -5,6 +5,7 @@ import { TermsAndConditions } from './Step3/TermsAndConditions';
 import MultistepForm from './../../../components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
+import { router } from '@/ui_lib/router';
 interface Step {
   title: string;
   step: any;
@@ -27,10 +28,17 @@ class ValidatorApplication extends View {
     certificates: '',
     cv: null as File | null,
     references: '',
-    termsAndConditions: [false, false, false, false],
+    termsAndConditions: {
+      0: false,
+      1: false,
+      2: false,
+    },
+    comments: '',
   };
 
-  private onSubmit: (formState: any) => void = () => {};
+  private onSubmit: (formState: any) => void = () => {
+    router.navigateTo('/');
+  };
 
   render(q: Quark): void {
     const steps: Step[] = [
@@ -50,6 +58,8 @@ class ValidatorApplication extends View {
         title: 'Expertise',
         step: new Preferences(),
         stateUsed: {
+          relevantExperience: 'optional',
+          areaOfExpertise: 'optional',
           skills: 'optional',
           certificate: 'optional',
           cv: 'optional',
@@ -61,12 +71,14 @@ class ValidatorApplication extends View {
         step: new TermsAndConditions(),
         stateUsed: {
           termsAndConditions: 'required',
+          comments: 'optional',
         },
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', this.onSubmit);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'bottom' }, this.onSubmit);
     $(q, 'div', 'validator-application', {}, (q) => {
+      $(q, 'h1', 'title', {}, 'Validator Application');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);
       });

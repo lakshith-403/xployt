@@ -4,11 +4,25 @@ $fa-font-path: './webfonts';
 @import './fontawesome/solid.scss';
 @import './fontawesome/brands.scss';
 
-$light-green-linear: linear-gradient(to right, #52D29C, #30404D);
-$dark-green: #006C59;
-$light-green: #86EBD9;
-$light-gray: #E4DEE0;
-$dark-green-linear: linear-gradient(to right, #00473A, #000909);
-$green-grey: #30404D;
-$dark-gray: #252726;
-$input-field-bg: #1A1A1A;
+body {
+  --background-primary: #252726; // Root background color
+  --background-secondary: #1a1a1a; // Footer, TextArea, Input
+  --background-tertiery: #131313; // Navbat, Header
+  --color-primary: #e4dee0; // Most text
+  --color-secondary: white; // Highlighted text
+  --light-green: #86ebd9;
+  --grey-green: #30404d; // Footer-hr
+  --dark-green: #006c59;
+  --light-grey: #444444; // input-tags
+}
+
+:root {
+  --light-green-linear: linear-gradient(to right, #52d29c, #30404d);
+  --dark-green: #006c59;
+  --light-green: #86ebd9;
+  --light-gray: #e4dee0;
+  --dark-green-linear: linear-gradient(to right, #00473a, #000909);
+  --green-grey: #30404d;
+  --dark-gray: #252726;
+  --input-field-bg: #1a1a1a;
+}
