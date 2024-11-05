@@ -17,6 +17,7 @@ import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/Vulner
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
+import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -48,6 +49,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'test/tagInput',
     title: 'Tag Input Test',
     url: 'test/tagInput',
+  },
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    url: 'dashboard',
   },
 ];
 
@@ -87,7 +93,7 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler],
+  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler, validatorDashboardViewHandler],
   new SidebarView('/', HomeSidebar)
 );
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
