@@ -8,7 +8,7 @@ export class ProjectInfo {
   startDate: string;
   endDate: string;
   description: string;
-  scope: string;
+  scope: string[];
 
   constructor(data: any) {
     this.id = data['id'];
@@ -44,7 +44,7 @@ export class ProjectInfoCacheMock extends CacheObject<ProjectInfo> {
         startDate: '2021-01-01',
         endDate: '2021-12-31',
         description: 'Description of project 1',
-        scope: 'Scope of project 1',
+        scope: ['Scope of project 1'],
       });
     }
     return new ProjectInfo({
@@ -54,7 +54,7 @@ export class ProjectInfoCacheMock extends CacheObject<ProjectInfo> {
       startDate: '2021-01-01',
       endDate: '2021-12-31',
       description: 'Description of project 1',
-      scope: 'Scope of project 1',
+      scope: ['Scope of project 1'],
     });
   }
 }

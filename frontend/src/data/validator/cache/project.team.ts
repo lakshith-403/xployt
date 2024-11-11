@@ -11,7 +11,8 @@ export interface ProjectTeam {
   projectLead: {
     name: string;
     id: number;
-    contact: string;
+    username: string;
+    email: string;
   };
 
   client: {
@@ -59,7 +60,7 @@ export class ProjectTeamCacheMock extends CacheObject<ProjectTeam> {
           { name: 'Hacker1', id: 1, username: 'hacker1', email: 'hacker@gmail.com', assigned_validator: 'validator1' },
           { name: 'Hacker2', id: 2, username: 'hacker2', email: 'hacker@gmail.com', assigned_validator: 'validator1' },
         ],
-        projectLead: { name: 'Lead1', id: 1, contact: 'contact1' },
+        projectLead: { name: 'Lead1', id: 1, username: 'lead1', email: 'lead1@xployt.com' },
         validator: [
           { name: 'Validator1', id: 1, username: 'validator1', email: 'maahelaQ@gmail.com', assigned_hackers: ['hacker1'] },
           { name: 'Validator1', id: 2, username: 'validator2', email: 'maahelaQ@gmail.com', assigned_hackers: ['hacker2'] },
@@ -76,7 +77,7 @@ export class ProjectTeamCacheMock extends CacheObject<ProjectTeam> {
       title: 'Project GT-175',
       client: { name: 'Client_2', id: 2, username: 'client1', email: 'example@gmail.com', company: 'company1' },
       hackers: [{ name: 'Hacker1', id: 2, username: 'hacker1', email: 'hacker@gmail.com', assigned_validator: 'validator1' }],
-      projectLead: { name: 'Lead1', id: 2, contact: 'contact1' },
+      projectLead: { name: 'Lead1', id: 2, username: 'lead1', email: 'lead1@xployt.com'  },
       validator: [{ name: 'Validator1', id: 2, username: 'validator1', email: 'maahelaQ@gmail.com', assigned_hackers: ['hacker1'] }],
       startDate: '2021-01-01',
       endDate: '2021-12-31',
