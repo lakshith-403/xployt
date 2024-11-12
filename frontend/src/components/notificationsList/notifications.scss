@@ -1,0 +1,40 @@
+.notification-list {
+  background: rgba(0, 0, 0, 0.50);
+  backdrop-filter: blur(5px);
+  padding-block: 16px;
+  border-radius: 8px;
+  width: 300px;
+  color: #ffffff;
+}
+
+.notification-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-inline: 32px;
+}
+
+.notification-item {
+  padding-inline: 32px;
+  padding-block: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &.highlight {
+    background: rgba(0, 0, 0, 0.50);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
+}
+
+.notification-title {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.notification-subtitle {
+  font-size: 0.8rem;
+  color: #b0b0b0;
+}
