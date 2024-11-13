@@ -17,6 +17,8 @@ import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/Vulner
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
+import {NotificationList} from "@components/notifications/notificationsList";
+import {NotificationButton} from "@components/notifications/notificationButton";
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -77,6 +79,15 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
+      const notifications = [
+        { title: "Your report was accepted by Jane Doe", subtitle: "#26785", platform: "LifeBuoy Platform", highlight: true  },
+        { title: "You have a new invitation", subtitle: "#85685", platform: "Uniliver Platform"},
+        { title: "Confirm Payment", subtitle: "#27985", platform: "LifeBuoy Platform" },
+        { title: "Confirm Payment", subtitle: "#67985", platform: "LifeBuoy Platform" },
+      ];
+      const notificationList = new NotificationList(notifications);
+      const notificationButton = new NotificationButton(notificationList, q);
+      notificationButton.render();
         $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/about'); } }, 'About');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
