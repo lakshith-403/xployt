@@ -9,7 +9,7 @@
     left: 0;
     background: rgba(0, 0, 0, 0.60);
     backdrop-filter: blur(5px);
-    padding-block: 16px;
+    padding-block: 0.5rem;
     border-radius: 8px;
     width: 300px;
     color: #ffffff;
@@ -21,18 +21,21 @@
   .notification-header {
     font-size: 1.2rem;
     font-weight: bold;
-    margin-bottom: 10px;
-    padding-inline: 32px;
+    margin-bottom: 1rem;
+    padding-inline: 1.5rem;
   }
 
   .notification-item {
-    padding-inline: 32px;
-    padding-block: 10px;
+    padding-inline: 1.2rem;
+    padding-block: 1rem;
+    margin-inline: 0.5rem;
+    margin-block: 0.25rem;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     &.highlight {
-      background: rgba(0, 0, 0, 0.50);
+      background: rgba(37, 39, 38, 0.50);
     }
 
     &:hover {
@@ -40,14 +43,25 @@
     }
   }
 
-  .notification-title {
+  .notification-message {
     font-weight: bold;
     font-size: 0.9rem;
   }
 
-  .notification-subtitle {
-    font-size: 0.8rem;
+  .notification-data {
+    font-size: 0.7rem;
     color: #b0b0b0;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+  }
+
+  .notification-title {
+    color: var(--light-green);
+  }
+
+  p {
+    margin: 0;
   }
 }
 

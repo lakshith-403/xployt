@@ -79,13 +79,7 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
-      const notifications = [
-        { title: "Your report was accepted by Jane Doe", subtitle: "#26785", platform: "LifeBuoy Platform", highlight: true  },
-        { title: "You have a new invitation", subtitle: "#85685", platform: "Uniliver Platform"},
-        { title: "Confirm Payment", subtitle: "#27985", platform: "LifeBuoy Platform" },
-        { title: "Confirm Payment", subtitle: "#67985", platform: "LifeBuoy Platform" },
-      ];
-      const notificationList = new NotificationList(notifications);
+      const notificationList = new NotificationList(false, {userId: "1"});
       const notificationButton = new NotificationButton(notificationList, q);
       notificationButton.render();
         $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
