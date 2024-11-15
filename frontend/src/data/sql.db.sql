@@ -65,7 +65,7 @@ CREATE TABLE validators (
     cv_link VARCHAR(255),
     approved BOOLEAN DEFAULT FALSE,
     linkedin VARCHAR(255), // check
-    referenc 
+    reference
     FOREIGN KEY (validator_id) REFERENCES users(user_id)
 );
 CREATE TABLE validator_certifications (
