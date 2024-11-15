@@ -1,8 +1,8 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import ProjectInfo from './1_ProjectInfo/ProjectInfo';
-import { TestingSecurity } from './2_TestingSecurity/TestingSecurity';
-import { Payment } from './3_Payment/Payments';
+import TestingSecurity from './2_TestingSecurity/TestingSecurity';
+import Payments from './3_Payment/Payments';
 import MultistepForm from './../../../components/multistepForm/multistep-form';
 import './projectConfigForm.scss';
 import { router } from '@/ui_lib/router';
@@ -53,35 +53,35 @@ class ProjectConfigForm extends View {
         title: 'Project Information',
         step: new ProjectInfo(),
         stateUsed: {
-          projectTitle: 'required',
-          startDate: 'required',
-          endDate: 'required',
-          description: 'required',
-          url: 'required',
-          technicalStack: 'required',
+          projectTitle: 'optional',
+          startDate: 'optional',
+          endDate: 'optional',
+          description: 'optional',
+          url: 'optional',
+          technicalStack: 'optional',
         },
       },
       {
         title: 'Testing and Security',
         step: new TestingSecurity(),
         stateUsed: {
-          testingScope: 'required',
-          outOfScope: 'required',
-          objectives: 'required',
-          securityRequirements: 'required',
+          testingScope: 'optional',
+          outOfScope: 'optional',
+          objectives: 'optional',
+          securityRequirements: 'optional',
         },
       },
       {
         title: 'Security Level Payment',
-        step: new Payment(),
+        step: new Payments(),
         stateUsed: {
           critical: 'optional',
           high: 'optional',
           medium: 'optional',
           low: 'optional',
           informative: 'optional',
-          visibility: 'required',
-          initialFunding: 'required',
+          visibility: 'optional',
+          initialFunding: 'optional',
         },
       },
     ];

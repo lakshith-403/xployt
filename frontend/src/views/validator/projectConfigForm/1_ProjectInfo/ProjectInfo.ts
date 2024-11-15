@@ -42,6 +42,13 @@ class ProjectInfo implements Step {
       field.addClass('w-full');
     });
   }
+  private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
+    $(q, 'div', 'form-field', {}, (q) => {
+      field.render(q);
+      field.setValue(value);
+      field.addClass(`w-${widthFraction}`);
+    });
+  }
 
   private fields: { [key: string]: FormTextField } = {
     projectTitle: new FormTextField({ label: 'Project Title *', placeholder: 'Enter your project title', name: 'projectTitle' }),
@@ -73,14 +80,6 @@ class ProjectInfo implements Step {
   }
 
   private updateParentState!: (newState: any) => void;
-
-  private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
-    $(q, 'div', 'form-field', {}, (q) => {
-      field.render(q);
-      field.setValue(value);
-      field.addClass(`w-${widthFraction}`);
-    });
-  }
 
   private updateState(state: any): void {
     this.updateParentState!(state);

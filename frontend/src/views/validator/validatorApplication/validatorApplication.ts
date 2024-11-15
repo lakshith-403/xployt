@@ -48,12 +48,12 @@ class ValidatorApplication extends View {
         title: 'Project Details',
         step: new ProjectDetails(),
         stateUsed: {
-          name: 'required',
-          email: 'required',
-          mobile: 'required',
-          country: 'required',
-          linkedin: 'required',
-          dateOfBirth: 'required',
+          name: 'optional',
+          email: 'optional',
+          mobile: 'optional',
+          country: 'optional',
+          linkedin: 'optional',
+          dateOfBirth: 'optional',
         },
       },
       {
