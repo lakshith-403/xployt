@@ -18,7 +18,7 @@ import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-
+import { projectConfigFormViewHandler } from './views/validator/projectConfigForm/projectConfigForm';
 const HomeSidebar: SidebarTab[] = [
   {
     id: '',
@@ -54,6 +54,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'dashboard',
     title: 'Dashboard',
     url: 'dashboard',
+  },
+  {
+    id: 'validator/project-config',
+    title: 'Project Configuration',
+    url: 'validator/project-config',
   },
 ];
 
@@ -93,7 +98,16 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler, validatorDashboardViewHandler],
+  [
+    homeViewHandler,
+    projectsViewHandler,
+    vulnReportViewHandler,
+    reportsViewHandler,
+    validatorApplicationViewHandler,
+    tagInputTestViewHandler,
+    validatorDashboardViewHandler,
+    projectConfigFormViewHandler,
+  ],
   new SidebarView('/', HomeSidebar)
 );
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);

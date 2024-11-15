@@ -28,6 +28,8 @@ class ValidatorApplication extends View {
     certificates: '',
     cv: null as File | null,
     references: '',
+    relevantExperience: '',
+    areaOfExpertise: [],
     termsAndConditions: {
       0: false,
       1: false,
