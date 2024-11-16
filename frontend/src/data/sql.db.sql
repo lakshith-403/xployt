@@ -88,18 +88,27 @@ CREATE TABLE projects (
     lead_id INT,
     title VARCHAR(255),
     description TEXT,
-    scope TEXT,
+    testing_scope TEXT,
+    out_of_scope TEXT,
+    objectives TEXT,
+    security_requirements TEXT,
     payment_amount DECIMAL(10, 2),
     visibility ENUM('Public', 'Private') DEFAULT 'Private',
     status ENUM('Pending', 'Active', 'Completed') DEFAULT 'Pending',
     start_date DATE,
     end_date DATE,
+    url VARCHAR(100),
+    attachment_link TEXT,
+    technical_stack TEXT,
     pending_reports INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(client_id),
-    FOREIGN KEY (lead_id) REFERENCES project_leads(lead_id)
+    FOREIGN KEY (lead_id) REFERENCES project_leads(lead_id),
+    -- Payment level Info
 );
+
+
 CREATE TABLE project_scope (
     project_id INT,
     scope_item TEXT,
