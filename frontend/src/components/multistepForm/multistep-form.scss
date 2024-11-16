@@ -7,8 +7,13 @@
   width: 100%;
   max-width: 1200px;
 
-  &.bottom {
+  &.progress-bar-bottom {
     flex-direction: column-reverse;
+  }
+  &.progress-bar-hide {
+    .progress-bar {
+      display: none;
+    }
   }
   .progress-bar {
     display: flex;

@@ -29,18 +29,18 @@ class ProjectConfigForm extends View {
     description: '',
     url: '',
     technicalStack: '',
-    testingScope: '',
-    outOfScope: '',
-    objectives: '',
-    securityRequirements: '',
-    critical: [],
-    high: [],
-    medium: [],
-    low: [],
-    informative: [],
-    visibility: '',
-    attachments: null as File | null,
-    initialFunding: '',
+    // testingScope: '',
+    // outOfScope: '',
+    // objectives: '',
+    // securityRequirements: '',
+    // critical: [],
+    // high: [],
+    // medium: [],
+    // low: [],
+    // informative: [],
+    // visibility: '',
+    // attachments: null as File | null,
+    // initialFunding: '',
   };
 
   private onSubmit: (formState: any) => void = () => {
@@ -61,32 +61,9 @@ class ProjectConfigForm extends View {
           technicalStack: 'optional',
         },
       },
-      {
-        title: 'Testing and Security',
-        step: new TestingSecurity(),
-        stateUsed: {
-          testingScope: 'optional',
-          outOfScope: 'optional',
-          objectives: 'optional',
-          securityRequirements: 'optional',
-        },
-      },
-      {
-        title: 'Security Level Payment',
-        step: new Payments(),
-        stateUsed: {
-          critical: 'optional',
-          high: 'optional',
-          medium: 'optional',
-          low: 'optional',
-          informative: 'optional',
-          visibility: 'optional',
-          initialFunding: 'optional',
-        },
-      },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'bottom' }, this.onSubmit);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit);
     $(q, 'div', 'project-config-form', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {
@@ -97,3 +74,27 @@ class ProjectConfigForm extends View {
 }
 
 export const projectConfigFormViewHandler = new ViewHandler('validator/project-config', ProjectConfigForm);
+
+// {
+//   title: 'Testing and Security',
+//   step: new TestingSecurity(),
+//   stateUsed: {
+//     testingScope: 'optional',
+//     outOfScope: 'optional',
+//     objectives: 'optional',
+//     securityRequirements: 'optional',
+//   },
+// },
+// {
+//   title: 'Security Level Payment',
+//   step: new Payments(),
+//   stateUsed: {
+//     critical: 'optional',
+//     high: 'optional',
+//     medium: 'optional',
+//     low: 'optional',
+//     informative: 'optional',
+//     visibility: 'optional',
+//     initialFunding: 'optional',
+//   },
+// },
