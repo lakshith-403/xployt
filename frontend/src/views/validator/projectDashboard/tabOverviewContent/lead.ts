@@ -4,7 +4,8 @@ import './lead.scss';
 import { CACHE_STORE } from '@/data/cache';
 import { ClientCacheMock } from '@/data/projectLead/cache/client.cache';
 import { Client } from '@/data/projectLead/cache/client.cache';
-
+import { FormButton } from '@/components/button/form.button';
+import { ButtonType } from '@/components/button/base';
 export default class Lead {
   private projectOverviewLead!: ProjectOverviewLead;
   private projectOverviewCache: ProjectOverviewLeadCacheMock;
@@ -23,19 +24,38 @@ export default class Lead {
     $(q, 'div', 'overview lead', {}, (q) => {
       $(q, 'div', 'info', {}, (q) => {
         $(q, 'div', 'info-item', {}, (q) => {
-          $(q, 'span', '', {}, 'Client');
+          $(q, 'span', 'label', {}, 'Client');
           $(q, 'span', '', {}, this.client.clientName);
         });
         $(q, 'div', 'info-item', {}, (q) => {
-          $(q, 'span', '', {}, 'Access link');
+          $(q, 'span', 'label', {}, 'Access link');
           $(q, 'span', '', {}, (q) => {
             $(q, 'a', '', {}, this.projectOverviewLead.accessLink);
           });
         });
       });
-      $(q, 'div', 'team', {}, (q) => {
-        $(q, 'span', '', {}, 'Team');
+      // $(q, 'div', 'team', {}, (q) => {
+      //   $(q, 'span', '', {}, 'Team');
+      // });
+      $(q, 'div', '', {}, (q) => {
+        $(q, 'div', 'label', {}, 'description');
+        $(q, 'p', '', {}, this.projectOverviewLead.description);
       });
+      console.log(this.projectOverviewLead.status);
+      if (this.projectOverviewLead.status === 'pending') {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Pending');
+        $(q, 'div', '', {}, (q) => {
+          const verifyButton = new FormButton({
+            label: 'Verify Project',
+            type: ButtonType.PRIMARY,
+            onClick: () => {
+              console.log('Verify Project');
+            },
+          });
+          verifyButton.render(q);
+        });
+      }
     });
   }
 }

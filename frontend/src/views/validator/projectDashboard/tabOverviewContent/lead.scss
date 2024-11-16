@@ -1,4 +1,8 @@
 .overview.lead {
+  .label {
+    font-weight: 600;
+  }
+
   .info {
     display: flex;
     width: 100%;
@@ -7,8 +11,11 @@
     .info-item {
       display: flex;
       flex-direction: row;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
       width: 50%;
+
       a {
         color: var(--light-green);
       }

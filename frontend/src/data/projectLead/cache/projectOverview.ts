@@ -12,6 +12,7 @@ export class ProjectOverviewLead {
   startDate: string;
   endDate: string;
   technicalStack: string[];
+  status: 'pending' | 'active' | 'completed' | 'cancelled';
 
   constructor(data: any) {
     this.projectId = data['projectId'];
@@ -23,6 +24,7 @@ export class ProjectOverviewLead {
     this.startDate = data['startDate'];
     this.endDate = data['endDate'];
     this.technicalStack = data['technicalStack'];
+    this.status = data['status'];
   }
 }
 
@@ -49,8 +51,10 @@ export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLea
         clientName: 'Client 1',
         startDate: '2021-01-01',
         endDate: '2021-12-31',
-        description: 'Description of project 1',
+        description:
+          'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
         technicalStack: ['React', 'Node', 'Express'],
+        status: 'pending',
       });
     }
     return new ProjectOverviewLead({
@@ -61,8 +65,10 @@ export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLea
       clientName: 'Client 2',
       startDate: '2021-01-01',
       endDate: '2021-12-31',
-      description: 'Description of project 1',
+      description:
+        'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
       technicalStack: ['React', 'Node', 'Express'],
+      status: 'pending',
     });
   }
 }
