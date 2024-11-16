@@ -5,25 +5,30 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-
+import { ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
+import { ClientCacheMock } from './projectLead/cache/client.cache';
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCacheMock>;
+  private readonly clientMap: Map<string, ClientCacheMock>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
 
   constructor() {
     this.userMap = new Map();
     this.projectInfoMap = new Map();
-    this.projects = new ProjectsCache();
+    this.projects = new ProjectsCacheMock();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
+    this.projectLeadOverviewMap = new Map();
+    this.clientMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
-    this.reports = new ReportsCacheMock();
+    this.reports = new ReportsCache();
   }
 
   public getUser(username: string): UserCache {
@@ -40,6 +45,13 @@ class CacheStore {
 
     return this.projectInfoMap.get(projectId)!;
   }
+  public getClient(clientId: string): ClientCacheMock {
+    if (!this.clientMap.has(clientId)) {
+      this.clientMap.set(clientId, new ClientCacheMock());
+    }
+    return this.clientMap.get(clientId)!;
+  }
+
   public getProjects(): ProjectsCache {
     return this.projects;
   }
@@ -68,6 +80,12 @@ class CacheStore {
     }
 
     return this.hackerProjectInfoMap.get(projectId)!;
+  }
+  public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCacheMock {
+    if (!this.projectLeadOverviewMap.has(projectId)) {
+      this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCacheMock());
+    }
+    return this.projectLeadOverviewMap.get(projectId)!;
   }
 }
 

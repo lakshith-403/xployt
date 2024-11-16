@@ -7,7 +7,7 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 
-interface Steps {
+export interface Steps {
   title: string;
   stateUsed: { [key: string]: 'optional' | 'required' };
   step: Step;

@@ -1,0 +1,17 @@
+.overview.lead {
+  .info {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 10px;
+    .info-item {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: 50%;
+      a {
+        color: var(--light-green);
+      }
+    }
+  }
+}

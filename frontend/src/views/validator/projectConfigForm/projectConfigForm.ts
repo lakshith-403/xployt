@@ -1,17 +1,12 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import ProjectInfo from './1_ProjectInfo/ProjectInfo';
-import TestingSecurity from './2_TestingSecurity/TestingSecurity';
-import Payments from './3_Payment/Payments';
+// import TestingSecurity from './2_TestingSecurity/TestingSecurity';
+// import Payments from './3_Payment/Payments';
 import MultistepForm from './../../../components/multistepForm/multistep-form';
 import './projectConfigForm.scss';
 import { router } from '@/ui_lib/router';
-
-interface Step {
-  title: string;
-  step: any;
-  stateUsed: { [key: string]: 'optional' | 'required' };
-}
+import { Steps } from '@/components/multistepForm/multistep-form';
 
 class ProjectConfigForm extends View {
   private formState: any = {
@@ -48,7 +43,7 @@ class ProjectConfigForm extends View {
   };
 
   render(q: Quark): void {
-    const steps: Step[] = [
+    const steps: Steps[] = [
       {
         title: 'Project Information',
         step: new ProjectInfo(),
