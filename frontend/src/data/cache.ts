@@ -5,6 +5,7 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
+import {NotificationsCache, NotificationsCacheMock} from "@data/hacker/cache/notifications.cache";
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
@@ -12,6 +13,7 @@ class CacheStore {
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
 
@@ -21,6 +23,7 @@ class CacheStore {
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
+    this.notificationsListMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
@@ -69,6 +72,14 @@ class CacheStore {
 
     return this.hackerProjectInfoMap.get(projectId)!;
   }
+
+  public getNotificationsList(userId: string): NotificationsCache {
+    if(!this.notificationsListMap.has(userId)){
+      this.notificationsListMap.set(userId, new NotificationsCacheMock());
+    }
+    return this.notificationsListMap.get(userId)!;
+  }
+
 }
 
 export const CACHE_STORE = new CacheStore();
