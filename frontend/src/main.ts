@@ -19,6 +19,9 @@ import { validatorApplicationViewHandler } from './views/validator/validatorAppl
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
 import { projectConfigFormViewHandler } from './views/validator/projectConfigForm/projectConfigForm';
+import { NotificationList } from '@components/notifications/notificationsList';
+import { NotificationButton } from '@components/notifications/notificationButton';
+
 const HomeSidebar: SidebarTab[] = [
   {
     id: '',
@@ -88,6 +91,9 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
+      const notificationList = new NotificationList(false, {userId: "1"});
+      const notificationButton = new NotificationButton(notificationList, q);
+      notificationButton.render();
         $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/about'); } }, 'About');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
