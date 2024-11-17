@@ -7,6 +7,7 @@ export default class LoadingScreen {
     this.container = $(q, 'div', 'loading-screen', {}, (q) => {
       $(q, 'div', 'spinner', {}, (q) => {});
     });
+    this.container.style.display = 'none';
   }
 
   // Method to remove the loading screen

@@ -8,6 +8,8 @@ import { CACHE_STORE } from '@/data/cache';
 import { FormTextFieldDisabled } from '@/components/text_field/form.text_fields.disabled';
 import { ButtonType } from '@/components/button/base';
 import { FormButton } from '@/components/button/form.button';
+import { rejectProject, acceptProject } from '@/data/projectLead/network/projectConfig.network';
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
 
 import './verifyProject.scss';
 class VerifyProject extends View {
@@ -71,19 +73,27 @@ class VerifyProject extends View {
       this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectOverview.technicalStack);
 
       $(q, 'div', 'button-container', {}, (q) => {
+        const loading = new LoadingScreen(q);
         const rejectButton = new FormButton({
           label: 'Reject',
           type: ButtonType.SECONDARY,
-          onClick: () => {
+          onClick: async () => {
+            loading.show();
             console.log('Reject');
+            await rejectProject(this.params.projectId);
+            loading.hide();
           },
         });
         rejectButton.render(q);
+
         const acceptButton = new FormButton({
           label: 'Accept',
           type: ButtonType.PRIMARY,
-          onClick: () => {
+          onClick: async () => {
+            loading.show();
             console.log('Accept');
+            await acceptProject(this.params.projectId);
+            loading.hide();
           },
         });
         acceptButton.render(q);
