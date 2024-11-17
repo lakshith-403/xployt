@@ -5,13 +5,29 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
+import { CACHE_STORE } from '../../../data/cache';
+import {Project, ProjectsCache} from "../../../data/validator/cache/projects.cache";
+import LoadingScreen from "../../../components/loadingScreen/loadingScreen";
+
+
 // import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView extends View {
   params: { projectId: string };
+  private project: Project = {} as Project;
+  private projectsCache: ProjectsCache;
 
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
+    this.projectsCache = CACHE_STORE.getProjects();
+  }
+  async loadProject(): Promise<void>{
+    try {
+      const projects = await this.projectsCache.get(false, this.params.projectId);
+      this.project = projects[0][0];
+    } catch (error) {
+      console.error('Failed to load project data', error);
+    }
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -30,7 +46,14 @@ class projectDashboardView extends View {
     });
   }
 
-  render(q: Quark): void {
+  async render(q: Quark): Promise<void> {
+
+    const loading = new LoadingScreen(q);
+    loading.show();
+
+    await this.loadProject();
+    loading.hide();
+
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
@@ -58,8 +81,8 @@ class projectDashboardView extends View {
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
-      $(q, 'span', 'project-title', {}, 'Project Dashboard');
-      $(q, 'span', 'project-number', {}, ' - #2306');
+      $(q, 'span', 'project-title', {}, this.project.title);
+      $(q, 'span', 'project-number', {}, ' - #' + this.project.id);
       $(q, 'div', 'info', {}, (q) => {
         tabsComponent.render(q);
       });

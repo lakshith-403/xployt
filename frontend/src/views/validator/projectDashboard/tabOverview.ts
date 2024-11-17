@@ -5,6 +5,9 @@ import { CACHE_STORE } from '@/data/cache';
 import { ProjectsCache } from '@/data/validator/cache/projects.cache';
 import Lead from './tabOverviewContent/lead';
 import Client from './tabOverviewContent/client';
+import Hacker from './tabOverviewContent/hacker';
+import './tabOverview.scss';
+
 export default class Overview {
   private project!: Project;
   private user!: User;
@@ -41,6 +44,10 @@ export default class Overview {
       case 'guest':
         const client = new Client();
         client.render(q);
+        break;
+      case 'hacker':
+        const hacker = new Hacker(this.projectId);
+        hacker.render(q);
         break;
     }
   }
