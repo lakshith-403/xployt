@@ -2,7 +2,6 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import MultistepForm from '@/components/multistepForm/multistep-form';
 import './projectConfigForm.scss';
-import { router } from '@/ui_lib/router';
 import { Steps } from '@/components/multistepForm/multistep-form';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import { submitProjectConfig } from '@/data/projectLead/network/projectConfig.network';
@@ -10,6 +9,31 @@ import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 
 class ProjectConfigForm extends View {
+  params: { projectId: string };
+
+  protected shouldRenderBreadcrumbs(): boolean {
+    return true;
+  }
+
+  protected setupBreadcrumbs(params: { projectId: string }): void {
+    this.breadcrumbs?.clearBreadcrumbs();
+    this.breadcrumbs?.addBreadcrumb({
+      label: `Projects`,
+      link: `/projects`,
+    });
+    this.breadcrumbs?.addBreadcrumb({
+      label: `Project #${params.projectId}`,
+      link: `/projects/${params.projectId}`,
+    });
+    this.breadcrumbs?.addBreadcrumb({
+      label: `Configure Project`,
+      link: `/projects/${params.projectId}/configure`,
+    });
+  }
+  constructor(params: { projectId: string }) {
+    super(params);
+    this.params = params;
+  }
   private formState: any = {
     testingScope: '',
     outOfScope: '',
