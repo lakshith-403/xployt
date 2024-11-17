@@ -19,7 +19,7 @@ import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectConfigFormViewHandler } from './views/validator/projectConfigForm/projectConfigForm';
+import { projectConfigFormViewHandler } from './views/client/projectConfigForm/projectConfigForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 
