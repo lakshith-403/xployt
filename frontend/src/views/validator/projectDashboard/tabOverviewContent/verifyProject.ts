@@ -1,10 +1,19 @@
 import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { FormTextField } from '../../../../components/text_field/form.text_field';
-import './verifyProject.scss';
-import { View } from '@/ui_lib/view';
+// import './verifyProject.scss';
+import { View, ViewHandler } from '@/ui_lib/view';
 // import { Step } from './../../../../components/multistepForm/multistep-form';
+import { ProjectOverviewLead, ProjectOverviewLeadCacheMock } from '@data/projectLead/cache/projectOverview';
+import { CACHE_STORE } from '@/data/cache';
+import { FormTextFieldDisabled } from '@/components/text_field/form.text_fields.disabled';
+import { ButtonType } from '@/components/button/base';
+import { FormButton } from '@/components/button/form.button';
 
+import './verifyProject.scss';
 class VerifyProject extends View {
+  params: { projectId: string };
+  private projectOverview!: ProjectOverviewLead;
+  private projectOverviewCache!: ProjectOverviewLeadCacheMock;
   protected shouldRenderBreadcrumbs(): boolean {
     return true;
   }
@@ -19,28 +28,81 @@ class VerifyProject extends View {
       label: `Project #${params.projectId}`,
       link: `/projects/${params.projectId}`,
     });
-  }
-  render(q: Quark, state: any): void {
-    $(q, 'div', 'verify-project', {}, (q) => {
-      $(q, 'h3', 'title', {}, 'Verify Project');
-
-      this.renderFieldFullWidth(q, this.fields.name, state.name);
-      this.renderFieldFullWidth(q, this.fields.email, state.email);
-      this.renderFieldFullWidth(q, this.fields.mobile, state.mobile);
-      this.renderFieldFullWidth(q, this.fields.country, state.country);
-      this.renderFieldFullWidth(q, this.fields.linkedin, state.linkedin);
-
-      $(q, 'div', 'dob', {}, (q) => {
-        $(q, 'span', '', {}, 'Date of Birth *');
-        $(q, 'div', 'dob-fields', {}, (q) => {
-          this.renderCustomField(q, this.fields.dobDay, state.dateOfBirth?.day, 1 / 3);
-          this.renderCustomField(q, this.fields.dobMonth, state.dateOfBirth?.month, 1 / 3);
-          this.renderCustomField(q, this.fields.dobYear, state.dateOfBirth?.year, 1 / 3);
-        });
-      });
-      // this.renderFieldFullWidth(q, this.fields.dobYearTest, '');
+    this.breadcrumbs?.addBreadcrumb({
+      label: `Verify Project`,
+      link: `/projects/${params.projectId}/verify`,
     });
   }
+  constructor(params: { projectId: string }) {
+    super(params);
+    this.params = params;
+    this.projectOverviewCache = CACHE_STORE.getLeadProjectOverview(this.params.projectId) as ProjectOverviewLeadCacheMock;
+  }
+  private async loadData(): Promise<void> {
+    this.projectOverview = await this.projectOverviewCache.get(false, this.params.projectId);
+  }
+  async render(q: Quark): Promise<void> {
+    await this.loadData();
+
+    $(q, 'div', 'verify-project', {}, (q) => {
+      $(q, 'h3', 'title', {}, 'Project Information');
+
+      this.renderFieldFullWidth(q, this.fields.projectTitle, this.projectOverview.title);
+      $(q, 'div', 'dates', {}, (q) => {
+        $(q, 'div', 'start-date date', {}, (q) => {
+          $(q, 'span', '', {}, 'Start Date *');
+          $(q, 'div', 'date-fields', {}, (q) => {
+            this.renderCustomField(q, this.fields.startDateDay, this.projectOverview.startDateDay, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateMonth, this.projectOverview.startDateMonth, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateYear, this.projectOverview.startDateYear, 1 / 3);
+          });
+        });
+        $(q, 'div', 'end-date date', {}, (q) => {
+          $(q, 'span', '', {}, 'End Date *');
+          $(q, 'div', 'date-fields', {}, (q) => {
+            this.renderCustomField(q, this.fields.endDateDay, this.projectOverview.endDateDay, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateMonth, this.projectOverview.endDateMonth, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateYear, this.projectOverview.endDateYear, 1 / 3);
+          });
+        });
+      });
+      this.renderFieldFullWidth(q, this.fields.description, this.projectOverview.description);
+      this.renderFieldFullWidth(q, this.fields.url, this.projectOverview.accessLink);
+      this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectOverview.technicalStack);
+
+      $(q, 'div', 'button-container', {}, (q) => {
+        const rejectButton = new FormButton({
+          label: 'Reject',
+          type: ButtonType.SECONDARY,
+          onClick: () => {
+            console.log('Reject');
+          },
+        });
+        rejectButton.render(q);
+        const acceptButton = new FormButton({
+          label: 'Accept',
+          type: ButtonType.PRIMARY,
+          onClick: () => {
+            console.log('Accept');
+          },
+        });
+        acceptButton.render(q);
+      });
+    });
+  }
+
+  private fields: { [key: string]: FormTextFieldDisabled } = {
+    projectTitle: new FormTextFieldDisabled({ label: 'Project Title *', placeholder: 'Enter your project title', name: 'projectTitle' }),
+    startDateDay: new FormTextFieldDisabled({ label: '', placeholder: 'DD', name: 'startDate.day' }),
+    startDateMonth: new FormTextFieldDisabled({ label: '', placeholder: 'MM', name: 'startDate.month' }),
+    startDateYear: new FormTextFieldDisabled({ label: '', placeholder: 'YYYY', name: 'startDate.year' }),
+    endDateDay: new FormTextFieldDisabled({ label: '', placeholder: 'DD', name: 'endDate.day' }),
+    endDateMonth: new FormTextFieldDisabled({ label: '', placeholder: 'MM', name: 'endDate.month' }),
+    endDateYear: new FormTextFieldDisabled({ label: '', placeholder: 'YYYY', name: 'endDate.year' }),
+    description: new FormTextFieldDisabled({ label: 'Description *', placeholder: 'Enter your description', name: 'description' }),
+    url: new FormTextFieldDisabled({ label: 'URL *', placeholder: 'Enter your URL', name: 'url' }),
+    technicalStack: new FormTextFieldDisabled({ label: 'Technical Stack *', placeholder: 'Enter your technical stack', name: 'technicalStack' }),
+  };
 
   private renderFieldFullWidth(q: Quark, field: FormTextField, value: any): void {
     $(q, 'div', 'form-field', {}, (q) => {
@@ -49,37 +111,6 @@ class VerifyProject extends View {
       field.addClass('w-full');
     });
   }
-
-  private fields: { [key: string]: FormTextField } = {
-    name: new FormTextField({ label: 'Name *', placeholder: 'Enter your name', name: 'name' }),
-    email: new FormTextField({ label: 'Email *', placeholder: 'Enter your email', name: 'email' }),
-    mobile: new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', name: 'mobile' }),
-    country: new FormTextField({ label: 'Country *', placeholder: 'Select your country', name: 'country' }),
-    linkedin: new FormTextField({ label: 'LinkedIn *', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedin' }),
-    dobDay: new FormTextField({ label: '', placeholder: 'DD', name: 'dateOfBirth.day' }),
-    dobMonth: new FormTextField({ label: '', placeholder: 'MM', name: 'dateOfBirth.month' }),
-    dobYear: new FormTextField({ label: '', placeholder: 'YYYY', name: 'dateOfBirth.year' }),
-    // dobYearTest: new FormTextField({ label: '', placeholder: 'YYYY', name: 'dateOfBirth.month.year.day' }),
-  };
-
-  constructor() {
-    for (const field of Object.values(this.fields)) {
-      field.setOnChange((value) => {
-        const keys = field.name.split('.');
-        console.log(keys);
-        if (keys.length > 1) {
-          const nestedState = keys.reduceRight<any>((acc, key) => ({ [key]: acc }), value);
-          // console.log(nestedState);
-          this.updateState(nestedState);
-        } else {
-          this.updateState({ [keys[0]]: value });
-        }
-      });
-    }
-  }
-
-  private updateParentState!: (newState: any) => void;
-
   private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
     $(q, 'div', 'form-field', {}, (q) => {
       field.render(q);
@@ -87,10 +118,6 @@ class VerifyProject extends View {
       field.addClass(`w-${widthFraction}`);
     });
   }
-
-  private updateState(state: any): void {
-    this.updateParentState!(state);
-  }
 }
 
-export default VerifyProject;
+export const verifyProjectHandler = new ViewHandler('/{projectId}/verify', VerifyProject);

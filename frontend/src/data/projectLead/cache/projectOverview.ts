@@ -9,8 +9,12 @@ export class ProjectOverviewLead {
   title: string;
   clientName: string;
   description: string;
-  startDate: string;
-  endDate: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
+  endDateDay: string;
+  endDateMonth: string;
+  endDateYear: string;
   technicalStack: string[];
   status: 'pending' | 'active' | 'completed' | 'cancelled';
 
@@ -21,8 +25,12 @@ export class ProjectOverviewLead {
     this.title = data['title'];
     this.clientName = data['clientName'];
     this.description = data['description'];
-    this.startDate = data['startDate'];
-    this.endDate = data['endDate'];
+    this.startDateDay = data['startDateDay'];
+    this.startDateMonth = data['startDateMonth'];
+    this.startDateYear = data['startDateYear'];
+    this.endDateDay = data['endDateDay'];
+    this.endDateMonth = data['endDateMonth'];
+    this.endDateYear = data['endDateYear'];
     this.technicalStack = data['technicalStack'];
     this.status = data['status'];
   }
@@ -49,8 +57,12 @@ export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLea
         accessLink: 'https://accesslink.com',
         title: 'Project GT-175',
         clientName: 'Client 1',
-        startDate: '2021-01-01',
-        endDate: '2021-12-31',
+        startDateDay: '01',
+        startDateMonth: '01',
+        startDateYear: '2021',
+        endDateDay: '31',
+        endDateMonth: '12',
+        endDateYear: '2021',
         description:
           'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
         technicalStack: ['React', 'Node', 'Express'],
@@ -63,8 +75,12 @@ export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLea
       accessLink: 'https://accesslink.com',
       title: 'Project WV-102',
       clientName: 'Client 2',
-      startDate: '2021-01-01',
-      endDate: '2021-12-31',
+      startDateDay: '01',
+      startDateMonth: '01',
+      startDateYear: '2021',
+      endDateDay: '31',
+      endDateMonth: '12',
+      endDateYear: '2021',
       description:
         'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
       technicalStack: ['React', 'Node', 'Express'],

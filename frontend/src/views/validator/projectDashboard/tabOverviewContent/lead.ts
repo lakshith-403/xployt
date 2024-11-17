@@ -6,6 +6,7 @@ import { ClientCacheMock } from '@/data/projectLead/cache/client.cache';
 import { Client } from '@/data/projectLead/cache/client.cache';
 import { FormButton } from '@/components/button/form.button';
 import { ButtonType } from '@/components/button/base';
+import { router } from '@/ui_lib/router';
 export default class Lead {
   private projectOverviewLead!: ProjectOverviewLead;
   private projectOverviewCache: ProjectOverviewLeadCacheMock;
@@ -51,6 +52,7 @@ export default class Lead {
             type: ButtonType.PRIMARY,
             onClick: () => {
               console.log('Verify Project');
+              router.navigateTo(`/projects/${this.projectId}/verify`);
             },
           });
           verifyButton.render(q);

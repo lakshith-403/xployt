@@ -13,6 +13,7 @@ import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
+import { verifyProjectHandler } from './views/validator/projectDashboard/tabOverviewContent/verifyProject';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
@@ -116,7 +117,7 @@ const HomeRouteHandler = new RouteHandler(
   ],
   new SidebarView('/', HomeSidebar)
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
