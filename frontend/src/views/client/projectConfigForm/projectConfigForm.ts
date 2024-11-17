@@ -10,7 +10,7 @@ import { submitProjectConfig } from '@/data/client/network/projectConfig.network
 // import TestingSecurity from './2_TestingSecurity/TestingSecurity';
 // import Payments from './3_Payment/Payments';
 
-class ProjectConfigForm extends View {
+class ProjectApplyForm extends View {
   private formState: any = {
     projectTitle: 'Hardcoded Project Title',
     startDate: {
@@ -70,7 +70,7 @@ class ProjectConfigForm extends View {
   }
 }
 
-export const projectConfigFormViewHandler = new ViewHandler('validator/project-config', ProjectConfigForm);
+export const projectApplyFormViewHandler = new ViewHandler('project-apply', ProjectApplyForm);
 
 // testingScope: '',
 // outOfScope: '',

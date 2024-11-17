@@ -86,7 +86,10 @@ class CacheStore {
     return this.hackerProjectInfoMap.get(projectId)!;
   }
   public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCacheMock {
+    console.log('at cache.ts getLeadProjectOverview');
+    console.log('projectId', projectId);
     if (!this.projectLeadOverviewMap.has(projectId)) {
+      console.log('projectId not in map, setting new ProjectOverviewLeadCacheMock');
       this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCacheMock());
     }
     return this.projectLeadOverviewMap.get(projectId)!;

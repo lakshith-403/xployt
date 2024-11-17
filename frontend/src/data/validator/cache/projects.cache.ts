@@ -69,15 +69,15 @@ export class ProjectsCacheMock extends CacheObject<Project[][]> {
       [
         new Project({
           id: 1,
-          status: 'pending',
-          title: 'Project 1',
+          status: 'unconfigured',
+          title: 'Project GT-175',
           client: 'Client 1',
           pending_reports: 3,
         }),
         new Project({
           id: 2,
-          status: 'closed',
-          title: 'Project 2',
+          status: 'pending',
+          title: 'Project WV-102',
           client: 'Client 2',
           pending_reports: 0,
         }),

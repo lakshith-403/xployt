@@ -13,13 +13,14 @@ import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
 import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
-import { verifyProjectHandler } from './views/validator/projectDashboard/tabOverviewContent/verifyProject';
+import { verifyProjectHandler } from './views/validator/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
+import { projectConfigFormViewHandler } from './views/validator/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectConfigFormViewHandler } from './views/client/projectConfigForm/projectConfigForm';
+import { projectApplyFormViewHandler } from './views/client/projectConfigForm/projectConfigForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 
@@ -60,9 +61,9 @@ const HomeSidebar: SidebarTab[] = [
     url: 'dashboard',
   },
   {
-    id: 'validator/project-config',
+    id: 'project-apply',
     title: 'Project Configuration',
-    url: 'validator/project-config',
+    url: 'project-apply',
   },
 ];
 
@@ -113,11 +114,12 @@ const HomeRouteHandler = new RouteHandler(
     validatorApplicationViewHandler,
     tagInputTestViewHandler,
     validatorDashboardViewHandler,
+    projectApplyFormViewHandler,
     projectConfigFormViewHandler,
   ],
   new SidebarView('/', HomeSidebar)
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler], undefined, false, false, false);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);

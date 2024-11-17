@@ -13,12 +13,19 @@ export default class Lead {
   private clientCache!: ClientCacheMock;
   private client!: Client;
   constructor(private projectId: string) {
+    console.log('at lead.ts constructor');
+    console.log('this.projectId', this.projectId);
     this.projectOverviewCache = CACHE_STORE.getLeadProjectOverview(this.projectId);
   }
   private async loadData(): Promise<void> {
-    this.projectOverviewLead = await this.projectOverviewCache.get();
+    this.projectOverviewLead = await this.projectOverviewCache.get(true, this.projectId);
     this.clientCache = CACHE_STORE.getClient(this.projectOverviewLead.clientId.toString());
     this.client = await this.clientCache.get();
+    console.log('at lead.ts');
+    console.log('this.client', this.client);
+    console.log('this.projectOverviewLead', this.projectOverviewLead);
+    console.log('this.projectId', this.projectId);
+    console.log('this.projectOverviewCache', this.projectOverviewCache);
   }
   async render(q: Quark): Promise<void> {
     await this.loadData();
@@ -57,6 +64,35 @@ export default class Lead {
           });
           verifyButton.render(q);
         });
+      } else if (this.projectOverviewLead.status === 'unconfigured') {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Unconfigured');
+        // $(q, 'div', '', {}, (q) => {
+        // });
+        $(q, 'div', 'label', {}, 'Configure Project');
+        $(q, 'div', '', {}, (q) => {
+          const configureButton = new FormButton({
+            label: 'Configure Project',
+            type: ButtonType.PRIMARY,
+            onClick: () => {
+              console.log('Configure Project');
+              router.navigateTo(`/projects/${this.projectId}/configure`);
+            },
+          });
+          configureButton.render(q);
+        });
+      } else if (this.projectOverviewLead.status === 'active') {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Active');
+      } else if (this.projectOverviewLead.status === 'completed') {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Completed');
+      } else if (this.projectOverviewLead.status === 'cancelled') {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Cancelled');
+      } else {
+        $(q, 'div', 'label', {}, 'Status');
+        $(q, 'span', '', {}, 'Unknown');
       }
     });
   }

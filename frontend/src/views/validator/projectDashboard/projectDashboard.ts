@@ -6,25 +6,29 @@ import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
 import { CACHE_STORE } from '../../../data/cache';
-import {Project, ProjectsCache} from "../../../data/validator/cache/projects.cache";
-import LoadingScreen from "../../../components/loadingScreen/loadingScreen";
-
+import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
+import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 
 // import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView extends View {
   params: { projectId: string };
-  private project: Project = {} as Project;
+  // private project: Project = {} as Project;
   private projectsCache: ProjectsCache;
-
+  private projectTitle: string = '';
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
     this.projectsCache = CACHE_STORE.getProjects();
   }
-  async loadProject(): Promise<void>{
+  async loadProject(): Promise<void> {
     try {
-      const projects = await this.projectsCache.get(false, this.params.projectId);
-      this.project = projects[0][0];
+      // const userCache = CACHE_STORE.getUser('1');
+      // const user = await userCache.get();
+      // console.log(user);
+      const projects: Project[][] = await this.projectsCache.get(false, '123');
+      this.projectTitle = projects.flatMap((projectArray) => projectArray).find((project) => project.id === Number(this.params.projectId))?.title ?? '';
+      console.log(this.projectTitle);
+      // this.project = projects[0][0];
     } catch (error) {
       console.error('Failed to load project data', error);
     }
@@ -36,7 +40,7 @@ class projectDashboardView extends View {
 
   protected setupBreadcrumbs(params: { projectId: string }): void {
     this.breadcrumbs?.clearBreadcrumbs();
-      this.breadcrumbs?.addBreadcrumb({
+    this.breadcrumbs?.addBreadcrumb({
       label: `Projects`,
       link: `/projects`,
     });
@@ -47,7 +51,6 @@ class projectDashboardView extends View {
   }
 
   async render(q: Quark): Promise<void> {
-
     const loading = new LoadingScreen(q);
     loading.show();
 
@@ -81,8 +84,8 @@ class projectDashboardView extends View {
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
-      $(q, 'span', 'project-title', {}, this.project.title);
-      $(q, 'span', 'project-number', {}, ' - #' + this.project.id);
+      $(q, 'span', 'project-title', {}, this.projectTitle);
+      $(q, 'span', 'project-number', {}, ' - #' + this.params.projectId);
       $(q, 'div', 'info', {}, (q) => {
         tabsComponent.render(q);
       });

@@ -16,7 +16,7 @@ export class ProjectOverviewLead {
   endDateMonth: string;
   endDateYear: string;
   technicalStack: string[];
-  status: 'pending' | 'active' | 'completed' | 'cancelled';
+  status: 'pending' | 'active' | 'completed' | 'cancelled' | 'unconfigured';
 
   constructor(data: any) {
     this.projectId = data['projectId'];
@@ -47,10 +47,11 @@ export class ProjectOverviewLead {
 // }
 
 export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLead> {
-  async load(arg: string[]): Promise<ProjectOverviewLead> {
+  async load(arg: string): Promise<ProjectOverviewLead> {
     // console.log('Mocking project data');
     // console.log('projetID', arg);
-    if (arg[0] === '1') {
+    console.log('arg', arg);
+    if (arg == '1') {
       return new ProjectOverviewLead({
         projectId: '1',
         clientId: 1,
@@ -66,7 +67,7 @@ export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLea
         description:
           'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
         technicalStack: ['React', 'Node', 'Express'],
-        status: 'pending',
+        status: 'unconfigured',
       });
     }
     return new ProjectOverviewLead({

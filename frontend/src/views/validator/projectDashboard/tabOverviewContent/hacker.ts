@@ -2,9 +2,9 @@ import { router } from '@ui_lib/router';
 import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from '@/views/validator/projectDashboard/tabOverviewContent/tabOverview/payments';
-import { OverviewReports } from '@/views/validator/projectDashboard/tabOverviewContent/tabOverview/reports';
-import { OverviewBasicInfo } from '@/views/validator/projectDashboard/tabOverviewContent/tabOverview/basicInfo';
+import { OverviewPayments } from '@/views/validator/projectDashboard/tabOverviewContent/hackerComponents/payments';
+import { OverviewReports } from '@/views/validator/projectDashboard/tabOverviewContent/hackerComponents/reports';
+import { OverviewBasicInfo } from '@/views/validator/projectDashboard/tabOverviewContent/hackerComponents/basicInfo';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 
