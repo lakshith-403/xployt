@@ -45,3 +45,8 @@ export async function acceptProject(projectId: string): Promise<void> {
     alert(`Network error while accepting project: ${error}`);
   }
 }
+export async function submitProjectConfig(formData: any): Promise<void> {
+  const response = await NETWORK.sendHttpRequest('POST', '/api/lead/project/config', {
+    formData,
+  });
+}

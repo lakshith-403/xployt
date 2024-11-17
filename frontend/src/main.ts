@@ -20,7 +20,7 @@ import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectApplyFormViewHandler } from './views/client/projectConfigForm/projectConfigForm';
+import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 
@@ -61,9 +61,9 @@ const HomeSidebar: SidebarTab[] = [
     url: 'dashboard',
   },
   {
-    id: 'project-apply',
-    title: 'Project Configuration',
-    url: 'project-apply',
+    id: 'project-request',
+    title: 'Project Request',
+    url: 'project-request',
   },
 ];
 
@@ -114,7 +114,7 @@ const HomeRouteHandler = new RouteHandler(
     validatorApplicationViewHandler,
     tagInputTestViewHandler,
     validatorDashboardViewHandler,
-    projectApplyFormViewHandler,
+    projectRequestFormViewHandler,
     projectConfigFormViewHandler,
   ],
   new SidebarView('/', HomeSidebar)

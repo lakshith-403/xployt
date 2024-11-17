@@ -5,7 +5,7 @@ import './projectConfigForm.scss';
 import { router } from '@/ui_lib/router';
 import { Steps } from '@/components/multistepForm/multistep-form';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
-import { submitProjectConfig } from '@/data/client/network/projectConfig.network';
+import { submitProjectConfig } from '@/data/projectLead/network/projectConfig.network';
 import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 

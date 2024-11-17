@@ -6,10 +6,10 @@ import NETWORK from '../../network/network';
  * @param {any} formData - The form data to send.
  * @returns {Promise<void>} A promise that resolves when the request is complete.
  */
-export async function submitProjectConfig(formData: any): Promise<void> {
+export async function requestProject(formData: any): Promise<void> {
   try {
     const clientCache = await CACHE_STORE.getClient('1').get();
-    const response = await NETWORK.sendHttpRequest('POST', '/api/client/project/config', {
+    const response = await NETWORK.sendHttpRequest('POST', '/api/client/project/request', {
       ...formData,
       clientId: clientCache.clientId,
     });

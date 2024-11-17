@@ -1,16 +1,13 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import ProjectInfo from './1_ProjectInfo/ProjectInfo';
-import MultistepForm from './../../../components/multistepForm/multistep-form';
-import './projectConfigForm.scss';
-import { router } from '@/ui_lib/router';
+import MultistepForm from '../../../components/multistepForm/multistep-form';
+import './projectRequestForm.scss';
 import { Steps } from '@/components/multistepForm/multistep-form';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
-import { submitProjectConfig } from '@/data/client/network/projectConfig.network';
-// import TestingSecurity from './2_TestingSecurity/TestingSecurity';
-// import Payments from './3_Payment/Payments';
+import { requestProject } from '@/data/client/network/projectConfig.network';
 
-class ProjectApplyForm extends View {
+class ProjectRequestForm extends View {
   private formState: any = {
     projectTitle: 'Hardcoded Project Title',
     startDate: {
@@ -33,14 +30,14 @@ class ProjectApplyForm extends View {
     loading.show(); // Show loading screen
 
     try {
-      await submitProjectConfig(formState);
+      await requestProject(formState);
       alert('Project configuration submitted successfully.');
       // router.navigateTo('/');
     } catch (error) {
       console.error('Error during form submission:', error);
       alert(`Failed to submit project configuration: ${error}`);
     } finally {
-      loading.hide(); // Hide loading screen
+      loading.hide();
     }
   };
 
@@ -70,41 +67,4 @@ class ProjectApplyForm extends View {
   }
 }
 
-export const projectApplyFormViewHandler = new ViewHandler('project-apply', ProjectApplyForm);
-
-// testingScope: '',
-// outOfScope: '',
-// objectives: '',
-// securityRequirements: '',
-// critical: [],
-// high: [],
-// medium: [],
-// low: [],
-// informative: [],
-// visibility: '',
-// attachments: null as File | null,
-// initialFunding: '',
-
-// {
-//   title: 'Testing and Security',
-//   step: new TestingSecurity(),
-//   stateUsed: {
-//     testingScope: 'optional',
-//     outOfScope: 'optional',
-//     objectives: 'optional',
-//     securityRequirements: 'optional',
-//   },
-// },
-// {
-//   title: 'Security Level Payment',
-//   step: new Payments(),
-//   stateUsed: {
-//     critical: 'optional',
-//     high: 'optional',
-//     medium: 'optional',
-//     low: 'optional',
-//     informative: 'optional',
-//     visibility: 'optional',
-//     initialFunding: 'optional',
-//   },
-// },
+export const projectRequestFormViewHandler = new ViewHandler('project-request', ProjectRequestForm);
