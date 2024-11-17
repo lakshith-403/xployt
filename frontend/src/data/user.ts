@@ -6,14 +6,18 @@ type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
 export class User {
   id: number;
   username: string;
+  name: string;
   email: string;
   type: UserType;
+  avatar: string;
 
   constructor(data: any) {
     this.id = data['id'];
     this.username = data['username'];
+    this.name = data['name'];
     this.email = data['email'];
     this.type = data['type'];
+    this.avatar = data['avatar'];
   }
 }
 

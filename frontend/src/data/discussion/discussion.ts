@@ -4,7 +4,7 @@ import { MockDiscussionEndpoints as DiscussionEndpoints } from './network/discus
 
 type AttachmentType = 'pdf' | 'image' | 'link' | 'report' | 'complaint';
 
-interface Attachment {
+export interface Attachment {
   id: string;
   type: AttachmentType;
   url: string;
@@ -13,12 +13,15 @@ interface Attachment {
   uploadedAt: Date;
 }
 
-interface Message {
+export type MessageType = 'user' | 'complaint' | 'report';
+
+export interface Message {
   id: string;
   sender: User;
   content: string;
   attachments: Attachment[];
   timestamp: Date;
+  type: MessageType;
 }
 
 interface DiscussionConfig {
@@ -41,8 +44,6 @@ class Discussion {
 
   constructor(discussionId: string) {
     this.discussionId = discussionId;
-
-    this.load().then();
   }
 
   async load(): Promise<void> {
@@ -58,6 +59,14 @@ class Discussion {
 
   public getMessages(): Message[] {
     return this.messages;
+  }
+
+  public getParticipants(): User[] {
+    return this.config.participants;
+  }
+
+  public getAttachments(): Attachment[] {
+    return this.messages.flatMap((message) => message.attachments);
   }
 }
 
