@@ -1,17 +1,23 @@
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
 
+type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
+
 export class User {
   id: number;
   username: string;
+  name: string;
   email: string;
-  role: string;
+  type: UserType;
+  avatar: string;
 
   constructor(data: any) {
     this.id = data['id'];
     this.username = data['username'];
+    this.name = data['name'];
     this.email = data['email'];
-    this.role = data['role'];
+    this.type = data['type'];
+    this.avatar = data['avatar'];
   }
 }
 
@@ -52,7 +58,7 @@ export class UserCacheMock extends CacheObject<User> {
       id: 1,
       username: 'mock',
       email: 'mock@mock.com',
-      role: 'project_lead',
+      type: 'Client',
     });
   }
 
@@ -61,7 +67,7 @@ export class UserCacheMock extends CacheObject<User> {
       id: 1,
       username: username,
       email: 'mock@mock.com',
-      role: 'project_lead',
+      type: 'Client',
     });
   }
 
