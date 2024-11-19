@@ -1,82 +1,54 @@
-import {Quark, QuarkFunction as $} from '../../../ui_lib/quark';
-import {CACHE_STORE} from '@data/cache';
-import {router} from "@ui_lib/router";
-import {ProjectInfoCacheMock, ProjectInfo} from '@data/validator/cache/projectInfo';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import {IconButton} from "@components/button/icon.button";
-import {OverviewPayments} from "@views/validator/projectDashboard/tabOverview/payments";
-import {OverviewReports} from "@views/validator/projectDashboard/tabOverview/reports";
-import {OverviewBasicInfo} from "@views/validator/projectDashboard/tabOverview/basicInfo";
-import './tabOverview.scss'
+import { Quark } from '../../../ui_lib/quark';
+import { Project } from '../../../data/validator/cache/projects.cache';
+import { User, UserCache } from '@/data/user';
+import { CACHE_STORE } from '@/data/cache';
+import { ProjectsCache } from '@/data/validator/cache/projects.cache';
+import Lead from './tabOverviewContent/lead';
+import Client from './tabOverviewContent/client';
+import Hacker from './tabOverviewContent/hacker';
+import './tabOverview.scss';
 
 export default class Overview {
-    projectInfo: ProjectInfo = {} as ProjectInfo
+  private project!: Project;
+  private user!: User;
+  private projectsCache: ProjectsCache;
+  private userCache: UserCache;
+  private role: string = 'guest';
 
-    constructor(private readonly projectId: string) {
-        this.projectId = projectId;
+  constructor(private projectId: string) {
+    // this.project = new Project(projectId);
+    this.userCache = CACHE_STORE.getUser('1');
+    this.projectsCache = CACHE_STORE.getProjects();
+  }
+
+  private async loadData(): Promise<void> {
+    try {
+      this.user = await this.userCache.get();
+      console.log(this.user);
+      this.role = this.user.role;
+      console.log(this.role);
+    } catch (error) {
+      console.error('Failed to load project data:', error);
     }
+  }
 
-    private readonly projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId) as ProjectInfoCacheMock
+  async render(q: Quark): Promise<void> {
+    await this.loadData();
+    console.log(this.role);
+    switch (this.role) {
+      case 'project_lead':
+        const lead = new Lead(this.projectId);
+        lead.render(q);
+        break;
 
-    async loadData(): Promise<void> {
-        try {
-            this.projectInfo = await this.projectInfoCache.get(false, this.projectId)
-            console.log('Project Info', this.projectInfo)
-        } catch (error) {
-            console.error('Failed to load project data', error);
-        }
+      case 'guest':
+        const client = new Client();
+        client.render(q);
+        break;
+      case 'hacker':
+        const hacker = new Hacker(this.projectId);
+        hacker.render(q);
+        break;
     }
-
-    async render(q: Quark): Promise<void> {
-        const loading = new LoadingScreen(q);
-        loading.show();
-
-        await this.loadData();
-        loading.hide()
-
-        $(q, 'div', 'project-info', {}, (q) => {
-
-            $(q, 'p', 'project-description', {}, this.projectInfo.description)
-
-            $(q, 'div', '', {id: 'basic-info'}, (q) => {
-                new OverviewBasicInfo(this.projectId, this.projectInfo.client).render(q)
-            })
-
-            $(q, 'section', '', {}, (q) => {
-                $(q, 'h2', '', {}, 'Rules and Scope')
-                $(q, 'ul', 'section-content', {}, (q) => {
-                    this.projectInfo.scope.forEach((rule) => {
-                        $(q, 'li', '', {}, rule)
-                    })
-                })
-            })
-
-            $(q, 'section', '', {id: 'payments'}, (q) => {
-                $(q, 'h2', '', {}, 'Payments')
-                new OverviewPayments(this.projectId).render(q)
-            })
-
-            $(q, 'section', '', {id: 'reports'}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                    $(q, 'h2', '', {}, 'Reports')
-                    new IconButton({
-                        icon: 'fa fa-plus',
-                        label: 'Create Report',
-                        onClick: () => {
-                            const url ='/report/' + this.projectId
-                            router.navigateTo(url)
-                        }
-                    }).render(q)
-                })
-
-
-                $(q, 'div', 'section-content', {}, (q) => {
-                    new OverviewReports({reportId: '1'}).render(q)
-                })
-            })
-
-        })
-    }
+  }
 }
-
-

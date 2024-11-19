@@ -5,7 +5,9 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-import {NotificationsCache, NotificationsCacheMock} from "@data/hacker/cache/notifications.cache";
+import { ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
+import { ClientCacheMock } from './projectLead/cache/client.cache';
+import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
@@ -13,6 +15,8 @@ class CacheStore {
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCacheMock>;
+  private readonly clientMap: Map<string, ClientCacheMock>;
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
@@ -20,13 +24,15 @@ class CacheStore {
   constructor() {
     this.userMap = new Map();
     this.projectInfoMap = new Map();
-    this.projects = new ProjectsCache();
+    this.projects = new ProjectsCacheMock();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
+    this.projectLeadOverviewMap = new Map();
+    this.clientMap = new Map();
     this.notificationsListMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
-    this.reports = new ReportsCacheMock();
+    this.reports = new ReportsCache();
   }
 
   public getUser(username: string): UserCache {
@@ -43,6 +49,13 @@ class CacheStore {
 
     return this.projectInfoMap.get(projectId)!;
   }
+  public getClient(clientId: string): ClientCacheMock {
+    if (!this.clientMap.has(clientId)) {
+      this.clientMap.set(clientId, new ClientCacheMock());
+    }
+    return this.clientMap.get(clientId)!;
+  }
+
   public getProjects(): ProjectsCache {
     return this.projects;
   }
@@ -72,14 +85,22 @@ class CacheStore {
 
     return this.hackerProjectInfoMap.get(projectId)!;
   }
+  public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCacheMock {
+    console.log('at cache.ts getLeadProjectOverview');
+    console.log('projectId', projectId);
+    if (!this.projectLeadOverviewMap.has(projectId)) {
+      console.log('projectId not in map, setting new ProjectOverviewLeadCacheMock');
+      this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCacheMock());
+    }
+    return this.projectLeadOverviewMap.get(projectId)!;
+  }
 
   public getNotificationsList(userId: string): NotificationsCache {
-    if(!this.notificationsListMap.has(userId)){
+    if (!this.notificationsListMap.has(userId)) {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
     }
     return this.notificationsListMap.get(userId)!;
   }
-
 }
 
 export const CACHE_STORE = new CacheStore();

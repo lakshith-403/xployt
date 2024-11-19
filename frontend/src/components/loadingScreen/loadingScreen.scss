@@ -5,6 +5,7 @@
   left: 0;
   width: calc(100vw - var(--sidebar-width));
   height: calc(100vh - var(--navbar-height));
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;

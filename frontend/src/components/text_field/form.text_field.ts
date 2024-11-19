@@ -1,7 +1,7 @@
 import { TextField, TextFieldOptions } from './base';
 import { Quark } from './../../ui_lib/quark';
 
-interface FormTextFieldOptions extends TextFieldOptions {
+export interface FormTextFieldOptions extends TextFieldOptions {
   class?: string;
   onKeyDown?: (event: KeyboardEvent) => void;
   parentClass?: string;
