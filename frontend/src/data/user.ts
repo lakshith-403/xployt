@@ -1,7 +1,7 @@
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
 
-type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
+export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
 
 export class User {
   id: number;

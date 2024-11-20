@@ -24,6 +24,7 @@ import { projectRequestFormViewHandler } from './views/client/projectConfigForm/
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/Discussion';
+import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -147,3 +148,6 @@ router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
+
+// Instantiate the UserRoleToggler to attach it to the page
+new UserRoleToggler();

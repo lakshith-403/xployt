@@ -22,7 +22,7 @@ class ProjectsView extends View {
   constructor(params: { projectId: string }) {
     super();
     this.params = params;
-    this.userCache = CACHE_STORE.getUser('1');
+    this.userCache = CACHE_STORE.getUser();
     this.projectsCache = CACHE_STORE.getProjects();
   }
 

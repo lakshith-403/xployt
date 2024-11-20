@@ -10,7 +10,7 @@ import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 
 class CacheStore {
-  private readonly userMap: Map<string, UserCache>;
+  private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
@@ -22,7 +22,7 @@ class CacheStore {
   private reports: ReportsCache;
 
   constructor() {
-    this.userMap = new Map();
+    this.user = new UserCacheMock();
     this.projectInfoMap = new Map();
     this.projects = new ProjectsCacheMock();
     this.projectTeamsMap = new Map();
@@ -35,12 +35,8 @@ class CacheStore {
     this.reports = new ReportsCache();
   }
 
-  public getUser(username: string): UserCache {
-    if (!this.userMap.has(username)) {
-      this.userMap.set(username, new UserCacheMock());
-    }
-
-    return this.userMap.get(username)!;
+  public getUser(): UserCache {
+    return this.user;
   }
   public getProjectInfo(projectId: string): ProjectInfoCache {
     if (!this.projectInfoMap.has(projectId)) {
