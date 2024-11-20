@@ -13,7 +13,7 @@ export class UserRoleToggler {
     this.userCache = CACHE_STORE.getUser();
     const body = document.body;
     $(body, 'div', 'roleChanger floating-button', {}, (q) => {
-      $(q, 'button', '', { id: 'changeUserTypeButton' }, 'U').addEventListener('click', () => this.toggleDropdown());
+      $(q, 'button', '', { id: 'changeUserTypeButton' }, '@').addEventListener('click', () => this.toggleDropdown());
 
       this.dropdown = $(q, 'select', 'hidden', { id: 'userTypeDropdown' });
       this.userTypes.forEach((type) => {
