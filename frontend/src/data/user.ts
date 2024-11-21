@@ -1,6 +1,5 @@
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
-
 export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
 
 export class User {
@@ -56,15 +55,17 @@ export class UserCacheMock extends CacheObject<User> {
   async load(): Promise<User> {
     return new User({
       id: 1,
+      name: 'Mock User1',
       username: 'mock',
       email: 'mock@mock.com',
-      type: 'Client',
+      type: process.env.ROLE as UserType,
     });
   }
 
   async signIn(username: string, password: string): Promise<User> {
     return new User({
       id: 1,
+      name: 'Mock User2',
       username: username,
       email: 'mock@mock.com',
       type: 'Client',

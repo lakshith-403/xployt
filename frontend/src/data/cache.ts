@@ -5,7 +5,7 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-import { ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
+import { ProjectOverviewLeadCache, ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 
@@ -15,7 +15,7 @@ class CacheStore {
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
-  private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCacheMock>;
+  private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCache>;
   private readonly clientMap: Map<string, ClientCacheMock>;
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
   private projects: ProjectsCache;
@@ -24,7 +24,7 @@ class CacheStore {
   constructor() {
     this.user = new UserCacheMock();
     this.projectInfoMap = new Map();
-    this.projects = new ProjectsCacheMock();
+    this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
     this.projectLeadOverviewMap = new Map();
@@ -81,12 +81,12 @@ class CacheStore {
 
     return this.hackerProjectInfoMap.get(projectId)!;
   }
-  public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCacheMock {
+  public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCache {
     console.log('at cache.ts getLeadProjectOverview');
     console.log('projectId', projectId);
     if (!this.projectLeadOverviewMap.has(projectId)) {
       console.log('projectId not in map, setting new ProjectOverviewLeadCacheMock');
-      this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCacheMock());
+      this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCache());
     }
     return this.projectLeadOverviewMap.get(projectId)!;
   }

@@ -50,7 +50,7 @@ export default class Lead {
         $(q, 'p', '', {}, this.projectOverviewLead.description);
       });
       console.log(this.projectOverviewLead.status);
-      if (this.projectOverviewLead.status === 'pending') {
+      if (this.projectOverviewLead.status === 'Pending') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Pending');
         $(q, 'div', '', {}, (q) => {
@@ -64,7 +64,7 @@ export default class Lead {
           });
           verifyButton.render(q);
         });
-      } else if (this.projectOverviewLead.status === 'unconfigured') {
+      } else if (this.projectOverviewLead.status === 'Unconfigured') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Unconfigured');
         // $(q, 'div', '', {}, (q) => {
@@ -81,13 +81,13 @@ export default class Lead {
           });
           configureButton.render(q);
         });
-      } else if (this.projectOverviewLead.status === 'active') {
+      } else if (this.projectOverviewLead.status === 'Active') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Active');
-      } else if (this.projectOverviewLead.status === 'completed') {
+      } else if (this.projectOverviewLead.status === 'Completed') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Completed');
-      } else if (this.projectOverviewLead.status === 'cancelled') {
+      } else if (this.projectOverviewLead.status === 'Cancelled') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Cancelled');
       } else {

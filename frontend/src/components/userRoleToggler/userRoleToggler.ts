@@ -17,7 +17,10 @@ export class UserRoleToggler {
 
       this.dropdown = $(q, 'select', 'hidden', { id: 'userTypeDropdown' });
       this.userTypes.forEach((type) => {
-        $(this.dropdown, 'option', '', { value: type }, type);
+        const option = $(this.dropdown, 'option', '', { value: type }, type);
+        if (type === process.env.ROLE) {
+          option.setAttribute('selected', 'selected'); // Explicitly set the 'selected' attribute
+        }
       });
 
       this.dropdown.addEventListener('change', () => this.changeUserType(this.dropdown as HTMLSelectElement));

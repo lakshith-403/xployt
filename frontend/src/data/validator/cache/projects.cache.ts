@@ -10,7 +10,7 @@ interface ProjectResponse {
 
 interface ProjectDetails {
   id: number;
-  status: 'pending' | 'closed' | 'in progress';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
   client: string;
   pendingReports: number;
@@ -18,7 +18,7 @@ interface ProjectDetails {
 
 export class Project {
   id: number;
-  status: 'pending' | 'closed' | 'in progress';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
   client: string;
   pendingReports: number;
