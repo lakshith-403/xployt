@@ -1,11 +1,14 @@
-import NETWORK from '../../network/network';
-
+import NETWORK, { Response } from '../../network/network';
 /**
  * Sends a request to reject a project.
  *
  * @param {string} projectId - The ID of the project to reject.
  * @returns {Promise<void>} A promise that resolves when the request is complete.
  */
+export async function getProjectRequest(projectId: string): Promise<Response> {
+  return NETWORK.sendHttpRequest('GET', `/api/lead/project/${projectId}`);
+}
+
 export async function rejectProject(projectId: string): Promise<void> {
   try {
     const response = await NETWORK.sendHttpRequest('POST', `/projects/${projectId}/reject`, {});

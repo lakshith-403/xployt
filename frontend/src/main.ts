@@ -23,6 +23,8 @@ import { validatorDashboardViewHandler } from './views/validator/dashboard/dashb
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
+import { discussionViewHandler } from './views/Discussion';
+import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -39,6 +41,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'reports',
     title: 'Reports',
     url: 'reports',
+  },
+  {
+    id: 'discussion',
+    title: 'Discussion',
+    url: 'discussion',
   },
   {
     id: 'report/{projectId}',
@@ -116,6 +123,7 @@ const HomeRouteHandler = new RouteHandler(
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,
+    discussionViewHandler,
   ],
   new SidebarView('/', HomeSidebar)
 );
@@ -125,6 +133,8 @@ const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginView
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
+
+const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false);
 
 // const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
 // const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
@@ -138,3 +148,6 @@ router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
+
+// Instantiate the UserRoleToggler to attach it to the page
+new UserRoleToggler();

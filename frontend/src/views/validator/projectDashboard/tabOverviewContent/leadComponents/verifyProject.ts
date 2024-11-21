@@ -3,7 +3,7 @@ import { FormTextField } from '../../../../../components/text_field/form.text_fi
 // import './verifyProject.scss';
 import { View, ViewHandler } from '@/ui_lib/view';
 // import { Step } from './../../../../components/multistepForm/multistep-form';
-import { ProjectOverviewLead, ProjectOverviewLeadCacheMock } from '@data/projectLead/cache/projectOverview';
+import { ProjectOverviewLead, ProjectOverviewLeadCache, ProjectOverviewLeadCacheMock } from '@data/projectLead/cache/projectOverview';
 import { CACHE_STORE } from '@/data/cache';
 import { FormTextFieldDisabled } from '@/components/text_field/form.text_fields.disabled';
 import { ButtonType } from '@/components/button/base';
@@ -15,7 +15,7 @@ import './verifyProject.scss';
 class VerifyProject extends View {
   params: { projectId: string };
   private projectOverview!: ProjectOverviewLead;
-  private projectOverviewCache!: ProjectOverviewLeadCacheMock;
+  private projectOverviewCache!: ProjectOverviewLeadCache;
   protected shouldRenderBreadcrumbs(): boolean {
     return true;
   }

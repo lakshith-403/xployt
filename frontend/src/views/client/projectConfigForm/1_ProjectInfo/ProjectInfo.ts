@@ -10,7 +10,7 @@ class ProjectInfo implements Step {
     $(q, 'div', 'project-info', {}, (q) => {
       $(q, 'h3', 'title', {}, 'Project Information');
 
-      this.renderFieldFullWidth(q, this.fields.projectTitle, state.projectTitle);
+      this.renderFieldFullWidth(q, this.fields.projectTitle, state.title);
       $(q, 'div', 'dates', {}, (q) => {
         $(q, 'div', 'start-date date', {}, (q) => {
           $(q, 'span', '', {}, 'Start Date *');
@@ -51,7 +51,7 @@ class ProjectInfo implements Step {
   }
 
   private fields: { [key: string]: FormTextField } = {
-    projectTitle: new FormTextField({ label: 'Project Title *', placeholder: 'Enter your project title', name: 'projectTitle' }),
+    projectTitle: new FormTextField({ label: 'Project Title *', placeholder: 'Enter your project title', name: 'title' }),
     startDateDay: new FormTextField({ label: '', placeholder: 'DD', name: 'startDate.day' }),
     startDateMonth: new FormTextField({ label: '', placeholder: 'MM', name: 'startDate.month' }),
     startDateYear: new FormTextField({ label: '', placeholder: 'YYYY', name: 'startDate.year' }),

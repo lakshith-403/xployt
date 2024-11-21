@@ -1,7 +1,7 @@
-import { ProjectInfo } from '@/data/validator/cache/projectInfo';
 import { CacheObject, DataFailure } from '../../cacheBase';
+import { getProjectRequest } from '../network/projectConfig.network';
 // import { projectInfoEndpoints } from './../network/projectInfo.network';
-
+import { Response } from '../../network/network';
 export class ProjectOverviewLead {
   projectId: string;
   clientId: number;
@@ -16,7 +16,7 @@ export class ProjectOverviewLead {
   endDateMonth: string;
   endDateYear: string;
   technicalStack: string[];
-  status: 'pending' | 'active' | 'completed' | 'cancelled' | 'unconfigured';
+  status: 'Pending' | 'Active' | 'Completed' | 'Cancelled' | 'Unconfigured' | 'Closed';
 
   constructor(data: any) {
     this.projectId = data['projectId'];
@@ -36,15 +36,31 @@ export class ProjectOverviewLead {
   }
 }
 
-// export class ProjectInfoCache extends CacheObject<ProjectInfo> {
-//   async load(arg: string[]): Promise<ProjectInfo> {
-//     const response = await projectInfoEndpoints.getProjectInfo(arg[0]);
+interface ProjectData {
+  startDate?: string;
+  endDate?: string;
+  [key: string]: any;
+}
 
-//     if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
+export class ProjectOverviewLeadCache extends CacheObject<ProjectOverviewLead> {
+  async load(projectId: string): Promise<ProjectOverviewLead> {
+    const response = await getProjectRequest(projectId);
 
-//     return new ProjectInfo(response.data);
-//   }
-// }
+    if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
+
+    const data = response.data as ProjectData; // Cast response.data to the new interface
+
+    return new ProjectOverviewLead({
+      ...data,
+      startDateDay: data.startDate?.split('-')[2],
+      startDateMonth: data.startDate?.split('-')[1],
+      startDateYear: data.startDate?.split('-')[0],
+      endDateDay: data.endDate?.split('-')[2],
+      endDateMonth: data.endDate?.split('-')[1],
+      endDateYear: data.endDate?.split('-')[0],
+    });
+  }
+}
 
 export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLead> {
   async load(arg: string): Promise<ProjectOverviewLead> {
