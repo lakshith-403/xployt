@@ -35,18 +35,18 @@ class ProjectConfigForm extends View {
     this.params = params;
   }
   private formState: any = {
-    testingScope: '',
-    outOfScope: '',
-    objectives: '',
-    securityRequirements: '',
-    critical: [],
-    high: [],
-    medium: [],
-    low: [],
-    informative: [],
-    visibility: '',
+    testingScope: 'Test Data',
+    outOfScope: 'Test Data',
+    objectives: 'Test Data',
+    securityRequirements: 'Test Data',
+    critical: ['Test Data'],
+    high: ['Test Data'],
+    medium: ['Test Data'],
+    low: ['Test Data'],
+    informative: ['Test Data'],
+    visibility: 'Test Data',
     attachments: null as File | null,
-    initialFunding: '',
+    initialFunding: 'Test Data',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
@@ -54,7 +54,7 @@ class ProjectConfigForm extends View {
     loading.show();
 
     try {
-      await submitProjectConfig(formState);
+      await submitProjectConfig(this.params.projectId, formState);
       alert('Project configuration submitted successfully.');
       // router.navigateTo('/');
     } catch (error) {
