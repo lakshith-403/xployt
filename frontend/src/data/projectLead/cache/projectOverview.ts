@@ -1,5 +1,5 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
-import { getProjectRequest } from '../network/projectConfig.network';
+// import { getProjectRequest } from '../network/projectConfig.network';
 // import { projectInfoEndpoints } from './../network/projectInfo.network';
 import { Response } from '../../network/network';
 export class ProjectOverviewLead {
@@ -42,25 +42,25 @@ interface ProjectData {
   [key: string]: any;
 }
 
-export class ProjectOverviewLeadCache extends CacheObject<ProjectOverviewLead> {
-  async load(projectId: string): Promise<ProjectOverviewLead> {
-    const response = await getProjectRequest(projectId);
+// export class ProjectOverviewLeadCache extends CacheObject<ProjectOverviewLead> {
+//   async load(projectId: string): Promise<ProjectOverviewLead> {
+// const response = await getProjectRequest(projectId);
 
-    if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
+// if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
 
-    const data = response.data as ProjectData; // Cast response.data to the new interface
+// const data = response.data as ProjectData; // Cast response.data to the new interface
 
-    return new ProjectOverviewLead({
-      ...data,
-      startDateDay: data.startDate?.split('-')[2],
-      startDateMonth: data.startDate?.split('-')[1],
-      startDateYear: data.startDate?.split('-')[0],
-      endDateDay: data.endDate?.split('-')[2],
-      endDateMonth: data.endDate?.split('-')[1],
-      endDateYear: data.endDate?.split('-')[0],
-    });
-  }
-}
+//     return new ProjectOverviewLead({
+//       ...data,
+//       startDateDay: data.startDate?.split('-')[2],
+//       startDateMonth: data.startDate?.split('-')[1],
+//       startDateYear: data.startDate?.split('-')[0],
+//       endDateDay: data.endDate?.split('-')[2],
+//       endDateMonth: data.endDate?.split('-')[1],
+//       endDateYear: data.endDate?.split('-')[0],
+//     });
+//   }
+// }
 
 export class ProjectOverviewLeadCacheMock extends CacheObject<ProjectOverviewLead> {
   async load(arg: string): Promise<ProjectOverviewLead> {

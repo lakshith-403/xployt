@@ -29,6 +29,7 @@ class Payments implements Step {
       $(q, 'div', 'form-field', {}, (q) => {
         field.render(q);
         if (field instanceof TagInput) {
+          // console.log('Adding tags:', value);
           field.addTags(value);
         } else if (field instanceof FormTextField) {
           field.setValue(value);

@@ -5,7 +5,7 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-import { ProjectOverviewLeadCache, ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
+import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 
@@ -15,7 +15,7 @@ class CacheStore {
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
-  private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCache>;
+  private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   private readonly clientMap: Map<string, ClientCacheMock>;
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
   private projects: ProjectsCache;
@@ -27,7 +27,7 @@ class CacheStore {
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
-    this.projectLeadOverviewMap = new Map();
+    this.projectConfigInfoMap = new Map();
     this.clientMap = new Map();
     this.notificationsListMap = new Map();
     // this.projects = [];
@@ -81,14 +81,14 @@ class CacheStore {
 
     return this.hackerProjectInfoMap.get(projectId)!;
   }
-  public getLeadProjectOverview(projectId: string): ProjectOverviewLeadCache {
-    console.log('at cache.ts getLeadProjectOverview');
+  public getLeadProjectConfigInfo(projectId: string): ProjectConfigInfoCache {
+    console.log('at cache.ts getLeadProjectConfigInfo');
     console.log('projectId', projectId);
-    if (!this.projectLeadOverviewMap.has(projectId)) {
-      console.log('projectId not in map, setting new ProjectOverviewLeadCacheMock');
-      this.projectLeadOverviewMap.set(projectId, new ProjectOverviewLeadCache());
+    if (!this.projectConfigInfoMap.has(projectId)) {
+      console.log('projectId not in map, setting new ProjectConfigInfoCache');
+      this.projectConfigInfoMap.set(projectId, new ProjectConfigInfoCache());
     }
-    return this.projectLeadOverviewMap.get(projectId)!;
+    return this.projectConfigInfoMap.get(projectId)!;
   }
 
   public getNotificationsList(userId: string): NotificationsCache {

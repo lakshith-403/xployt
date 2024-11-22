@@ -14,7 +14,7 @@ class projectDashboardView extends View {
   params: { projectId: string };
   // private project: Project = {} as Project;
   private projectsCache: ProjectsCache;
-  private projectTitle: string = '';
+  private projectTitle!: string;
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
@@ -25,7 +25,7 @@ class projectDashboardView extends View {
       // const userCache = CACHE_STORE.getUser('1');
       // const user = await userCache.get();
       // console.log(user);
-      const projects: Project[][] = await this.projectsCache.get(false, '123');
+      const projects: Project[][] = await this.projectsCache.get(false, this.params.projectId);
       this.projectTitle = projects.flatMap((projectArray) => projectArray).find((project) => project.id === Number(this.params.projectId))?.title ?? '';
       console.log(this.projectTitle);
       // this.project = projects[0][0];
