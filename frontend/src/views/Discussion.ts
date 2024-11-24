@@ -32,11 +32,15 @@ class AttachmentTag {
   }
 
   render(q: Quark): void {
-    $(q, 'div', 'attachment-tag', {}, (q) => {
+    let elem = $(q, 'div', 'attachment-tag', {}, (q) => {
       $(q, 'span', 'icon', {}, (q) => {
         $(q, 'i', 'fa-solid fa-newspaper', {});
       });
       $(q, 'span', 'name', {}, this.attachment.name);
+    });
+
+    elem.addEventListener('click', () => {
+      window.open(this.attachment.url, '_blank');
     });
   }
 }
@@ -52,7 +56,7 @@ class MessageComponent {
     $(q, 'div', 'message-component', {}, (q) => {
       $(q, 'div', 'message-body', {}, (q) => {
         $(q, 'div', 'thread-line', {}, (q) => {
-          if (this.message.type === 'user') {
+          if (this.message.type === 'text') {
             $(q, 'img', 'sender-avatar', { src: this.message.sender.avatar });
           } else if (this.message.type === 'complaint') {
             $(q, 'span', 'sender-avatar', {}, (q) => {
@@ -66,7 +70,7 @@ class MessageComponent {
         });
 
         $(q, 'div', 'message-header', {}, (q) => {
-          if (this.message.type === 'user') {
+          if (this.message.type === 'text') {
             $(q, 'span', 'sender-name', {}, this.message.sender.name);
           } else {
             $(q, 'span', 'sender-name', {}, this.message.content);
@@ -74,7 +78,7 @@ class MessageComponent {
           $(q, 'span', 'timestamp', {}, this.getTimeAgo(this.message.timestamp));
         });
 
-        if (this.message.type === 'user') {
+        if (this.message.type === 'text') {
           $(q, 'div', 'content', {}, this.message.content);
         }
 
@@ -115,6 +119,7 @@ class DiscussionView extends View {
   private participantPane!: Quark;
   private attachmentsPane!: Quark;
   private messagesPane!: Quark;
+  private titleElem!: Quark;
 
   constructor() {
     super();
@@ -124,7 +129,7 @@ class DiscussionView extends View {
 
   render(q: Quark): void {
     $(q, 'div', 'discussion-view', {}, (q) => {
-      $(q, 'h1', '', {}, 'Project Name #1234');
+      this.titleElem = $(q, 'h1', '', {}, 'Project Name #1234');
       $(q, 'div', 'main-pain', {}, (q) => {
         this.messagesPane = $(q, 'div', 'messages-pane', {}, (q) => {});
         $(q, 'div', 'right-pane', {}, (q) => {
@@ -139,6 +144,8 @@ class DiscussionView extends View {
 
     this.discussionCache.get().then((discussion) => {
       this.discussion = discussion;
+
+      this.titleElem.innerText = `${this.discussion?.title} #${this.discussion?.id}`;
 
       this.renderParticipants();
       this.renderAttachments();

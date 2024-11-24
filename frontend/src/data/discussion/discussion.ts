@@ -11,7 +11,7 @@ export interface Attachment {
   uploadedAt: Date;
 }
 
-export type MessageType = 'user' | 'complaint' | 'report';
+export type MessageType = 'text' | 'complaint' | 'report';
 
 export interface Message {
   id: string;
