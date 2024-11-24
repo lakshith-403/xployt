@@ -5,7 +5,8 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-import {NotificationsCache, NotificationsCacheMock} from "@data/hacker/cache/notifications.cache";
+import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import { DiscussionCache } from './discussion/cache/discussion';
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
@@ -14,6 +15,7 @@ class CacheStore {
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
+  private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
 
@@ -27,6 +29,7 @@ class CacheStore {
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
+    this.discussionMap = new Map();
   }
 
   public getUser(username: string): UserCache {
@@ -74,12 +77,18 @@ class CacheStore {
   }
 
   public getNotificationsList(userId: string): NotificationsCache {
-    if(!this.notificationsListMap.has(userId)){
+    if (!this.notificationsListMap.has(userId)) {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
     }
     return this.notificationsListMap.get(userId)!;
   }
 
+  public getDiscussion(discussionId: string): DiscussionCache {
+    if (!this.discussionMap.has(discussionId)) {
+      this.discussionMap.set(discussionId, new DiscussionCache(discussionId));
+    }
+    return this.discussionMap.get(discussionId)!;
+  }
 }
 
 export const CACHE_STORE = new CacheStore();

@@ -1,24 +1,25 @@
 import { View, ViewHandler } from '@/ui_lib/view';
 import { QuarkFunction as $, Quark } from '../ui_lib/quark';
-import { User } from '@/data/user';
-import Discussion, { Attachment, Message } from '@/data/discussion/discussion';
+import { Discussion, Attachment, Message, PublicUser, getAttachmentsUtil } from '@/data/discussion/discussion';
 import { TextAreaBase } from '@/components/test_area/textArea.base';
 import { IconButton } from '@/components/button/icon.button';
+import { DiscussionCache } from '@/data/discussion/cache/discussion';
+import { CACHE_STORE } from '@/data/cache';
 
 class UserTag {
-  private user: User;
+  private user: PublicUser;
 
-  constructor(user: User) {
+  constructor(user: PublicUser) {
     this.user = user;
   }
 
   render(q: Quark): void {
     $(q, 'span', 'user-row', {}, (q) => {
       $(q, 'span', '', {}, (q) => {
-        $(q, 'img', '', { src: this.user.avatar });
+        $(q, 'img', '', { src: '' });
         $(q, 'span', '', {}, this.user.name);
       });
-      $(q, 'span', 'type', {}, this.user.type);
+      $(q, 'span', 'type', {}, '');
     });
   }
 }
@@ -88,9 +89,10 @@ class MessageComponent {
     });
   }
 
-  private getTimeAgo(timestamp: Date): string {
+  private getTimeAgo(timestamp: string): string {
+    const date = new Date(timestamp);
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - timestamp.getTime());
+    const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
     const diffHours = Math.round(diffTime / (1000 * 60 * 60));
     const diffMinutes = Math.round(diffTime / (1000 * 60));
@@ -107,13 +109,17 @@ class MessageComponent {
 }
 
 class DiscussionView extends View {
-  private discussion: Discussion;
+  private readonly discussionId: string;
+  private readonly discussionCache: DiscussionCache;
+  private discussion: Discussion | null = null;
   private participantPane!: Quark;
   private attachmentsPane!: Quark;
   private messagesPane!: Quark;
+
   constructor() {
     super();
-    this.discussion = new Discussion('1234');
+    this.discussionId = 'discussion1';
+    this.discussionCache = CACHE_STORE.getDiscussion(this.discussionId);
   }
 
   render(q: Quark): void {
@@ -131,7 +137,9 @@ class DiscussionView extends View {
       });
     });
 
-    this.discussion.load().then(() => {
+    this.discussionCache.get().then((discussion) => {
+      this.discussion = discussion;
+
       this.renderParticipants();
       this.renderAttachments();
       this.renderMessages();
@@ -143,7 +151,7 @@ class DiscussionView extends View {
     $(this.participantPane, 'h2', '', {}, 'Participants');
     $(this.participantPane, 'hr', '', {});
     $(this.participantPane, 'div', 'participant-list', {}, (q) => {
-      this.discussion.getParticipants().forEach((participant) => {
+      this.discussion?.participants.forEach((participant) => {
         new UserTag(participant).render(q);
       });
     });
@@ -154,7 +162,7 @@ class DiscussionView extends View {
     $(this.attachmentsPane, 'h2', '', {}, 'Attachments');
     $(this.attachmentsPane, 'hr', '', {});
     $(this.attachmentsPane, 'div', 'attachment-list', {}, (q) => {
-      this.discussion.getAttachments().forEach((attachment) => {
+      getAttachmentsUtil(this.discussion!).forEach((attachment) => {
         new AttachmentTag(attachment).render(q);
       });
     });
@@ -163,7 +171,7 @@ class DiscussionView extends View {
   private renderMessages(): void {
     this.messagesPane.innerHTML = '';
     $(this.messagesPane, 'div', 'message-list', {}, (q) => {
-      this.discussion.getMessages().forEach((message) => {
+      this.discussion?.messages.forEach((message) => {
         new MessageComponent(message).render(q);
       });
 
