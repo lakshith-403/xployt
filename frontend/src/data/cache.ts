@@ -8,6 +8,7 @@ import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cac
 import { ProjectOverviewLeadCacheMock } from './projectLead/cache/projectOverview';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import {InvitationsCache} from '@data/common/cache/invitations.cache'
 
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
@@ -18,6 +19,7 @@ class CacheStore {
   private readonly projectLeadOverviewMap: Map<string, ProjectOverviewLeadCacheMock>;
   private readonly clientMap: Map<string, ClientCacheMock>;
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
+  private readonly invitationsMap: Map<string, InvitationsCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
 
@@ -30,6 +32,7 @@ class CacheStore {
     this.projectLeadOverviewMap = new Map();
     this.clientMap = new Map();
     this.notificationsListMap = new Map();
+    this.invitationsMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCache();
@@ -100,6 +103,20 @@ class CacheStore {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
     }
     return this.notificationsListMap.get(userId)!;
+  }
+
+  public getProjectInvitations(projectId: string): InvitationsCache {
+    if (!this.invitationsMap.has(projectId)) {
+      this.invitationsMap.set(projectId, new InvitationsCache());
+    }
+    return this.invitationsMap.get(projectId)!;
+  }
+
+  public getHackerInvitations(hackerId: string): InvitationsCache {
+    if (!this.invitationsMap.has(hackerId)) {
+      this.invitationsMap.set(hackerId, new InvitationsCache());
+    }
+    return this.invitationsMap.get(hackerId)!;
   }
 }
 

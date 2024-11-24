@@ -23,6 +23,7 @@ import { validatorDashboardViewHandler } from './views/validator/dashboard/dashb
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
+import {userDashboardViewHandler} from "@views/UserDashboard";
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -116,6 +117,7 @@ const HomeRouteHandler = new RouteHandler(
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,
+      userDashboardViewHandler
   ],
   new SidebarView('/', HomeSidebar)
 );
