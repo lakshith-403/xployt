@@ -7,10 +7,11 @@ import "./Profile.scss";
 import { CollapsibleBase } from "../components/Collapsible/collap.base";
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
+import { UserProfile } from "@/data/user/cache/userProfile";
 export class ProfileView extends View {
  private userInfoCollapsible: CollapsibleBase;
  private fundsCollapsible: CollapsibleBase;
- private profile: any = null;
+ private profile!: UserProfile ;
  private nameField: TextField;
  private emailField: TextField;
  private phoneField: TextField;
@@ -27,9 +28,9 @@ export class ProfileView extends View {
  }
   private async loadProfile() {
    try {
-     const userId = '123'; // Get actual user ID from your auth system
+     const userId = '1'; // Get actual user ID from your auth system
      const userProfileCache = CACHE_STORE.getUserProfile(userId);
-     this.profile = await userProfileCache.get();
+     this.profile = await userProfileCache.get(false, userId);
      this.updateFields();
    } catch (error) {
      console.error('Error loading profile:', error);
@@ -37,6 +38,7 @@ export class ProfileView extends View {
  }
   private updateFields() {
    if (this.profile) {
+     console.log('ProfileView: Updating fields with profile:', this.profile);
      this.nameField.setValue(this.profile.name);
      this.emailField.setValue(this.profile.email);
      this.phoneField.setValue(this.profile.phoneNumber);

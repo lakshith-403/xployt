@@ -1,30 +1,19 @@
 import { ProfileService } from '../../../services/profile.service';
 import { Response } from '../../network/network';
+import NETWORK from '../../network/network';
 export class userEndpoints {
    static async getUserProfile(userId: string): Promise<Response> {
-       try {
-           console.log('userEndpoints: Getting profile for user:', userId);
-           // Use the existing ProfileService
-           const response = await fetch('/api/profile', {
-               method: 'GET',
-               headers: {
-                   'Content-Type': 'application/json'
-               }
-           });
-           const data = await response.json();
-           console.log('userEndpoints: Response received:', data);
-           
-           return {
-               data: data,
-               is_successful: true
-           };
-       } catch (error) {
-           console.error('userEndpoints: Error:', error);
-           return {
-               is_successful: false,
-               error: error instanceof Error ? error.message : 'Unknown error'
-           };
-       }
+
+       return await NETWORK.sendHttpRequest('GET', `/api/profile/${userId}`);
+
+    //    try {
+    //        console.log('userEndpoints: Getting profile for user:', userId);
+    //        console.log('userEndpoints: Response received:', response.data);
+    //         return response;
+    
+    //    } catch (error) {
+    //        console.error('userEndpoints: Error:', error);
+    //    }
    }
     static async updateUserProfile(userId: string, profileData: any): Promise<Response> {
        try {
