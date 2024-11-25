@@ -19,7 +19,7 @@ import { validatorApplicationViewHandler } from './views/validator/validatorAppl
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
-import { discussionViewHandler } from './views/Discussion';
+import { discussionViewHandler } from './views/discussion/Discussion';
 
 const HomeSidebar: SidebarTab[] = [
   {
