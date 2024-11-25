@@ -23,8 +23,8 @@ import { validatorDashboardViewHandler } from './views/validator/dashboard/dashb
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
-import { discussionViewHandler } from './views/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
+import { discussionViewHandler } from './views/discussion/Discussion';
 
 const HomeSidebar: SidebarTab[] = [
   {

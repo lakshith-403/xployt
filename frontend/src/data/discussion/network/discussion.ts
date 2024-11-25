@@ -1,8 +1,22 @@
 import NETWORK, { Response } from './../../network/network';
 
 export class DiscussionEndpoints {
+  private static readonly BASE_URL = '/api/discussions';
+
   static async getDiscussion(discussionId: string): Promise<Response> {
-    return NETWORK.sendHttpRequest('GET', `/api/discussion/${discussionId}`);
+    return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}/${discussionId}`);
+  }
+
+  static async createDiscussion(discussion: any): Promise<Response> {
+    return NETWORK.sendHttpRequest('POST', `${this.BASE_URL}`, discussion);
+  }
+
+  static async updateDiscussion(discussion: any): Promise<Response> {
+    return NETWORK.sendHttpRequest('PUT', `${this.BASE_URL}/${discussion.discussionId}`, discussion);
+  }
+
+  static async sendMessage(message: any): Promise<Response> {
+    return NETWORK.sendHttpRequest('POST', `${this.BASE_URL}/messages`, message);
   }
 }
 
