@@ -17,6 +17,9 @@ import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/Vulner
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
+import { NotificationList } from '@components/notifications/notificationsList';
+import { NotificationButton } from '@components/notifications/notificationButton';
+import { discussionViewHandler } from './views/discussion/Discussion';
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -33,6 +36,11 @@ const HomeSidebar: SidebarTab[] = [
     id: 'reports',
     title: 'Reports',
     url: 'reports',
+  },
+  {
+    id: 'discussion',
+    title: 'Discussion',
+    url: 'discussion',
   },
   {
     id: 'report/{projectId}',
@@ -77,6 +85,9 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     $(q, 'div', 'buttons', {}, (q) => {
+      const notificationList = new NotificationList(false, {userId: "1"});
+      const notificationButton = new NotificationButton(notificationList, q);
+      notificationButton.render();
         $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/about'); } }, 'About');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
@@ -87,7 +98,7 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler],
+  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler, discussionViewHandler],
   new SidebarView('/', HomeSidebar)
 );
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
@@ -96,6 +107,8 @@ const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginView
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
+
+const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false);
 
 // const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
 // const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());

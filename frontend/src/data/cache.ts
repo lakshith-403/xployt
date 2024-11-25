@@ -6,12 +6,17 @@ import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cach
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
 import { UserProfileCache} from './user/cache/userProfile';
+import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import { DiscussionCache } from './discussion/cache/discussion';
+
 class CacheStore {
   private readonly userMap: Map<string, UserCache>;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
+  private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
   private readonly userProfileMap: Map<string, UserProfileCache>;
@@ -22,11 +27,13 @@ class CacheStore {
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
+    this.notificationsListMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
     this.userProfileMap = new Map();
     
+    this.discussionMap = new Map();
   }
 
   public getUser(username: string): UserCache {
@@ -79,7 +86,20 @@ public getUserProfile(userId: string): UserProfileCache {
     this.userProfileMap.set(userId, new UserProfileCache()); // Now using real cache instead of mock
   }
    return this.userProfileMap.get(userId)!;
- 
+  }
+
+public getNotificationsList(userId: string): NotificationsCache {
+    if (!this.notificationsListMap.has(userId)) {
+      this.notificationsListMap.set(userId, new NotificationsCacheMock());
+    }
+    return this.notificationsListMap.get(userId)!;
+  }
+
+  public getDiscussion(discussionId: string): DiscussionCache {
+    if (!this.discussionMap.has(discussionId)) {
+      this.discussionMap.set(discussionId, new DiscussionCache(discussionId));
+    }
+    return this.discussionMap.get(discussionId)!;
   }
 }
 

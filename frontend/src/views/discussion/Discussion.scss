@@ -1,0 +1,176 @@
+.discussion-view {
+  .main-pain {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .right-pane {
+      width: 20%;
+
+      h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+    }
+
+    .participants-pane {
+      width: 100%;
+    }
+
+    .messages-pane {
+      width: 80%;
+    }
+  }
+
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    padding-right: 1rem;
+
+    button {
+      max-width: 100px;
+    }
+  }
+
+  .user-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+
+    img {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+    }
+
+    .type {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #666;
+    }
+
+    span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    img {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .attachment-tag {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .icon {
+      width: 2rem;
+      height: 2rem;
+      background-color: #3a3a3a;
+      border-radius: 50%;
+      i {
+        margin: auto;
+      }
+    }
+  }
+
+  .message-component {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    position: relative;
+
+    .sender-avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      left: -1rem;
+      top: 1rem;
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.8rem;
+      background-color: #3a3a3a;
+      justify-content: center;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #2b6a5c;
+      padding: 0.5rem;
+
+      .sender-name {
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .timestamp {
+        font-size: 0.8rem;
+        margin-left: auto;
+      }
+    }
+
+    .message-body {
+      display: flex;
+      gap: 1rem;
+      padding: 0;
+      position: relative;
+      flex-direction: column;
+      margin-left: 20px;
+      background: #1a1a1a;
+      border: 1px solid #2b6a5c;
+      border-radius: 4px;
+
+      .thread-line {
+        position: absolute;
+        left: -2rem;
+        top: -1rem;
+        bottom: -2rem;
+        width: 2px;
+        background-color: #2b6a5c;
+      }
+
+      .content {
+        flex: 1;
+        color: #fff;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+        color: #fff;
+      }
+
+      .attachments {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
