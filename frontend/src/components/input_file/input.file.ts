@@ -45,7 +45,9 @@ export class FileInputBase {
   public getElement(): HTMLInputElement {
     return this.element!;
   }
-
+  public addClass(className: string) {
+    this.element!.classList.add(className);
+  }
   public clearValue(): void {
     this.element!.value = '';
   }

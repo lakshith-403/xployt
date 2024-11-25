@@ -28,6 +28,8 @@ class ValidatorApplication extends View {
     certificates: '',
     cv: null as File | null,
     references: '',
+    relevantExperience: '',
+    areaOfExpertise: [],
     termsAndConditions: {
       0: false,
       1: false,
@@ -46,12 +48,12 @@ class ValidatorApplication extends View {
         title: 'Project Details',
         step: new ProjectDetails(),
         stateUsed: {
-          name: 'required',
-          email: 'required',
-          mobile: 'required',
-          country: 'required',
-          linkedin: 'required',
-          dateOfBirth: 'required',
+          name: 'optional',
+          email: 'optional',
+          mobile: 'optional',
+          country: 'optional',
+          linkedin: 'optional',
+          dateOfBirth: 'optional',
         },
       },
       {
@@ -76,7 +78,7 @@ class ValidatorApplication extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'bottom' }, this.onSubmit);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'progress-bar-bottom' }, this.onSubmit);
     $(q, 'div', 'validator-application', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Validator Application');
       $(q, 'div', 'container', {}, (q) => {

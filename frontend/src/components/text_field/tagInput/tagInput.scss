@@ -1,10 +1,12 @@
 .parent-element {
   display: flex;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 1rem;
+  // padding: 1rem;
 
   .tag-input-label {
-    padding: 2rem 0rem 0rem 0rem;
+    // padding: 2rem 0rem 0rem 0rem;
+    display: flex;
+    align-items: center;
     min-width: 8rem;
     width: 8rem;
   }
@@ -16,7 +18,7 @@
     border-radius: 10px;
     position: relative;
     padding: 0.7rem 0.7rem;
-    margin: 5px 0;
+    // margin: 5px 0;
     border: none;
     caret-color: transparent;
     background-color: var(--input-field-bg);

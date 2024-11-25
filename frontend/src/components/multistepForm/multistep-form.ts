@@ -7,7 +7,7 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 
-interface Steps {
+export interface Steps {
   title: string;
   stateUsed: { [key: string]: 'optional' | 'required' };
   step: Step;
@@ -42,6 +42,7 @@ class MultistepForm {
     this.lastAction = lastAction;
     this.onSubmit = onSubmit;
     this.config = config || {};
+    console.log(this.numOfSteps);
   }
 
   render(q: Quark): void {
@@ -76,9 +77,10 @@ class MultistepForm {
           });
           this.nextButton.render(q);
           this.nextButton.setClass('next-button');
+          this.nextButton.hide();
 
           this.submitButton = new FormButton({
-            label: 'Submit',
+            label: this.lastAction === 'Submit' ? 'Submit' : 'Apply',
             onClick: () => this.checkBeforeSubmit(),
             type: ButtonType.PRIMARY,
           });
@@ -87,6 +89,7 @@ class MultistepForm {
           this.submitButton.hide();
         });
       });
+      this.switchTab(0);
     });
 
     if (this.config.progressBarLocation) {
@@ -134,10 +137,15 @@ class MultistepForm {
     this.tabsButtons.children[this.activeTabIndex].classList.remove('selected');
     this.tabsButtons.children[index].classList.add('selected');
     this.activeTabIndex = index;
-    if (index === 0) {
+    if (index === 0 && this.numOfSteps > 1) {
       this.prevButton!.hide();
       this.nextButton!.show();
       this.submitButton!.hide();
+    } else if (index === 0 && this.numOfSteps === 1) {
+      console.log('Only one step');
+      this.prevButton!.hide();
+      this.nextButton!.hide();
+      this.submitButton!.show();
     } else if (index === this.numOfSteps - 1) {
       this.prevButton!.show();
       this.nextButton!.hide();

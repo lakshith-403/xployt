@@ -1,0 +1,41 @@
+.multistep-form {
+  .project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .title {
+      text-align: center;
+    }
+    .dates {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+
+      .date {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        width: 50%;
+        span {
+          min-width: 8rem;
+        }
+        // padding: 1rem;
+        .date-fields {
+          display: flex;
+          gap: 10px;
+        }
+      }
+    }
+
+    .form-field {
+      gap: 10px;
+      &.text-field-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 .text-area-container {
   width: 100%;
-  padding: 0.5rem 1rem;
-  margin: 0.6rem 0;
+  // padding: 0.5rem 1rem;
+  // margin: 0.6rem 0;
   box-sizing: border-box;
   border-radius: 10px;
   resize: vertical;
@@ -10,18 +10,18 @@
   &.label-left {
     display: flex;
     gap: 1rem;
-    padding: 1rem;
+    // padding: 1rem;
     align-items: center;
 
     .text-area-label {
-      // min-width: 8rem;
       width: 8rem;
+      // min-width: 8rem;
     }
   }
   .text-area-input {
     width: 100%;
     padding: 1rem 1rem;
-    margin: 0.6rem 0;
+    // margin: 0.6rem 0;
     min-height: 5rem;
     box-sizing: border-box;
     border-radius: 10px;
