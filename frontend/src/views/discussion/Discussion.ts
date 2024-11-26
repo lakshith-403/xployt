@@ -35,10 +35,7 @@ class DiscussionView extends View {
       $(q, 'div', 'main-pain', {}, (q) => {
         this.messagesPane = $(q, 'div', 'messages-pane', {}, (q) => {});
         $(q, 'div', 'right-pane', {}, (q) => {
-          this.participantPane = $(q, 'div', 'participants-pane', {}, (q) => {
-            $(q, 'h2', '', {}, 'Participants');
-            $(q, 'hr', '', {});
-          });
+          this.participantPane = $(q, 'div', 'participants-pane', {}, (q) => {});
           this.attachmentsPane = $(q, 'div', 'attachments-pane', {}, (q) => {});
         });
       });
@@ -92,7 +89,20 @@ class DiscussionView extends View {
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
-          new MessageComponent(message).render(q);
+          new MessageComponent(
+            message,
+            (message) => {
+              this.discussionCache.saveMessage(message);
+              this.renderMessages();
+              this.renderAttachments();
+            },
+            (message) => {
+              this.discussionCache.deleteMessage(message);
+              this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
+              this.renderMessages();
+              this.renderAttachments();
+            }
+          ).render(q);
         });
 
       const textArea = new TextAreaBase({

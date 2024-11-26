@@ -26,6 +26,14 @@ export class DiscussionEndpoints {
 
     return NETWORK.sendHttpRequest('POST', `/api/messages/`, formData, 'multipart/form-data');
   }
+
+  static async saveMessage(message: any): Promise<Response> {
+    return NETWORK.sendHttpRequest('PUT', `/api/messages/${message.id}`, message);
+  }
+
+  static async deleteMessage(message: any): Promise<Response> {
+    return NETWORK.sendHttpRequest('DELETE', `/api/messages/${message.id}`);
+  }
 }
 
 export class MockDiscussionEndpoints {
