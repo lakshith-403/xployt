@@ -28,8 +28,8 @@ export class DiscussionCache extends CacheObject<Discussion> {
     return response.data as Discussion;
   }
 
-  async sendMessage(arg: Message): Promise<Message> {
-    const response = await DiscussionEndpoints.sendMessage(arg);
+  async sendMessage(arg: Message, attachments: File[]): Promise<Message> {
+    const response = await DiscussionEndpoints.sendMessage(arg, attachments);
 
     if (!response.is_successful) throw new DataFailure('send message', response.error ?? '');
 
