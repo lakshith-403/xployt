@@ -107,6 +107,25 @@
     padding: 1rem;
     position: relative;
 
+    button {
+      background: #2b6a5c;
+      border: none;
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 100px;
+      margin-top: 10px;
+      margin-right: 5px;
+      cursor: pointer;
+      opacity: 0.8;
+
+      &:hover {
+        background: #3a3a3a;
+        opacity: 1;
+      }
+    }
+
     .sender-avatar {
       width: 2rem;
       height: 2rem;
@@ -136,7 +155,29 @@
 
       .timestamp {
         font-size: 0.8rem;
+        margin-right: 10px;
+      }
+
+      .options {
         margin-left: auto;
+
+        i {
+          cursor: pointer;
+          color: #a8a6a6;
+          &:hover {
+            color: #fff;
+          }
+        }
+      }
+
+      .options-menu {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 5px;
+        background: #1a1a1a;
+        z-index: 100;
       }
     }
 

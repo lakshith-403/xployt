@@ -1,12 +1,22 @@
 import { Message } from '@/data/discussion/discussion';
 import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
 import { AttachmentTag } from './AttachmentTag';
+import { TextAreaBase } from '@/components/test_area/textArea.base';
 
 export class MessageComponent {
   private message: Message;
+  private attachmentContainer!: Quark;
+  private isEditing: boolean;
+  private optionMenu!: Quark;
+  private messageContainer!: Quark;
+  private readonly onSaveCallback: (message: Message) => void;
+  private readonly onDeleteCallback: (message: Message) => void;
 
-  constructor(message: Message) {
+  constructor(message: Message, onSaveCallback: (message: Message) => void, onDeleteCallback: (message: Message) => void) {
     this.message = message;
+    this.isEditing = false;
+    this.onSaveCallback = onSaveCallback;
+    this.onDeleteCallback = onDeleteCallback;
   }
 
   render(q: Quark): void {
@@ -14,7 +24,7 @@ export class MessageComponent {
       $(q, 'div', 'message-body', {}, (q) => {
         $(q, 'div', 'thread-line', {}, (q) => {
           if (this.message.type === 'text') {
-            $(q, 'img', 'sender-avatar', { src: '' });
+            $(q, 'img', 'sender-avatar', { src: 'https://picsum.photos/seed/picsum/200/300' });
           } else if (this.message.type === 'complaint') {
             $(q, 'span', 'sender-avatar', {}, (q) => {
               $(q, 'i', 'fa-solid fa-exclamation-triangle', {});
@@ -32,21 +42,95 @@ export class MessageComponent {
           } else {
             $(q, 'span', 'sender-name', {}, this.message.content);
           }
-          $(q, 'span', 'timestamp', {}, this.getTimeAgo(this.message.timestamp));
+          $(q, 'span', 'options', {}, (q) => {
+            $(q, 'span', 'timestamp', {}, this.getTimeAgo(this.message.timestamp));
+            let elem = $(q, 'i', 'fa-solid fa-ellipsis-v', {}, (q) => {
+              this.optionMenu = $(q, 'div', 'options-menu', {}, (q) => {
+                let editButton = $(q, 'button', 'edit', {}, (q) => {
+                  $(q, 'i', 'fa-solid fa-pen', {});
+                });
+                editButton.addEventListener('click', () => {
+                  this.onEdit();
+                });
+                let deleteButton = $(q, 'button', 'delete', {}, (q) => {
+                  $(q, 'i', 'fa-solid fa-trash', {});
+                });
+                deleteButton.addEventListener('click', () => {
+                  this.onDelete();
+                });
+              });
+
+              this.optionMenu.style.display = 'none';
+            });
+            elem.addEventListener('click', () => {
+              this.toggleOptions();
+            });
+          });
         });
 
         if (this.message.type === 'text') {
-          $(q, 'div', 'content', {}, this.message.content);
+          this.messageContainer = $(q, 'div', 'content', {});
         }
-
-        if (this.message.attachments.length > 0) {
-          $(q, 'div', 'attachments', {}, (q) => {
-            this.message.attachments.forEach((attachment) => {
-              new AttachmentTag(attachment).render(q);
-            });
-          });
-        }
+        this.attachmentContainer = $(q, 'div', 'attachments', {}, (q) => {});
       });
+    });
+
+    this.renderAttachments();
+    this.renderMessage();
+  }
+
+  private toggleOptions(): void {
+    this.optionMenu.style.display = this.optionMenu.style.display === 'none' ? 'block' : 'none';
+  }
+
+  private onEdit(): void {
+    this.isEditing = true;
+
+    this.renderAttachments();
+    this.renderMessage();
+  }
+
+  private onDelete(): void {
+    this.onDeleteCallback(this.message);
+  }
+
+  private renderMessage(): void {
+    this.messageContainer.innerHTML = '';
+    if (this.isEditing) {
+      new TextAreaBase({
+        value: this.message.content,
+        onChange: (content) => {
+          this.message.content = content;
+        },
+      }).render(this.messageContainer);
+      $(this.messageContainer, 'button', 'save', {}, 'Save').addEventListener('click', () => {
+        this.isEditing = false;
+        this.onSaveCallback(this.message);
+        this.renderMessage();
+        this.renderAttachments();
+      });
+      $(this.messageContainer, 'button', 'cancel', {}, 'Cancel').addEventListener('click', () => {
+        this.isEditing = false;
+        this.renderMessage();
+        this.renderAttachments();
+      });
+    } else {
+      this.messageContainer.innerHTML = this.message.content;
+    }
+  }
+
+  private renderAttachments(): void {
+    this.attachmentContainer.innerHTML = '';
+    this.message.attachments.forEach((attachment) => {
+      new AttachmentTag(
+        attachment,
+        this.isEditing
+          ? () => {
+              this.message.attachments = this.message.attachments.filter((a) => a !== attachment);
+              this.renderAttachments();
+            }
+          : undefined
+      ).render(this.attachmentContainer);
     });
   }
 
