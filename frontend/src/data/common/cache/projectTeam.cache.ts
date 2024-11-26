@@ -1,6 +1,6 @@
 import {CacheObject, DataFailure} from '../../cacheBase';
 import {ProjectTeamEndpoints} from "@data/common/network/projectTeam.network";
-import {User} from "@data/user";
+import {PublicUser} from "@data/user";
 
 
 interface ProjectTeamResponse {
@@ -12,25 +12,41 @@ interface ProjectTeamResponse {
 
 interface ProjectTeamInfo {
     projectId: string;
-    client: User;
-    projectLead: User;
-    hackers: User[];
-    validators: User[];
+    client: PublicUser;
+    projectLead: PublicUser;
+    hackers: PublicUser[];
+    validators: PublicUser[];
 }
 
 export class ProjectTeam {
     projectId: string;
-    client: User;
-    projectLead: User;
-    hackers: User[];
-    validators: User[];
+    client: PublicUser;
+    projectLead: PublicUser;
+    hackers: PublicUser[];
+    validators: PublicUser[];
 
     constructor(data: any) {
         this.projectId = data["projectId"];
-        this.client = data["client"];
-        this.projectLead = data["projectLead"];
-        this.hackers = data["hackers"];
-        this.validators = data["validators"]
+        this.client = new PublicUser(data["client"]);
+        this.projectLead = new PublicUser(data["projectLead"]);
+        this.hackers = data['projectHackers'].map((hacker: any) => new PublicUser(hacker));
+        this.validators = data['projectValidators'].map((validator: any) => new PublicUser(validator));
+    }
+
+    public getClientWithoutId(): { name: string; email: string } {
+        return this.client.removeId();
+    }
+
+    public getProjectLeadWithoutId(): { name: string; email: string } {
+        return this.projectLead.removeId();
+    }
+
+    public getHackersWithoutId(): { name: string; email: string }[] {
+        return this.hackers.map(hacker => hacker.removeId());
+    }
+
+    public getValidatorsWithoutId(): { name: string; email: string }[] {
+        return this.validators.map(validator => validator.removeId());
     }
 }
 

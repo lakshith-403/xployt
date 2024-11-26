@@ -5,29 +5,10 @@ import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { Card } from '@components/card/card.base';
 import '../../tabOverview.scss';
+import {PublicUser} from "@data/user";
 
 export class OverviewBasicInfo {
-  projectTeam: {
-    [key: string]: {
-      name: string;
-      id: number;
-      username: string;
-      email: string;
-    };
-  } = {
-    projectLead: {
-      name: '',
-      id: 0,
-      username: '',
-      email: '',
-    },
-    assignedValidator: {
-      name: '',
-      id: 0,
-      username: '',
-      email: '',
-    },
-  };
+  private projectTeam: { [key: string]: PublicUser } = {} as { [key: string]: PublicUser };
 
   constructor(private readonly projectId: string, private readonly client: string) {
     this.projectId = projectId;
@@ -75,7 +56,7 @@ export class OverviewBasicInfo {
             content: $(q, 'div', 'description', {}, (q) => {
               $(q, 'span', '', {}, (q) => {
                 $(q, 'p', 'value', {}, teamMember.name);
-                $(q, 'p', 'value caption', {}, teamMember.username);
+                // $(q, 'p', 'value caption', {}, teamMember.username);
               });
               $(q, 'p', 'value link', {}, teamMember.email);
             }),

@@ -2,6 +2,23 @@ import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
 export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
 
+export class PublicUser {
+  id?: number;
+  name: string;
+  email: string;
+
+  constructor(data: any) {
+    this.id = data.userId;
+    this.name = data.name;
+    this.email = data.email;
+  }
+
+  public removeId(): { name: string; email: string } {
+    const { id, ...userWithoutId } = this;
+    return userWithoutId;
+  }
+}
+
 export class User {
   id: number;
   username: string;
