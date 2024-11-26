@@ -3,7 +3,6 @@ import { FormTextField } from '../../../../../components/text_field/form.text_fi
 // import './verifyProject.scss';
 import { View, ViewHandler } from '@/ui_lib/view';
 // import { Step } from './../../../../components/multistepForm/multistep-form';
-import { ProjectOverviewLead, ProjectOverviewLeadCacheMock } from '@data/projectLead/cache/projectOverview';
 import { CACHE_STORE } from '@/data/cache';
 import { FormTextFieldDisabled } from '@/components/text_field/form.text_fields.disabled';
 import { ButtonType } from '@/components/button/base';
@@ -11,11 +10,12 @@ import { FormButton } from '@/components/button/form.button';
 import { rejectProject, acceptProject } from '@/data/projectLead/network/projectConfig.network';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './verifyProject.scss';
+import { ProjectConfigInfo, ProjectConfigInfoCache } from '@/data/projectLead/cache/projectConfigInfo';
 
 class VerifyProject extends View {
   params: { projectId: string };
-  private projectOverview!: ProjectOverviewLead;
-  private projectOverviewCache!: ProjectOverviewLeadCacheMock;
+  private projectConfigInfo!: ProjectConfigInfo;
+  private projectConfigInfoCache!: ProjectConfigInfoCache;
   protected shouldRenderBreadcrumbs(): boolean {
     return true;
   }
@@ -38,10 +38,10 @@ class VerifyProject extends View {
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
-    this.projectOverviewCache = CACHE_STORE.getLeadProjectOverview(this.params.projectId) as ProjectOverviewLeadCacheMock;
+    this.projectConfigInfoCache = CACHE_STORE.getLeadProjectConfigInfo(this.params.projectId) as ProjectConfigInfoCache;
   }
   private async loadData(): Promise<void> {
-    this.projectOverview = await this.projectOverviewCache.get(false, this.params.projectId);
+    this.projectConfigInfo = await this.projectConfigInfoCache.get(false, this.params.projectId);
   }
   async render(q: Quark): Promise<void> {
     await this.loadData();
@@ -49,28 +49,28 @@ class VerifyProject extends View {
     $(q, 'div', 'verify-project', {}, (q) => {
       $(q, 'h3', 'title', {}, 'Project Information');
 
-      this.renderFieldFullWidth(q, this.fields.projectTitle, this.projectOverview.title);
+      this.renderFieldFullWidth(q, this.fields.projectTitle, this.projectConfigInfo.title);
       $(q, 'div', 'dates', {}, (q) => {
         $(q, 'div', 'start-date date', {}, (q) => {
           $(q, 'span', '', {}, 'Start Date *');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.startDateDay, this.projectOverview.startDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateMonth, this.projectOverview.startDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateYear, this.projectOverview.startDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateDay, this.projectConfigInfo.startDateDay, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateMonth, this.projectConfigInfo.startDateMonth, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateYear, this.projectConfigInfo.startDateYear, 1 / 3);
           });
         });
         $(q, 'div', 'end-date date', {}, (q) => {
           $(q, 'span', '', {}, 'End Date *');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.endDateDay, this.projectOverview.endDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateMonth, this.projectOverview.endDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateYear, this.projectOverview.endDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateDay, this.projectConfigInfo.endDateDay, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateMonth, this.projectConfigInfo.endDateMonth, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateYear, this.projectConfigInfo.endDateYear, 1 / 3);
           });
         });
       });
-      this.renderFieldFullWidth(q, this.fields.description, this.projectOverview.description);
-      this.renderFieldFullWidth(q, this.fields.url, this.projectOverview.accessLink);
-      this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectOverview.technicalStack);
+      this.renderFieldFullWidth(q, this.fields.description, this.projectConfigInfo.description);
+      this.renderFieldFullWidth(q, this.fields.url, this.projectConfigInfo.accessLink);
+      this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectConfigInfo.technicalStack);
 
       $(q, 'div', 'button-container', {}, (q) => {
         const loading = new LoadingScreen(q);

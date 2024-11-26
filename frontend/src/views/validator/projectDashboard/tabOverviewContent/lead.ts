@@ -1,5 +1,5 @@
 import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
-import { ProjectOverviewLead, ProjectOverviewLeadCacheMock } from '@/data/projectLead/cache/projectOverview';
+import { ProjectConfigInfo, ProjectConfigInfoCache } from '@/data/projectLead/cache/projectConfigInfo';
 import './lead.scss';
 import { CACHE_STORE } from '@/data/cache';
 import { ClientCacheMock } from '@/data/projectLead/cache/client.cache';
@@ -8,24 +8,24 @@ import { FormButton } from '@/components/button/form.button';
 import { ButtonType } from '@/components/button/base';
 import { router } from '@/ui_lib/router';
 export default class Lead {
-  private projectOverviewLead!: ProjectOverviewLead;
-  private projectOverviewCache: ProjectOverviewLeadCacheMock;
+  private projectConfigInfo!: ProjectConfigInfo;
+  private projectConfigInfoCache!: ProjectConfigInfoCache;
   private clientCache!: ClientCacheMock;
   private client!: Client;
   constructor(private projectId: string) {
     console.log('at lead.ts constructor');
     console.log('this.projectId', this.projectId);
-    this.projectOverviewCache = CACHE_STORE.getLeadProjectOverview(this.projectId);
+    this.projectConfigInfoCache = CACHE_STORE.getLeadProjectConfigInfo(this.projectId);
   }
   private async loadData(): Promise<void> {
-    this.projectOverviewLead = await this.projectOverviewCache.get(true, this.projectId);
-    this.clientCache = CACHE_STORE.getClient(this.projectOverviewLead.clientId.toString());
-    this.client = await this.clientCache.get();
+    this.projectConfigInfo = await this.projectConfigInfoCache.get(true, this.projectId);
+    // this.clientCache = CACHE_STORE.getClient(this.projectConfigInfo.clientId.toString());
+    // this.client = await this.clientCache.get();
     console.log('at lead.ts');
-    console.log('this.client', this.client);
-    console.log('this.projectOverviewLead', this.projectOverviewLead);
+    // console.log('this.client', this.client);
+    console.log('this.projectConfigInfo', this.projectConfigInfo);
     console.log('this.projectId', this.projectId);
-    console.log('this.projectOverviewCache', this.projectOverviewCache);
+    console.log('this.projectConfigInfoCache', this.projectConfigInfoCache);
   }
   async render(q: Quark): Promise<void> {
     await this.loadData();
@@ -33,12 +33,12 @@ export default class Lead {
       $(q, 'div', 'info', {}, (q) => {
         $(q, 'div', 'info-item', {}, (q) => {
           $(q, 'span', 'label', {}, 'Client');
-          $(q, 'span', '', {}, this.client.clientName);
+          $(q, 'span', '', {}, this.projectConfigInfo.clientName);
         });
         $(q, 'div', 'info-item', {}, (q) => {
           $(q, 'span', 'label', {}, 'Access link');
           $(q, 'span', '', {}, (q) => {
-            $(q, 'a', '', {}, this.projectOverviewLead.accessLink);
+            $(q, 'a', '', {}, this.projectConfigInfo.accessLink);
           });
         });
       });
@@ -47,10 +47,10 @@ export default class Lead {
       // });
       $(q, 'div', '', {}, (q) => {
         $(q, 'div', 'label', {}, 'description');
-        $(q, 'p', '', {}, this.projectOverviewLead.description);
+        $(q, 'p', '', {}, this.projectConfigInfo.description);
       });
-      console.log(this.projectOverviewLead.status);
-      if (this.projectOverviewLead.status === 'pending') {
+      console.log(this.projectConfigInfo.status);
+      if (this.projectConfigInfo.status === 'Pending') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Pending');
         $(q, 'div', '', {}, (q) => {
@@ -64,7 +64,7 @@ export default class Lead {
           });
           verifyButton.render(q);
         });
-      } else if (this.projectOverviewLead.status === 'unconfigured') {
+      } else if (this.projectConfigInfo.status === 'Unconfigured') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Unconfigured');
         // $(q, 'div', '', {}, (q) => {
@@ -81,13 +81,13 @@ export default class Lead {
           });
           configureButton.render(q);
         });
-      } else if (this.projectOverviewLead.status === 'active') {
+      } else if (this.projectConfigInfo.status === 'Active') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Active');
-      } else if (this.projectOverviewLead.status === 'completed') {
+      } else if (this.projectConfigInfo.status === 'Completed') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Completed');
-      } else if (this.projectOverviewLead.status === 'cancelled') {
+      } else if (this.projectConfigInfo.status === 'Cancelled') {
         $(q, 'div', 'label', {}, 'Status');
         $(q, 'span', '', {}, 'Cancelled');
       } else {

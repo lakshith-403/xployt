@@ -9,7 +9,7 @@ import { requestProject } from '@/data/client/network/projectConfig.network';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    projectTitle: 'Hardcoded Project Title',
+    title: 'Hardcoded Project Title',
     startDate: {
       day: '1',
       month: '1',
@@ -30,8 +30,11 @@ class ProjectRequestForm extends View {
     loading.show(); // Show loading screen
 
     try {
-      await requestProject(formState);
-      alert('Project configuration submitted successfully.');
+      await requestProject({
+        ...formState,
+        startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
+        endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
+      });
       // router.navigateTo('/');
     } catch (error) {
       console.error('Error during form submission:', error);

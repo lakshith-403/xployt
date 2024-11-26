@@ -55,7 +55,7 @@ CREATE TABLE Projects (
     description TEXT,
     paymentAmount DECIMAL(10, 2),
     visibility ENUM('Public', 'Private') DEFAULT 'Private',
-    status ENUM('Pending', 'Active', 'Completed') DEFAULT 'Pending',
+    status ENUM('Pending', 'Active', 'Completed', 'Unconfigured') DEFAULT 'Pending',
     startDate DATE,
     endDate DATE,
     technicalStack TEXT,

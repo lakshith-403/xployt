@@ -17,7 +17,7 @@ export default class Overview {
 
   constructor(private projectId: string) {
     // this.project = new Project(projectId);
-    this.userCache = CACHE_STORE.getUser('1');
+    this.userCache = CACHE_STORE.getUser();
     this.projectsCache = CACHE_STORE.getProjects();
   }
 
@@ -25,7 +25,7 @@ export default class Overview {
     try {
       this.user = await this.userCache.get();
       console.log(this.user);
-      this.role = this.user.role;
+      this.role = this.user.type;
       console.log(this.role);
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -36,16 +36,16 @@ export default class Overview {
     await this.loadData();
     console.log(this.role);
     switch (this.role) {
-      case 'project_lead':
+      case 'Lead':
         const lead = new Lead(this.projectId);
         lead.render(q);
         break;
 
-      case 'guest':
-        const client = new Client();
+      case 'Client':
+        const client = new Client(this.projectId);
         client.render(q);
         break;
-      case 'hacker':
+      case 'Hacker':
         const hacker = new Hacker(this.projectId);
         hacker.render(q);
         break;

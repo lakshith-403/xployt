@@ -34,7 +34,7 @@ export class OverviewReports {
 
   constructor(params: { reportId: string }) {
     this.params = params;
-    this.userCache = CACHE_STORE.getUser('1');
+    this.userCache = CACHE_STORE.getUser();
     this.reportsCache = CACHE_STORE.getReports();
   }
 

@@ -22,7 +22,7 @@ class ProjectsView extends View {
   constructor(params: { projectId: string }) {
     super();
     this.params = params;
-    this.userCache = CACHE_STORE.getUser('1');
+    this.userCache = CACHE_STORE.getUser();
     this.projectsCache = CACHE_STORE.getProjects();
   }
 
@@ -30,7 +30,7 @@ class ProjectsView extends View {
     try {
       const user = await this.userCache.get();
       this.userId = user.id;
-      this.projects = await this.projectsCache.get(false, 123);
+      this.projects = await this.projectsCache.get(false, 1);
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
       // }
@@ -56,9 +56,9 @@ class ProjectsView extends View {
   }
 
   async render(q: Quark): Promise<void> {
+    q.innerHTML = '';
     const loading = new LoadingScreen(q);
     loading.show();
-    q.innerHTML = '';
     await this.loadProjects();
     loading.hide();
 

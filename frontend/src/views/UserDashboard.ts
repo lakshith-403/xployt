@@ -10,7 +10,7 @@ class UserDashboard extends View {
     private userCache: UserCache;
   constructor() {
     super();
-      this.userCache = CACHE_STORE.getUser('1');
+      this.userCache = CACHE_STORE.getUser();
   }
 
   private async loadData(): Promise<void> {
@@ -24,7 +24,7 @@ class UserDashboard extends View {
 
   async render(q: Quark): Promise<void> {
       await this.loadData();
-      console.log(this.user.role);
+      // console.log(this.user.role);
       // switch (this.user.role) {
       //     case 'project_lead':
       //         // const leadDashboard = new Lead(this.projectId);

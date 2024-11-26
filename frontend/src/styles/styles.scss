@@ -1,6 +1,7 @@
 @import 'variables.scss';
 @import 'Login.scss';
 @import '../views/Profile.scss';
+@import '../views/Discussion.scss';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -83,19 +84,20 @@ html {
   align-items: flex-start;
   top: var(--navbar-height);
   position: relative;
+
+  #content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+    overflow-y: auto;
+    min-height: calc(100vh - (var(--navbar-height) + var(--footer-height)) + 10rem);
+    width: calc(100% - var(--sidebar-width));
+    background-color: var(--background-primary);
+    color: var(--color-primary);
+    position: relative;
+  }
 }
 
-#content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  padding: 20px;
-  overflow-y: auto;
-  min-height: calc(100vh - (var(--navbar-height) + var(--footer-height)) + 10rem);
-  width: calc(100% - var(--sidebar-width));
-  background-color: var(--background-primary);
-  color: var(--color-primary);
-  position: relative;
-}
 .no-sidebar#content {
   margin-left: 0 !important;
   width: 100% !important;
