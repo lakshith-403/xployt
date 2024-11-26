@@ -28,8 +28,8 @@ export class DiscussionCache extends CacheObject<Discussion> {
     return response.data as Discussion;
   }
 
-  async sendMessage(arg: Message): Promise<Message> {
-    const response = await DiscussionEndpoints.sendMessage(arg);
+  async sendMessage(arg: Message, attachments: File[]): Promise<Message> {
+    const response = await DiscussionEndpoints.sendMessage(arg, attachments);
 
     if (!response.is_successful) throw new DataFailure('send message', response.error ?? '');
 
@@ -48,5 +48,25 @@ export class DiscussionCache extends CacheObject<Discussion> {
     if (!response.is_successful) throw new DataFailure('create discussion', response.error ?? '');
 
     return response.data as Discussion;
+  }
+
+  async saveMessage(arg: Message): Promise<Message> {
+    const response = await DiscussionEndpoints.saveMessage(arg);
+
+    if (!response.is_successful) throw new DataFailure('save message', response.error ?? '');
+
+    this.data!.messages = this.data!.messages.map((m) => (m.id === arg.id ? arg : m));
+
+    return response.data as Message;
+  }
+
+  async deleteMessage(arg: Message): Promise<Message> {
+    const response = await DiscussionEndpoints.deleteMessage(arg);
+
+    if (!response.is_successful) throw new DataFailure('delete message', response.error ?? '');
+
+    this.data!.messages = this.data!.messages.filter((m) => m.id !== arg.id);
+
+    return response.data as Message;
   }
 }

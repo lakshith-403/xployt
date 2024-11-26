@@ -21,7 +21,7 @@ class Network {
    * @param {object} [data={}] - The data to be sent with the request.
    * @returns {Promise<any>} A promise that resolves with the response data.
    */
-  public sendHttpRequest = (method: string, url: string, data: object = {}): Promise<any> => {
+  public sendHttpRequest = (method: string, url: string, data: any = {}, type: string = 'application/json'): Promise<any> => {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
@@ -36,7 +36,10 @@ class Network {
 
       console.log(`Sending ${method} request to ${url}`);
       xhr.open(method, this.baseURL + url);
-      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      if (type !== 'multipart/form-data') {
+        xhr.setRequestHeader('Content-Type', type);
+      }
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
@@ -56,7 +59,11 @@ class Network {
         reject(new NetworkError(xhr.status, url, null, `XHR request failed: ${event.type}`));
       };
 
-      xhr.send(JSON.stringify(data));
+      if (type === 'application/json') {
+        xhr.send(JSON.stringify(data));
+      } else {
+        xhr.send(data);
+      }
     });
   };
 }
