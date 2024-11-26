@@ -34,7 +34,7 @@ class CacheStore {
 
   public getUser(username: string): UserCache {
     if (!this.userMap.has(username)) {
-      this.userMap.set(username, new UserCacheMock());
+      this.userMap.set(username, new UserCache());
     }
 
     return this.userMap.get(username)!;

@@ -12,12 +12,13 @@ export class User {
   avatar: string;
 
   constructor(data: any) {
-    this.id = data['id'];
+    console.log('User constructor', data);
+    this.id = data['userId'];
     this.username = data['username'];
     this.name = data['name'];
     this.email = data['email'];
-    this.type = data['type'];
-    this.avatar = data['avatar'];
+    this.type = data['role'];
+    this.avatar = '';
   }
 }
 
@@ -25,23 +26,23 @@ export class UserCache extends CacheObject<User> {
   async load(): Promise<User> {
     const response = await AuthEndpoints.getCurrentUser();
 
-    if (!response.is_successful) throw new DataFailure('load user', response.error ?? '');
+    return new User(response);
+  }
 
-    return new User(response['data']);
+  async register(name: string, email: string, password: string): Promise<User> {
+    const response = await AuthEndpoints.register(name, email, password);
+
+    return new User(response);
   }
 
   async signIn(username: string, password: string): Promise<User> {
     const response = await AuthEndpoints.signIn(username, password);
 
-    if (!response.is_successful) throw new DataFailure('load user', response.error ?? '');
-
-    return new User(response.data);
+    return new User(response);
   }
 
   async signOut(): Promise<void> {
     const response = await AuthEndpoints.signOut();
-
-    if (!response.is_successful) throw new DataFailure('load user', response.error ?? '');
 
     this.invalidate_cache();
   }
