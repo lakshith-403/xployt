@@ -1,10 +1,10 @@
-import { QuarkFunction as $, Quark } from '@/ui_lib/quark';
-import { FormTextField } from '@/components/text_field/form.text_field';
-import { FormRadioButton } from '@/components/text_field/form.radio_button';
+import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import { FormTextField } from '@components/text_field/form.text_field';
+import { FormRadioButton } from '@components/text_field/form.radio_button';
 import { FileInputBase } from '@components/input_file/input.file';
 import { TagInput } from '@components/text_field/tagInput/tagInput';
 import './Payments.scss';
-import { Step } from '@/components/multistepForm/multistep-form';
+import { Step } from '@components/multistepForm/multistep-form';
 import { criticalLevelTags, highLevelTags, mediumLevelTags, lowLevelTags, informativeLevelTags } from './data';
 class Payments implements Step {
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {

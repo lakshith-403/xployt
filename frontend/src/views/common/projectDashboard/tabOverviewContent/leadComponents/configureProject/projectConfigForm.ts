@@ -1,10 +1,10 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
-import MultistepForm from '@/components/multistepForm/multistep-form';
+import MultistepForm from '@components/multistepForm/multistep-form';
 import './projectConfigForm.scss';
-import { Steps } from '@/components/multistepForm/multistep-form';
-import LoadingScreen from '@/components/loadingScreen/loadingScreen';
-import { submitProjectConfig } from '@/data/projectLead/network/projectConfig.network';
+import { Steps } from '@components/multistepForm/multistep-form';
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
+import { submitProjectConfig } from '@data/projectLead/network/projectConfig.network';
 import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 

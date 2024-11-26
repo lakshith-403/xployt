@@ -1,16 +1,16 @@
-import { QuarkFunction as $, Quark } from '../../../../../ui_lib/quark';
-import { FormTextField } from '../../../../../components/text_field/form.text_field';
+import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import { FormTextField } from '@components/text_field/form.text_field';
 // import './verifyProject.scss';
-import { View, ViewHandler } from '@/ui_lib/view';
+import { View, ViewHandler } from '@ui_lib/view';
 // import { Step } from './../../../../components/multistepForm/multistep-form';
-import { CACHE_STORE } from '@/data/cache';
-import { FormTextFieldDisabled } from '@/components/text_field/form.text_fields.disabled';
-import { ButtonType } from '@/components/button/base';
-import { FormButton } from '@/components/button/form.button';
-import { rejectProject, acceptProject } from '@/data/projectLead/network/projectConfig.network';
+import { CACHE_STORE } from '@data/cache';
+import { FormTextFieldDisabled } from '@components/text_field/form.text_fields.disabled';
+import { ButtonType } from '@components/button/base';
+import { FormButton } from '@components/button/form.button';
+import { rejectProject, acceptProject } from '@data/projectLead/network/projectConfig.network';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './verifyProject.scss';
-import { ProjectConfigInfo, ProjectConfigInfoCache } from '@/data/projectLead/cache/projectConfigInfo';
+import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
 
 class VerifyProject extends View {
   params: { projectId: string };

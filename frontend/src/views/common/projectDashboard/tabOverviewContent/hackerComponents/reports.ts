@@ -4,7 +4,7 @@ import { ReportsCache } from '@data/projectLead/cache/reports.cache';
 import { UserCache } from '@data/user';
 import { tableBase } from '@components/table/table.base';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import './../../tabOverview.scss';
+import '../../tabOverview.scss';
 
 export class OverviewReports {
   private params: { reportId: string };

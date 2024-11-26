@@ -11,10 +11,10 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
-import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
+import { projectDashboardViewHandler } from '@views/common/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
-import { verifyProjectHandler } from './views/validator/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
-import { projectConfigFormViewHandler } from './views/validator/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
+import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
+import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';

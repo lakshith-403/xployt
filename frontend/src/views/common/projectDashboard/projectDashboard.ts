@@ -1,13 +1,13 @@
-import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
-import { View, ViewHandler } from '../../../ui_lib/view';
-import Tabs from './../../../components/tabs/tabs';
+import { QuarkFunction as $, Quark } from '@ui_lib/quark';
+import { View, ViewHandler } from '@ui_lib/view';
+import Tabs from '@components/tabs/tabs';
 import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import { CACHE_STORE } from '../../../data/cache';
-import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
-import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
+import { CACHE_STORE } from '@data/cache';
+import { Project, ProjectsCache } from '@data/validator/cache/projects.cache';
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
 
 // import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView extends View {

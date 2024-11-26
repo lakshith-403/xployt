@@ -9,12 +9,13 @@ import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLea
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import {InvitationsCache} from '@data/common/cache/invitations.cache'
+import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
 
 class CacheStore {
   private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
-  private readonly projectTeamsMap: Map<string, ProjectTeamCacheMock>;
+  private readonly projectTeamsMap: Map<string, ProjectTeamCache>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   private readonly clientMap: Map<string, ClientCacheMock>;
@@ -71,9 +72,9 @@ class CacheStore {
     return this.reports;
   }
 
-  public getProjectTeam(projectId: string): ProjectTeamCacheMock {
+  public getProjectTeam(projectId: string): ProjectTeamCache {
     if (!this.projectTeamsMap.has(projectId)) {
-      this.projectTeamsMap.set(projectId, new ProjectTeamCacheMock());
+      this.projectTeamsMap.set(projectId, new ProjectTeamCache());
     }
     return this.projectTeamsMap.get(projectId)!;
   }

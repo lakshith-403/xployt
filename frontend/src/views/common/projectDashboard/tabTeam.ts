@@ -1,19 +1,20 @@
-import { Quark, QuarkFunction as $ } from '../../../ui_lib/quark';
-import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { CACHE_STORE } from '../../../data/cache';
-import { ProjectTeamCacheMock, ProjectTeam } from '../../../data/validator/cache/project.team';
-import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { CollapsibleBase } from '@components/Collapsible/collap.base';
+import { CACHE_STORE } from '@data/cache';
+// import { ProjectTeamCacheMock, ProjectTeam } from '@data/validator/cache/project.team';
+import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './tabTeam.scss';
 export default class Team {
   projectTeam: ProjectTeam = {} as ProjectTeam;
   constructor(private projectId: string) {
     this.projectId = projectId;
   }
-  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCacheMock;
+  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
 
   async loadData(): Promise<void> {
     try {
-      this.projectTeam = await this.projectTeamCache.get(false, this.projectId);
+      this.projectTeam = await this.projectTeamCache.load(this.projectId);
       console.log('projectTeam', this.projectTeam);
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -42,7 +43,7 @@ export default class Team {
 
     const validatorCollapsible = new CollapsibleBase('Validator', '');
     validatorCollapsible.render(q);
-    this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.validator, 'Validator', 1), validatorCollapsible.getContent(), 1);
+    this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.validators, 'Validator', 1), validatorCollapsible.getContent(), 1);
   }
 
   createDivsFromObject(obj: any, parent: Quark, depth: number): void {
