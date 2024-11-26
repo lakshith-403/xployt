@@ -1,13 +1,13 @@
 import { User } from '../user';
 
-type AttachmentType = 'pdf' | 'image' | 'link' | 'report' | 'complaint';
+type AttachmentType = 'pdf' | 'image' | 'link' | 'report' | 'complaint' | 'other';
 
 export interface Attachment {
   id: string;
   type: AttachmentType;
   url: string;
   name: string;
-  uploadedBy: User;
+  uploadedBy: PublicUser;
   uploadedAt: Date;
 }
 
@@ -15,7 +15,7 @@ export type MessageType = 'text' | 'complaint' | 'report';
 
 export interface Message {
   id: string;
-  sender: User;
+  sender: PublicUser;
   content: string;
   attachments: Attachment[];
   timestamp: string;

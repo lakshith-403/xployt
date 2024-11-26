@@ -15,8 +15,16 @@ export class DiscussionEndpoints {
     return NETWORK.sendHttpRequest('PUT', `${this.BASE_URL}/${discussion.discussionId}`, discussion);
   }
 
-  static async sendMessage(message: any): Promise<Response> {
-    return NETWORK.sendHttpRequest('POST', `${this.BASE_URL}/messages`, message);
+  static async sendMessage(message: any, attachments: File[]): Promise<Response> {
+    const formData = new FormData();
+    formData.append('message', JSON.stringify(message));
+    attachments.forEach((attachment: any) => {
+      formData.append('files', attachment);
+    });
+
+    console.log(formData);
+
+    return NETWORK.sendHttpRequest('POST', `/api/messages/`, formData, 'multipart/form-data');
   }
 }
 
