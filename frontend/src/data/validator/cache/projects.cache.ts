@@ -10,7 +10,7 @@ interface ProjectResponse {
 
 interface ProjectDetails {
   id: number;
-  status: 'pending' | 'closed' | 'in progress';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
   client: string;
   pendingReports: number;
@@ -18,7 +18,7 @@ interface ProjectDetails {
 
 export class Project {
   id: number;
-  status: 'pending' | 'closed' | 'in progress';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
   client: string;
   pendingReports: number;
@@ -34,12 +34,12 @@ export class Project {
 }
 
 export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
+  async load(userId: number): Promise<Project[][]> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
     try {
-      response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
+      response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -64,20 +64,20 @@ export class ProjectsCache extends CacheObject<Project[][]> {
 }
 
 export class ProjectsCacheMock extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
+  async load(userId: number): Promise<Project[][]> {
     return [
       [
         new Project({
           id: 1,
-          status: 'pending',
-          title: 'Project 1',
+          status: 'unconfigured',
+          title: 'Project GT-175',
           client: 'Client 1',
           pending_reports: 3,
         }),
         new Project({
           id: 2,
-          status: 'closed',
-          title: 'Project 2',
+          status: 'pending',
+          title: 'Project WV-102',
           client: 'Client 2',
           pending_reports: 0,
         }),

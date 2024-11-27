@@ -2,7 +2,7 @@ import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './Projects.scss';
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
-import { UserCache } from '../../../data/user';
+import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
@@ -12,9 +12,9 @@ import { CheckboxManager } from '../../../components/checkboxManager/checkboxMan
 class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache: ProjectsCache;
-  private userCache: UserCache;
+  private userCache: UserCacheMock;
   private projects: Project[][] = [];
-  private userId: number | null = null;
+  private userId: string | null = null;
 
   private static readonly TABLE_HEADERS = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
   private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
@@ -22,15 +22,17 @@ class ProjectsView extends View {
   constructor(params: { projectId: string }) {
     super();
     this.params = params;
-    this.userCache = CACHE_STORE.getUser('123');
+    this.userCache = CACHE_STORE.getUser();
     this.projectsCache = CACHE_STORE.getProjects();
   }
 
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
+      console.log('user', user);
       this.userId = user.id;
-      this.projects = await this.projectsCache.get(false, 123);
+      console.log('user id', this.userId);
+      this.projects = await this.projectsCache.get(false, this.userId);
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
       // }
@@ -58,10 +60,10 @@ class ProjectsView extends View {
   async render(q: Quark): Promise<void> {
     const loading = new LoadingScreen(q);
     loading.show();
-    q.innerHTML = '';
     await this.loadProjects();
     loading.hide();
 
+    q.innerHTML = '';
     $(q, 'div', 'projects validator', {}, (q) => {
       const pendingProjects = this.projects[0]!;
       const completedProjects = this.projects[1]!;
