@@ -126,9 +126,6 @@ class CacheStore {
     return this.discussionMap.get(discussionId)!;
   }
 
-  public createHackerInvitations(projectId: string, hackerId: string){
-
-  }
 }
 
 export const CACHE_STORE = new CacheStore();

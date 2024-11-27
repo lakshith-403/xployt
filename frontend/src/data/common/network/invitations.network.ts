@@ -14,4 +14,15 @@ export class InvitaiotnEndpoints {
             `/api/invitations/project/${projectId}`
         )
     }
+
+    static async createInvitation(projectId: string, hackerId: string){
+        return NETWORK.sendHttpRequest(
+            'POST',
+            '/api/invitations/hacker',
+            {
+                projectId: projectId,
+                hackerId: hackerId
+            }
+        )
+    }
 }

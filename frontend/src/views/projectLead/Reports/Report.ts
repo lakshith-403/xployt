@@ -14,7 +14,7 @@ class ReportsView extends View {
   private reportsCache: ReportsCache;
   private userCache: UserCache;
   private reports: Report[][] = [];
-  private userId: number | null = null;
+  private userId: string | null = null;
 
   private static readonly TABLE_HEADERS = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
   private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];

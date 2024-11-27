@@ -26,6 +26,7 @@ import { NotificationButton } from '@components/notifications/notificationButton
 import { discussionViewHandler } from './views/discussion/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 import {userDashboardViewHandler} from "@views/UserDashboard";
+import {clientHackerInvitationsViewHandler} from "@views/client/inviteHackers/inviteHackers";
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -125,7 +126,8 @@ const HomeRouteHandler = new RouteHandler(
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,
     discussionViewHandler,
-      userDashboardViewHandler
+      userDashboardViewHandler,
+    clientHackerInvitationsViewHandler
   ],
   new SidebarView('/', HomeSidebar)
 );
