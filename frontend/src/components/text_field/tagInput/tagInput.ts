@@ -48,7 +48,13 @@ export class TagInput {
     this.textField?.setValue(''); // Clear the input field
     this.renderAutocomplete();
   }
-
+  public addTags(tags: string[]) {
+    this.selectedTags.push(...tags);
+    this.tagList?.updateTags(this.selectedTags); // Update the TagList
+  }
+  public addClass(className: string) {
+    this.textField?.addClass(className);
+  }
   private removeTag(tagToRemove: string) {
     this.selectedTags = this.selectedTags.filter((tag) => tag !== tagToRemove);
     this.tagList?.updateTags(this.selectedTags); // Update the TagList

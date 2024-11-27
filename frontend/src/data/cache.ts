@@ -13,7 +13,7 @@ import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
 import { DiscussionCache } from './discussion/cache/discussion';
 
 class CacheStore {
-  private readonly userMap: Map<string, UserCache>;
+  private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCache>;
@@ -27,7 +27,7 @@ class CacheStore {
   private reports: ReportsCache;
 
   constructor() {
-    this.userMap = new Map();
+    this.user = new UserCacheMock();
     this.projectInfoMap = new Map();
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
@@ -42,14 +42,9 @@ class CacheStore {
     this.discussionMap = new Map();
   }
 
-    public getUser(username: string): UserCache {
-        if (!this.userMap.has(username)) {
-            this.userMap.set(username, new UserCache());
-        }
-
-        return this.userMap.get(username)!;
-    }
-
+  public getUser(): UserCache {
+    return this.user;
+  }
   public getProjectInfo(projectId: string): ProjectInfoCache {
     if (!this.projectInfoMap.has(projectId)) {
       this.projectInfoMap.set(projectId, new ProjectInfoCacheMock());
@@ -104,7 +99,7 @@ class CacheStore {
   }
 
   public getNotificationsList(userId: string): NotificationsCache {
-    if (!this.notificationsListMap.has(userId)) {
+    if(!this.notificationsListMap.has(userId)){
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
     }
     return this.notificationsListMap.get(userId)!;

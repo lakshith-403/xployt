@@ -2,7 +2,7 @@
   .personal-details {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    // gap: 10px;
 
     .title {
       text-align: center;
@@ -19,13 +19,13 @@
       }
     }
 
-    .form-field {
-      gap: 10px;
-      &.text-field-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-    }
+    // .form-field {
+    //   gap: 10px;
+    //   &.text-field-container {
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 20px;
+    //   }
+    // }
   }
 }

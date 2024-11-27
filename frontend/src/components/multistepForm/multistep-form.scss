@@ -1,13 +1,19 @@
 .multistep-form {
+  // --form-field-gap-vertical: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  // gap: var(--form-field-gap-vertical);
   --margin-from-edge: 3rem;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
 
-  &.bottom {
+  &.progress-bar-bottom {
     flex-direction: column-reverse;
+  }
+  &.progress-bar-hide {
+    .progress-bar {
+      display: none;
+    }
   }
   .progress-bar {
     display: flex;
@@ -72,6 +78,12 @@
         right: 0;
         position: absolute;
         margin-right: var(--margin-from-edge);
+      }
+    }
+
+    .tabs-content {
+      .form-field {
+        margin-top: 1rem;
       }
     }
   }

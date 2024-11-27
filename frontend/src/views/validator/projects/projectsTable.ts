@@ -59,7 +59,7 @@ export class ProjectTable extends ClickableFilterableTableWithCrumbs {
                       !isLastCell
                         ? element!.toString()
                         : (q) => {
-                            $(q, 'span', 'count', {}, element!.toString());
+                            $(q, 'span', 'count', {}, element.toString());
                           }
                     );
                   });

@@ -6,7 +6,7 @@ import { Breadcrumbs, Breadcrumb } from '../components/breadCrumbs/breadCrumbs';
  * Subclasses must implement the render method to define how the view is displayed.
  */
 export abstract class View {
-   /**
+  /**
    * Renders the view using the provided Quark instance.
    *
    * @param q - An instance of Quark used for rendering the view.
@@ -33,7 +33,7 @@ export abstract class View {
   protected updateBreadcrumbs(breadcrumbInfo: Breadcrumb[]) {
     if (this.breadcrumbs) {
       this.breadcrumbs.clearBreadcrumbs();
-      breadcrumbInfo.forEach(info => this.breadcrumbs!.addBreadcrumb(info));
+      breadcrumbInfo.forEach((info) => this.breadcrumbs!.addBreadcrumb(info));
     }
   }
 }
@@ -45,6 +45,7 @@ export class ViewHandler {
   route: string;
   private readonly builder: new (params: any) => View;
   private view?: View;
+  private currentParams?: Record<string, string>;
 
   /**
    * Creates an instance of ViewHandler.
@@ -55,6 +56,11 @@ export class ViewHandler {
   constructor(route: string, builder: new (params: any) => View) {
     this.route = route;
     this.builder = builder;
+    document.addEventListener('roleChanged', () => {
+      if (this.view) {
+        this.setView(this.currentParams);
+      }
+    });
   }
 
   /**
@@ -65,6 +71,7 @@ export class ViewHandler {
    */
   setView(params?: Record<string, string>) {
     let root = document.getElementById('content');
+    this.currentParams = params;
     if (root == null) {
       throw new Error('Root element not found');
     }

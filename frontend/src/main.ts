@@ -11,15 +11,21 @@ import { projectsViewHandler } from './views/validator/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
-import { projectDashboardViewHandler } from './views/validator/projectDashboard/projectDashboard';
+import { projectDashboardViewHandler } from '@views/common/projectDashboard/projectDashboard';
 import { reportsViewHandler } from './views/projectLead/Reports/Report';
+import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
+import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
+import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
+import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/discussion/Discussion';
+import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
+import {userDashboardViewHandler} from "@views/UserDashboard";
 
 const HomeSidebar: SidebarTab[] = [
   {
@@ -56,6 +62,16 @@ const HomeSidebar: SidebarTab[] = [
     id: 'test/tagInput',
     title: 'Tag Input Test',
     url: 'test/tagInput',
+  },
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    url: 'dashboard',
+  },
+  {
+    id: 'project-request',
+    title: 'Project Request',
+    url: 'project-request',
   },
 ];
 
@@ -98,10 +114,22 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler(
   '/',
-  [homeViewHandler, projectsViewHandler, vulnReportViewHandler, reportsViewHandler, validatorApplicationViewHandler, tagInputTestViewHandler, discussionViewHandler],
+  [
+    homeViewHandler,
+    projectsViewHandler,
+    vulnReportViewHandler,
+    reportsViewHandler,
+    validatorApplicationViewHandler,
+    tagInputTestViewHandler,
+    validatorDashboardViewHandler,
+    projectRequestFormViewHandler,
+    projectConfigFormViewHandler,
+    discussionViewHandler,
+      userDashboardViewHandler
+  ],
   new SidebarView('/', HomeSidebar)
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
@@ -122,3 +150,6 @@ router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
+
+// Instantiate the UserRoleToggler to attach it to the page
+new UserRoleToggler();

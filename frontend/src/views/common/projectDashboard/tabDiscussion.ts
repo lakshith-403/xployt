@@ -1,4 +1,4 @@
-import { Quark } from '../../../ui_lib/quark';
+import { Quark } from '@ui_lib/quark';
 
 export default class Discussion {
   constructor(private projectId: string) {}

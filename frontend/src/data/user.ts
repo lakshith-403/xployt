@@ -65,7 +65,6 @@ export class UserCache extends CacheObject<User> {
 
   async signOut(): Promise<void> {
     const response = await AuthEndpoints.signOut();
-
     this.invalidate_cache();
   }
 }
