@@ -8,6 +8,7 @@ import { CollapsibleBase } from "../components/Collapsible/collap.base";
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
 import { UserProfile } from "@/data/user/cache/userProfile";
+
 export class ProfileView extends View {
  private userInfoCollapsible: CollapsibleBase;
  private fundsCollapsible: CollapsibleBase;
@@ -28,12 +29,14 @@ export class ProfileView extends View {
  }
   private async loadProfile() {
    try {
-     const userId = '1'; // Get actual user ID from your auth system
+     const userId = '101'; // Get actual user ID from your auth system
      const userProfileCache = CACHE_STORE.getUserProfile(userId);
      this.profile = await userProfileCache.get(false, userId);
+     console.log('ProfileView: Loaded profile:', this.profile);
      this.updateFields();
    } catch (error) {
      console.error('Error loading profile:', error);
+     alert('Error loading profile:' + error);
    }
  }
   private updateFields() {

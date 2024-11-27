@@ -52,8 +52,10 @@ export class TextField {
     return (this.element as HTMLInputElement)?.value || '';
   }
 
-  setValue(value: string): void {
+  setValue = (value: string): void => { 
+    console.log('TextField: Setting value:', value, "for element:", this.element);
     if (this.element) {
+      console.log('TextField: Setting value:', value);
       (this.element as HTMLInputElement).value = value;
     }
   }
