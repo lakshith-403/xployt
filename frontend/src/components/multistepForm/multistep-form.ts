@@ -42,7 +42,7 @@ class MultistepForm {
     this.lastAction = lastAction;
     this.onSubmit = onSubmit;
     this.config = config || {};
-    console.log(this.numOfSteps);
+    // //console.log(this.numOfSteps);
   }
 
   render(q: Quark): void {
@@ -108,7 +108,7 @@ class MultistepForm {
     }
   }
   nextTab(): void {
-    console.log('Next Tab Clicked');
+    //console.log('Next Tab Clicked');
     if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
       this.switchTab(this.activeTabIndex + 1);
     } else if (this.isCurrentTabValid()) {
@@ -120,7 +120,7 @@ class MultistepForm {
   }
 
   prevTab(): void {
-    console.log('Prev Tab Clicked');
+    //console.log('Prev Tab Clicked');
     if (this.activeTabIndex > 0) {
       this.switchTab(this.activeTabIndex - 1);
     }
@@ -142,7 +142,7 @@ class MultistepForm {
       this.nextButton!.show();
       this.submitButton!.hide();
     } else if (index === 0 && this.numOfSteps === 1) {
-      console.log('Only one step');
+      //console.log('Only one step');
       this.prevButton!.hide();
       this.nextButton!.hide();
       this.submitButton!.show();
@@ -160,7 +160,7 @@ class MultistepForm {
 
   private isCurrentTabValid(): boolean {
     if (this.checkIfRequiredFieldsAreFilled()) {
-      console.log('Required fields are filled');
+      //console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);
     }
     return this.tabValidityStates[this.activeTabIndex];
@@ -171,19 +171,19 @@ class MultistepForm {
       if (value === 'required') {
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
-          console.log(`Field "${key}" is required but is empty`);
+          //console.log(`Field "${key}" is required but is empty`);
           return false;
         }
         if (typeof fieldValue === 'object') {
           const ans = Object.values(fieldValue).every((val) => val !== undefined && val !== '' && val !== false);
           if (!ans) {
-            console.log(`Field "${key}" is required but contains empty values`);
+            //console.log(`Field "${key}" is required but contains empty values`);
             return false;
           }
         }
-        // console.log('Field is required and is filled');
+        // //console.log('Field is required and is filled');
       }
-      // console.log('Field is optional or filled');
+      // //console.log('Field is optional or filled');
       return true;
     });
   }
@@ -210,7 +210,7 @@ class MultistepForm {
    * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
    */
   private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
-    console.log('Update form state', keyOrState, value);
+    //console.log('Update form state', keyOrState, value);
     if (typeof keyOrState === 'string') {
       if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
         this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
@@ -226,19 +226,19 @@ class MultistepForm {
         }
       }
     }
-    console.log('Updated form state:', this.formState);
+    //console.log('Updated form state:', this.formState);
     if (this.checkIfRequiredFieldsAreFilled()) {
-      console.log('Required fields are filled');
+      //console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);
     } else {
-      console.log('Required fields are not filled');
+      //console.log('Required fields are not filled');
       this.updateTabValidity(this.activeTabIndex, false);
     }
   }
 
   renderActiveTabContent(): void {
     if (this.contentElement) {
-      console.log('Render Active Tab Content');
+      //console.log('Render Active Tab Content');
       this.contentElement.innerHTML = '';
       this.steps[this.activeTabIndex].step.render(this.contentElement, this.formState, (newState: any) => this.updateFormState(newState));
     }

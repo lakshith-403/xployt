@@ -18,7 +18,6 @@ import { projectConfigFormViewHandler } from './views/validator/projectDashboard
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
-import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
@@ -56,11 +55,6 @@ const HomeSidebar: SidebarTab[] = [
     id: 'validator/application',
     title: 'Application',
     url: 'validator/application',
-  },
-  {
-    id: 'test/tagInput',
-    title: 'Tag Input Test',
-    url: 'test/tagInput',
   },
   {
     id: 'dashboard',
@@ -119,7 +113,6 @@ const HomeRouteHandler = new RouteHandler(
     vulnReportViewHandler,
     reportsViewHandler,
     validatorApplicationViewHandler,
-    tagInputTestViewHandler,
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,

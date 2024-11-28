@@ -52,7 +52,7 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
     });
   }
   protected updateCrumbs(id: string, url: string): void {
-    console.log('updateCrumbs', id, url);
+    // console.log('updateCrumbs', id, url);
     BREADCRUMBS.addBreadcrumb({ label: 'Projects' + id, link: '/projects' + id });
     BREADCRUMBS.addBreadcrumb({ label: id, link: url });
   }
@@ -69,7 +69,7 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
         }
       }
       const url = item.url; // Assuming the URL is stored in the 'url' field
-      $(this.rows!, 'a', 'table-row-link', { }, (q) => {
+      $(this.rows!, 'a', 'table-row-link', {}, (q) => {
         $(q, 'div', 'table-row', {}, (q) => {
           Object.values(item).forEach((element) => {
             $(q, 'span', 'table-cell', {}, element!.toString());
