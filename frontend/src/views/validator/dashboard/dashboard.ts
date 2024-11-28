@@ -1,6 +1,6 @@
 import { ViewHandler } from '@/ui_lib/view';
 import { QuarkFunction as $, Quark } from './../../../ui_lib/quark';
-import { View } from '../../../ui_lib/view';
+import { View } from '@ui_lib/view';
 import PieChart from '../../../components/charts/pieChart';
 import './dashboard.scss';
 
@@ -44,4 +44,4 @@ class Dashboard extends View {
   }
 }
 
-export const validatorDashboardViewHandler = new ViewHandler('dashboard', Dashboard);
+export const validatorDashboardViewHandler = new ViewHandler('valdashboard', Dashboard);

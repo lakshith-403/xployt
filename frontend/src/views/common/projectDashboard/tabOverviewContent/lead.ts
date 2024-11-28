@@ -1,5 +1,5 @@
-import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
-import { ProjectConfigInfo, ProjectConfigInfoCache } from '@/data/projectLead/cache/projectConfigInfo';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
 import './lead.scss';
 import { CACHE_STORE } from '@/data/cache';
 import { ClientCacheMock } from '@/data/projectLead/cache/client.cache';

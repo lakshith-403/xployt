@@ -1,8 +1,8 @@
-import { Quark } from '../../../ui_lib/quark';
-import { Project } from '../../../data/validator/cache/projects.cache';
-import { User, UserCache } from '@/data/user';
-import { CACHE_STORE } from '@/data/cache';
-import { ProjectsCache } from '@/data/validator/cache/projects.cache';
+import { Quark } from '@ui_lib/quark';
+import { Project } from '@data/validator/cache/projects.cache';
+import { User, UserCache } from '@data/user';
+import { CACHE_STORE } from '@data/cache';
+import { ProjectsCache } from '@data/validator/cache/projects.cache';
 import Lead from './tabOverviewContent/lead';
 import Client from './tabOverviewContent/client';
 import Hacker from './tabOverviewContent/hacker';
@@ -40,7 +40,7 @@ export default class Overview {
         break;
 
       case 'Client':
-        const client = new Client();
+        const client = new Client(this.projectId);
         client.render(q);
         break;
       case 'Hacker':

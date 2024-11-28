@@ -3,13 +3,31 @@ import { AuthEndpoints } from './network/auth.network';
 export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
 
 interface UserResponse {
-  id: string;
-  username: string;
+    id: string;
+    username: string;
+    name: string;
+    email: string;
+    type: UserType;
+    avatar: string;
+}
+
+export class PublicUser {
+  id?: number;
   name: string;
   email: string;
-  type: UserType;
-  avatar: string;
+
+  constructor(data: any) {
+    this.id = data.userId;
+    this.name = data.name;
+    this.email = data.email;
+  }
+
+  public removeId(): { name: string; email: string } {
+    const { id, ...userWithoutId } = this;
+    return userWithoutId;
+  }
 }
+
 export class User {
   id: string;
   username: string;
@@ -64,33 +82,22 @@ export class UserCacheMock extends CacheObject<User> {
       username: 'mock',
       email: 'mock@mock.com',
       type: process.env.ROLE as UserType,
-      avatar: '',
+      avatar: ''
     });
   }
 
   async signIn(username: string, password: string): Promise<User> {
     return new User({
-      id: '102',
+      id: '1',
       name: 'Mock User2',
       username: username,
       email: 'mock@mock.com',
       type: 'Client',
-      avatar: '',
+      avatar: ''
     });
   }
 
   async signOut(): Promise<void> {
     this.invalidate_cache();
-  }
-
-  async register(name: string, email: string, password: string): Promise<User> {
-    return new User({
-      id: '102',
-      name: name,
-      username: 'mock Username',
-      email: email,
-      type: 'Client',
-      avatar: '',
-    });
   }
 }
