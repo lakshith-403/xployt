@@ -7,7 +7,7 @@ import './Profile.scss';
 import { CollapsibleBase } from '../components/Collapsible/collap.base';
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
-import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/User/cache/userProfile';
+import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/user/cache/userProfile';
 // import { User, UserCacheMock } from '@/data/user';
 
 export class ProfileView extends View {
@@ -54,35 +54,31 @@ export class ProfileView extends View {
       this.phoneField.setValue(this.profile.phoneNumber);
     }
   }
-  // private async saveChanges() {
-  //   if (this.loading) this.loading.show();
-
-  //   try {
-  //     const userId = '123'; // Get actual user ID
-  //     const userProfileCache = CACHE_STORE.getUserProfile(userId);
-  //     const profileData = {
-  //       name: this.nameField.getValue(),
-  //       email: this.emailField.getValue(),
-  //       phoneNumber: this.phoneField.getValue(),
-  //     };
-
-  //     await userProfileCache.updateProfile(userId, profileData);
-  //     await this.loadProfile();
-  //   } catch (error) {
-  //     console.error('Error saving profile:', error);
-  //   } finally {
-  //     if (this.loading) this.loading.hide();
-  //   }
-  // }
+  private async saveChanges() {
+    if (this.loading) this.loading.show();
+    try {
+      const userId = '123'; // Get actual user ID
+      const userProfileCache = CACHE_STORE.getUserProfile(userId);
+      const profileData = {
+        name: this.nameField.getValue(),
+        email: this.emailField.getValue(),
+        phoneNumber: this.phoneField.getValue(),
+      };
+      await userProfileCache.updateProfile(userId, profileData);
+      await this.loadProfile();
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    } finally {
+      if (this.loading) this.loading.hide();
+    }
+  }
   public async render(q: Quark): Promise<void> {
     q.innerHTML = ''; // Clear existing content
     this.loading = new LoadingScreen(q);
     this.loading.show();
-
     await this.loadProfile();
     q.innerHTML = '';
     if (this.loading) this.loading.hide();
-
     $(q, 'div', 'profile-view', {}, (q) => {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
@@ -92,7 +88,6 @@ export class ProfileView extends View {
             src: this.profile?.profilePicture || 'https://picsum.photos/id/237/200/300',
             alt: '',
           });
-
           $(q, 'div', 'profile-picture-button-container', {}, (q) => {
             new IconButton({
               label: '',
@@ -115,14 +110,13 @@ export class ProfileView extends View {
             this.phoneField.render(q);
           });
           this.updateFields();
-
-          // $(q, 'div', 'save-button-container', {}, (q) => {
-          //   new Button({
-          //     label: 'Save Changes',
-          //     type: ButtonType.PRIMARY,
-          //     onClick: () => this.saveChanges(),
-          //   }).render(q);
-          // });
+          $(q, 'div', 'save-button-container', {}, (q) => {
+            new Button({
+              label: 'Save Changes',
+              type: ButtonType.PRIMARY,
+              onClick: () => this.saveChanges(),
+            }).render(q);
+          });
         });
         // Funds Section
         // this.fundsCollapsible.render(q);

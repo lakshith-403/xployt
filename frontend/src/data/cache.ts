@@ -9,7 +9,7 @@ import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLea
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
-import { UserProfileCache, UserProfileCacheMock } from './User/cache/userProfile';
+import { UserProfileCache, UserProfileCacheMock } from './user/cache/userProfile';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -38,7 +38,6 @@ class CacheStore {
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
     this.userProfileMap = new Map();
-
     this.discussionMap = new Map();
   }
 

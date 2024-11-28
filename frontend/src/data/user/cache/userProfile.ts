@@ -24,7 +24,7 @@ export class UserProfile {
     this.id = data['userId'];
     this.name = data['name'];
     this.email = data['email'];
-    this.phoneNumber = data['phone'] || '';
+    this.phoneNumber = data['phone'];
     this.profilePicture = data['profile_picture'];
     this.fundsRemaining = data['funds_remaining'];
     this.fundsSpent = data['funds_spent'];
@@ -35,7 +35,6 @@ export class UserProfile {
 export class UserProfileCache extends CacheObject<UserProfile> {
   async load(userId: string): Promise<UserProfile> {
     console.log('UserProfileCache: Loading profile for userId:', userId);
-
     try {
       console.log('UserProfileCache: Sending request to getUserProfile endpoint');
       const response = await userEndpoints.getUserProfile(userId);
@@ -54,7 +53,6 @@ export class UserProfileCache extends CacheObject<UserProfile> {
   async updateProfile(userId: string, profileData: Partial<UserProfile>): Promise<UserProfile> {
     console.log('UserProfileCache: Updating profile for userId:', userId);
     console.log('UserProfileCache: Update data:', profileData);
-
     try {
       console.log('UserProfileCache: Sending request to updateUserProfile endpoint');
       const response = await userEndpoints.updateUserProfile(userId, profileData);
@@ -66,7 +64,6 @@ export class UserProfileCache extends CacheObject<UserProfile> {
       console.log('UserProfileCache: Successfully updated profile');
       this.invalidate_cache();
       console.log('UserProfileCache: Cache invalidated');
-
       return new UserProfile(response.data);
     } catch (error) {
       console.error('UserProfileCache: Error in updateProfile method:', error);
@@ -74,7 +71,6 @@ export class UserProfileCache extends CacheObject<UserProfile> {
     }
   }
 }
-
 export class UserProfileCacheMock extends UserProfileCache {
   constructor() {
     super();
