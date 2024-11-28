@@ -1,8 +1,17 @@
 .discussion-view {
+  textarea {
+    z-index: 100;
+  }
+
+  h1 {
+    margin-left: 20px;
+  }
+
   .main-pain {
     display: flex;
     flex-direction: row;
     width: 100%;
+    padding: 20px;
 
     .right-pane {
       width: 20%;
@@ -19,6 +28,7 @@
 
     .messages-pane {
       width: 80%;
+      padding-right: 10px;
     }
   }
 
@@ -27,7 +37,7 @@
     flex-direction: row;
     gap: 0.5rem;
     justify-content: flex-end;
-    padding-right: 1rem;
+    margin-top: 30px;
 
     button {
       max-width: 100px;

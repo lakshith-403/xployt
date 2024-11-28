@@ -93,6 +93,7 @@ class DiscussionView extends View {
             message,
             (message) => {
               this.discussionCache.saveMessage(message);
+              this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
               this.renderMessages();
               this.renderAttachments();
             },
@@ -123,8 +124,8 @@ class DiscussionView extends View {
         new IconButton({
           icon: 'fa-solid fa-paper-plane',
           label: 'Send',
-          onClick: () => {
-            this.sendMessage(textArea.getValue());
+          onClick: async () => {
+            await this.sendMessage(textArea.getValue());
             textArea.setValue('');
             this.selectedFiles = [];
             this.renderAttachedFiles();
@@ -137,13 +138,16 @@ class DiscussionView extends View {
   }
 
   private async sendMessage(content: string): Promise<void> {
+    const user = await CACHE_STORE.getUser().get();
+    console.log(this.selectedFiles);
+
     const message: Message = {
       content: content,
       id: crypto.randomUUID(),
       sender: {
-        userId: '3',
-        name: 'John Doe ge thaththa',
-        email: 'lead1@example.com',
+        userId: user.id,
+        name: user.name,
+        email: user.email,
       },
       attachments: this.selectedFiles.map((file) => ({
         id: crypto.randomUUID(),
@@ -151,9 +155,9 @@ class DiscussionView extends View {
         url: URL.createObjectURL(file),
         name: file.name,
         uploadedBy: {
-          userId: '3',
-          name: 'John Doe ge thaththa',
-          email: 'lead1@example.com',
+          userId: user.id,
+          name: user.name,
+          email: user.email,
         },
         uploadedAt: new Date(),
       })),
@@ -168,6 +172,7 @@ class DiscussionView extends View {
       console.log('Message sent:', sentMessage);
       this.loader.hide();
       this.renderMessages();
+      this.renderAttachments();
     } catch (error) {
       this.loader.hide();
       console.error('Failed to send message:', error);
@@ -209,8 +214,6 @@ class DiscussionView extends View {
       if (files) {
         this.selectedFiles.push(...Array.from(files));
         console.log('Selected files:', this.selectedFiles);
-
-        this.renderAttachedFiles();
 
         this.renderAttachedFiles();
       }
