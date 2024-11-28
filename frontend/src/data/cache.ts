@@ -27,7 +27,7 @@ class CacheStore {
   private reports: ReportsCache;
 
   constructor() {
-    this.user = new UserCacheMock();
+    this.user = new UserCache();
     this.projectInfoMap = new Map();
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();

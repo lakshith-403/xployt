@@ -77,21 +77,23 @@ export class UserCache extends CacheObject<User> {
 export class UserCacheMock extends CacheObject<User> {
   async load(): Promise<User> {
     return new User({
-      id: 1,
+      id: '101',
       name: 'Mock User1',
       username: 'mock',
       email: 'mock@mock.com',
       type: process.env.ROLE as UserType,
+      avatar: ''
     });
   }
 
   async signIn(username: string, password: string): Promise<User> {
     return new User({
-      id: 1,
+      id: '1',
       name: 'Mock User2',
       username: username,
       email: 'mock@mock.com',
       type: 'Client',
+      avatar: ''
     });
   }
 
