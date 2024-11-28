@@ -24,9 +24,8 @@ export default class Overview {
   private async loadData(): Promise<void> {
     try {
       this.user = await this.userCache.get();
-      console.log(this.user);
+      // console.log(this.user);
       this.role = this.user.type;
-      console.log(this.role);
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
@@ -34,7 +33,6 @@ export default class Overview {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    console.log(this.role);
     switch (this.role) {
       case 'Lead':
         const lead = new Lead(this.projectId);

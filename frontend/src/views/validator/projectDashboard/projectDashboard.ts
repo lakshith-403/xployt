@@ -9,28 +9,38 @@ import { CACHE_STORE } from '../../../data/cache';
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 
-// import { BREADCRUMBS, Breadcrumbs } from '../../../components/breadCrumbs/breadCrumbs';
 class projectDashboardView extends View {
   params: { projectId: string };
-  // private project: Project = {} as Project;
   private projectsCache: ProjectsCache;
   private projectTitle!: string;
+
   constructor(params: { projectId: string }) {
+    console.log('projectDashboardView constructor executed');
     super(params);
     this.params = params;
     this.projectsCache = CACHE_STORE.getProjects();
   }
   async loadProject(): Promise<void> {
     try {
-      // const userCache = CACHE_STORE.getUser('1');
-      // const user = await userCache.get();
-      // console.log(user);
+      console.log('loadProject executed');
+      console.log('project id is ', this.params.projectId);
       const projects: Project[][] = await this.projectsCache.get(false, this.params.projectId);
-      this.projectTitle = projects.flatMap((projectArray) => projectArray).find((project) => project.id === Number(this.params.projectId))?.title ?? '';
-      console.log(this.projectTitle);
-      // this.project = projects[0][0];
+
+      // Flatten the array and find the project
+      const flatProjects = projects.flatMap((projectArray) => projectArray);
+      const project = flatProjects.find((project) => String(project.id) === String(this.params.projectId));
+
+      if (!project) {
+        console.error('Project not found');
+        this.projectTitle = 'Project ';
+        return;
+      }
+
+      this.projectTitle = project.title;
+      console.log('Project title set to:', this.projectTitle);
     } catch (error) {
-      console.error('Failed to load project data', error);
+      console.error('Failed to load project data:', error);
+      this.projectTitle = 'Error Loading Project';
     }
   }
 
@@ -51,6 +61,8 @@ class projectDashboardView extends View {
   }
 
   async render(q: Quark): Promise<void> {
+    q.innerHTML = '';
+    console.log('projectDashboardView render executed');
     const loading = new LoadingScreen(q);
     loading.show();
 

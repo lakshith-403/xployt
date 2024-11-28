@@ -9,7 +9,7 @@ import { Footer } from '../components/footer/footer';
 class Router {
   private readonly routeHandlers: RouteHandler[];
   private topNavigationView?: NavigationView;
-  
+
   public currentRoute: string = '';
   /**
    * Creates an instance of the Router.
@@ -68,7 +68,7 @@ class Router {
     for (const routeHandler of this.routeHandlers) {
       // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
-        console.log('rendering route matched:', routeHandler.route);
+        // console.log('rendering route matched:', routeHandler.route);
         pathFound = routeHandler.render(path);
 
         if (pathFound) {
@@ -77,7 +77,7 @@ class Router {
       }
     }
     if (!pathFound) {
-      console.log('no view handler found');
+      // console.log('no view handler found');
       document.getElementById('navbar')!.style.display = 'none';
       document.getElementById('sidebar')!.style.display = 'none';
       document.getElementById('breadcrumbs-container')!.style.display = 'none';
@@ -90,4 +90,3 @@ class Router {
 }
 
 export const router = new Router([]);
-
