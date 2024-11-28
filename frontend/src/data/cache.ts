@@ -5,12 +5,11 @@ import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cac
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
-import { UserProfileCache} from './user/cache/userProfile';
-
-import { DiscussionCache } from './discussion/cache/discussion';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import { DiscussionCache } from './discussion/cache/discussion';
+import { UserProfileCache } from './user/cache/userProfile';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -41,7 +40,6 @@ class CacheStore {
     this.userProfileMap = new Map();
     
     this.discussionMap = new Map();
-    this.reports = new ReportsCache();
   }
 
   public getUser(): UserCache {

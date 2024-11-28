@@ -5,7 +5,6 @@ import { UserCache } from '@/data/user';
 import { UserType } from '@/data/user';
 
 export class UserRoleToggler {
-  private userTypes = ['Client', 'Validator', 'Lead', 'Hacker'];
   private userCache!: UserCache;
   // private container: Quark;
   private dropdown!: Quark;
@@ -16,7 +15,8 @@ export class UserRoleToggler {
       $(q, 'button', '', { id: 'changeUserTypeButton' }, '@').addEventListener('click', () => this.toggleDropdown());
 
       this.dropdown = $(q, 'select', 'hidden', { id: 'userTypeDropdown' });
-      this.userTypes.forEach((type) => {
+      const userTypes: UserType[] = ['Client', 'Validator', 'Lead', 'Hacker'];
+      userTypes.forEach((type) => {
         const option = $(this.dropdown, 'option', '', { value: type }, type);
         if (type === process.env.ROLE) {
           option.setAttribute('selected', 'selected'); // Explicitly set the 'selected' attribute

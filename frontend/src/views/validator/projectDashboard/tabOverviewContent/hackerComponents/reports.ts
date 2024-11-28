@@ -30,7 +30,7 @@ export class OverviewReports {
       date: '2021-10-12',
     },
   ];
-  private userId: number | null = null;
+  private userId: string | null = null;
 
   constructor(params: { reportId: string }) {
     this.params = params;

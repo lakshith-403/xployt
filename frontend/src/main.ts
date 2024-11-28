@@ -23,9 +23,14 @@ import { validatorDashboardViewHandler } from './views/validator/dashboard/dashb
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
+<<<<<<< HEAD
 import { discussionViewHandler } from './views/discussion/Discussion';
 
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
+=======
+import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
+import { discussionViewHandler } from './views/discussion/Discussion';
+>>>>>>> 948fd651eb6385e66ed62cc863bd62b730d2c41e
 
 const HomeSidebar: SidebarTab[] = [
   {
