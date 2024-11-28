@@ -15,7 +15,7 @@ export class UserRoleToggler {
       $(q, 'button', '', { id: 'changeUserTypeButton' }, '@').addEventListener('click', () => this.toggleDropdown());
 
       this.dropdown = $(q, 'select', 'hidden', { id: 'userTypeDropdown' });
-      const userTypes: UserType[] = ['Client', 'Validator', 'Lead', 'Hacker'];
+      const userTypes: UserType[] = ['Client', 'Validator', 'ProjectLead', 'Hacker'];
       userTypes.forEach((type) => {
         const option = $(this.dropdown, 'option', '', { value: type }, type);
         if (type === process.env.ROLE) {

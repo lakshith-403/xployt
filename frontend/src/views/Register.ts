@@ -2,8 +2,9 @@ import { View, ViewHandler } from '../ui_lib/view';
 import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
 import { TextField } from '../components/text_field/base';
 import { Button, ButtonType } from '../components/button/base';
-import { UserCache } from '@/data/user';
+import { UserCache, UserType } from '@/data/user';
 import { router } from '@/ui_lib/router';
+import { CACHE_STORE } from '@/data/cache';
 
 export class RegisterView extends View {
   private nameField: TextField;
@@ -14,6 +15,7 @@ export class RegisterView extends View {
   private companyDomainField: TextField;
   private companySizeField: TextField;
   private registerButton: Button;
+  private roleSelect!: HTMLSelectElement;
 
   private userCache: UserCache;
 
@@ -55,7 +57,7 @@ export class RegisterView extends View {
       placeholder: 'Enter your company size',
     });
 
-    this.userCache = new UserCache();
+    this.userCache = CACHE_STORE.getUser();
   }
 
   public render(q: Quark): void {
@@ -75,6 +77,16 @@ export class RegisterView extends View {
         // this.companyDomainField.render(q);
         // this.companySizeField.render(q);
 
+        $(q, 'select', 'role-select', {}, (q) => {
+          this.roleSelect = q as HTMLSelectElement;
+          this.roleSelect.innerHTML = `
+            <option value="Client">Client</option>
+            <option value="Validator">Validator</option>
+            <option value="ProjectLead">Lead</option>
+            <option value="Hacker">Hacker</option>
+          `;
+        });
+
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.registerButton.render(q);
 
@@ -93,6 +105,7 @@ export class RegisterView extends View {
     const email = this.emailField.getValue();
     const password = this.passwordField.getValue();
     const confirmPassword = this.confirmPasswordField.getValue();
+    const role = this.roleSelect.value as UserType;
 
     if (password !== confirmPassword) {
       console.error('Passwords do not match');
@@ -114,7 +127,7 @@ export class RegisterView extends View {
     }
 
     this.userCache
-      .register(name, email, password)
+      .register(name, email, password, role)
       .then((user) => {
         console.log('User registered:', user);
         alert('User registered successfully');

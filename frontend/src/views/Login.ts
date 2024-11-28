@@ -5,6 +5,7 @@ import { Button, ButtonType } from '../components/button/base';
 import { UserCache } from '@/data/user';
 import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
+import { CACHE_STORE } from '@/data/cache';
 
 export class LoginView extends View {
   private emailField: TextField;
@@ -29,7 +30,7 @@ export class LoginView extends View {
       type: ButtonType.PRIMARY,
     });
 
-    this.userCache = new UserCache();
+    this.userCache = CACHE_STORE.getUser();
   }
 
   public render(q: Quark): void {

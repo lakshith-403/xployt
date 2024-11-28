@@ -1,6 +1,6 @@
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
-export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker' | 'Guest';
+export type UserType = 'Client' | 'Validator' | 'ProjectLead' | 'Hacker' | 'Guest';
 
 interface UserResponse {
   id: string;
@@ -69,15 +69,19 @@ export class UserCache extends CacheObject<User> {
     }
   }
 
-  async register(name: string, email: string, password: string): Promise<User> {
-    const response = await AuthEndpoints.register(name, email, password);
+  async register(name: string, email: string, password: string, role: UserType): Promise<User> {
+    const response = await AuthEndpoints.register(name, email, password, role);
     this.data = new User(response.data as UserResponse);
+    console.log('User registered:', this.data);
     return this.data;
   }
 
   async signIn(username: string, password: string): Promise<User> {
     const response = await AuthEndpoints.signIn(username, password);
     this.data = new User(response.data as UserResponse);
+
+    console.log('User signed in:', this.data);
+
     return this.data;
   }
 

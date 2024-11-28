@@ -1,3 +1,4 @@
+import { UserType } from '../user';
 import NETWORK from './network';
 import { Response } from './network';
 
@@ -42,12 +43,12 @@ export class AuthEndpoints {
    * @param {string} password - The password of the user.
    * @returns {Promise<Response>} A promise that resolves with the response data.
    */
-  static async register(name: string, email: string, password: string): Promise<Response> {
+  static async register(name: string, email: string, password: string, role: UserType): Promise<Response> {
     return NETWORK.sendHttpRequest('PUT', '/api/auth', {
       name,
       email,
       password,
-      role: 'Client',
+      role,
     });
   }
 }
