@@ -1,14 +1,14 @@
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
-export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker';
+export type UserType = 'Client' | 'Validator' | 'Lead' | 'Hacker' | 'Guest';
 
 interface UserResponse {
-    id: string;
-    username: string;
-    name: string;
-    email: string;
-    type: UserType;
-    avatar: string;
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  type: UserType;
+  avatar: string;
 }
 
 export class PublicUser {
@@ -45,12 +45,28 @@ export class User {
     this.type = data.type;
     this.avatar = data.avatar;
   }
+
+  static getGuestUser(): User {
+    return new User({
+      id: '',
+      username: '',
+      name: '',
+      email: '',
+      type: 'Guest',
+      avatar: '',
+    });
+  }
 }
 
 export class UserCache extends CacheObject<User> {
   async load(): Promise<User> {
-    const response = await AuthEndpoints.getCurrentUser();
-    return new User(response.data as UserResponse);
+    try {
+      const response = await AuthEndpoints.getCurrentUser();
+      return new User(response.data as UserResponse);
+    } catch (error) {
+      console.error('Error loading user:', error);
+      return User.getGuestUser();
+    }
   }
 
   async register(name: string, email: string, password: string): Promise<User> {
@@ -82,7 +98,7 @@ export class UserCacheMock extends CacheObject<User> {
       username: 'mock',
       email: 'mock@mock.com',
       type: process.env.ROLE as UserType,
-      avatar: ''
+      avatar: '',
     });
   }
 
@@ -93,7 +109,7 @@ export class UserCacheMock extends CacheObject<User> {
       username: username,
       email: 'mock@mock.com',
       type: 'Client',
-      avatar: ''
+      avatar: '',
     });
   }
 

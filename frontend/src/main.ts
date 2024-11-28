@@ -25,8 +25,8 @@ import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/discussion/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
-import {userDashboardViewHandler} from "@views/UserDashboard";
-import {clientHackerInvitationsViewHandler} from "@views/client/inviteHackers/inviteHackers";
+import { userDashboardViewHandler } from '@views/UserDashboard';
+import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
 
 const HomeSidebar: SidebarTab[] = [
   // {
@@ -129,19 +129,23 @@ const CommonRouteHandlers = new RouteHandler(
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,
     discussionViewHandler,
-      userDashboardViewHandler,
-    clientHackerInvitationsViewHandler
+    userDashboardViewHandler,
+    clientHackerInvitationsViewHandler,
   ],
-  new SidebarView('/', HomeSidebar)
+  new SidebarView('/', HomeSidebar),
+  false,
+  false,
+  false,
+  true
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false, true);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
-const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler]);
+const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
-const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false);
+const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
 // const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
 // const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
