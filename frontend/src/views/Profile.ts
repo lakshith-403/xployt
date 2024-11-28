@@ -1,21 +1,21 @@
-import { Quark, QuarkFunction as $ } from "../ui_lib/quark";
-import { View, ViewHandler } from "../ui_lib/view";
-import { TextField } from "../components/text_field/base";
-import { IconButton } from "../components/button/icon.button";
-import { Button, ButtonType } from "../components/button/base";
-import "./Profile.scss";
-import { CollapsibleBase } from "../components/Collapsible/collap.base";
+import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
+import { View, ViewHandler } from '../ui_lib/view';
+import { TextField } from '../components/text_field/base';
+import { IconButton } from '../components/button/icon.button';
+import { Button, ButtonType } from '../components/button/base';
+import './Profile.scss';
+import { CollapsibleBase } from '../components/Collapsible/collap.base';
+import { CACHE_STORE } from '@/data/cache';
+import { router } from '@/ui_lib/router';
 
 export class ProfileView extends View {
-
   private userInfoCollapsible: CollapsibleBase;
   private fundsCollapsible: CollapsibleBase;
 
-
   constructor() {
     super();
-    this.userInfoCollapsible = new CollapsibleBase("User Info", "user-info");
-    this.fundsCollapsible = new CollapsibleBase("Funds", "funds");
+    this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
+    this.fundsCollapsible = new CollapsibleBase('Funds', 'funds');
   }
 
   public render(q: Quark): void {
@@ -25,7 +25,7 @@ export class ProfileView extends View {
         $(q, 'h1', '', {}, 'Hello Lakshith!');
         $(q, 'div', 'profile-picture-container', {}, (q) => {
           $(q, 'img', 'profile-picture', { src: 'https://picsum.photos/id/237/200/300', alt: '' });
-          
+
           $(q, 'div', 'profile-picture-button-container', {}, (q) => {
             new IconButton({
               label: '',
@@ -38,6 +38,15 @@ export class ProfileView extends View {
 
       this.userInfoCollapsible.render(q);
       this.fundsCollapsible.render(q);
+
+      new Button({
+        label: 'Logout',
+        type: ButtonType.SECONDARY,
+        onClick: () => {
+          CACHE_STORE.getUser().signOut();
+          router.navigateTo('/');
+        },
+      }).render(q);
     });
 
     $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {

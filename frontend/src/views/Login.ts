@@ -4,6 +4,8 @@ import { TextField } from '../components/text_field/base';
 import { Button, ButtonType } from '../components/button/base';
 import { UserCache } from '@/data/user';
 import { router } from '@/ui_lib/router';
+import { NetworkError } from '@/data/network/network';
+import { CACHE_STORE } from '@/data/cache';
 
 export class LoginView extends View {
   private emailField: TextField;
@@ -28,7 +30,7 @@ export class LoginView extends View {
       type: ButtonType.PRIMARY,
     });
 
-    this.userCache = new UserCache();
+    this.userCache = CACHE_STORE.getUser();
   }
 
   public render(q: Quark): void {
@@ -43,17 +45,23 @@ export class LoginView extends View {
         this.emailField.render(q);
         this.passwordField.render(q);
 
-        $(q, 'div', 'spaced-row', {}, (q) => {
-          $(q, 'div', 'remember-me', {}, (q) => {
-            $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
-            $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
-          });
+        // $(q, 'div', 'spaced-row', {}, (q) => {
+        //   $(q, 'div', 'remember-me', {}, (q) => {
+        //     $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
+        //     $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
+        //   });
 
-          $(q, 'a', 'label', {}, 'Forgot password?');
-        });
+        //   $(q, 'a', 'label', {}, 'Forgot password?');
+        // });
 
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.loginButton.render(q);
+
+          new Button({
+            label: 'Sign up',
+            type: ButtonType.SECONDARY,
+            onClick: () => router.navigateTo('/register'),
+          }).render(q);
         });
       });
     });
@@ -61,6 +69,11 @@ export class LoginView extends View {
 
   private handleLogin(): void {
     const email = this.emailField.getValue();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Invalid email format. Please enter a valid email.');
+      return;
+    }
     const password = this.passwordField.getValue();
     console.log('Login attempt:', { email, password });
 
@@ -72,6 +85,10 @@ export class LoginView extends View {
         router.navigateTo('/dashboard');
       })
       .catch((error) => {
+        if (error instanceof NetworkError && error.statusCode === 401) {
+          alert('Invalid credentials provided. Please try again.');
+          return;
+        }
         console.error('Error logging in user:', error);
         alert('Error logging in user: ' + error);
       });
