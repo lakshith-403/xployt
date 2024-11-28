@@ -69,10 +69,10 @@ export class RouteHandler {
     }
 
     for (const viewHandler of this.viewHandlers) {
-      console.log('checking view:', viewHandler.route);
-      console.log('checking url:', url, this.route, '+', viewHandler.route);
+      // console.log('checking view:', viewHandler.route);
+      // console.log('checking url:', url, this.route, '+', viewHandler.route);
       if (matchUrl(url, this.route + viewHandler.route)) {
-        console.log('rendering view:', viewHandler.route);
+        // console.log('rendering view:', viewHandler.route);
         if (this.navigationView) {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = '';

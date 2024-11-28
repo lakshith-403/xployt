@@ -8,22 +8,28 @@ import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { ProjectTable } from './projectsTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
-
+import { getProjects } from '@/services/projects';
+import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
+import { Project as ClientProject } from '@data/client/cache/projects.cache';
+import { UserType } from '@data/user';
 class ProjectsView extends View {
   private params: { projectId: string };
-  private projectsCache: ProjectsCache;
+  private projectsCache!: ProjectsCache;
   private userCache: UserCache;
-  private projects: Project[][] = [];
+  private projects: (LeadProject | ClientProject)[][] = [];
   private userId: string | null = null;
-
-  private static readonly TABLE_HEADERS = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
+  private userType!: UserType;
   private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
+
+  private get TABLE_HEADERS(): string[] {
+    return ['ID', 'Status', 'Title', this.userType === 'Client' ? 'LeadId' : 'ClientId', 'Pending Reports'];
+  }
 
   constructor(params: { projectId: string }) {
     super();
     this.params = params;
     this.userCache = CACHE_STORE.getUser();
-    this.projectsCache = CACHE_STORE.getProjects();
+    // this.projectsCache =  CACHE_STORE.getProjects();
   }
 
   private async loadProjects(): Promise<void> {
@@ -32,7 +38,8 @@ class ProjectsView extends View {
       console.log('user', user);
       this.userId = user.id;
       console.log('user id', this.userId);
-      this.projects = await this.projectsCache.get(false, this.userId);
+      this.projects = await getProjects(this.userId, user.type);
+      this.userType = user.type;
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
       // }
@@ -41,11 +48,11 @@ class ProjectsView extends View {
     }
   }
 
-  private renderProjectSection(q: Quark, title: string, projects: Project[]): void {
+  private renderProjectSection(q: Quark, title: string, projects: (LeadProject | ClientProject)[]): void {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
 
-    const table = new ProjectTable(projects, ProjectsView.TABLE_HEADERS, {}, 'status', '');
+    const table = new ProjectTable(projects, this.TABLE_HEADERS, {}, 'status', '');
 
     $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');

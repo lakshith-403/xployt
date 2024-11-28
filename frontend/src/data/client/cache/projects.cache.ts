@@ -1,5 +1,5 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
-import { projectEndpoints } from '../network/project.network';
+import { projectEndpoints } from './../network/project.network';
 
 interface ProjectResponse {
   data: [ProjectDetails[], ProjectDetails[]];
@@ -12,7 +12,7 @@ interface ProjectDetails {
   id: number;
   status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
-  clientId: string;
+  leadId: string;
   pendingReports: number;
 }
 
@@ -20,21 +20,21 @@ export class Project {
   id: number;
   status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
-  clientId: string;
+  leadId: string;
   pendingReports: number;
   // severity: "critical" | "minor" | "informational"
 
-  constructor(data: any) {
+  constructor(data: ProjectDetails) {
     this.id = data['id'];
     this.status = data['status'];
     this.title = data['title'];
-    this.clientId = data['clientId'];
+    this.leadId = data['leadId'];
     this.pendingReports = data['pendingReports'];
   }
 }
 
-export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(userId: number): Promise<Project[][]> {
+export class ProjectsClientCache extends CacheObject<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
@@ -63,32 +63,32 @@ export class ProjectsCache extends CacheObject<Project[][]> {
   }
 }
 
-export class ProjectsCacheMock extends CacheObject<Project[][]> {
-  async load(userId: number): Promise<Project[][]> {
+export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     return [
       [
         new Project({
           id: 1,
-          status: 'unconfigured',
+          status: 'Unconfigured',
           title: 'Project GT-175',
-          client: 'Client 1',
-          pending_reports: 3,
+          leadId: 'Lead 1',
+          pendingReports: 3,
         }),
         new Project({
           id: 2,
-          status: 'pending',
+          status: 'Pending',
           title: 'Project WV-102',
-          client: 'Client 2',
-          pending_reports: 0,
+          leadId: 'Lead 2',
+          pendingReports: 0,
         }),
       ],
       [
         new Project({
           id: 3,
-          status: 'in progress',
+          status: 'In progress',
           title: 'Project 3',
-          client: 'Client 3',
-          pending_reports: 1,
+          leadId: 'Lead 3',
+          pendingReports: 1,
         }),
       ],
     ];

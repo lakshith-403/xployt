@@ -1,5 +1,5 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
-import { projectEndpoints } from '../network/project.network';
+import { projectEndpoints } from './../network/project.network';
 
 interface ProjectResponse {
   data: [ProjectDetails[], ProjectDetails[]];
@@ -20,7 +20,7 @@ export class Project {
   id: number;
   status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
   title: string;
-  clientId: string;
+  client: string;
   pendingReports: number;
   // severity: "critical" | "minor" | "informational"
 
@@ -28,18 +28,18 @@ export class Project {
     this.id = data['id'];
     this.status = data['status'];
     this.title = data['title'];
-    this.clientId = data['clientId'];
+    this.client = data['clientId'];
     this.pendingReports = data['pendingReports'];
   }
 }
 
-export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(userId: number): Promise<Project[][]> {
+export class ProjectsLeadCache extends CacheObject<Project[][]> {
+  async load(userId: string): Promise<Project[][]> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
     try {
-      response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
+      response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -63,7 +63,7 @@ export class ProjectsCache extends CacheObject<Project[][]> {
   }
 }
 
-export class ProjectsCacheMock extends CacheObject<Project[][]> {
+export class ProjectsLeadCacheMock extends CacheObject<Project[][]> {
   async load(userId: number): Promise<Project[][]> {
     return [
       [

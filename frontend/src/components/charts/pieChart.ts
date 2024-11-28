@@ -8,6 +8,7 @@ interface PieChartOptions {
   colorScheme?: 'scheme1' | 'scheme2' | 'scheme3' | 'greyTheme' | 'greenTheme' | 'blackTheme';
   width?: number;
   height?: number;
+  border?: boolean;
 }
 class PieChart {
   private options: PieChartOptions;
@@ -25,12 +26,13 @@ class PieChart {
       width: 400,
       height: 400,
       colorScheme: 'greyTheme',
+      border: false,
       ...options,
     };
   }
 
   public render(q: Quark): void {
-    const canvas = $(q, 'canvas', 'myPieChart', { width: this.options.width!, height: this.options.height! }, () => {}) as HTMLCanvasElement;
+    const canvas = $(q, 'canvas', 'myPieChart', { width: this.options.width!, height: this.options.height!, class: this.options.border ? 'border' : '' }, () => {}) as HTMLCanvasElement;
 
     const ctx = canvas.getContext('2d')!;
     const dataValues = Object.values(this.options.data);
