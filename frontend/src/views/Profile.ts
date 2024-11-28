@@ -10,6 +10,8 @@ import LoadingScreen from '../components/loadingScreen/loadingScreen';
 import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/user/cache/userProfile';
 // import { User, UserCacheMock } from '@/data/user';
 
+import { router } from '@/ui_lib/router';
+
 export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
   // private userCache: UserCacheMock;
@@ -20,6 +22,7 @@ export class ProfileView extends View {
   private phoneField: TextField;
   private userProfileCache!: UserProfileCache;
   private loading: LoadingScreen | null = null;
+
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
@@ -79,6 +82,7 @@ export class ProfileView extends View {
     await this.loadProfile();
     q.innerHTML = '';
     if (this.loading) this.loading.hide();
+    
     $(q, 'div', 'profile-view', {}, (q) => {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
@@ -88,6 +92,8 @@ export class ProfileView extends View {
             src: this.profile?.profilePicture || 'https://picsum.photos/id/237/200/300',
             alt: '',
           });
+          $(q, 'img', 'profile-picture', { src: 'https://picsum.photos/id/237/200/300', alt: '' });
+
           $(q, 'div', 'profile-picture-button-container', {}, (q) => {
             new IconButton({
               label: '',
@@ -99,6 +105,7 @@ export class ProfileView extends View {
           });
         });
       });
+
       // Render collapsibles
       $(q, 'div', 'collapsibles-container', {}, (q) => {
         // User Info Section
@@ -117,36 +124,60 @@ export class ProfileView extends View {
               onClick: () => this.saveChanges(),
             }).render(q);
           });
-        });
+
+      this.userInfoCollapsible.render(q);
+      this.fundsCollapsible.render(q);
+
+      new Button({
+        label: 'Logout',
+        type: ButtonType.SECONDARY,
+        onClick: () => {
+          CACHE_STORE.getUser().signOut();
+          router.navigateTo('/');
+        },
+      }).render(q);
+    });
+
         // Funds Section
-        // this.fundsCollapsible.render(q);
-        // $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
-        //   $(q, 'div', 'funds-details', {}, (q) => {
-        //     $(q, 'div', 'fund-box', {}, (q) => {
-        //       $(q, 'h2', 'title', {}, 'Amount Remaining');
-        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsRemaining || '0'}`);
-        //     });
-        //     $(q, 'div', 'fund-box', {}, (q) => {
-        //       $(q, 'h2', 'title', {}, 'Amount Spent');
-        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsSpent || '0'}`);
-        //     });
-        //     $(q, 'div', 'fund-box button-container', {}, (q) => {
-        //       new Button({
-        //         label: 'Add Funds',
-        //         type: ButtonType.PRIMARY,
-        //         onClick: () => console.log('Add funds'),
-        //       }).render(q);
-        //       new Button({
-        //         label: 'View Transactions',
-        //         type: ButtonType.SECONDARY,
-        //         onClick: () => console.log('View transactions'),
-        //       }).render(q);
-        //     });
-        //   });
-        // });
+        this.fundsCollapsible.render(q);
+        $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
+          $(q, 'div', 'funds-details', {}, (q) => {
+            $(q, 'div', 'fund-box', {}, (q) => {
+              $(q, 'h2', 'title', {}, 'Amount Remaining');
+              $(q, 'p', 'amount', {}, `$${this.profile?.fundsRemaining || '0'}`);
+            });
+            $(q, 'div', 'fund-box', {}, (q) => {
+              $(q, 'h2', 'title', {}, 'Amount Spent');
+              $(q, 'p', 'amount', {}, `$${this.profile?.fundsSpent || '0'}`);
+            });
+            $(q, 'div', 'fund-box button-container', {}, (q) => {
+              new Button({
+                label: 'Add Funds',
+                type: ButtonType.PRIMARY,
+                onClick: () => console.log('Add funds'),
+              }).render(q);
+              new Button({
+                label: 'View Transactions',
+                type: ButtonType.SECONDARY,
+                onClick: () => console.log('View transactions'),
+              }).render(q);
+            });
+          });
+        });
       });
+
+      // Logout button
+      new Button({
+        label: 'Logout',
+        type: ButtonType.SECONDARY,
+        onClick: () => {
+          CACHE_STORE.getUser().signOut();
+          router.navigateTo('/');
+        },
+      }).render(q);
     });
   }
 }
 
-export const profileViewHandler = new ViewHandler('', ProfileView);
+
+export const profileViewHandler = new ViewHandler('', ProfileView); 
