@@ -9,7 +9,7 @@ import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLea
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
-import { UserProfileCache } from './user/cache/userProfile';
+import { UserProfileCache, UserProfileCacheMock } from './User/cache/userProfile';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -38,7 +38,7 @@ class CacheStore {
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
     this.userProfileMap = new Map();
-    
+
     this.discussionMap = new Map();
   }
 
@@ -99,11 +99,11 @@ class CacheStore {
   }
 
   // Update the method in CacheStore class
-public getUserProfile(userId: string): UserProfileCache {
-  if (!this.userProfileMap.has(userId)) {
-    this.userProfileMap.set(userId, new UserProfileCache()); // Now using real cache instead of mock
-  }
-   return this.userProfileMap.get(userId)!;
+  public getUserProfile(userId: string): UserProfileCache {
+    if (!this.userProfileMap.has(userId)) {
+      this.userProfileMap.set(userId, new UserProfileCacheMock()); // Now using real cache instead of mock
+    }
+    return this.userProfileMap.get(userId)!;
   }
 
   public getNotificationsList(userId: string): NotificationsCache {
