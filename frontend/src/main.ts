@@ -7,7 +7,7 @@ import { NavigationView } from './ui_lib/view';
 
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
-import { projectsViewHandler } from './views/validator/projects/Projects';
+import { projectsViewHandler } from './views/common/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
@@ -162,4 +162,4 @@ router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
 
 // Instantiate the UserRoleToggler to attach it to the page
-new UserRoleToggler();
+// new UserRoleToggler();

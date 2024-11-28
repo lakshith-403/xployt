@@ -8,10 +8,11 @@ import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cac
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
-import {InvitationsCache} from '@data/common/cache/invitations.cache'
-import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
+import { InvitationsCache } from '@data/common/cache/invitations.cache';
+import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
-
+import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
+import { ProjectsClientCache } from './client/cache/projects.cache';
 class CacheStore {
   private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
@@ -25,6 +26,8 @@ class CacheStore {
   private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
+  private clientProjectsMap: Map<string, ProjectsClientCache>;
+  private leadProjectsMap: Map<string, ProjectsLeadCache>;
 
   constructor() {
     this.user = new UserCache();
@@ -40,8 +43,26 @@ class CacheStore {
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
     this.discussionMap = new Map();
+    this.clientProjectsMap = new Map();
+    this.leadProjectsMap = new Map();
   }
 
+  public getClientProjects(clientId: string): ProjectsClientCache {
+    console.log('Getting client projects for clientId:', clientId);
+    if (!this.clientProjectsMap.has(clientId)) {
+      console.log('clientId not in map, setting new ProjectsClientCache');
+      this.clientProjectsMap.set(clientId, new ProjectsClientCache());
+    }
+    return this.clientProjectsMap.get(clientId)!;
+  }
+  public getLeadProjects(leadId: string): ProjectsLeadCache {
+    console.log('Getting lead projects for leadId:', leadId);
+    if (!this.leadProjectsMap.has(leadId)) {
+      console.log('leadId not in map, setting new ProjectsLeadCache');
+      this.leadProjectsMap.set(leadId, new ProjectsLeadCache());
+    }
+    return this.leadProjectsMap.get(leadId)!;
+  }
   public getUser(): UserCache {
     return this.user;
   }
@@ -125,7 +146,6 @@ class CacheStore {
     }
     return this.discussionMap.get(discussionId)!;
   }
-
 }
 
 export const CACHE_STORE = new CacheStore();

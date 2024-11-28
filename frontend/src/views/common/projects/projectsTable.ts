@@ -1,6 +1,6 @@
-import { QuarkFunction as $, Quark } from './../../../ui_lib/quark';
-import { router } from './../../../ui_lib/router';
-import { ClickableFilterableTableWithCrumbs } from './../../../components/table/crumbs.click.filter.table';
+import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
+import { router } from '../../../ui_lib/router';
+import { ClickableFilterableTableWithCrumbs } from '../../../components/table/crumbs.click.filter.table';
 import './projectTable.scss';
 
 interface ContentItem {
