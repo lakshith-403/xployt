@@ -61,7 +61,7 @@ class Router {
    * Handles the routing logic based on the current path.
    * Throws an error if no route handler matches the path.
    */
-  public router = () => {
+  public router = async () => {
     let pathFound = false;
     const path = window.location.pathname + window.location.search;
     // console.log('current route', this.currentRoute);
@@ -69,8 +69,13 @@ class Router {
       // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
         // console.log('rendering route matched:', routeHandler.route);
-        pathFound = routeHandler.render(path);
-
+        try {
+          pathFound = await routeHandler.render(path);
+        } catch (error) {
+          console.error('Error rendering route:', error);
+          this.navigateTo('/login');
+          return;
+        }
         if (pathFound) {
           break;
         }

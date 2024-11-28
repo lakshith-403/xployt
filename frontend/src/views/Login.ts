@@ -69,7 +69,7 @@ export class LoginView extends View {
       .then((user) => {
         console.log('User logged in:', user);
         alert('User logged in successfully');
-        router.navigateTo('/');
+        router.navigateTo('/dashboard');
       })
       .catch((error) => {
         console.error('Error logging in user:', error);

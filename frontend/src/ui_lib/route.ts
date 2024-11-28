@@ -1,6 +1,8 @@
+import { CACHE_STORE } from '@/data/cache';
 import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } from './utils';
 import { ViewHandler } from './view';
 import { NavigationView } from './view';
+import { router } from './router';
 /**
  * Handles routing logic for a specific route and its associated view handlers.
  */
@@ -11,6 +13,7 @@ export class RouteHandler {
   hideTopNavigation: boolean = false;
   hideFooter: boolean = false;
   hideBreadCrumbs: boolean = true;
+  isProtected: boolean = false;
 
   /**
    * Creates an instance of RouteHandler.
@@ -21,13 +24,22 @@ export class RouteHandler {
    * @param hideTopNavigation - Whether to hide the top navigation bar.
    * @param hideFooter - Whether to hide the footer.
    */
-  constructor(route: string, viewHandlers: ViewHandler[], navigationView?: NavigationView, hideTopNavigation: boolean = false, hideFooter: boolean = false, hideBreadCrumbs: boolean = true) {
+  constructor(
+    route: string,
+    viewHandlers: ViewHandler[],
+    navigationView?: NavigationView,
+    hideTopNavigation: boolean = false,
+    hideFooter: boolean = false,
+    hideBreadCrumbs: boolean = true,
+    isProtected: boolean = false
+  ) {
     this.route = route;
     this.viewHandlers = viewHandlers;
     this.navigationView = navigationView;
     this.hideTopNavigation = hideTopNavigation;
     this.hideFooter = hideFooter;
     this.hideBreadCrumbs = hideBreadCrumbs;
+    this.isProtected = isProtected;
   }
 
   /**
@@ -46,12 +58,20 @@ export class RouteHandler {
    * @param url - The URL to render the view for.
    * @throws Error if no view handler is found for the route.
    */
-  public render(url: string): boolean {
+  public async render(url: string): Promise<boolean> {
+    if (this.isProtected) {
+      console.log('trying protected route');
+      const user = await CACHE_STORE.getUser().load();
+      if (user.type === 'Guest') {
+        throw new Error('Guest user cannot access protected route');
+      }
+    }
+
     for (const viewHandler of this.viewHandlers) {
-      // console.log('checking view:', viewHandler.route);
-      // console.log('checking url:', url, this.route, '+', viewHandler.route);
+      console.log('checking view:', viewHandler.route);
+      console.log('checking url:', url, this.route, '+', viewHandler.route);
       if (matchUrl(url, this.route + viewHandler.route)) {
-        // console.log('rendering view:', viewHandler.route);
+        console.log('rendering view:', viewHandler.route);
         if (this.navigationView) {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = '';
