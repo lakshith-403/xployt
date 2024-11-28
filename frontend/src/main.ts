@@ -113,10 +113,11 @@ class TopNavigationView implements NavigationView {
   }
 }
 
-const HomeRouteHandler = new RouteHandler(
+const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
+
+const CommonRouteHandlers = new RouteHandler(
   '/',
   [
-    homeViewHandler,
     projectsViewHandler,
     vulnReportViewHandler,
     reportsViewHandler,
@@ -147,6 +148,7 @@ const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHa
 router.setTopNavigationView(new TopNavigationView());
 
 router.addRouteHandler(HomeRouteHandler);
+router.addRouteHandler(CommonRouteHandlers);
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
