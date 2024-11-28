@@ -12,6 +12,7 @@ import { rejectProject, acceptProject } from '@data/projectLead/network/projectC
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './verifyProject.scss';
 import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
+import { CacheObject } from '@/data/cacheBase';
 
 class VerifyProject extends View {
   params: { projectId: string };
@@ -83,6 +84,7 @@ class VerifyProject extends View {
             console.log('Reject');
             await rejectProject(this.params.projectId);
             await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Rejected');
+            CACHE_STORE.getProjects().updateProject(parseInt(this.params.projectId), 'Rejected');
             router.navigateTo(`/projects/${this.params.projectId}`);
             loading.hide();
           },
@@ -97,6 +99,7 @@ class VerifyProject extends View {
             console.log('Accept');
             await acceptProject(this.params.projectId);
             await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Unconfigured');
+            CACHE_STORE.getLeadProjects((await CACHE_STORE.getUser().get()).id).updateProject(parseInt(this.params.projectId), 'Unconfigured');
             router.navigateTo(`/projects/${this.params.projectId}`);
             loading.hide();
           },

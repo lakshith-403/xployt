@@ -1,7 +1,7 @@
 import { UserCache, UserCacheMock } from './user';
-import { ProjectInfoCacheMock, ProjectInfoCache } from './validator/cache/projectInfo';
+import { ProjectInfoCacheMock, ProjectInfoCache, ProjectInfo } from './validator/cache/projectInfo';
 import { ReportInfoCacheMock, ReportInfoCache } from './projectLead/cache/reportInfo';
-import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cache';
+import { ProjectsCacheMock, ProjectsCache, Project } from './validator/cache/projects.cache';
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
@@ -83,7 +83,6 @@ class CacheStore {
   public getProjects(): ProjectsCache {
     return this.projects;
   }
-  // Reports part
 
   public getReportInfo(reportId: string): ReportInfoCache {
     if (!this.reportInfoMap.has(reportId)) {
