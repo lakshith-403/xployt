@@ -24,7 +24,7 @@ export class UserProfile {
     this.id = data['userId'];
     this.name = data['name'];
     this.email = data['email'];
-    this.phoneNumber = data['phone'];
+    this.phoneNumber = data['phoneNumber'];
     this.profilePicture = data['profile_picture'];
     this.fundsRemaining = data['funds_remaining'];
     this.fundsSpent = data['funds_spent'];
