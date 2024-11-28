@@ -47,6 +47,7 @@ export class AuthEndpoints {
       name,
       email,
       password,
+      role: 'Client',
     });
   }
 }
