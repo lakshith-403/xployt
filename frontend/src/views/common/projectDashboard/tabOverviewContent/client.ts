@@ -1,78 +1,76 @@
-import {QuarkFunction as $, Quark} from '@ui_lib/quark';
-import {View, ViewHandler} from '@ui_lib/view';
-import {ProjectInfo, ProjectInfoCache, ProjectInfoCacheMock} from "@data/validator/cache/projectInfo";
-import {CACHE_STORE} from "@data/cache";
-// import {ProjectTeam, ProjectTeamCacheMock} from "@data/validator/cache/project.team";
-import {Card} from "@components/card/card.base";
-import '../tabOverview.scss'
-import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
+import { router } from '@ui_lib/router';
+import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
+import { IconButton } from '@components/button/icon.button';
+import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/payments';
+import { OverviewInvitations } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/OverviewReports';
+import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/basicInfo';
+import { CACHE_STORE } from '@data/cache';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 
-export default class Client extends View {
-  private projectId: string;
-  private projectInfo: ProjectInfo | {} = {}
-  private projectTeam: ProjectTeam | {} = {};
-  private projectInfoCache: ProjectInfoCacheMock;
-  private projectTeamCache: ProjectTeamCache;
+export default class Hacker {
+  projectInfo: ProjectInfo = {} as ProjectInfo;
 
-  constructor(projectId: string) {
-    super();
+  constructor(private readonly projectId: string) {
     this.projectId = projectId;
-    this.projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId);
-    this.projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId);
   }
 
-  async loadProjectInfo(): Promise<void> {
+  private readonly projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId) as ProjectInfoCacheMock;
+
+  async loadData(): Promise<void> {
     try {
-      this.projectInfo = await this.projectInfoCache.get(false, this.projectId) as ProjectInfo;
-      this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
-      console.log("Team:", this.projectTeam)
+      this.projectInfo = await this.projectInfoCache.get(false, this.projectId);
+      console.log('Project Info', this.projectInfo);
     } catch (error) {
-      console.error('Failed to load project data:', error);
+      console.error('Failed to load project data', error);
     }
   }
 
-
   async render(q: Quark): Promise<void> {
-    await this.loadProjectInfo();
-    $(q, 'div', 'invite-hackers', {}, (q) => {
-      $(q, 'div', 'section-content', {}, (q) => {
-        $(q, 'h1', '', {}, 'Project Dashboard')
-        $(q, 'div', '', {}, (q) => {
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Client');
-            $(q, 'p', 'value', {}, "Client");
-          });
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Access Link');
-            $(q, 'a', 'key link', {href: '#', target: '_blank'}, 'www.example.com');
+    const loading = new LoadingScreen(q);
+    loading.show();
+
+    await this.loadData();
+    loading.hide();
+
+    $(q, 'div', 'project-info', {}, (q) => {
+      $(q, 'p', 'project-description', {}, this.projectInfo.description);
+
+      $(q, 'div', '', { id: 'basic-info' }, (q) => {
+        new OverviewBasicInfo(this.projectId, this.projectInfo.client).render(q);
+      });
+
+      $(q, 'section', '', {}, (q) => {
+        $(q, 'h2', '', {}, 'Rules and Scope');
+        $(q, 'ul', 'section-content', {}, (q) => {
+          this.projectInfo.scope.forEach((rule) => {
+            $(q, 'li', '', {}, rule);
           });
         });
-        $(q, 'div', '', {}, (q) => {
-          Object.entries(this.projectTeam).forEach(([key, teamMember]) => {
-            const title = convertToTitleCase(key);
+      });
 
-            new Card({
-              title: title,
-              content: $(q, 'div', 'description', {}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                  $(q, 'p', 'value', {}, teamMember.name);
-                  $(q, 'p', 'value caption', {}, teamMember.username);
-                });
-                $(q, 'p', 'value link', {}, teamMember.email);
-              }),
-            }).render(q);
-          });
+      $(q, 'section', '', { id: 'payments' }, (q) => {
+        $(q, 'h2', '', {}, 'Payments');
+        new OverviewPayments(this.projectId).render(q);
+      });
+
+      $(q, 'section', '', { id: 'reports' }, (q) => {
+        $(q, 'span', '', {}, (q) => {
+          $(q, 'h2', '', {}, 'Hacker Invitations');
+          new IconButton({
+            icon: 'fa fa-plus',
+            label: 'Invite-Hackers',
+            onClick: () => {
+              const url = '/invite-hackers';
+              router.navigateTo(url);
+            },
+          }).render(q);
+        });
+
+        $(q, 'div', 'section-content', {}, (q) => {
+          new OverviewInvitations({ reportId: '1' }).render(q);
         });
       });
     });
   }
 }
-
-function convertToTitleCase(input: string): string {
-  const words = input.replace(/([A-Z])/g, ' $1').trim();
-  return words.replace(/\w\S*/g, (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
-}
-
-// export const inviteHackersViewHandler = new ViewHandler('invite-hackers', InviteHackers);
