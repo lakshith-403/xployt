@@ -29,10 +29,15 @@ import {userDashboardViewHandler} from "@views/UserDashboard";
 import {clientHackerInvitationsViewHandler} from "@views/client/inviteHackers/inviteHackers";
 
 const HomeSidebar: SidebarTab[] = [
+  // {
+  //   id: '',
+  //   title: 'Home',
+  //   url: '',
+  // },
   {
-    id: '',
-    title: 'Home',
-    url: '',
+    id: 'dashboard',
+    title: 'Dashboard',
+    url: 'dashboard',
   },
   {
     id: 'projects',
@@ -41,39 +46,34 @@ const HomeSidebar: SidebarTab[] = [
   },
   {
     id: 'reports',
-    title: 'Reports',
+    title: 'Report History',
     url: 'reports',
   },
-  {
-    id: 'discussion',
-    title: 'Discussion',
-    url: 'discussion',
-  },
-  {
-    id: 'report/{projectId}',
-    title: 'New Report',
-    url: 'report/1',
-  },
-  {
-    id: 'validator/application',
-    title: 'Application',
-    url: 'validator/application',
-  },
-  {
-    id: 'test/tagInput',
-    title: 'Tag Input Test',
-    url: 'test/tagInput',
-  },
-  {
-    id: 'dashboard',
-    title: 'Dashboard',
-    url: 'dashboard',
-  },
-  {
-    id: 'project-request',
-    title: 'Project Request',
-    url: 'project-request',
-  },
+  // {
+  //   id: 'discussion',
+  //   title: 'Discussion',
+  //   url: 'discussion',
+  // },
+  // {
+  //   id: 'report/{projectId}',
+  //   title: 'New Report',
+  //   url: 'report/1',
+  // },
+  // {
+  //   id: 'validator/application',
+  //   title: 'Application',
+  //   url: 'validator/application',
+  // },
+  // {
+  //   id: 'test/tagInput',
+  //   title: 'Tag Input Test',
+  //   url: 'test/tagInput',
+  // },
+  // {
+  //   id: 'project-request',
+  //   title: 'Project Request',
+  //   url: 'project-request',
+  // },
 ];
 
 class AboutSidebarView implements NavigationView {
@@ -106,7 +106,9 @@ class TopNavigationView implements NavigationView {
       const notificationButton = new NotificationButton(notificationList, q);
       notificationButton.render();
         $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
-        $(q, 'button', '', { onclick: () => { router.navigateTo('/about'); } }, 'About');
+        $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Hackers');
+        $(q, 'button', '', { onclick: () => { router.navigateTo('/validator/application'); } }, 'Validators');
+      $(q, 'button', '', { onclick: () => { router.navigateTo('/validator/application'); } }, 'Organizations');
         $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
       });
     // prettier-ignore
