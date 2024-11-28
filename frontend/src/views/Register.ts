@@ -71,12 +71,18 @@ export class RegisterView extends View {
         this.emailField.render(q);
         this.passwordField.render(q);
         this.confirmPasswordField.render(q);
-        this.companyNameField.render(q);
-        this.companyDomainField.render(q);
-        this.companySizeField.render(q);
+        // this.companyNameField.render(q);
+        // this.companyDomainField.render(q);
+        // this.companySizeField.render(q);
 
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.registerButton.render(q);
+
+          new Button({
+            label: 'Sign in',
+            type: ButtonType.SECONDARY,
+            onClick: () => router.navigateTo('/login'),
+          }).render(q);
         });
       });
     });
