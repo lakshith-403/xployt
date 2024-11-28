@@ -34,12 +34,12 @@ export class Project {
 }
 
 export class ProjectsCache extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
+  async load(userId: number): Promise<Project[][]> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
     try {
-      response = (await projectEndpoints.getAllProjects(userId)) as ProjectResponse;
+      response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -64,7 +64,7 @@ export class ProjectsCache extends CacheObject<Project[][]> {
 }
 
 export class ProjectsCacheMock extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
+  async load(userId: number): Promise<Project[][]> {
     return [
       [
         new Project({

@@ -2,7 +2,7 @@ import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './Projects.scss';
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
-import { UserCache } from '../../../data/user';
+import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
@@ -12,7 +12,7 @@ import { CheckboxManager } from '../../../components/checkboxManager/checkboxMan
 class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache: ProjectsCache;
-  private userCache: UserCache;
+  private userCache: UserCacheMock;
   private projects: Project[][] = [];
   private userId: string | null = null;
 
@@ -29,8 +29,10 @@ class ProjectsView extends View {
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
+      console.log('user', user);
       this.userId = user.id;
-      this.projects = await this.projectsCache.get(false, 1);
+      console.log('user id', this.userId);
+      this.projects = await this.projectsCache.get(false, this.userId);
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
       // }
@@ -56,12 +58,12 @@ class ProjectsView extends View {
   }
 
   async render(q: Quark): Promise<void> {
-    q.innerHTML = '';
     const loading = new LoadingScreen(q);
     loading.show();
     await this.loadProjects();
     loading.hide();
 
+    q.innerHTML = '';
     $(q, 'div', 'projects validator', {}, (q) => {
       const pendingProjects = this.projects[0]!;
       const completedProjects = this.projects[1]!;

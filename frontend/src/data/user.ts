@@ -77,38 +77,25 @@ export class UserCache extends CacheObject<User> {
 export class UserCacheMock extends CacheObject<User> {
   async load(): Promise<User> {
     return new User({
-      id: '101',
+      id: 1,
       name: 'Mock User1',
       username: 'mock',
       email: 'mock@mock.com',
       type: process.env.ROLE as UserType,
-      avatar: '',
     });
   }
 
   async signIn(username: string, password: string): Promise<User> {
     return new User({
-      id: '102',
+      id: 1,
       name: 'Mock User2',
       username: username,
       email: 'mock@mock.com',
       type: 'Client',
-      avatar: '',
     });
   }
 
   async signOut(): Promise<void> {
     this.invalidate_cache();
-  }
-
-  async register(name: string, email: string, password: string): Promise<User> {
-    return new User({
-      id: '102',
-      name: name,
-      username: 'mock Username',
-      email: email,
-      type: 'Client',
-      avatar: '',
-    });
   }
 }

@@ -14,14 +14,14 @@ export class TagList {
   private update: (tags: string[]) => void;
 
   constructor(options: TagListOptions) {
-    console.log('Tags', options.tags);
+    // console.log('Tags', options.tags);
     this.tags = options.tags;
     this.onRemove = options.onRemove;
     this.update = options.update;
   }
 
   updateTags(newTags: string[]) {
-    console.log('New Tags', newTags);
+    // console.log('New Tags', newTags);
     this.tags = newTags;
     this.update(this.tags);
     if (this.container) {

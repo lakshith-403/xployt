@@ -99,7 +99,7 @@ class CacheStore {
   }
 
   public getNotificationsList(userId: string): NotificationsCache {
-    if(!this.notificationsListMap.has(userId)){
+    if (!this.notificationsListMap.has(userId)) {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
     }
     return this.notificationsListMap.get(userId)!;

@@ -18,7 +18,7 @@ import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tab
 import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
-import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
+// import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
@@ -46,7 +46,7 @@ const HomeSidebar: SidebarTab[] = [
   },
   {
     id: 'reports',
-    title: 'Report History',
+    title: 'Reports',
     url: 'reports',
   },
   // {
@@ -124,7 +124,7 @@ const CommonRouteHandlers = new RouteHandler(
     vulnReportViewHandler,
     reportsViewHandler,
     validatorApplicationViewHandler,
-    tagInputTestViewHandler,
+    // tagInputTestViewHandler,
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
     projectConfigFormViewHandler,
@@ -134,7 +134,7 @@ const CommonRouteHandlers = new RouteHandler(
   ],
   new SidebarView('/', HomeSidebar)
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
