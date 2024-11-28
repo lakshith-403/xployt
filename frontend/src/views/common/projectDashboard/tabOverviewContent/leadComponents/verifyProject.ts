@@ -1,6 +1,7 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { FormTextField } from '@components/text_field/form.text_field';
 // import './verifyProject.scss';
+import { router } from '@ui_lib/router';
 import { View, ViewHandler } from '@ui_lib/view';
 // import { Step } from './../../../../components/multistepForm/multistep-form';
 import { CACHE_STORE } from '@data/cache';
@@ -81,6 +82,8 @@ class VerifyProject extends View {
             loading.show();
             console.log('Reject');
             await rejectProject(this.params.projectId);
+            await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Rejected');
+            router.navigateTo(`/projects/${this.params.projectId}`);
             loading.hide();
           },
         });
@@ -93,6 +96,8 @@ class VerifyProject extends View {
             loading.show();
             console.log('Accept');
             await acceptProject(this.params.projectId);
+            await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Unconfigured');
+            router.navigateTo(`/projects/${this.params.projectId}`);
             loading.hide();
           },
         });

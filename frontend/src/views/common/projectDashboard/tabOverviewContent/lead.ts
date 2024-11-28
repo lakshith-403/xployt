@@ -10,6 +10,7 @@ import { router } from '@/ui_lib/router';
 import { OverviewPayments } from './hackerComponents/payments';
 import { OverviewReports } from './hackerComponents/reports';
 import PieChart from '@/components/charts/pieChart';
+
 export default class Lead {
   private projectConfigInfo!: ProjectConfigInfo;
   private projectConfigInfoCache!: ProjectConfigInfoCache;
@@ -30,6 +31,7 @@ export default class Lead {
     console.log('this.projectId', this.projectId);
     console.log('this.projectConfigInfoCache', this.projectConfigInfoCache);
   }
+
   async render(q: Quark): Promise<void> {
     await this.loadData();
     $(q, 'div', 'overview lead', {}, (q) => {

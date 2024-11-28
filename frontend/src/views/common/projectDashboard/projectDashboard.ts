@@ -67,6 +67,7 @@ class projectDashboardView extends View {
     loading.show();
 
     await this.loadProject();
+    q.innerHTML = '';
     loading.hide();
 
     const overviewTab = new OverviewTab(this.params.projectId);
