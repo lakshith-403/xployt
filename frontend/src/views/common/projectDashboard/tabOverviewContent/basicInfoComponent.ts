@@ -1,32 +1,14 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { CACHE_STORE } from '@data/cache';
-import { ProjectTeamCacheMock } from '@data/validator/cache/project.team';
+// import { ProjectTeamCacheMock } from '@data/validator/cache/project.team';
+import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { Card } from '@components/card/card.base';
-import './../../tabOverview.scss';
+import './../tabOverview.scss';
+import {PublicUser} from "@data/user";
 
-export class OverviewBasicInfo {
-  projectTeam: {
-    [key: string]: {
-      name: string;
-      id: number;
-      username: string;
-      email: string;
-    };
-  } = {
-    projectLead: {
-      name: '',
-      id: 0,
-      username: '',
-      email: '',
-    },
-    assignedValidator: {
-      name: '',
-      id: 0,
-      username: '',
-      email: '',
-    },
-  };
+export default class BasicInfoComponent{
+  private projectTeam: { [key: string]: PublicUser } = {} as { [key: string]: PublicUser };
 
   constructor(private readonly projectId: string, private readonly client: string) {
     this.projectId = projectId;
@@ -34,13 +16,13 @@ export class OverviewBasicInfo {
     console.log(this.client);
   }
 
-  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCacheMock;
+  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
 
   async loadData(): Promise<void> {
     try {
       const fullTeam = await this.projectTeamCache.get(true, this.projectId);
       this.projectTeam.projectLead = fullTeam.projectLead;
-      this.projectTeam.assignedValidator = fullTeam.validator[0];
+      this.projectTeam.assignedValidator = fullTeam.validators[0];
       console.log('Project Team', this.projectTeam);
     } catch (error) {
       console.error('Failed to load project data', error);
@@ -74,7 +56,7 @@ export class OverviewBasicInfo {
             content: $(q, 'div', 'description', {}, (q) => {
               $(q, 'span', '', {}, (q) => {
                 $(q, 'p', 'value', {}, teamMember.name);
-                $(q, 'p', 'value caption', {}, teamMember.username);
+                // $(q, 'p', 'value caption', {}, teamMember.username);
               });
               $(q, 'p', 'value link', {}, teamMember.email);
             }),

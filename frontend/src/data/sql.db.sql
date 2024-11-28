@@ -90,11 +90,19 @@ CREATE TABLE ProjectHackers (
     projectId INT NOT NULL,
     hackerId INT NOT NULL,
     assignedValidatorId INT,
-    status ENUM('Invited', 'Accepted', 'Declined') DEFAULT 'Invited',
-    assignedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (projectId) REFERENCES Projects(projectId),
     FOREIGN KEY (hackerId) REFERENCES Users(userId),
     FOREIGN KEY (assignedValidatorId) REFERENCES ValidatorInfo(validatorId)
+);
+
+CREATE TABLE Invitations (
+    HackerID  INT NOT NULL,
+    ProjectID INT NOT NULL,
+    InvitedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (HackerID, ProjectID),
+    FOREIGN KEY (ProjectID) REFERENCES Projects (ProjectID),
+    FOREIGN KEY (HackerID) REFERENCES Users (UserID)
 );
 
 -- Bug Reports table

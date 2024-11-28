@@ -12,7 +12,7 @@ import { CheckboxManager } from '../../../components/checkboxManager/checkboxMan
 class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache: ProjectsCache;
-  private userCache: UserCacheMock;
+  private userCache: UserCache;
   private projects: Project[][] = [];
   private userId: string | null = null;
 

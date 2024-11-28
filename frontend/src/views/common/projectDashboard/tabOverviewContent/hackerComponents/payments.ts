@@ -1,7 +1,7 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { PriceCard } from '@components/card/card.base';
 import { tableBase } from '@components/table/table.base';
-import './../../tabOverview.scss';
+import '../../tabOverview.scss';
 
 export class OverviewPayments {
   private earnings: { title: string; amount: number }[] = [

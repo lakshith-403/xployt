@@ -1,12 +1,12 @@
-import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
-import { ProjectConfigInfo, ProjectConfigInfoCache } from '@/data/projectLead/cache/projectConfigInfo';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
 import './lead.scss';
-import { CACHE_STORE } from '@/data/cache';
-import { ClientCacheMock } from '@/data/projectLead/cache/client.cache';
-import { Client } from '@/data/projectLead/cache/client.cache';
-import { FormButton } from '@/components/button/form.button';
-import { ButtonType } from '@/components/button/base';
-import { router } from '@/ui_lib/router';
+import { CACHE_STORE } from '@data/cache';
+import { ClientCacheMock } from '@data/projectLead/cache/client.cache';
+import { Client } from '@data/projectLead/cache/client.cache';
+import { FormButton } from '@components/button/form.button';
+import { ButtonType } from '@components/button/base';
+import { router } from '@ui_lib/router';
 export default class Lead {
   private projectConfigInfo!: ProjectConfigInfo;
   private projectConfigInfoCache!: ProjectConfigInfoCache;
