@@ -9,25 +9,25 @@ import { requestProject } from '@/data/client/network/projectConfig.network';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    title: 'Hardcoded Project Title',
+    title: '',
     startDate: {
-      day: '1',
-      month: '1',
-      year: '2024',
+      day: '',
+      month: '',
+      year: '',
     },
     endDate: {
-      day: '1',
-      month: '1',
-      year: '2025',
+      day: '',
+      month: '',
+      year: '',
     },
-    description: 'Hardcoded Description',
-    url: 'https://www.google.com',
-    technicalStack: 'Hardcoded Technical Stack',
+    description: '',
+    url: '',
+    technicalStack: '',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
-    const loading = new LoadingScreen(document.body); // Initialize the loading screen
-    loading.show(); // Show loading screen
+    const loading = new LoadingScreen(document.body);
+    loading.show();
 
     try {
       await requestProject({
@@ -50,12 +50,12 @@ class ProjectRequestForm extends View {
         title: 'Project Information',
         step: new ProjectInfo(),
         stateUsed: {
-          projectTitle: 'optional',
-          startDate: 'optional',
-          endDate: 'optional',
-          description: 'optional',
-          url: 'optional',
-          technicalStack: 'optional',
+          projectTitle: 'required',
+          startDate: 'required',
+          endDate: 'required',
+          description: 'required',
+          url: 'required',
+          technicalStack: 'required',
         },
       },
     ];

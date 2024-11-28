@@ -20,7 +20,7 @@ import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 // import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
+import { projectRequestFormViewHandler } from './views/client/projectRequestForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/discussion/Discussion';

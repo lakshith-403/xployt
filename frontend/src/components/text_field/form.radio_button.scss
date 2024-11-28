@@ -1,0 +1,33 @@
+.form-radio-button {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  input[type='radio'] {
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #007bff; // Customize the color
+  }
+
+  label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+
+  &:hover {
+    label {
+      color: #007bff;
+    }
+  }
+
+  &.label-left {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+
+    label {
+      margin-left: 8px;
+      margin-right: 0;
+    }
+  }
+}

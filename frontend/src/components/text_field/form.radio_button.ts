@@ -1,6 +1,6 @@
 import { Quark } from '@/ui_lib/quark';
 import { TextField, TextFieldOptions } from './base';
-
+import './form.radio_button.scss';
 interface FormTextFieldOptions extends TextFieldOptions {
   class?: string;
   onKeyDown?: (event: KeyboardEvent) => void;
