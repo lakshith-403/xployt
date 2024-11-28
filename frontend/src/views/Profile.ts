@@ -8,9 +8,11 @@ import { CollapsibleBase } from "../components/Collapsible/collap.base";
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
 import { UserProfile } from "@/data/user/cache/userProfile";
+import { User, UserCacheMock } from "@/data/user";
 
 export class ProfileView extends View {
  private userInfoCollapsible: CollapsibleBase;
+ private userCache: UserCacheMock;
  private fundsCollapsible: CollapsibleBase;
  private profile!: UserProfile ;
  private nameField: TextField;
@@ -21,7 +23,8 @@ export class ProfileView extends View {
    super();
    this.userInfoCollapsible = new CollapsibleBase("User Info", "user-info");
    this.fundsCollapsible = new CollapsibleBase("Funds", "funds");
-   
+   this.userCache = CACHE_STORE.getUser();
+
    // Initialize text fields
    this.nameField = new TextField({ label: 'Name' });
    this.emailField = new TextField({ label: 'Email', type: 'email' });
@@ -29,7 +32,9 @@ export class ProfileView extends View {
  }
   private async loadProfile() {
    try {
-     const userId = '101'; // Get actual user ID from your auth system
+    //  const userId = '101'; // Get actual user ID from your auth system
+    const user = await this.userCache.get();
+    const userId = user.id;
      const userProfileCache = CACHE_STORE.getUserProfile(userId);
      this.profile = await userProfileCache.get(false, userId);
      console.log('ProfileView: Loaded profile:', this.profile);
