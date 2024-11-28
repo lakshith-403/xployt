@@ -61,7 +61,7 @@ export class RouteHandler {
   public async render(url: string): Promise<boolean> {
     if (this.isProtected) {
       console.log('trying protected route');
-      const user = await CACHE_STORE.getUser().load();
+      const user = await CACHE_STORE.getUser().get();
       if (user.type === 'Guest') {
         throw new Error('Guest user cannot access protected route');
       }

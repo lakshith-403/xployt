@@ -71,12 +71,14 @@ export class UserCache extends CacheObject<User> {
 
   async register(name: string, email: string, password: string): Promise<User> {
     const response = await AuthEndpoints.register(name, email, password);
-    return new User(response.data as UserResponse);
+    this.data = new User(response.data as UserResponse);
+    return this.data;
   }
 
   async signIn(username: string, password: string): Promise<User> {
     const response = await AuthEndpoints.signIn(username, password);
-    return new User(response.data as UserResponse);
+    this.data = new User(response.data as UserResponse);
+    return this.data;
   }
 
   async signOut(): Promise<void> {
