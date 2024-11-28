@@ -11,18 +11,18 @@ import { CheckboxManager } from '../../../components/checkboxManager/checkboxMan
 import { getProjects } from '@/services/projects';
 import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
 import { Project as ClientProject } from '@data/client/cache/projects.cache';
-
+import { UserType } from '@data/user';
 class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache!: ProjectsCache;
   private userCache: UserCache;
   private projects: (LeadProject | ClientProject)[][] = [];
   private userId: string | null = null;
-  private userType!: string;
+  private userType!: UserType;
   private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
 
   private get TABLE_HEADERS(): string[] {
-    return ['ID', 'Status', 'Title', this.userType === 'client' ? 'ClientId' : 'LeadId', 'Pending Reports'];
+    return ['ID', 'Status', 'Title', this.userType === 'Client' ? 'LeadId' : 'ClientId', 'Pending Reports'];
   }
 
   constructor(params: { projectId: string }) {
@@ -39,6 +39,7 @@ class ProjectsView extends View {
       this.userId = user.id;
       console.log('user id', this.userId);
       this.projects = await getProjects(this.userId, user.type);
+      this.userType = user.type;
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
       // }
