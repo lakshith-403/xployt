@@ -35,18 +35,18 @@ class ProjectConfigForm extends View {
     this.params = params;
   }
   private formState: any = {
-    testingScope: 'Test Data',
-    outOfScope: 'Test Data',
-    objectives: 'Test Data',
-    securityRequirements: 'Test Data',
-    critical: ['Test Data'],
-    high: ['Test Data'],
-    medium: ['Test Data'],
-    low: ['Test Data'],
-    informative: ['Test Data'],
-    visibility: 'Test Data',
+    testingScope: '',
+    outOfScope: '',
+    objectives: '',
+    securityRequirements: '',
+    critical: [],
+    high: [],
+    medium: [],
+    low: [],
+    informative: [],
+    visibility: '',
     attachments: null as File | null,
-    initialFunding: 'Test Data',
+    initialFunding: '',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
@@ -71,10 +71,10 @@ class ProjectConfigForm extends View {
         title: 'Testing and Security',
         step: new TestingSecurity(),
         stateUsed: {
-          testingScope: 'optional',
-          outOfScope: 'optional',
-          objectives: 'optional',
-          securityRequirements: 'optional',
+          testingScope: 'required',
+          outOfScope: 'required',
+          objectives: 'required',
+          securityRequirements: 'required',
         },
       },
       {
@@ -86,8 +86,8 @@ class ProjectConfigForm extends View {
           medium: 'optional',
           low: 'optional',
           informative: 'optional',
-          visibility: 'optional',
-          initialFunding: 'optional',
+          visibility: 'required',
+          initialFunding: 'required',
         },
       },
     ];

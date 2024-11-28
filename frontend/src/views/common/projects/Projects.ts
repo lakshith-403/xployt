@@ -35,6 +35,7 @@ class ProjectsView extends View {
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
+      console.log('Getting Projects');
       console.log('user', user);
       this.userId = user.id;
       console.log('user id', this.userId);
