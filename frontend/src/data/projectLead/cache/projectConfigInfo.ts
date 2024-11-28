@@ -13,7 +13,7 @@ export class ProjectConfigInfo {
   endDateMonth: string;
   endDateYear: string;
   technicalStack: string[];
-  status: 'Pending' | 'Active' | 'Completed' | 'Cancelled' | 'Unconfigured' | 'Closed';
+  status: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed';
 
   clientId: number;
   clientName: string;
@@ -38,6 +38,9 @@ export class ProjectConfigInfo {
     this.clientUsername = data['clientUsername'];
     this.clientName = data['clientName'];
   }
+  public updateStatus(newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): void {
+    this.status = newStatus;
+  }
 }
 interface ProjectData {
   startDate?: string;
@@ -59,6 +62,11 @@ export class ProjectConfigInfoCache extends CacheObject<ProjectConfigInfo> {
       endDateMonth: response.data?.endDate?.split('-')[1],
       endDateYear: response.data?.endDate?.split('-')[0],
     });
+  }
+
+  async set(projectConfig: ProjectConfigInfo): Promise<void> {
+    this.data = projectConfig; // Store the new data in cache
+    this.lastUpdated = Date.now(); // Mark as cached
   }
 }
 

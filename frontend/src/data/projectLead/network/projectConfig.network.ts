@@ -11,7 +11,7 @@ export async function getProjectConfigInfo(projectId: string): Promise<Response>
 
 export async function rejectProject(projectId: string): Promise<void> {
   try {
-    const response = await NETWORK.sendHttpRequest('POST', `api/lead/project/reject/${projectId}`, {});
+    const response = await NETWORK.sendHttpRequest('POST', `/api/lead/initiate/project/reject/${projectId}`, {});
 
     if (response.is_successful) {
       console.log(`Project ${projectId} rejected successfully.`);
@@ -34,7 +34,7 @@ export async function rejectProject(projectId: string): Promise<void> {
  */
 export async function acceptProject(projectId: string): Promise<void> {
   try {
-    const response = await NETWORK.sendHttpRequest('POST', `api/lead/project/accept/${projectId}`, {});
+    const response = await NETWORK.sendHttpRequest('POST', `/api/lead/initiate/project/accept/${projectId}`, {});
 
     if (response.is_successful) {
       console.log(`Project ${projectId} accepted successfully.`);
