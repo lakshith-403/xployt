@@ -42,6 +42,9 @@ export class ProfileView extends View {
   private updateFields() {
    if (this.profile) {
      console.log('ProfileView: Updating fields with profile:', this.profile);
+     console.log('ProfileView: Profile name:', this.profile.name);
+     console.log('ProfileView: Profile email:', this.profile.email);
+     console.log('ProfileView: Profile phone number:', this.profile.phoneNumber);
      this.nameField.setValue(this.profile.name);
      this.emailField.setValue(this.profile.email);
      this.phoneField.setValue(this.profile.phoneNumber);

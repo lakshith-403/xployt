@@ -1,7 +1,7 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
 import { userEndpoints } from '../network/user.network';
 
-export interface UserProfile {
+export interface UserProfileResponse {
  id: number;
  name: string;
  email: string;
@@ -21,10 +21,10 @@ export class UserProfile {
  fundsSpent?: number;
   constructor(data: any) {
    console.log('Creating UserProfile instance with data:', data);
-   this.id = data['id'];
+   this.id = data['userId'];
    this.name = data['name'];
    this.email = data['email'];
-   this.phoneNumber = data['phone_number'] || '';
+   this.phoneNumber = data['phone'] || '';
    this.profilePicture = data['profile_picture'];
    this.fundsRemaining = data['funds_remaining'];
    this.fundsSpent = data['funds_spent'];
@@ -45,7 +45,7 @@ export class UserProfileCache extends CacheObject<UserProfile> {
        throw new DataFailure('load user profile', response.error ?? '');
      }
       console.log('UserProfileCache: Successfully loaded profile data');
-     return new UserProfile(response.data);
+     return new UserProfile(response.data as UserProfileResponse);
    } catch (error) {
      console.error('UserProfileCache: Error in load method:', error);
      throw error;
