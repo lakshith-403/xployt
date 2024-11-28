@@ -21,11 +21,11 @@ export abstract class View {
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
-    return false; // Default to not rendering breadcrumbs
+    return true; // Default to not rendering breadcrumbs
   }
 
   protected setupBreadcrumbs(params?: any): void {
-    // Default empty implementation
+    this.breadcrumbs?.clearBreadcrumbs();
   }
 
   public abstract render(q: Quark): void;

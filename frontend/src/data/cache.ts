@@ -118,7 +118,11 @@ class CacheStore {
     }
     return this.projectConfigInfoMap.get(projectId)!;
   }
-
+  public async updateLeadProjectConfigInfo(projectId: string, newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
+    const projectConfig = await this.getLeadProjectConfigInfo(projectId).get(false, projectId);
+    projectConfig.updateStatus(newStatus);
+    await this.getLeadProjectConfigInfo(projectId).set(projectConfig);
+  }
   public getNotificationsList(userId: string): NotificationsCache {
     if (!this.notificationsListMap.has(userId)) {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());

@@ -27,7 +27,6 @@ import { discussionViewHandler } from './views/discussion/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 import { userDashboardViewHandler } from '@views/UserDashboard';
 import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
-
 const HomeSidebar: SidebarTab[] = [
   // {
   //   id: '',
@@ -127,7 +126,6 @@ const CommonRouteHandlers = new RouteHandler(
     // tagInputTestViewHandler,
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
-    projectConfigFormViewHandler,
     discussionViewHandler,
     userDashboardViewHandler,
     clientHackerInvitationsViewHandler,
@@ -138,7 +136,7 @@ const CommonRouteHandlers = new RouteHandler(
   false,
   true
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false, true);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
