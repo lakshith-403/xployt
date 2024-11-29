@@ -7,7 +7,7 @@ import './Profile.scss';
 import { CollapsibleBase } from '../components/Collapsible/collap.base';
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
-import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/user/cache/userProfile';
+import { UserProfile, UserProfileCache } from '@/data/user/cache/userProfile';
 // import { User, UserCacheMock } from '@/data/user';
 import { router } from '@/ui_lib/router';
 
@@ -37,9 +37,9 @@ export class ProfileView extends View {
     try {
       //  const userId = '101'; // Get actual user ID from your auth system
       // const user = await this.userCache.get();
-      const userId = '101';
-      this.userProfileCache = CACHE_STORE.getUserProfile(userId);
-      this.profile = await this.userProfileCache.get(false, userId);
+      const user = await CACHE_STORE.getUser().get();
+      this.userProfileCache = CACHE_STORE.getUserProfile(user.id);
+      this.profile = await this.userProfileCache.get(false, user.id);
       console.log('ProfileView: Loaded profile:', this.profile);
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -60,14 +60,14 @@ export class ProfileView extends View {
   private async saveChanges() {
     if (this.loading) this.loading.show();
     try {
-      const userId = '123'; // Get actual user ID
-      const userProfileCache = CACHE_STORE.getUserProfile(userId);
+      const user = await CACHE_STORE.getUser().get();
+      const userProfileCache = CACHE_STORE.getUserProfile(user.id);
       const profileData = {
         name: this.nameField.getValue(),
         email: this.emailField.getValue(),
         phoneNumber: this.phoneField.getValue(),
       };
-      await userProfileCache.updateProfile(userId, profileData);
+      await userProfileCache.updateProfile(user.id, profileData);
       await this.loadProfile();
     } catch (error) {
       console.error('Error saving profile:', error);
@@ -88,7 +88,7 @@ export class ProfileView extends View {
         $(q, 'h1', '', {}, `Hello ${this.profile?.name || 'User'}!`);
         $(q, 'div', 'profile-picture-container', {}, (q) => {
           $(q, 'img', 'profile-picture', {
-            src: this.profile?.profilePicture || 'https://picsum.photos/id/237/200/300',
+            src: this.profile?.profilePicture || 'assets/avatar.png',
             alt: '',
           });
           $(q, 'div', 'profile-picture-button-container', {}, (q) => {
@@ -121,6 +121,15 @@ export class ProfileView extends View {
             }).render(q);
           });
         });
+
+        new Button({
+          label: 'Logout',
+          type: ButtonType.SECONDARY,
+          onClick: () => {
+            CACHE_STORE.getUser().signOut();
+            router.navigateTo('/');
+          },
+        }).render(q);
         // Funds Section
         // this.fundsCollapsible.render(q);
         // $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
