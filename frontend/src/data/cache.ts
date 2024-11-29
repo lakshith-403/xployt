@@ -1,17 +1,20 @@
 import { UserCache, UserCacheMock } from './user';
-import { ProjectInfoCacheMock, ProjectInfoCache } from './validator/cache/projectInfo';
+import { ProjectInfoCacheMock, ProjectInfoCache, ProjectInfo } from './validator/cache/projectInfo';
 import { ReportInfoCacheMock, ReportInfoCache } from './projectLead/cache/reportInfo';
-import { ProjectsCacheMock, ProjectsCache } from './validator/cache/projects.cache';
+import { ProjectsCacheMock, ProjectsCache, Project } from './validator/cache/projects.cache';
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache';
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
-import {InvitationsCache} from '@data/common/cache/invitations.cache'
-import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
+import { InvitationsCache } from '@data/common/cache/invitations.cache';
+import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
-import { UserProfileCache, UserProfileCacheMock } from './user/cache/userProfile';
+
+import { UserProfileCache } from './user/cache/userProfile';
+import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
+import { ProjectsClientCache } from './client/cache/projects.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -27,6 +30,8 @@ class CacheStore {
   private projects: ProjectsCache;
   private reports: ReportsCache;
   private readonly userProfileMap: Map<string, UserProfileCache>;
+  private clientProjectsMap: Map<string, ProjectsClientCache>;
+  private leadProjectsMap: Map<string, ProjectsLeadCache>;
 
   constructor() {
     this.user = new UserCache();
@@ -43,8 +48,26 @@ class CacheStore {
     this.reports = new ReportsCacheMock();
     this.userProfileMap = new Map();
     this.discussionMap = new Map();
+    this.clientProjectsMap = new Map();
+    this.leadProjectsMap = new Map();
   }
 
+  public getClientProjects(clientId: string): ProjectsClientCache {
+    console.log('Getting client projects for clientId:', clientId);
+    if (!this.clientProjectsMap.has(clientId)) {
+      console.log('clientId not in map, setting new ProjectsClientCache');
+      this.clientProjectsMap.set(clientId, new ProjectsClientCache());
+    }
+    return this.clientProjectsMap.get(clientId)!;
+  }
+  public getLeadProjects(leadId: string): ProjectsLeadCache {
+    console.log('Getting lead projects for leadId:', leadId);
+    if (!this.leadProjectsMap.has(leadId)) {
+      console.log('leadId not in map, setting new ProjectsLeadCache');
+      this.leadProjectsMap.set(leadId, new ProjectsLeadCache());
+    }
+    return this.leadProjectsMap.get(leadId)!;
+  }
   public getUser(): UserCache {
     return this.user;
   }
@@ -65,7 +88,6 @@ class CacheStore {
   public getProjects(): ProjectsCache {
     return this.projects;
   }
-  // Reports part
 
   public getReportInfo(reportId: string): ReportInfoCache {
     if (!this.reportInfoMap.has(reportId)) {
@@ -104,9 +126,15 @@ class CacheStore {
   // Update the method in CacheStore class
   public getUserProfile(userId: string): UserProfileCache {
     if (!this.userProfileMap.has(userId)) {
-      this.userProfileMap.set(userId, new UserProfileCacheMock()); // Now using real cache instead of mock
+      this.userProfileMap.set(userId, new UserProfileCache()); // Now using real cache instead of mock
     }
     return this.userProfileMap.get(userId)!;
+  }
+
+  public async updateLeadProjectConfigInfo(projectId: string, newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
+    const projectConfig = await this.getLeadProjectConfigInfo(projectId).get(false, projectId);
+    projectConfig.updateStatus(newStatus);
+    await this.getLeadProjectConfigInfo(projectId).set(projectConfig);
   }
 
   public getNotificationsList(userId: string): NotificationsCache {
@@ -136,7 +164,6 @@ class CacheStore {
     }
     return this.discussionMap.get(discussionId)!;
   }
-
 }
 
 export const CACHE_STORE = new CacheStore();

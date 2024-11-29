@@ -62,16 +62,17 @@ export class RouteHandler {
     if (this.isProtected) {
       console.log('trying protected route');
       const user = await CACHE_STORE.getUser().get();
+      console.log('user', user);
       if (user.type === 'Guest') {
         throw new Error('Guest user cannot access protected route');
       }
     }
 
     for (const viewHandler of this.viewHandlers) {
-      console.log('checking view:', viewHandler.route);
-      console.log('checking url:', url, this.route, '+', viewHandler.route);
+      // console.log('checking view:', viewHandler.route);
+      // console.log('checking url:', url, this.route, '+', viewHandler.route);
       if (matchUrl(url, this.route + viewHandler.route)) {
-        console.log('rendering view:', viewHandler.route);
+        // console.log('rendering view:', viewHandler.route);
         if (this.navigationView) {
           document.getElementById('sidebar')!.innerHTML = '';
           document.getElementById('sidebar')!.style.display = '';

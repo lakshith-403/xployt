@@ -71,20 +71,3 @@ export class UserProfileCache extends CacheObject<UserProfile> {
     }
   }
 }
-export class UserProfileCacheMock extends UserProfileCache {
-  constructor() {
-    super();
-  }
-  async load(userId: string): Promise<UserProfile> {
-    console.log('UserProfileCacheMock: Loading profile for userId:', userId);
-    return new UserProfile({
-      id: '101',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      phoneNumber: '1234567890',
-      profilePicture: 'https://via.placeholder.com/150',
-      fundsRemaining: 1000,
-      fundsSpent: 0,
-    });
-  }
-}

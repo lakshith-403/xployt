@@ -1,6 +1,6 @@
 import './breadCrumbs.scss';
 import { QuarkFunction as $ } from '../../ui_lib/quark';
-
+import { router } from '@ui_lib/router';
 export interface Breadcrumb {
   label: string;
   link: string;
@@ -50,7 +50,10 @@ export class Breadcrumbs {
 
       $(q, 'span', 'breadcrumb', {}, (q) => {
         if (breadcrumb.clickable) {
-          $(q, 'a', className, { href: breadcrumb.link }, breadcrumb.label);
+          $(q, 'a', className, { href: breadcrumb.link }, breadcrumb.label).addEventListener('click', (event) => {
+            event.preventDefault();
+            router.navigateTo(breadcrumb.link);
+          });
         } else {
           $(q, 'span', className, {}, breadcrumb.label);
         }

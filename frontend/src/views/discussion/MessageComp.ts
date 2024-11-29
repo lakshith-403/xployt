@@ -12,6 +12,8 @@ export class MessageComponent {
   private readonly onSaveCallback: (message: Message) => void;
   private readonly onDeleteCallback: (message: Message) => void;
 
+  private tempMessage: Message | null = null;
+
   constructor(message: Message, onSaveCallback: (message: Message) => void, onDeleteCallback: (message: Message) => void) {
     this.message = message;
     this.isEditing = false;
@@ -24,7 +26,7 @@ export class MessageComponent {
       $(q, 'div', 'message-body', {}, (q) => {
         $(q, 'div', 'thread-line', {}, (q) => {
           if (this.message.type === 'text') {
-            $(q, 'img', 'sender-avatar', { src: 'https://picsum.photos/seed/picsum/200/300' });
+            $(q, 'img', 'sender-avatar', { src: 'assets/avatar.png' });
           } else if (this.message.type === 'complaint') {
             $(q, 'span', 'sender-avatar', {}, (q) => {
               $(q, 'i', 'fa-solid fa-exclamation-triangle', {});
@@ -85,6 +87,7 @@ export class MessageComponent {
 
   private onEdit(): void {
     this.isEditing = true;
+    this.tempMessage = { ...this.message };
 
     this.renderAttachments();
     this.renderMessage();
@@ -100,12 +103,14 @@ export class MessageComponent {
       new TextAreaBase({
         value: this.message.content,
         onChange: (content) => {
-          this.message.content = content;
+          this.tempMessage!.content = content;
         },
       }).render(this.messageContainer);
       $(this.messageContainer, 'button', 'save', {}, 'Save').addEventListener('click', () => {
         this.isEditing = false;
+        this.message = { ...this.tempMessage! };
         this.onSaveCallback(this.message);
+
         this.renderMessage();
         this.renderAttachments();
       });
@@ -121,12 +126,13 @@ export class MessageComponent {
 
   private renderAttachments(): void {
     this.attachmentContainer.innerHTML = '';
-    this.message.attachments.forEach((attachment) => {
+    let m = this.isEditing ? this.tempMessage : this.message;
+    m!.attachments.forEach((attachment) => {
       new AttachmentTag(
         attachment,
         this.isEditing
           ? () => {
-              this.message.attachments = this.message.attachments.filter((a) => a !== attachment);
+              this.tempMessage!.attachments = this.tempMessage!.attachments.filter((a) => a !== attachment);
               this.renderAttachments();
             }
           : undefined

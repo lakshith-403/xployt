@@ -5,6 +5,7 @@ import { Button, ButtonType } from '../components/button/base';
 import { UserCache } from '@/data/user';
 import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
+import { CACHE_STORE } from '@/data/cache';
 
 export class LoginView extends View {
   private emailField: TextField;
@@ -29,14 +30,16 @@ export class LoginView extends View {
       type: ButtonType.PRIMARY,
     });
 
-    this.userCache = new UserCache();
+    this.userCache = CACHE_STORE.getUser();
   }
 
   public render(q: Quark): void {
     $(q, 'div', 'login-view', {}, (q) => {
       $(q, 'div', 'login-left', {}, (q) => {
-        $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
-        $(q, 'p', 'login-description', {}, 'Log in to a straight to point description about what happens when you log in');
+        const loginIcon = $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
+        loginIcon.onclick = () => router.navigateTo('/');
+
+        $(q, 'p', 'login-description', {}, '');
       });
       $(q, 'div', 'login-container', {}, (q) => {
         $(q, 'h1', 'login-title', {}, 'Sign in');

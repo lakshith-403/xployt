@@ -7,7 +7,7 @@ import { NavigationView } from './ui_lib/view';
 
 import { homeViewHandler } from './views/home';
 import { loginViewHandler } from './views/Login';
-import { projectsViewHandler } from './views/validator/projects/Projects';
+import { projectsViewHandler } from './views/common/projects/Projects';
 
 import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
 import { registerViewHandler } from './views/Register';
@@ -20,14 +20,13 @@ import { profileViewHandler } from './views/Profile';
 import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
 // import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
 import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectRequestFormViewHandler } from './views/client/projectConfigForm/projectRequestForm';
+import { projectRequestFormViewHandler } from './views/client/projectRequestForm/projectRequestForm';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/discussion/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 import { userDashboardViewHandler } from '@views/UserDashboard';
 import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
-
 const HomeSidebar: SidebarTab[] = [
   // {
   //   id: '',
@@ -100,7 +99,8 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
+    const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
+    logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
       const notificationList = new NotificationList(false, {userId: "1"});
       const notificationButton = new NotificationButton(notificationList, q);
@@ -127,7 +127,6 @@ const CommonRouteHandlers = new RouteHandler(
     // tagInputTestViewHandler,
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
-    projectConfigFormViewHandler,
     discussionViewHandler,
     userDashboardViewHandler,
     clientHackerInvitationsViewHandler,
@@ -138,7 +137,7 @@ const CommonRouteHandlers = new RouteHandler(
   false,
   true
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler], undefined, false, false, false, true);
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
@@ -162,4 +161,4 @@ router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
 
 // Instantiate the UserRoleToggler to attach it to the page
-new UserRoleToggler();
+// new UserRoleToggler();

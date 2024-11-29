@@ -61,6 +61,7 @@ export class InvitationsCache extends CacheObject<Invitation[]> {
         let res: InvitationsResponse;
         try {
             res = await InvitaiotnEndpoints.createInvitation(projectId, hackerId);
+            console.log(res)
         } catch (error) {
             console.error('Failed to create invitation:', error);
             throw new DataFailure('create invitation', 'Network error');
@@ -70,15 +71,15 @@ export class InvitationsCache extends CacheObject<Invitation[]> {
             throw new DataFailure('load invitation', res.error ?? '');
         }
 
-        if (!Array.isArray(res.data)) {
-            console.error('Unexpected data format:', res.data);
-            throw new Error('Invalid API response: Expected an array');
-        }
+        // if (!Array.isArray(res.data)) {
+        //     console.error('Unexpected data format:', res.data);
+        //     throw new Error('Invalid API response: Expected an array');
+        // }
 
-        return res.data
-            .flat()
-            .map((invitationInfo: InvitationInfo) => {
-                return new Invitation({...invitationInfo});
-            });
+        return [res.data]
+    .flat()
+    .map((invitationInfo: InvitationInfo) => {
+        return new Invitation({...invitationInfo});
+    });
     }
 }

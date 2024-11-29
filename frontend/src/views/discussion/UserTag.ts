@@ -11,7 +11,7 @@ export class UserTag {
   render(q: Quark): void {
     $(q, 'span', 'user-row', {}, (q) => {
       $(q, 'span', '', {}, (q) => {
-        $(q, 'img', '', { src: '' });
+        $(q, 'img', '', { src: 'assets/avatar.png' });
         $(q, 'span', '', {}, this.user.name);
       });
       $(q, 'span', 'type', {}, '');

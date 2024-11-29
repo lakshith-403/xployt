@@ -37,8 +37,6 @@
     align-items: center;
     gap: 20px;
     width: min(400px, 40%);
-    height: 70vh;
-    overflow-y: auto;
 
     .label {
       font-size: 0.8rem;
@@ -58,6 +56,16 @@
       button {
         margin-bottom: 10px;
       }
+    }
+
+    select {
+      width: 100%;
+      margin: 10px;
+      background: var(--background-secondary);
+      color: var(--color-primary);
+      padding: 10px 5px;
+      border: none;
+      border-radius: 5px;
     }
   }
 }

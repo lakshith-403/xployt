@@ -14,7 +14,8 @@
       "@components/*": ["src/components/*"],
       "@data/*": ["src/data/*"],
       "@views/*": ["src/views/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@services/*": ["src/services/*"]
     }
   },
   "include": ["./src/**/*"]
