@@ -10,7 +10,7 @@ import { UserTag } from './UserTag';
 import { AttachmentTag } from './AttachmentTag';
 import { MessageComponent } from './MessageComp';
 
-class DiscussionView extends View {
+export class DiscussionView extends View {
   private readonly discussionId: string;
   private readonly discussionCache: DiscussionCache;
   private discussion: Discussion | null = null;
@@ -22,9 +22,15 @@ class DiscussionView extends View {
   private selectedFiles: File[] = [];
   private attachedFileContainer!: Quark;
 
-  constructor() {
+  constructor({ discussionId }: { discussionId: string }) {
     super();
-    this.discussionId = 'discussion1';
+    if (discussionId !== undefined) {
+      this.discussionId = discussionId;
+    } else {
+      this.discussionId = 'discussion1';
+    }
+
+    console.log('discussionId', this.discussionId);
     this.discussionCache = CACHE_STORE.getDiscussion(this.discussionId);
     this.loader = new Loader();
   }
