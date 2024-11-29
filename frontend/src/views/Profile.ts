@@ -15,6 +15,7 @@ export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
   // private userCache: UserCacheMock;
   private fundsCollapsible: CollapsibleBase;
+
   private profile!: UserProfile;
   private nameField: TextField;
   private emailField: TextField;
@@ -81,7 +82,6 @@ export class ProfileView extends View {
     await this.loadProfile();
     q.innerHTML = '';
     if (this.loading) this.loading.hide();
-    
     $(q, 'div', 'profile-view', {}, (q) => {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
@@ -131,45 +131,34 @@ export class ProfileView extends View {
           },
         }).render(q);
         // Funds Section
-        this.fundsCollapsible.render(q);
-        $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
-          $(q, 'div', 'funds-details', {}, (q) => {
-            $(q, 'div', 'fund-box', {}, (q) => {
-              $(q, 'h2', 'title', {}, 'Amount Remaining');
-              $(q, 'p', 'amount', {}, `$${this.profile?.fundsRemaining || '0'}`);
-            });
-            $(q, 'div', 'fund-box', {}, (q) => {
-              $(q, 'h2', 'title', {}, 'Amount Spent');
-              $(q, 'p', 'amount', {}, `$${this.profile?.fundsSpent || '0'}`);
-            });
-            $(q, 'div', 'fund-box button-container', {}, (q) => {
-              new Button({
-                label: 'Add Funds',
-                type: ButtonType.PRIMARY,
-                onClick: () => console.log('Add funds'),
-              }).render(q);
-              new Button({
-                label: 'View Transactions',
-                type: ButtonType.SECONDARY,
-                onClick: () => console.log('View transactions'),
-              }).render(q);
-            });
-          });
-        });
+        // this.fundsCollapsible.render(q);
+        // $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
+        //   $(q, 'div', 'funds-details', {}, (q) => {
+        //     $(q, 'div', 'fund-box', {}, (q) => {
+        //       $(q, 'h2', 'title', {}, 'Amount Remaining');
+        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsRemaining || '0'}`);
+        //     });
+        //     $(q, 'div', 'fund-box', {}, (q) => {
+        //       $(q, 'h2', 'title', {}, 'Amount Spent');
+        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsSpent || '0'}`);
+        //     });
+        //     $(q, 'div', 'fund-box button-container', {}, (q) => {
+        //       new Button({
+        //         label: 'Add Funds',
+        //         type: ButtonType.PRIMARY,
+        //         onClick: () => console.log('Add funds'),
+        //       }).render(q);
+        //       new Button({
+        //         label: 'View Transactions',
+        //         type: ButtonType.SECONDARY,
+        //         onClick: () => console.log('View transactions'),
+        //       }).render(q);
+        //     });
+        //   });
+        // });
       });
-
-      // Logout button
-      new Button({
-        label: 'Logout',
-        type: ButtonType.SECONDARY,
-        onClick: () => {
-          CACHE_STORE.getUser().signOut();
-          router.navigateTo('/');
-        },
-      }).render(q);
     });
   }
 }
 
-
-export const profileViewHandler = new ViewHandler('', ProfileView); 
+export const profileViewHandler = new ViewHandler('', ProfileView);
