@@ -12,14 +12,14 @@ import { getProjects } from '@/services/projects';
 import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
 import { Project as ClientProject } from '@data/client/cache/projects.cache';
 import { UserType } from '@data/user';
-class ProjectsView extends View {
+export default class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache!: ProjectsCache;
   private userCache: UserCache;
   private projects: (LeadProject | ClientProject)[][] = [];
   private userId: string | null = null;
   private userType!: UserType;
-  private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
+  private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured'];
 
   private get TABLE_HEADERS(): string[] {
     return ['ID', 'Status', 'Title', this.userType === 'Client' ? 'LeadId' : 'ClientId', 'Pending Reports'];
