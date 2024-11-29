@@ -9,17 +9,20 @@ import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
 import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/user/cache/userProfile';
 // import { User, UserCacheMock } from '@/data/user';
+import { router } from '@/ui_lib/router';
 
 export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
   // private userCache: UserCacheMock;
   private fundsCollapsible: CollapsibleBase;
+
   private profile!: UserProfile;
   private nameField: TextField;
   private emailField: TextField;
   private phoneField: TextField;
   private userProfileCache!: UserProfileCache;
   private loading: LoadingScreen | null = null;
+
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');

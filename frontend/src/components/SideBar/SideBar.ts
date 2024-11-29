@@ -43,7 +43,7 @@ export class SidebarView implements NavigationView {
   }
 
   render(q: Quark, currentRoute: string): void {
-    console.log('currentRoute', currentRoute);
+    // console.log('currentRoute', currentRoute);
     // Sidebar
     $(q, 'div', 'side-bar', {}, (q) => {
       // $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {

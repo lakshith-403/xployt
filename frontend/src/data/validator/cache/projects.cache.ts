@@ -10,17 +10,17 @@ interface ProjectResponse {
 
 interface ProjectDetails {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active';
   title: string;
-  client: string;
+  clientId: string;
   pendingReports: number;
 }
 
 export class Project {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active';
+  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active';
   title: string;
-  client: string;
+  clientId: string;
   pendingReports: number;
   // severity: "critical" | "minor" | "informational"
 
@@ -28,7 +28,7 @@ export class Project {
     this.id = data['id'];
     this.status = data['status'];
     this.title = data['title'];
-    this.client = data['client'];
+    this.clientId = data['clientId'];
     this.pendingReports = data['pendingReports'];
   }
 }
@@ -60,6 +60,12 @@ export class ProjectsCache extends CacheObject<Project[][]> {
         return new Project({ ...projectDetails });
       }),
     ];
+  }
+  public updateProject(projectId: number, status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
+    console.log('Updating project:', projectId, status);
+    console.log('Current projects:', this.data![0]);
+    this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, status } : p));
+    console.log('Updated project:', this.data![0]);
   }
 }
 
