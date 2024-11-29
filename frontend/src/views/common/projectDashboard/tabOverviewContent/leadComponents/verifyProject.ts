@@ -86,6 +86,7 @@ class VerifyProject extends View {
             await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Rejected');
             CACHE_STORE.getProjects().updateProject(parseInt(this.params.projectId), 'Rejected');
             router.navigateTo(`/projects/${this.params.projectId}`);
+            window.location.reload();
             loading.hide();
           },
         });
