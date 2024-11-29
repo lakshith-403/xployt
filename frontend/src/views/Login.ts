@@ -36,8 +36,10 @@ export class LoginView extends View {
   public render(q: Quark): void {
     $(q, 'div', 'login-view', {}, (q) => {
       $(q, 'div', 'login-left', {}, (q) => {
-        $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
-        $(q, 'p', 'login-description', {}, 'Log in to a straight to point description about what happens when you log in');
+        const loginIcon = $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
+        loginIcon.onclick = () => router.navigateTo('/');
+
+        $(q, 'p', 'login-description', {}, '');
       });
       $(q, 'div', 'login-container', {}, (q) => {
         $(q, 'h1', 'login-title', {}, 'Sign in');

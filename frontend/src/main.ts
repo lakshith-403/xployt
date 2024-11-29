@@ -99,7 +99,8 @@ class TopNavigationView implements NavigationView {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
+    const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
+    logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
       const notificationList = new NotificationList(false, {userId: "1"});
       const notificationButton = new NotificationButton(notificationList, q);

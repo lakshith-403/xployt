@@ -7,7 +7,7 @@ import './Profile.scss';
 import { CollapsibleBase } from '../components/Collapsible/collap.base';
 import { CACHE_STORE } from '../data/cache';
 import LoadingScreen from '../components/loadingScreen/loadingScreen';
-import { UserProfile, UserProfileCache, UserProfileCacheMock } from '@/data/user/cache/userProfile';
+import { UserProfile, UserProfileCache } from '@/data/user/cache/userProfile';
 // import { User, UserCacheMock } from '@/data/user';
 import { router } from '@/ui_lib/router';
 
