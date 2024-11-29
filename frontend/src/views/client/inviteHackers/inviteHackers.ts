@@ -8,6 +8,14 @@ import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cach
 import './inviteHackers.scss'
 import {InvitationsCache} from "@data/common/cache/invitations.cache";
 
+interface Hacker {
+    id: number,
+    name: string,
+    email: string,
+    blastPoints: number,
+    areaOfExpertise: string
+}
+
 export class InviteHackers extends View {
     projectId: string = "1";
     projectInfo = {} as ProjectInfo;
@@ -45,13 +53,7 @@ export class InviteHackers extends View {
             areaOfExpertise: "Cloud Security Penetration Testing",
         },
     ];
-    private invitedHackers: {
-        id: number,
-        name: string,
-        email: string,
-        blastPoints: number,
-        areaOfExpertise: string
-    }[] = [];
+    private invitedHackers: Hacker[] = [];
 
 
     constructor(params: { projectId: string }) {
@@ -72,7 +74,7 @@ export class InviteHackers extends View {
         }
     }
 
-    async sendInvitation(hackerId: string, parent: Quark): Promise<void> {
+    async sendInvitation(hackerId: string, parent:Quark): Promise<void> {
         try {
             // Send the invitation
             await this.invitationsCache.create(this.projectId, hackerId);
@@ -85,20 +87,17 @@ export class InviteHackers extends View {
             }
 
             // Re-render the specific sections
-            this.renderInvitedHackers(parent);
-            // this.renderAvailableHackers(parent);
+            // this.renderInvitedHackers(invited, this.invitedHackers);
+            // this.renderHackerList(available, this.availableHackers);
+
+            await this.render(parent)
         } catch (error) {
             console.error("Failed to send invitation:", error);
         }
     }
 
-    private renderHackerList(q: Quark, parent: Quark,  hackers: {
-        id: number,
-        name: string,
-        email: string,
-        blastPoints: number,
-        areaOfExpertise: string
-    }[]) {
+    private renderHackerList(q: Quark,  hackers: Hacker[], parent: Quark) {
+        q.innerHTML = '';
         hackers.forEach((hacker) => {
             new Card({
                 title: '',
@@ -133,10 +132,10 @@ export class InviteHackers extends View {
         })
     }
 
-    private renderInvitedHackers(q: Quark) {
+    private renderInvitedHackers(q: Quark, hackers: Hacker[]) {
         q.innerHTML = '';
-        if (this.invitedHackers.length > 0) {
-            this.invitedHackers.forEach(hacker => {
+        if (hackers.length > 0) {
+            hackers.forEach(hacker => {
                 new Card({
                     title: hacker.name,
                     content: $(q, 'div', 'description', {}, (q) => {
@@ -152,8 +151,8 @@ export class InviteHackers extends View {
 
     async render(container: Quark): Promise<void> {
         const parent: Quark = container;
-        await this.loadData();
         parent.innerHTML = '';
+        await this.loadData();
         $(parent, 'div', 'client-invitations', {}, (q) => {
             $(q, 'div', 'section-header', {}, (q) => {
                 $(q, 'h1', 'section-title', {}, (q) => {
@@ -198,14 +197,14 @@ export class InviteHackers extends View {
                             q.innerHTML = "Invited Hackers";
                         });
                         const invitedHackersContainer = $(q, 'div', 'hacker-list', {}, (q) => {
-                            this.renderInvitedHackers(q);
+                            this.renderInvitedHackers(q, this.invitedHackers);
                         });
                     });
                 });
                 $(q, 'div', 'section-content', {}, (q) => {
                     $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
-                    $(q, 'div', 'hacker-list available', {}, (q) => {
-                        this.renderHackerList(q, parent, this.availableHackers);
+                    const availableHackersContainer = $(q, 'div', 'hacker-list available', {}, (q) => {
+                        this.renderHackerList(q, this.availableHackers, parent);
                     });
                 });
             });

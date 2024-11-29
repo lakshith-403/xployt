@@ -5,7 +5,7 @@ import {ProjectTeamCache} from "@data/common/cache/projectTeam.cache";
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { Card } from '@components/card/card.base';
 import '../../tabOverview.scss';
-import {PublicUser} from "@data/user";
+import {PublicUser, User, UserCache} from "@data/user";
 
 export class OverviewBasicInfo {
   private projectTeam: { [key: string]: PublicUser } = {} as { [key: string]: PublicUser };
