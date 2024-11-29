@@ -12,7 +12,7 @@ import { InvitationsCache } from '@data/common/cache/invitations.cache';
 import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
 
-import { UserProfileCache, UserProfileCacheMock } from './user/cache/userProfile';
+import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
 
@@ -126,7 +126,7 @@ class CacheStore {
   // Update the method in CacheStore class
   public getUserProfile(userId: string): UserProfileCache {
     if (!this.userProfileMap.has(userId)) {
-      this.userProfileMap.set(userId, new UserProfileCacheMock()); // Now using real cache instead of mock
+      this.userProfileMap.set(userId, new UserProfileCache()); // Now using real cache instead of mock
     }
     return this.userProfileMap.get(userId)!;
   }
