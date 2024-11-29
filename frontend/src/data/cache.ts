@@ -11,8 +11,11 @@ import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/n
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
 import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
+
+import { UserProfileCache, UserProfileCacheMock } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
+
 class CacheStore {
   private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
@@ -26,6 +29,7 @@ class CacheStore {
   private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
+  private readonly userProfileMap: Map<string, UserProfileCache>;
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
 
@@ -42,6 +46,7 @@ class CacheStore {
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
+    this.userProfileMap = new Map();
     this.discussionMap = new Map();
     this.clientProjectsMap = new Map();
     this.leadProjectsMap = new Map();
@@ -117,11 +122,21 @@ class CacheStore {
     }
     return this.projectConfigInfoMap.get(projectId)!;
   }
+
+  // Update the method in CacheStore class
+  public getUserProfile(userId: string): UserProfileCache {
+    if (!this.userProfileMap.has(userId)) {
+      this.userProfileMap.set(userId, new UserProfileCacheMock()); // Now using real cache instead of mock
+    }
+    return this.userProfileMap.get(userId)!;
+  }
+
   public async updateLeadProjectConfigInfo(projectId: string, newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
     const projectConfig = await this.getLeadProjectConfigInfo(projectId).get(false, projectId);
     projectConfig.updateStatus(newStatus);
     await this.getLeadProjectConfigInfo(projectId).set(projectConfig);
   }
+
   public getNotificationsList(userId: string): NotificationsCache {
     if (!this.notificationsListMap.has(userId)) {
       this.notificationsListMap.set(userId, new NotificationsCacheMock());
