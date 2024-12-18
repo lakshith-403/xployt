@@ -26,7 +26,7 @@ export class MessageComponent {
       $(q, 'div', 'message-body', {}, (q) => {
         $(q, 'div', 'thread-line', {}, (q) => {
           if (this.message.type === 'text') {
-            $(q, 'img', 'sender-avatar', { src: 'assets/avatar.png' });
+            $(q, 'div', 'sender-avatar', { src: 'assets/avatar.png' });
           } else if (this.message.type === 'complaint') {
             $(q, 'span', 'sender-avatar', {}, (q) => {
               $(q, 'i', 'fa-solid fa-exclamation-triangle', {});
