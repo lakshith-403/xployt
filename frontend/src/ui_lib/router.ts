@@ -38,6 +38,10 @@ class Router {
     window.addEventListener('popstate', this.router);
   }
 
+  public rerenderNavigationView(): void {
+    this.topNavigationView?.render(document.getElementById('navbar')!, this.currentRoute);
+  }
+
   public addRouteHandler(routeHandler: RouteHandler): void {
     this.routeHandlers.push(routeHandler);
     this.routeHandlers.sort((a, b) => b.route.length - a.route.length);

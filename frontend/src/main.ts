@@ -27,6 +27,8 @@ import { discussionViewHandler } from './views/discussion/Discussion';
 import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 import { userDashboardViewHandler } from '@views/UserDashboard';
 import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
+import { Button } from './components/button/base';
+import { CACHE_STORE } from './data/cache';
 const HomeSidebar: SidebarTab[] = [
   // {
   //   id: '',
@@ -94,24 +96,107 @@ class AboutSidebarView implements NavigationView {
 
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
+  buttonContainer!: Quark;
 
   willUpdate: () => void = () => {};
 
   render(q: Quark): void {
+    let parent = q;
     q.innerHTML = '';
     const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
-      const notificationList = new NotificationList(false, {userId: "1"});
+      const notificationList = new NotificationList(false, { userId: '1' });
       const notificationButton = new NotificationButton(notificationList, q);
       notificationButton.render();
-        $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Home');
-        $(q, 'button', '', { onclick: () => { router.navigateTo('/'); } }, 'Hackers');
-        $(q, 'button', '', { onclick: () => { router.navigateTo('/validator/application'); } }, 'Validators');
-      $(q, 'button', '', { onclick: () => { router.navigateTo('/validator/application'); } }, 'Organizations');
-        $(q, 'button', '', { onclick: () => { router.navigateTo('/profile'); } }, 'Profile');
+      $(
+        q,
+        'button',
+        '',
+        {
+          onclick: () => {
+            router.navigateTo('/');
+          },
+        },
+        'Home'
+      );
+      $(
+        q,
+        'button',
+        '',
+        {
+          onclick: () => {
+            router.navigateTo('/');
+          },
+        },
+        'Hackers'
+      );
+      $(
+        q,
+        'button',
+        '',
+        {
+          onclick: () => {
+            router.navigateTo('/validator/application');
+          },
+        },
+        'Validators'
+      );
+      $(
+        q,
+        'button',
+        '',
+        {
+          onclick: () => {
+            router.navigateTo('/validator/application');
+          },
+        },
+        'Organizations'
+      );
+
+      this.buttonContainer = $(q, 'span', '', {}, (q) => {});
+      $(
+        q,
+        'button',
+        '',
+        {
+          onclick: () => {
+            router.navigateTo('/profile');
+          },
+        },
+        'Profile'
+      );
+    });
+    this.renderButtons();
+  }
+
+  private renderButtons(): void {
+    this.buttonContainer.innerHTML = '';
+
+    CACHE_STORE.getUser()
+      .get()
+      .then((user) => {
+        console.log(user);
+        // @ts-ignore
+        if (user.type != 'Guest') {
+          new Button({
+            label: 'Sign Out',
+            onClick: () => {
+              CACHE_STORE.getUser().signOut();
+              router.navigateTo('/');
+              this.renderButtons();
+            },
+          }).render(this.buttonContainer);
+        } else {
+          new Button({
+            label: 'Sign In',
+            onClick: () => {
+              router.navigateTo('/login');
+              this.renderButtons();
+            },
+          }).render(this.buttonContainer);
+        }
       });
-    // prettier-ignore
   }
 }
 

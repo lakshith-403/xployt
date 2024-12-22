@@ -7,6 +7,7 @@ import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { submitProjectConfig } from '@data/projectLead/network/projectConfig.network';
 import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
+import { router } from '@/ui_lib/router';
 
 class ProjectConfigForm extends View {
   params: { projectId: string };
@@ -56,7 +57,7 @@ class ProjectConfigForm extends View {
     try {
       await submitProjectConfig(this.params.projectId, formState);
       alert('Project configuration submitted successfully.');
-      // router.navigateTo('/');
+      router.navigateTo(`/projects/${this.params.projectId}`);
     } catch (error) {
       console.error('Error during form submission:', error);
       alert(`Failed to submit project configuration: ${error}`);
@@ -86,8 +87,8 @@ class ProjectConfigForm extends View {
           medium: 'optional',
           low: 'optional',
           informative: 'optional',
-          visibility: 'required',
-          initialFunding: 'required',
+          visibility: 'optional',
+          initialFunding: 'optional',
         },
       },
     ];

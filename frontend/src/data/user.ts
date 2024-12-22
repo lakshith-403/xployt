@@ -1,3 +1,4 @@
+import { router } from '@/ui_lib/router';
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
 export type UserType = 'Client' | 'Validator' | 'ProjectLead' | 'Hacker' | 'Guest';
@@ -73,6 +74,8 @@ export class UserCache extends CacheObject<User> {
     const response = await AuthEndpoints.register(name, email, password, role);
     this.data = new User(response.data as UserResponse);
     console.log('User registered:', this.data);
+
+    router.rerenderNavigationView();
     return this.data;
   }
 
@@ -82,12 +85,14 @@ export class UserCache extends CacheObject<User> {
 
     console.log('User signed in:', this.data);
 
+    router.rerenderNavigationView();
     return this.data;
   }
 
   async signOut(): Promise<void> {
     const response = await AuthEndpoints.signOut();
     this.invalidate_cache();
+    router.rerenderNavigationView();
   }
 }
 
