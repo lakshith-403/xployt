@@ -64,9 +64,9 @@ class ProjectRequestForm extends View {
       title: 'string',
       startDate: 'date',
       endDate: 'date',
-      description: 'string',
+      description: 'string-strict',
       url: 'string',
-      technicalStack: 'string',
+      technicalStack: 'string-strict',
     };
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, validationSchema);
