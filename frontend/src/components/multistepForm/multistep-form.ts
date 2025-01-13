@@ -6,6 +6,9 @@ import './multistep-form.scss';
 export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
+export interface ValidationSchema {
+  [key: string]: 'string' | 'date' | 'array|string';
+}
 
 export interface Steps {
   title: string;
@@ -32,8 +35,9 @@ class MultistepForm {
   private lastAction: 'Submit' | 'Apply' = 'Submit';
   private onSubmit: (formState: any) => void;
   private config: { [key: string]: any } = {};
+  private validationSchema!: ValidationSchema;
 
-  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
     this.steps = steps;
     this.activeTabIndex = 0;
     this.tabValidityStates = new Array(steps.length).fill(false);
@@ -43,6 +47,57 @@ class MultistepForm {
     this.onSubmit = onSubmit;
     this.config = config || {};
     // //console.log(this.numOfSteps);
+  }
+
+  private validateCurrentTab(): boolean {
+    const currentStep = this.steps[this.activeTabIndex];
+    for (const key in currentStep.stateUsed) {
+      const value = this.formState[key];
+      // Check if the field is required and has a value before validating
+      if (value !== undefined && value !== null && value !== '') {
+        if (!this.validateField(key)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private validateFormState(): boolean {
+    for (const key in this.validationSchema) {
+      if (!this.validateField(key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private validateField(key: string): boolean {
+    const expectedType = this.validationSchema[key];
+    const value = this.formState[key];
+
+    if (expectedType === 'string' && typeof value !== 'string') {
+      alert(`${key} must be a string`);
+      return false;
+    }
+
+    if (expectedType === 'date' && !this.isValidDate(value)) {
+      alert(`${key} is an invalid date`);
+      return false;
+    }
+
+    if (expectedType === 'array|string') {
+      if (!Array.isArray(value) && typeof value !== 'string') {
+        alert(`${key} must be an array or a string`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private isValidDate(date: any): boolean {
+    return typeof date.day === 'string' && typeof date.month === 'string' && typeof date.year === 'string' && !isNaN(Date.parse(`${date.year}-${date.month}-${date.day}`));
   }
 
   render(q: Quark): void {
@@ -99,11 +154,11 @@ class MultistepForm {
   }
 
   checkBeforeSubmit(): boolean {
-    if (this.isCurrentTabValid()) {
+    if (this.isCurrentTabValid() && this.validateFormState()) {
       this.onSubmit(this.formState);
       return true;
     } else {
-      alert('Acccept all terms and conditions');
+      alert('Fill all required fields');
       return false;
     }
   }
@@ -134,6 +189,10 @@ class MultistepForm {
   }
 
   switchTab(index: number): void {
+    if (!this.validateCurrentTab()) {
+      alert('Please correct the errors in the current tab before proceeding.');
+      return;
+    }
     this.tabsButtons.children[this.activeTabIndex].classList.remove('selected');
     this.tabsButtons.children[index].classList.add('selected');
     this.activeTabIndex = index;
@@ -169,6 +228,8 @@ class MultistepForm {
   private checkIfRequiredFieldsAreFilled(): boolean {
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
+        console.log(key, this.formState[key]);
+        // console.log(key, this.formState[key], this.formState);
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
           //console.log(`Field "${key}" is required but is empty`);
@@ -210,18 +271,22 @@ class MultistepForm {
    * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
    */
   private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
-    //console.log('Update form state', keyOrState, value);
+    // console.log('Update form state', keyOrState, value);
     if (typeof keyOrState === 'string') {
       if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
+        // console.log('type 1', keyOrState, value);
         this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
       } else {
+        // console.log('type 2', keyOrState, value);
         this.formState[keyOrState] = value;
       }
     } else {
       for (const [key, val] of Object.entries(keyOrState)) {
         if (this.formState[key] instanceof Object && val instanceof Object) {
+          // console.log('type 3', key, val);
           this.formState[key] = { ...this.formState[key], ...val };
         } else {
+          // console.log('type 4', key, val);
           this.formState[key] = val;
         }
       }

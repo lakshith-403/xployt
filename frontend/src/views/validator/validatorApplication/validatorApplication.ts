@@ -2,7 +2,7 @@ import { View, ViewHandler } from '@ui_lib/view';
 import ProjectDetails from './Step1/PersonalDetails';
 import Preferences from './Step2/Expertise';
 import { TermsAndConditions } from './Step3/TermsAndConditions';
-import MultistepForm from './../../../components/multistepForm/multistep-form';
+import MultistepForm, { ValidationSchema } from './../../../components/multistepForm/multistep-form';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
 import { router } from '@/ui_lib/router';
@@ -78,7 +78,23 @@ class ValidatorApplication extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'progress-bar-bottom' }, this.onSubmit);
+    const validationSchema: ValidationSchema = {
+      name: 'string',
+      email: 'string',
+      mobile: 'string',
+      country: 'string',
+      linkedin: 'string',
+      dateOfBirth: 'date',
+      skills: 'string',
+      certificates: 'string',
+      cv: 'string',
+      references: 'string',
+      relevantExperience: 'string',
+      areaOfExpertise: 'string',
+      comments: 'string',
+    };
+
+    const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'progress-bar-bottom' }, this.onSubmit, validationSchema);
     $(q, 'div', 'validator-application', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Validator Application');
       $(q, 'div', 'container', {}, (q) => {
