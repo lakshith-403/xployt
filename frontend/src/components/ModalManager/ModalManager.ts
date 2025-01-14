@@ -1,3 +1,5 @@
+import './ModalManager.scss';
+
 type ModalData = {
   name: string;
   element: HTMLElement;
@@ -8,33 +10,37 @@ type ModalConfig = {
   [key: string]: () => void;
 };
 
-export default class ModalManager {
+export default class modalManager {
   private static modalList: ModalData[] = [];
 
   static includeModal(name: string, buttonConfig: ModalConfig = {}): void {
     const exists = this.modalList.some((modal) => modal.name === name);
 
-    if (exists) {
-      const existingModal = this.modalList.find((modal) => modal.name === name)!;
-      existingModal.buttonConfig = buttonConfig;
-      console.warn(`Modal "${name}" already exists. Configuration updated.`);
-      return;
+    if (!exists) {
+      const modalElement = document.createElement('div');
+      modalElement.classList.add('custom-modal');
+      modalElement.innerHTML = `
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+        </div>
+      `;
+      document.body.appendChild(modalElement);
+
+      const modalData: ModalData = {
+        name: name,
+        element: modalElement,
+        buttonConfig: buttonConfig,
+      };
+
+      this.modalList.push(modalData);
+
+      // Add event listener for close button
+      modalElement.querySelector('.close-button')?.addEventListener('click', () => {
+        this.hide(name);
+      });
+    } else {
+      console.error(`Requested Modal ${name} is already created`);
     }
-
-    const modalElement = document.createElement('div');
-    modalElement.classList.add('custom-modal');
-    modalElement.innerHTML = `
-      <div class="modal-content" role="dialog" aria-modal="true" tabindex="-1"></div>
-    `;
-    document.body.appendChild(modalElement);
-
-    const modalData: ModalData = {
-      name,
-      element: modalElement,
-      buttonConfig,
-    };
-
-    this.modalList.push(modalData);
   }
 
   private static bindButtonActions(modalElement: HTMLElement, buttonConfig: ModalConfig): void {
@@ -48,34 +54,50 @@ export default class ModalManager {
     }
   }
 
-  static show(name: string, content: HTMLElement | string): void {
+  static show(name: string, content: HTMLElement | string, enableAsynchronous: boolean = false): Promise<void> {
     const modal = this.modalList.find((modal) => modal.name === name);
-    if (modal) {
-      const contentElement = modal.element.querySelector('.modal-content');
-      if (contentElement) {
-        contentElement.innerHTML = '';
-        if (typeof content === 'string') {
-          contentElement.innerHTML = content;
-        } else {
-          contentElement.appendChild(content);
-        }
+    if (!modal) {
+      return Promise.reject(new Error(`Modal with name "${name}" not found`));
+    }
 
-        (contentElement as HTMLElement).focus();
-      }
-      document.documentElement.appendChild(modal.element);
-      modal.element.style.display = 'flex';
-
-      this.bindButtonActions(modal.element, modal.buttonConfig);
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-          this.hide(name);
-        }
+    const contentElement = modal.element.querySelector('.modal-content');
+    if (contentElement) {
+      contentElement.innerHTML = `
+      <span class="close-button">&times;</span>
+      ${typeof content === 'string' ? content : content.outerHTML}
+    `;
+      contentElement.querySelector('.close-button')?.addEventListener('click', () => {
+        this.hide(name);
       });
     }
+
+    modal.element.style.display = 'flex';
+    // Bind button actions
+    this.bindButtonActions(modal.element, modal.buttonConfig);
+
+    if (enableAsynchronous) {
+      return new Promise<void>((resolve) => {
+        console.log('ModalManager.show in async mode', modal.name);
+        const buttons = modal.element.querySelectorAll('button');
+        buttons.forEach((button) => {
+          button.addEventListener(
+            'click',
+            () => {
+              this.hide(name);
+              resolve();
+            },
+            { once: true }
+          );
+        });
+      });
+    }
+    console.log('ModalManager.show in non-async mode', modal.name);
+    // Resolve immediately for non-asynchronous behavior
+    return Promise.resolve();
   }
 
   static hide(name: string): void {
+    console.log('ModalManager.hide', name);
     const modal = this.modalList.find((modal) => modal.name === name);
     if (modal) {
       modal.element.style.display = 'none';
@@ -86,16 +108,13 @@ export default class ModalManager {
     const modalIndex = this.modalList.findIndex((modal) => modal.name === name);
     if (modalIndex !== -1) {
       const modal = this.modalList[modalIndex];
-      modal.element.querySelectorAll('*').forEach((el) => {
-        const clone = el.cloneNode(true);
-        el.parentNode?.replaceChild(clone, el);
-      });
       modal.element.remove();
       this.modalList.splice(modalIndex, 1);
     }
   }
 
   static bindToClass(name: string, className: string): void {
+    console.log('ModalManager.bindToClass', name, className);
     const elements = document.querySelectorAll(`.${className}`);
     elements.forEach((element) => {
       element.addEventListener('click', () => {
@@ -105,46 +124,38 @@ export default class ModalManager {
   }
 }
 
-// CSS remains the same
-const style = document.createElement('style');
-style.innerHTML = `
-.custom-modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+function getAllClasses(element: Element): string[] {
+  let classes: string[] = Array.from(element.classList);
+  element.querySelectorAll('*').forEach((child) => {
+    classes = classes.concat(Array.from(child.classList));
+  });
+  return classes;
+}
+// Utility functions
+export function convertToDom(htmlString: string): HTMLElement {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  console.log('convertToDom classes:', getAllClasses(doc.body));
+  return doc.body as HTMLElement;
 }
 
-.modal-content {
-  background-color: #fefefe;
-  border-radius: 8px; /* Rounded corners for better appearance */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 600px; /* Ensure it doesn't grow too large */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+export function setContent(modalElement: HTMLElement, content: { [selector: string]: string }): void {
+  console.log('setContent', content);
+  const contentElement = modalElement.querySelector('.modal-body');
+  console.log('contentElement', contentElement);
+  if (contentElement) {
+    // Iterate over the content object
+    for (const [selector, text] of Object.entries(content)) {
+      const element = contentElement.querySelector(selector);
+      if (element) {
+        element.textContent = text;
+      } else {
+        console.warn(`Element with selector "${selector}" not found in modal.`);
+      }
+    }
+    // // Add event listener for close button
+    // contentElement.querySelector('.close-button')?.addEventListener('click', () => {
+    //   modalElement.style.display = 'none';
+    // });
+  }
 }
-
-.close-button {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-  color: black;
-  text-decoration: none;
-}
-
-`;
-document.head.appendChild(style);
