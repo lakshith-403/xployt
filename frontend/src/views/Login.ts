@@ -6,6 +6,25 @@ import { UserCache } from '@/data/user';
 import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
+import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
+import basicAlert from './alerts/basicAlert.html';
+
+// Convert the HTML string to a DOM element
+const modalElement = convertToDom(basicAlert);
+
+// Set text content of modal elements
+setContent(modalElement, {
+  '.modal-title': 'Login Message',
+  '.modal-message': 'Login successful!',
+});
+// Add event listeners to the modal buttons
+ModalManager.includeModal('loginAlert', {
+  '.button-cancel': () => ModalManager.hide('loginAlert'),
+  '.button-confirm': () => {
+    ModalManager.hide('loginAlert');
+    router.navigateTo('/dashboard');
+  },
+});
 
 export class LoginView extends View {
   private emailField: TextField;
@@ -83,8 +102,13 @@ export class LoginView extends View {
       .signIn(email, password)
       .then((user) => {
         console.log('User logged in:', user);
-        alert('User logged in successfully');
-        router.navigateTo('/dashboard');
+
+        // Method 1: Using a promise
+        ModalManager.show('loginAlert', modalElement, true).then(() => {
+          console.log('ModalManager.show resolved');
+        });
+        // Method 2 : Basic modal
+        // ModalManager.show('loginAlert', modalElement);
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {

@@ -14,7 +14,7 @@ const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
 const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
 ModalManager.includeModal('validateErrorModal', {
-  '.close-button': () => ModalManager.hide('validateErrorModal'),
+  '.closeButton': () => ModalManager.hide('validateErrorModal'),
   '.sendSignal': () => console.log('Signal sent'),
 });
 export function isValidDate(date: any): { result: boolean; message: string } {
