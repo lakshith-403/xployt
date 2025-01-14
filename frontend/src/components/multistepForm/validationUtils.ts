@@ -1,20 +1,21 @@
 import ModalManager from '../ModalManager/ModalManager';
 import { ValidationSchema } from './multistep-form';
 // import { loadModalContent } from '../ModalManager/ModalManager';
-import validateErrorModalContent from './validateErrorModal.html';
+import validateErrorModalContent from '@alerts/alertOnlyCancel.html';
 import { setContent, convertToDom } from '../ModalManager/ModalManager';
+import { modalAlertOnlyCancel } from '@/main';
 
 // Convert the HTML string to a DOM element
-const modalElement = convertToDom(validateErrorModalContent);
+// const modalElement = convertToDom(validateErrorModalContent);
 
 // Set text content of modal elements
-setContent(modalElement, {
-  '.modal-title': 'Validation Error',
-});
+// setContent(modalElement, {
+//   '.modal-title': 'Validation Error',
+// });
 // Add event listeners to the modal buttons
-ModalManager.includeModal('validateErrorModal', {
-  '.button-cancel': () => ModalManager.hide('validateErrorModal'),
-});
+// ModalManager.includeModal('validateErrorModal', {
+//   '.button-cancel': () => ModalManager.hide('validateErrorModal'),
+// });
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
@@ -110,10 +111,11 @@ export function validateFormState(formState: any, validationSchema: ValidationSc
     if (!fieldValidation.result) {
       // alert(fieldValidation.message);
       // console.log(validateErrorModalContent);
-      setContent(modalElement, {
+      setContent(modalAlertOnlyCancel, {
+        '.modal-title': 'Validation Error',
         '.modal-message': fieldValidation.message,
       });
-      ModalManager.show('validateErrorModal', modalElement);
+      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
       return false;
     }
   }
