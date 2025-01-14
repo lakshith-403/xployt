@@ -15,7 +15,8 @@
       "@data/*": ["src/data/*"],
       "@views/*": ["src/views/*"],
       "@assets/*": ["src/assets/*"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@alerts/*": ["src/views/alerts/*"]
     }
   },
   "include": ["./src/**/*", "src/types/html.d.ts"]

@@ -9,7 +9,7 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 export interface ValidationSchema {
-  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict';
+  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url';
 }
 
 export interface Steps {
@@ -209,7 +209,7 @@ class MultistepForm {
   private checkIfRequiredFieldsAreFilled(): boolean {
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
-        console.log(key, this.formState[key]);
+        // console.log(key, this.formState[key]);
         // console.log(key, this.formState[key], this.formState);
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {

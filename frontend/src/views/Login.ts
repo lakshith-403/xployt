@@ -7,16 +7,18 @@ import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
-import basicAlert from './alerts/basicAlert.html';
+import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
+import { modalAlertOnlyCancel } from '../main';
 
 // Convert the HTML string to a DOM element
-const modalElement = convertToDom(basicAlert);
+const modalElement = convertToDom(alertCancelConfirm);
 
 // Set text content of modal elements
 setContent(modalElement, {
   '.modal-title': 'Login Message',
   '.modal-message': 'Login successful!',
 });
+
 // Add event listeners to the modal buttons
 ModalManager.includeModal('loginAlert', {
   '.button-cancel': () => ModalManager.hide('loginAlert'),
@@ -92,7 +94,12 @@ export class LoginView extends View {
     const email = this.emailField.getValue();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert('Invalid email format. Please enter a valid email.');
+      // alert('Invalid email format. Please enter a valid email.');
+      setContent(modalAlertOnlyCancel, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Invalid email format. Please enter a valid email.',
+      });
+      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
       return;
     }
     const password = this.passwordField.getValue();
@@ -112,11 +119,21 @@ export class LoginView extends View {
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {
-          alert('Invalid credentials provided. Please try again.');
+          setContent(modalAlertOnlyCancel, {
+            '.modal-title': 'Error',
+            '.modal-message': 'Invalid credentials provided. Please try again.',
+          });
+          ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
+          // alert('Invalid credentials provided. Please try again.');
           return;
         }
         console.error('Error logging in user:', error);
-        alert('Error logging in user: ' + error);
+        // alert('Error logging in user: ' + error);
+        setContent(modalAlertOnlyCancel, {
+          '.modal-title': 'Error',
+          '.modal-message': 'Error logging in user: ' + error,
+        });
+        ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
       });
   }
 }

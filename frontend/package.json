@@ -6,7 +6,8 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open",
+    "detail": "webpack --stats detailed && webpack serve --open"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^12.0.2",
