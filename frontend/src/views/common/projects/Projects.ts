@@ -40,6 +40,7 @@ export default class ProjectsView extends View {
       this.userId = user.id;
       console.log('user id', this.userId);
       this.projects = await getProjects(this.userId, user.type);
+      console.log('projects', this.projects);
       this.userType = user.type;
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];

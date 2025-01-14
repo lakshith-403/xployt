@@ -49,7 +49,7 @@ class ProjectRequestForm extends View {
       ModalManager.includeModal('projectRequestFormConfirm', {
         '.button-confirm': () => {
           ModalManager.remove('projectRequestFormConfirm');
-          // router.navigateTo('/dashboard');
+          router.navigateTo('/projects');
         },
       });
       ModalManager.show('projectRequestFormConfirm', modalAlertConfirm);
