@@ -18,13 +18,15 @@ ModalManager.includeModal('validateErrorModal', {
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
-const stringRegex = /^[a-zA-Z0-9]+$/; // Matches letters and numbers
+const stringRegex = /^[a-zA-Z0-9 ]+$/; // Matches letters and numbers
 
-const stringStrictRegex = /^[a-zA-Z]+$/; // Matches only letters
+const stringStrictRegex = /^[a-zA-Z ]+$/; // Matches only letters
 
 const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
 const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
 const yearRegex = /^\d{4}$/; // Matches a four-digit year
+
+const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
 
 export function isValidDate(date: any): { result: boolean; message: string } {
   const isDayValid = dayRegex.test(date.day);

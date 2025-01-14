@@ -6,23 +6,29 @@ import './projectRequestForm.scss';
 import { Steps } from '@/components/multistepForm/multistep-form';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import { requestProject } from '@/data/client/network/projectConfig.network';
+import ModalManager, { convertToDom } from '@/components/ModalManager/ModalManager';
+import { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyCancel } from '@/main';
+
+import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
+import { router } from '@/ui_lib/router';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    title: '',
+    title: 'Test Title',
     startDate: {
-      day: '',
-      month: '',
-      year: '',
+      day: '1',
+      month: '1',
+      year: '2025',
     },
     endDate: {
-      day: '',
-      month: '',
-      year: '',
+      day: '1',
+      month: '1',
+      year: '2025',
     },
-    description: '',
-    url: '',
-    technicalStack: '',
+    description: 'Test Description',
+    url: 'https://www.google.com',
+    technicalStack: 'Test Technical Stack',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
@@ -35,12 +41,28 @@ class ProjectRequestForm extends View {
         startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
         endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
       });
-      // router.navigateTo('/');
+      const modalAlertConfirm = convertToDom(alertOnlyConfirm);
+      setContent(modalAlertConfirm, {
+        '.modal-title': 'Success',
+        '.modal-message': 'Project configuration submitted successfully.',
+      });
+      ModalManager.includeModal('projectRequestFormConfirm', {
+        '.button-confirm': () => {
+          ModalManager.remove('projectRequestFormConfirm');
+          // router.navigateTo('/dashboard');
+        },
+      });
+      ModalManager.show('projectRequestFormConfirm', modalAlertConfirm);
     } catch (error) {
       console.error('Error during form submission:', error);
-      alert(`Failed to submit project configuration: ${error}`);
+      setContent(modalAlertOnlyCancel, {
+        '.modal-title': 'Error',
+        '.modal-message': `Failed to submit project configuration: ${error}`,
+      });
+      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
     } finally {
       loading.hide();
+      ModalManager.hide('alertOnlyCancel');
     }
   };
 
@@ -65,7 +87,7 @@ class ProjectRequestForm extends View {
       startDate: 'date',
       endDate: 'date',
       description: 'string-strict',
-      url: 'string',
+      url: 'url',
       technicalStack: 'string-strict',
     };
 

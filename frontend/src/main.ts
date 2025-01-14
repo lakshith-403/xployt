@@ -29,6 +29,28 @@ import { userDashboardViewHandler } from '@views/UserDashboard';
 import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
 import { Button } from './components/button/base';
 import { CACHE_STORE } from './data/cache';
+import { convertToDom } from './components/ModalManager/ModalManager';
+import ModalManager from './components/ModalManager/ModalManager';
+import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
+// import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
+// import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
+
+export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
+ModalManager.includeModal('alertOnlyCancel', {
+  '.button-cancel': () => ModalManager.hide('alertOnlyCancel'),
+});
+
+// export const modalAlertOnlyConfirm = convertToDom(alertOnlyConfirm);
+// ModalManager.includeModal('alertOnlyConfirm', {
+//   '.button-confirm': () => ModalManager.hide('alertOnlyConfirm'),
+// });
+
+// export const modalAlertCancelConfirm = convertToDom(alertCancelConfirm);
+// ModalManager.includeModal('alertCancelConfirm', {
+//   '.button-cancel': () => ModalManager.hide('alertCancelConfirm'),
+//   '.button-confirm': () => ModalManager.hide('alertCancelConfirm'),
+// });
+
 const HomeSidebar: SidebarTab[] = [
   // {
   //   id: '',

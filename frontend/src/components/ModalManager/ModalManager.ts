@@ -19,11 +19,13 @@ export default class modalManager {
     if (!exists) {
       const modalElement = document.createElement('div');
       modalElement.classList.add('custom-modal');
+      modalElement.classList.add(name);
       modalElement.innerHTML = `
         <div class="modal-content">
           <span class="close-button">&times;</span>
         </div>
       `;
+      // console.log('Appending modal element to body', name, modalElement);
       document.body.appendChild(modalElement);
 
       const modalData: ModalData = {
@@ -77,7 +79,7 @@ export default class modalManager {
 
     if (enableAsynchronous) {
       return new Promise<void>((resolve) => {
-        console.log('ModalManager.show in async mode', modal.name);
+        // console.log('ModalManager.show in async mode', modal.name);
         const buttons = modal.element.querySelectorAll('button');
         buttons.forEach((button) => {
           button.addEventListener(
@@ -91,13 +93,13 @@ export default class modalManager {
         });
       });
     }
-    console.log('ModalManager.show in non-async mode', modal.name);
+    // console.log('ModalManager.show in non-async mode', modal.name);
     // Resolve immediately for non-asynchronous behavior
     return Promise.resolve();
   }
 
   static hide(name: string): void {
-    console.log('ModalManager.hide', name);
+    // console.log('ModalManager.hide', name);
     const modal = this.modalList.find((modal) => modal.name === name);
     if (modal) {
       modal.element.style.display = 'none';
@@ -114,7 +116,7 @@ export default class modalManager {
   }
 
   static bindToClass(name: string, className: string): void {
-    console.log('ModalManager.bindToClass', name, className);
+    // console.log('ModalManager.bindToClass', name, className);
     const elements = document.querySelectorAll(`.${className}`);
     elements.forEach((element) => {
       element.addEventListener('click', () => {
@@ -135,14 +137,14 @@ function getAllClasses(element: Element): string[] {
 export function convertToDom(htmlString: string): HTMLElement {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, 'text/html');
-  console.log('convertToDom classes:', getAllClasses(doc.body));
+  // console.log('convertToDom classes:', getAllClasses(doc.body));
   return doc.body as HTMLElement;
 }
 
 export function setContent(modalElement: HTMLElement, content: { [selector: string]: string }): void {
-  console.log('setContent', content);
+  // console.log('setContent', content);
   const contentElement = modalElement.querySelector('.modal-body');
-  console.log('contentElement', contentElement);
+  // console.log('contentElement', contentElement);
   if (contentElement) {
     // Iterate over the content object
     for (const [selector, text] of Object.entries(content)) {
