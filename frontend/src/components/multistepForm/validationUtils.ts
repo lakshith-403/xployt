@@ -2,6 +2,19 @@ import ModalManager from '../ModalManager/ModalManager';
 import { ValidationSchema } from './multistep-form';
 // import { loadModalContent } from '../ModalManager/ModalManager';
 import validateErrorModalContent from './validateErrorModal.html';
+import { setContent, convertToDom } from '../ModalManager/ModalManager';
+
+// Convert the HTML string to a DOM element
+const modalElement = convertToDom(validateErrorModalContent);
+
+// Set text content of modal elements
+setContent(modalElement, {
+  '.modal-title': 'Validation Error',
+});
+// Add event listeners to the modal buttons
+ModalManager.includeModal('validateErrorModal', {
+  '.button-cancel': () => ModalManager.hide('validateErrorModal'),
+});
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
@@ -13,10 +26,6 @@ const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
 const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
 const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
-ModalManager.includeModal('validateErrorModal', {
-  '.closeButton': () => ModalManager.hide('validateErrorModal'),
-  '.sendSignal': () => console.log('Signal sent'),
-});
 export function isValidDate(date: any): { result: boolean; message: string } {
   const isDayValid = dayRegex.test(date.day);
   const isMonthValid = monthRegex.test(date.month);
@@ -98,8 +107,11 @@ export function validateFormState(formState: any, validationSchema: ValidationSc
     const fieldValidation = validateField(key, formState[key], validationSchema[key]);
     if (!fieldValidation.result) {
       // alert(fieldValidation.message);
-      console.log(validateErrorModalContent);
-      ModalManager.show('validateErrorModal', validateErrorModalContent);
+      // console.log(validateErrorModalContent);
+      setContent(modalElement, {
+        '.modal-message': fieldValidation.message,
+      });
+      ModalManager.show('validateErrorModal', modalElement);
       return false;
     }
   }
