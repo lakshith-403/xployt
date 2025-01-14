@@ -1,7 +1,7 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import ProjectInfo from './1_ProjectInfo/ProjectInfo';
-import MultistepForm from '../../../components/multistepForm/multistep-form';
+import MultistepForm, { ValidationSchema } from '../../../components/multistepForm/multistep-form';
 import './projectRequestForm.scss';
 import { Steps } from '@/components/multistepForm/multistep-form';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
@@ -50,7 +50,7 @@ class ProjectRequestForm extends View {
         title: 'Project Information',
         step: new ProjectInfo(),
         stateUsed: {
-          projectTitle: 'required',
+          title: 'required',
           startDate: 'required',
           endDate: 'required',
           description: 'required',
@@ -60,7 +60,16 @@ class ProjectRequestForm extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit);
+    const validationSchema: ValidationSchema = {
+      title: 'string',
+      startDate: 'date',
+      endDate: 'date',
+      description: 'string-strict',
+      url: 'string',
+      technicalStack: 'string-strict',
+    };
+
+    const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, validationSchema);
     $(q, 'div', 'project-config-form', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {

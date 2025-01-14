@@ -39,6 +39,10 @@ module.exports = {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
+      {
+        test: /^(?!.*index\.html$).*\.html$/,
+        use: 'html-loader',
+      },
     ],
   },
   stats: {
