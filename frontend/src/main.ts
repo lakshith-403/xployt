@@ -1,4 +1,5 @@
 import './styles/styles.scss';
+import './styles/custom-bootstrap.scss';
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from './ui_lib/route';
 import './ui_lib/router';
