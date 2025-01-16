@@ -22,35 +22,46 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
         });
       }
       this.rows = $(q, 'div', 'table-rows', {}, (q) => {
-        this.content.forEach((item) => {
-          for (const key of this.falseKeys) {
-            if (key === item[this.filteredField]) {
-              return;
+        if (!this.content || this.content.length === 0) {
+          console.log('No data available');
+          $(q, 'div', 'table-row', {}, (q) => {
+            $(q, 'span', 'table-cell last-cell', {}, 'No data available');
+          });
+        } else {
+          this.content.forEach((item) => {
+            for (const key of this.falseKeys) {
+              if (key === item[this.filteredField]) {
+                return;
+              }
             }
-          }
-          const url = '/projects/' + item.id;
-          $(
-            q,
-            'a',
-            'table-row-link',
-            {
-              onclick: () => {
-                this.updateCrumbs(item.id, url);
-                router.navigateTo(url);
+            const url = '/projects/' + item.id;
+            $(
+              q,
+              'a',
+              'table-row-link',
+              {
+                onclick: () => {
+                  this.updateCrumbs(item.id, url);
+                  router.navigateTo(url);
+                },
               },
-            },
-            (q) => {
-              $(q, 'div', 'table-row', {}, (q) => {
-                Object.values(item).forEach((element) => {
-                  $(q, 'span', 'table-cell', {}, element!.toString());
+              (q) => {
+                $(q, 'div', 'table-row', {}, (q) => {
+                  Object.values(item).forEach((element) => {
+                    if (element == undefined) {
+                      element = '-';
+                    }
+                    $(q, 'span', 'table-cell', {}, element!.toString());
+                  });
                 });
-              });
-            }
-          );
-        });
+              }
+            );
+          });
+        }
       });
     });
   }
+
   protected updateCrumbs(id: string, url: string): void {
     // console.log('updateCrumbs', id, url);
     BREADCRUMBS.addBreadcrumb({ label: 'Projects' + id, link: '/projects' + id });
@@ -62,22 +73,32 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
       return;
     }
     this.rows.innerHTML = '';
-    this.content.forEach((item) => {
-      for (const key of this.falseKeys) {
-        if (key === item[this.filteredField]) {
-          return;
-        }
-      }
-      const url = item.url; // Assuming the URL is stored in the 'url' field
-      $(this.rows!, 'a', 'table-row-link', {}, (q) => {
-        $(q, 'div', 'table-row', {}, (q) => {
-          Object.values(item).forEach((element) => {
-            $(q, 'span', 'table-cell', {}, element!.toString());
-          });
-        });
-      }).addEventListener('click', () => {
-        router.navigateTo(url);
+    if (!this.content || this.content.length === 0) {
+      console.log('No data available');
+      $(this.rows!, 'div', 'table-row', {}, (q) => {
+        $(q, 'span', 'table-cell last-cell', {}, 'No data available');
       });
-    });
+    } else {
+      this.content.forEach((item) => {
+        for (const key of this.falseKeys) {
+          if (key === item[this.filteredField]) {
+            return;
+          }
+        }
+        const url = item.url; // Assuming the URL is stored in the 'url' field
+        $(this.rows!, 'a', 'table-row-link', {}, (q) => {
+          $(q, 'div', 'table-row', {}, (q) => {
+            Object.values(item).forEach((element) => {
+              if (element == undefined) {
+                element = '-';
+              }
+              $(q, 'span', 'table-cell', {}, element!.toString());
+            });
+          });
+        }).addEventListener('click', () => {
+          router.navigateTo(url);
+        });
+      });
+    }
   }
 }

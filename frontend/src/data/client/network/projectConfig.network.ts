@@ -35,6 +35,10 @@ export async function requestProject(formData: any): Promise<void> {
         '.modal-title': 'Success',
         '.modal-message': 'Project configuration submitted successfully.',
       });
+      if (currentUser.type === 'Client') {
+        CACHE_STORE.getClientProjects(currentUser.id).invalidate_cache();
+      }
+
       ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
     } else {
       console.error('Failed to submit project configuration:', response.error);

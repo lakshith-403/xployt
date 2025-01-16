@@ -33,9 +33,28 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              compilerOptions: {
+                sourceMap: true, // Ensure TypeScript emits source maps
+              },
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
+      // {
+      //   test: /\.ts$/,
+      //   use: [
+      //     {
+      //       loader: path.resolve(__dirname, 'src/utils/custom-logger.js'),
+      //     },
+      //   ],
+      //   include: [path.resolve(__dirname, 'src/components')],
+      //   exclude: /node_modules/,
+      // },
       {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
