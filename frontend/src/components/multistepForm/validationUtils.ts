@@ -1,7 +1,7 @@
 import ModalManager from '../ModalManager/ModalManager';
 import { ValidationSchema } from './multistep-form';
 // import { loadModalContent } from '../ModalManager/ModalManager';
-import validateErrorModalContent from '@alerts/alertOnlyCancel.html';
+// import validateErrorModalContent from '@alerts/alertOnlyCancel.html';
 import { setContent, convertToDom } from '../ModalManager/ModalManager';
 import { modalAlertOnlyCancel } from '@/main';
 
