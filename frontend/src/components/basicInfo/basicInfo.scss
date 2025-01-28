@@ -1,0 +1,57 @@
+#basic-info {
+  .section-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 4rem;
+
+      span {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        gap: 3rem;
+      }
+    }
+  }
+
+  .key {
+    text-wrap: nowrap;
+    font-weight: bold;
+  }
+
+  .description {
+    padding-inline: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card {
+    gap: 1rem;
+
+    p{
+      margin: 0;
+    }
+
+    span {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .card-title{
+      font-weight: bold;
+    }
+  }
+}
+
+.link {
+  color: var(--light-green);
+}
