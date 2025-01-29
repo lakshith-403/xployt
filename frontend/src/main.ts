@@ -33,14 +33,19 @@ import { CACHE_STORE } from './data/cache';
 import { convertToDom } from './components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
+import alertOnlyOK from '@alerts/alertOnlyOK.html';
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 // import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
 
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
+
 ModalManager.includeModal('alertOnlyCancel', {
   '.button-cancel': () => ModalManager.hide('alertOnlyCancel'),
 });
-
+export const modalAlertOnlyOK = convertToDom(alertOnlyOK);
+ModalManager.includeModal('alertOnlyOK', {
+  '.button-ok': () => ModalManager.hide('alertOnlyOK'),
+});
 // export const modalAlertOnlyConfirm = convertToDom(alertOnlyConfirm);
 // ModalManager.includeModal('alertOnlyConfirm', {
 //   '.button-confirm': () => ModalManager.hide('alertOnlyConfirm'),
