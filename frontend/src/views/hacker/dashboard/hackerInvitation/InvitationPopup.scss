@@ -1,0 +1,27 @@
+.hacker-invitation {
+  padding: 2rem;
+  margin-left: 1rem;
+
+  .content {
+    padding: 2rem;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: left;
+    gap: 2rem;
+    margin-top: 4rem;
+
+    button {
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+      width: fit-content;
+
+      &:hover {
+        opacity: 80%;
+      }
+    }
+  }
+}

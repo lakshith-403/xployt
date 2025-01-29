@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: auto;
   z-index: 1000; // Ensure it's above other elements
 
   .popup-content {
@@ -15,18 +16,19 @@
     border-radius: 8px;
     padding: 20px;
     margin: auto;
-    max-width: 400px;
+    //max-width: 400px;
     width: 90%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
 
-    .icon-button {
+    > .icon-button {
       background-color: transparent;
       border: none;
       color: white;
       position: relative;
       width: fit-content;
       right: 0;
+      margin-top: 1rem;
     }
   }
 
