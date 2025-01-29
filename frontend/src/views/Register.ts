@@ -5,6 +5,9 @@ import { Button, ButtonType } from '../components/button/base';
 import { UserCache, UserType } from '@/data/user';
 import { router } from '@/ui_lib/router';
 import { CACHE_STORE } from '@/data/cache';
+import { setContent } from '@/components/ModalManager/ModalManager';
+import ModalManager from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyCancel, modalAlertOnlyOK } from '@/main';
 
 export class RegisterView extends View {
   private nameField: TextField;
@@ -135,7 +138,12 @@ export class RegisterView extends View {
       })
       .catch((error) => {
         console.error('Error registering user:', error);
-        alert('Error registering user');
+        // alert('Error registering user');
+        setContent(modalAlertOnlyOK, {
+          '.modal-title': 'Error',
+          '.modal-message': `Failed to register user: ${error}`,
+        });
+        ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       });
   }
 }
