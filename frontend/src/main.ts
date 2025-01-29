@@ -34,6 +34,7 @@ import { convertToDom } from './components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
+import alertForErrors from '@alerts/alertForErrors.html';
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 // import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
 
@@ -45,6 +46,10 @@ ModalManager.includeModal('alertOnlyCancel', {
 export const modalAlertOnlyOK = convertToDom(alertOnlyOK);
 ModalManager.includeModal('alertOnlyOK', {
   '.button-ok': () => ModalManager.hide('alertOnlyOK'),
+});
+export const modalAlertForErrors = convertToDom(alertForErrors);
+ModalManager.includeModal('alertForErrors', {
+  '.button-ok': () => ModalManager.hide('alertForErrors'),
 });
 // export const modalAlertOnlyConfirm = convertToDom(alertOnlyConfirm);
 // ModalManager.includeModal('alertOnlyConfirm', {

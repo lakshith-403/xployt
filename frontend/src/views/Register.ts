@@ -7,7 +7,7 @@ import { router } from '@/ui_lib/router';
 import { CACHE_STORE } from '@/data/cache';
 import { setContent } from '@/components/ModalManager/ModalManager';
 import ModalManager from '@/components/ModalManager/ModalManager';
-import { modalAlertOnlyCancel, modalAlertOnlyOK } from '@/main';
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 
 export class RegisterView extends View {
   private nameField: TextField;
@@ -112,20 +112,32 @@ export class RegisterView extends View {
 
     if (password !== confirmPassword) {
       console.error('Passwords do not match');
-      alert('Passwords do not match');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Passwords do not match',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return;
     }
 
     if (name === '' || email === '' || password === '' || confirmPassword === '') {
       console.error('All fields are required');
-      alert('Name, Email, Password and Confirm Password fields are required');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Name, Email, Password and Confirm Password fields are required',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return;
     }
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailRegex.test(email)) {
       console.error('Invalid email format');
-      alert('Invalid email format');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Invalid email format',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return;
     }
 
@@ -133,17 +145,25 @@ export class RegisterView extends View {
       .register(name, email, password, role)
       .then((user) => {
         console.log('User registered:', user);
-        alert('User registered successfully');
-        router.navigateTo('/login');
+        setContent(modalAlertOnlyOK, {
+          '.modal-title': 'Success',
+          '.modal-message': 'User registered successfully',
+        });
+        ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+          router.navigateTo('/login');
+        });
       })
       .catch((error) => {
         console.error('Error registering user:', error);
         // alert('Error registering user');
-        setContent(modalAlertOnlyOK, {
+        setContent(modalAlertForErrors, {
           '.modal-title': 'Error',
-          '.modal-message': `Failed to register user: ${error}`,
+          '.modal-message': `Failed to register user: ${error.message}`,
+          '.modal-data': error.body,
+          '.modal-servletClass': error.servlet,
+          '.modal-uri': error.uri,
         });
-        ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+        ModalManager.show('alertForErrors', modalAlertForErrors);
       });
   }
 }
