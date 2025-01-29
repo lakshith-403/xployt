@@ -43,11 +43,14 @@ class Network {
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
+        console.log(xhr.response);
         if (xhr.status >= 400) {
+          console.log('> 400');
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
+            console.log('response', response);
             resolve(response);
           } catch (e) {
             reject(new Error('Failed to parse JSON response'));
@@ -56,6 +59,7 @@ class Network {
       };
 
       xhr.onerror = (event) => {
+        console.log('XHR request failed: ' + event.type);
         reject(new NetworkError(xhr.status, url, null, `XHR request failed: ${event.type}`));
       };
 
@@ -88,6 +92,11 @@ export class NetworkError {
   stackTrace?: string;
   message?: string;
 
+  body?: any; // The data from the server
+  servlet?: string; // The servlet that handled the request
+  uri?: string; // The URI of the request
+  code?: string; // The code of the error
+
   /**
    * Creates an instance of NetworkError.
    *
@@ -100,10 +109,28 @@ export class NetworkError {
     this.statusCode = statusCode;
     this.url = url;
     this.message = message;
+    console.log('data', data);
     if (data) {
       try {
+        if (typeof data === 'string') {
+          console.log('Data is a string. Attempting to parse as JSON...');
+          data = JSON.parse(data); // Parse the JSON string into an object
+        }
+
         this.errorDescription = data['error'];
         this.stackTrace = data['trace'];
+        this.message = data['message'];
+        this.uri = data['uri'];
+        this.code = data['code'];
+        this.servlet = data['servletClass'];
+        this.body = data['data'];
+        // console.log('this.data', this.data);
+        // console.log('this.message', this.message);
+        // console.log('this.errorDescription', this.errorDescription);
+        // console.log('this.stackTrace', this.stackTrace);
+        // console.log('this.uri', this.uri);
+        // console.log('this.code', this.code);
+        // console.log('this.servlet', this.servlet);
       } catch (e: any) {
         this.stackTrace = e.stack;
         this.errorDescription = 'Failed to extract data from network error: ' + e.message;
