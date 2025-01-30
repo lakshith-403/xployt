@@ -159,7 +159,7 @@ export class RegisterView extends View {
         setContent(modalAlertForErrors, {
           '.modal-title': 'Error',
           '.modal-message': `Failed to register user: ${error.message}`,
-          '.modal-data': error.body,
+          '.modal-data': error.data,
           '.modal-servletClass': error.servlet,
           '.modal-uri': error.uri,
         });
