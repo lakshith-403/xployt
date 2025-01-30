@@ -28,10 +28,10 @@ class Network {
     return new Promise((resolve, reject) => {
       // Validate method and URL
       if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method.toUpperCase())) {
-        return reject(new Error('Invalid HTTP method'));
+        return reject(new NetworkError(0, url, null, 'Invalid HTTP method'));
       }
       if (!url || typeof url !== 'string') {
-        return reject(new Error('Invalid URL'));
+        return reject(new NetworkError(0, url, null, 'Invalid URL'));
       }
 
       console.log(`Sending ${method} request to ${url}`);
@@ -53,7 +53,7 @@ class Network {
             console.log('response', response);
             resolve(response);
           } catch (e) {
-            reject(new Error('Failed to parse JSON response'));
+            reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
           }
         }
       };
