@@ -92,10 +92,10 @@ export class NetworkError {
   stackTrace?: string;
   message?: string;
 
-  body?: any; // The data from the server
   servlet?: string; // The servlet that handled the request
   uri?: string; // The URI of the request
   code?: string; // The code of the error
+  data?: any; // The data from the server
 
   /**
    * Creates an instance of NetworkError.
@@ -123,7 +123,7 @@ export class NetworkError {
         this.uri = data['uri'];
         this.code = data['code'];
         this.servlet = data['servletClass'];
-        this.body = data['data'];
+        this.data = data['data'];
         // console.log('this.data', this.data);
         // console.log('this.message', this.message);
         // console.log('this.errorDescription', this.errorDescription);
