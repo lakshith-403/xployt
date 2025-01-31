@@ -1,21 +1,20 @@
-import ModalManager from '../ModalManager/ModalManager';
 import { ValidationSchema } from './multistep-form';
-// import { loadModalContent } from '../ModalManager/ModalManager';
-// import validateErrorModalContent from '@alerts/alertOnlyCancel.html';
-import { setContent, convertToDom } from '../ModalManager/ModalManager';
-import { modalAlertOnlyCancel } from '@/main';
-
+import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import alertOnlyOK from '@alerts/alertOnlyOK.html';
 // Convert the HTML string to a DOM element
-// const modalElement = convertToDom(validateErrorModalContent);
+
+export const validateErrorModal = convertToDom(alertOnlyOK);
 
 // Set text content of modal elements
-// setContent(modalElement, {
-//   '.modal-title': 'Validation Error',
-// });
+setContent(validateErrorModal, {
+  '.modal-title': 'Validation Error',
+  '.modal-message': 'Validation Error',
+});
 // Add event listeners to the modal buttons
-// ModalManager.includeModal('validateErrorModal', {
-//   '.button-cancel': () => ModalManager.hide('validateErrorModal'),
-// });
+ModalManager.includeModal('validateErrorModal', {
+  '.button-ok': () => ModalManager.hide('validateErrorModal'),
+});
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
@@ -26,6 +25,8 @@ const stringStrictRegex = /^[a-zA-Z ]+$/; // Matches only letters
 const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
 const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
 const yearRegex = /^\d{4}$/; // Matches a four-digit year
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
 const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
 
@@ -50,6 +51,7 @@ export function isValidDate(date: any): { result: boolean; message: string } {
 export function validateField(key: string, value: any, expectedType: string): { result: boolean; message: string } {
   // Verifying a string
   if (expectedType === 'string') {
+    console.log('checking string: ', key, value);
     if (!stringRegex.test(value)) {
       return { result: false, message: `{${key} must be a string}` };
     }
@@ -57,6 +59,7 @@ export function validateField(key: string, value: any, expectedType: string): { 
 
   // Verifying a string(strict)
   if (expectedType === 'string-strict') {
+    console.log('checking string-strict: ', key, value);
     if (!stringStrictRegex.test(value)) {
       return { result: false, message: `{${key} must be strictly a string}` };
     }
@@ -65,14 +68,27 @@ export function validateField(key: string, value: any, expectedType: string): { 
   // Verifying a date
   if (expectedType === 'date') {
     const dateValidation = isValidDate(value);
+    console.log('checking date: ', key, value);
     if (!dateValidation.result) {
       return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
     }
   }
 
+  // Verifying an email
+  if (expectedType === 'email') {
+    console.log('checking email: ', key, value);
+    if (!emailRegex.test(value)) {
+      return { result: false, message: `${key} must be a valid email address` };
+    }
+  }
+
   // Verifying an array of strings
   if (expectedType === 'array|string') {
+    console.log('checking array|string: ', key, value);
     if (!Array.isArray(value)) {
+      console.log('array|string');
+      console.log(key);
+      console.log(value);
       return { result: false, message: `${key} must be an array` };
     } else {
       for (const item of value) {
@@ -83,8 +99,25 @@ export function validateField(key: string, value: any, expectedType: string): { 
     }
   }
 
+  if (expectedType === 'object|string') {
+    console.log('checking object|string: ', key, value);
+    if (typeof value !== 'object') {
+      console.log('object|string');
+      console.log(key);
+      console.log(value);
+      return { result: false, message: `${key} must be an object` };
+    } else {
+      for (const item of Object.values(value)) {
+        if (typeof item === 'string' && !stringRegex.test(item)) {
+          return { result: false, message: `${key} must be an array of strings` };
+        }
+      }
+    }
+  }
+
   // Verifying an array of strings(strict)
   if (expectedType === 'array|string-strict') {
+    console.log('checking array|string-strict: ', key, value);
     if (!Array.isArray(value)) {
       return { result: false, message: `${key} must be an array` };
     } else {
@@ -98,6 +131,7 @@ export function validateField(key: string, value: any, expectedType: string): { 
 
   // Verifying a number
   if (expectedType === 'number') {
+    console.log('checking number: ', key, value);
     if (!numberRegex.test(value)) {
       return { result: false, message: `${key} must be a number` };
     }
@@ -105,19 +139,17 @@ export function validateField(key: string, value: any, expectedType: string): { 
   return { result: true, message: '' };
 }
 
-export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
-  for (const key in validationSchema) {
-    const fieldValidation = validateField(key, formState[key], validationSchema[key]);
-    if (!fieldValidation.result) {
-      // alert(fieldValidation.message);
-      // console.log(validateErrorModalContent);
-      setContent(modalAlertOnlyCancel, {
-        '.modal-title': 'Validation Error',
-        '.modal-message': fieldValidation.message,
-      });
-      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
-      return false;
-    }
-  }
-  return true;
-}
+// export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
+//   for (const key in validationSchema) {
+//     const fieldValidation = validateField(key, formState[key], validationSchema[key]);
+//     if (!fieldValidation.result) {
+//       setContent(modalAlertOnlyOK, {
+//         '.modal-title': 'Validation Error',
+//         '.modal-message': fieldValidation.message,
+//       });
+//       ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+//       return false;
+//     }
+//   }
+//   return true;
+// }

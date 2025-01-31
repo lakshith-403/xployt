@@ -48,20 +48,20 @@ class ValidatorApplication extends View {
         title: 'Project Details',
         step: new ProjectDetails(),
         stateUsed: {
-          name: 'optional',
-          email: 'optional',
-          mobile: 'optional',
-          country: 'optional',
+          name: 'required',
+          email: 'required',
+          mobile: 'required',
+          country: 'required',
           linkedin: 'optional',
-          dateOfBirth: 'optional',
+          dateOfBirth: 'required',
         },
       },
       {
         title: 'Expertise',
         step: new Preferences(),
         stateUsed: {
-          relevantExperience: 'optional',
-          areaOfExpertise: 'optional',
+          relevantExperience: 'required',
+          areaOfExpertise: 'required',
           skills: 'optional',
           certificate: 'optional',
           cv: 'optional',
@@ -80,7 +80,7 @@ class ValidatorApplication extends View {
 
     const validationSchema: ValidationSchema = {
       name: 'string',
-      email: 'string',
+      email: 'email',
       mobile: 'string',
       country: 'string',
       linkedin: 'string',
@@ -90,7 +90,7 @@ class ValidatorApplication extends View {
       cv: 'string',
       references: 'string',
       relevantExperience: 'string',
-      areaOfExpertise: 'string',
+      areaOfExpertise: 'object|string',
       comments: 'string',
     };
 

@@ -7,11 +7,11 @@ import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
-import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
-import { modalAlertOnlyCancel } from '../main';
+import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
+import { modalAlertOnlyOK } from '../main';
 
 // Convert the HTML string to a DOM element
-const modalElement = convertToDom(alertCancelConfirm);
+const modalElement = convertToDom(alertOnlyConfirm);
 
 // Set text content of modal elements
 setContent(modalElement, {
@@ -21,7 +21,6 @@ setContent(modalElement, {
 
 // Add event listeners to the modal buttons
 ModalManager.includeModal('loginAlert', {
-  '.button-cancel': () => ModalManager.hide('loginAlert'),
   '.button-confirm': () => {
     ModalManager.hide('loginAlert');
     router.navigateTo('/dashboard');
@@ -95,11 +94,11 @@ export class LoginView extends View {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       // alert('Invalid email format. Please enter a valid email.');
-      setContent(modalAlertOnlyCancel, {
+      setContent(modalAlertOnlyOK, {
         '.modal-title': 'Error',
         '.modal-message': 'Invalid email format. Please enter a valid email.',
       });
-      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return;
     }
     const password = this.passwordField.getValue();
@@ -119,21 +118,21 @@ export class LoginView extends View {
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {
-          setContent(modalAlertOnlyCancel, {
+          setContent(modalAlertOnlyOK, {
             '.modal-title': 'Error',
             '.modal-message': 'Invalid credentials provided. Please try again.',
           });
-          ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
+          ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
           // alert('Invalid credentials provided. Please try again.');
           return;
         }
         console.error('Error logging in user:', error);
         // alert('Error logging in user: ' + error);
-        setContent(modalAlertOnlyCancel, {
+        setContent(modalAlertOnlyOK, {
           '.modal-title': 'Error',
           '.modal-message': 'Error logging in user: ' + error,
         });
-        ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
+        ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       });
   }
 }
