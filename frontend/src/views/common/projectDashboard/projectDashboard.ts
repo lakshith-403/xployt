@@ -66,7 +66,7 @@ class projectDashboardView extends View {
     const loading = new LoadingScreen(q);
     loading.show();
 
-    await this.loadProject();
+    // await this.loadProject();
     q.innerHTML = '';
     loading.hide();
 
