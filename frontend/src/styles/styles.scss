@@ -66,14 +66,14 @@ html {
   }
 }
 
-#home {
+#home, .landing{
   background: linear-gradient(315deg, #00473a 0%, #000909 100%);
   width: 100%;
   height: 100vh;
   margin-top: 0;
   padding: 10rem;
   top: 0;
-  //position: absolute;
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
