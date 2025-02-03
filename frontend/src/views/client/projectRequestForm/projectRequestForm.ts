@@ -35,35 +35,13 @@ class ProjectRequestForm extends View {
     const loading = new LoadingScreen(document.body);
     loading.show();
 
-    try {
-      await requestProject({
-        ...formState,
-        startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
-        endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
-      });
-      const modalAlertConfirm = convertToDom(alertOnlyConfirm);
-      setContent(modalAlertConfirm, {
-        '.modal-title': 'Success',
-        '.modal-message': 'Project configuration submitted successfully.',
-      });
-      ModalManager.includeModal('projectRequestFormConfirm', {
-        '.button-confirm': () => {
-          ModalManager.remove('projectRequestFormConfirm');
-          router.navigateTo('/projects');
-        },
-      });
-      ModalManager.show('projectRequestFormConfirm', modalAlertConfirm);
-    } catch (error) {
-      console.error('Error during form submission:', error);
-      setContent(modalAlertOnlyCancel, {
-        '.modal-title': 'Error',
-        '.modal-message': `Failed to submit project configuration: ${error}`,
-      });
-      ModalManager.show('alertOnlyCancel', modalAlertOnlyCancel);
-    } finally {
-      loading.hide();
-      ModalManager.hide('alertOnlyCancel');
-    }
+    // try {
+    await requestProject({
+      ...formState,
+      startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
+      endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
+    });
+    loading.hide();
   };
 
   render(q: Quark): void {
