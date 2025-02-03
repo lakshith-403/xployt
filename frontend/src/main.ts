@@ -1,43 +1,52 @@
+//styles
 import './styles/styles.scss';
 import './styles/custom-bootstrap.scss';
+
+//utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
-import { RouteHandler } from './ui_lib/route';
+import { RouteHandler } from '@ui_lib/route';
 import './ui_lib/router';
-import { router } from './ui_lib/router';
-import { NavigationView } from './ui_lib/view';
+import { router } from '@ui_lib/router';
+import { NavigationView } from '@ui_lib/view';
 
-import { homeViewHandler } from './views/home';
-import { loginViewHandler } from './views/Login';
-import { projectsViewHandler } from './views/common/projects/Projects';
-
-import { SidebarTab, SidebarView } from './components/SideBar/SideBar';
-import { registerViewHandler } from './views/Register';
-import { projectDashboardViewHandler } from '@views/common/projectDashboard/projectDashboard';
-import { reportsViewHandler } from './views/projectLead/Reports/Report';
-import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
-import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
-import { vulnReportViewHandler } from './views/hacker/VulnerabilityReport/VulnerabilityReport';
-import { profileViewHandler } from './views/Profile';
-import { validatorApplicationViewHandler } from './views/validator/validatorApplication/validatorApplication';
-// import { tagInputTestViewHandler } from './views/validator/test/tagInputTest';
-import { validatorDashboardViewHandler } from './views/validator/dashboard/dashboard';
-import { projectRequestFormViewHandler } from './views/client/projectRequestForm/projectRequestForm';
+//components
+import { SidebarTab, SidebarView } from '@components/SideBar/SideBar';
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
-import { discussionViewHandler } from './views/discussion/Discussion';
-// import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
-import { userDashboardViewHandler } from '@views/UserDashboard';
-import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
-import { Button } from './components/button/base';
-import { CACHE_STORE } from './data/cache';
-import { convertToDom } from './components/ModalManager/ModalManager';
+import { Button } from '@components/button/base';
+import { convertToDom } from '@components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
-import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
+
+//alerts
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
 import alertForErrors from '@alerts/alertForErrors.html';
-// import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
-// import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
+import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 
+//cache
+import { CACHE_STORE } from '@data/cache';
+
+//view handlers
+import { homeViewHandler } from '@views/home';
+import { loginViewHandler } from '@views/Login';
+import { projectsViewHandler } from '@views/common/projects/Projects';
+import { registerViewHandler } from '@views/Register';
+import { projectDashboardViewHandler } from '@views/common/projectDashboard/projectDashboard';
+import { reportsViewHandler } from '@views/projectLead/Reports/Report';
+import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
+import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
+import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReport';
+import { profileViewHandler } from '@views/Profile';
+import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
+import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
+import { projectRequestFormViewHandler } from '@views/client/projectRequestForm/projectRequestForm';
+import { discussionViewHandler } from '@views/discussion/Discussion';
+import { userDashboardViewHandler } from '@views/UserDashboard';
+import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
+import { hackerLandingPageViewHandler } from '@views/common/LandingPages/landing.hacker';
+import { clientLandingPageViewHandler } from '@views/common/LandingPages/landing.client';
+import { validatorLandingPageViewHandler } from '@views/common/LandingPages/landing.validator';
+
+// Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
 ModalManager.includeModal('alertOnlyCancel', {
   '.button-cancel': () => ModalManager.hide('alertOnlyCancel'),
@@ -52,23 +61,8 @@ export const modalAlertForErrors = convertToDom(alertForErrors);
 ModalManager.includeModal('alertForErrors', {
   '.button-ok': () => ModalManager.hide('alertForErrors'),
 });
-// export const modalAlertOnlyConfirm = convertToDom(alertOnlyConfirm);
-// ModalManager.includeModal('alertOnlyConfirm', {
-//   '.button-confirm': () => ModalManager.hide('alertOnlyConfirm'),
-// });
-
-// export const modalAlertCancelConfirm = convertToDom(alertCancelConfirm);
-// ModalManager.includeModal('alertCancelConfirm', {
-//   '.button-cancel': () => ModalManager.hide('alertCancelConfirm'),
-//   '.button-confirm': () => ModalManager.hide('alertCancelConfirm'),
-// });
 
 const HomeSidebar: SidebarTab[] = [
-  // {
-  //   id: '',
-  //   title: 'Home',
-  //   url: '',
-  // },
   {
     id: 'dashboard',
     title: 'Dashboard',
@@ -84,49 +78,7 @@ const HomeSidebar: SidebarTab[] = [
     title: 'Reports',
     url: 'reports',
   },
-  // {
-  //   id: 'discussion',
-  //   title: 'Discussion',
-  //   url: 'discussion',
-  // },
-  // {
-  //   id: 'report/{projectId}',
-  //   title: 'New Report',
-  //   url: 'report/1',
-  // },
-  // {
-  //   id: 'validator/application',
-  //   title: 'Application',
-  //   url: 'validator/application',
-  // },
-  // {
-  //   id: 'test/tagInput',
-  //   title: 'Tag Input Test',
-  //   url: 'test/tagInput',
-  // },
-  // {
-  //   id: 'project-request',
-  //   title: 'Project Request',
-  //   url: 'project-request',
-  // },
 ];
-
-class AboutSidebarView implements NavigationView {
-  baseURL: string = '/about';
-
-  willUpdate: () => void = () => {};
-
-  render(q: Quark): void {
-    q.innerHTML = '';
-    $(q, 'ul', '', {}, (q) => {
-      $(q, 'li', '', {}, (q) => {
-        $(q, 'a', '', {}, 'Login').addEventListener('click', () => {
-          router.navigateTo(this.baseURL + '/login/user');
-        });
-      });
-    });
-  }
-}
 
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
@@ -160,7 +112,7 @@ class TopNavigationView implements NavigationView {
         '',
         {
           onclick: () => {
-            router.navigateTo('/');
+            router.navigateTo('/hacker');
           },
         },
         'Hackers'
@@ -182,24 +134,13 @@ class TopNavigationView implements NavigationView {
         '',
         {
           onclick: () => {
-            router.navigateTo('/validator/application');
+            router.navigateTo('/client');
           },
         },
         'Organizations'
       );
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/profile');
-          },
-        },
-        'Profile'
-      );
     });
     this.renderButtons();
   }
@@ -221,6 +162,13 @@ class TopNavigationView implements NavigationView {
               this.renderButtons();
             },
           }).render(this.buttonContainer);
+          new Button({
+            label: 'Profile',
+            onClick: () => {
+              router.navigateTo('/profile');
+              this.renderButtons();
+            },
+          }).render(this.buttonContainer);
         } else {
           new Button({
             label: 'Sign In',
@@ -236,48 +184,54 @@ class TopNavigationView implements NavigationView {
 
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
 
+const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
+
+const LandingRouteHandlers = new RouteHandler('/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false);
+
+const ValidatorApplicationRouteHandler = new RouteHandler('/validator/application', [validatorApplicationViewHandler], undefined, false, false, false, false);
+
 const CommonRouteHandlers = new RouteHandler(
   '/',
-  [
-    projectsViewHandler,
-    vulnReportViewHandler,
-    reportsViewHandler,
-    validatorApplicationViewHandler,
-    // tagInputTestViewHandler,
-    validatorDashboardViewHandler,
-    projectRequestFormViewHandler,
-    discussionViewHandler,
-    userDashboardViewHandler,
-    clientHackerInvitationsViewHandler,
-  ],
+  [projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
   new SidebarView('/', HomeSidebar),
   false,
   false,
   false,
   true
 );
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
-const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
 
-const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
-const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
-const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
+const ValidatorViewHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const HackerViewHandlers = new RouteHandler('/hacker', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const ClientViewHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const ProjectLeadViewHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
+
+const UserViewHandlers = new RouteHandler('/user', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
-
-// const HomeRouteHandler = new RouteHandler('/', [homeViewHandler, projectsViewHandler, projectInfoViewHandler], new SidebarView('/', HomeSidebar));
-// const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginViewHandler], new AboutSidebarView());
-// const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 
 router.setTopNavigationView(new TopNavigationView());
 
 router.addRouteHandler(HomeRouteHandler);
-router.addRouteHandler(CommonRouteHandlers);
-router.addRouteHandler(ProjectRouteHandler);
-router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
-router.addRouteHandler(ProfileRouteHandler);
+router.addRouteHandler(LandingRouteHandlers);
+router.addRouteHandler(ValidatorApplicationRouteHandler);
 
-// Instantiate the UserRoleToggler to attach it to the page
-// new UserRoleToggler();
+router.addRouteHandler(CommonRouteHandlers);
+router.addRouteHandler(TestRouteHandlers);
+
+router.addRouteHandler(ValidatorViewHandlers);
+router.addRouteHandler(HackerViewHandlers);
+router.addRouteHandler(ClientViewHandlers);
+router.addRouteHandler(ProjectLeadViewHandlers);
+
+router.addRouteHandler(ProjectRouteHandler);
+router.addRouteHandler(UserViewHandlers);

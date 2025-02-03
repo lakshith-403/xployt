@@ -79,4 +79,4 @@ class ProjectRequestForm extends View {
   }
 }
 
-export const projectRequestFormViewHandler = new ViewHandler('project-request', ProjectRequestForm);
+export const projectRequestFormViewHandler = new ViewHandler('/project-request', ProjectRequestForm);

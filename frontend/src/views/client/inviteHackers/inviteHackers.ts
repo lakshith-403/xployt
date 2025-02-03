@@ -117,7 +117,7 @@ export class InviteHackers extends View {
                             new Button({
                                 label: 'Invite',
                                 onClick: () => {
-                                    this, this.sendInvitation(hacker.id.toString(), parent);
+                                    this.sendInvitation(hacker.id.toString(), parent);
                                 }
                             }).render(q)
                             $(q, 'span', 'data-field', {}, (q) => {
@@ -212,5 +212,5 @@ export class InviteHackers extends View {
     }
 }
 
-export const clientHackerInvitationsViewHandler = new ViewHandler('invite-hackers', InviteHackers);
+export const clientHackerInvitationsViewHandler = new ViewHandler('/invite-hackers', InviteHackers);
 
