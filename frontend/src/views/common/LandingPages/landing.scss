@@ -19,7 +19,7 @@
     height: 100%;
 
     .learn-more {
-      text-decoration: none;
+      text-decoration: underline;
       font-weight: bold;
       color: var(--color-primary);
       margin-bottom: 2rem;
@@ -47,6 +47,12 @@
 #landing-hacker {
   @extend .landing;
   background: url('../../../../assets/landing-hacker.png') no-repeat center right,
+    linear-gradient(315deg, #00473a 0%, #000909 100%);
+}
+
+#landing-hacker {
+  @extend .landing;
+  background: url('../../../../assets/landing-validator.png') no-repeat center right,
     linear-gradient(315deg, #00473a 0%, #000909 100%);
 }
 
@@ -78,10 +84,6 @@
         gap: 1rem;
         align-items: center;
       }
-    }
-
-    .learn-more{
-      text-decoration: underline;
     }
   }
 }
@@ -143,6 +145,7 @@
     .testimonial {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       padding: 2rem;
       width: 25rem;
       background-color: var(--background-secondary);

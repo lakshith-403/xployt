@@ -34,9 +34,10 @@ import { convertToDom } from './components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 import {hackerLandingPageViewHandler} from "@views/common/LandingPages/landing.hacker";
-import {clientLandingPageViewHandler} from "@views/common/LandingPages/client.landing";
+import {clientLandingPageViewHandler} from "@views/common/LandingPages/landing.client";
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
 import alertForErrors from '@alerts/alertForErrors.html';
+import {validatorLandingPageViewHandler} from "@views/common/LandingPages/landing.validator";
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 // import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
 
@@ -243,7 +244,6 @@ const CommonRouteHandlers = new RouteHandler(
     projectsViewHandler,
     vulnReportViewHandler,
     reportsViewHandler,
-    validatorApplicationViewHandler,
     // tagInputTestViewHandler,
     validatorDashboardViewHandler,
     projectRequestFormViewHandler,
@@ -264,6 +264,8 @@ const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler]
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 const HackerLandingRouteHandler = new RouteHandler('/hacker', [hackerLandingPageViewHandler], undefined, false, false);
 const ClientLandingRouteHandler = new RouteHandler('/client', [clientLandingPageViewHandler], undefined, false, false);
+const ValidatorLandingRouteHandler = new RouteHandler('/validator', [validatorLandingPageViewHandler], undefined, false, false);
+const ValidatorApplicationRouteHandler = new RouteHandler('/validator/application', [validatorApplicationViewHandler], undefined, false, false, false, false);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
@@ -283,6 +285,8 @@ router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
 router.addRouteHandler(HackerLandingRouteHandler);
 router.addRouteHandler(ClientLandingRouteHandler);
+router.addRouteHandler(ValidatorLandingRouteHandler);
+router.addRouteHandler(ValidatorApplicationRouteHandler);
 
 // Instantiate the UserRoleToggler to attach it to the page
 // new UserRoleToggler();
