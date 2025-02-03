@@ -6,6 +6,26 @@ import MultistepForm, { ValidationSchema } from './../../../components/multistep
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import './validatorApplication.scss';
 import { router } from '@/ui_lib/router';
+
+import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
+import ModalManager, { convertToDom, setContent } from '@components/ModalManager/ModalManager';
+import NETWORK from '@/data/network/network';
+import { modalAlertForErrors } from '@/main';
+
+// The modal for validator application
+const modalElement = convertToDom(alertOnlyConfirm);
+setContent(modalElement, {
+  '.modal-title': 'Application Submitted',
+  '.modal-message': 'Your application has been submitted successfully!',
+});
+
+// Add event listeners to the modal buttons
+ModalManager.includeModal('applicationSubmitted', {
+  '.button-confirm': () => {
+    ModalManager.hide('applicationSubmitted');
+  },
+});
+
 interface Step {
   title: string;
   step: any;
@@ -38,8 +58,28 @@ class ValidatorApplication extends View {
     comments: '',
   };
 
-  private onSubmit: (formState: any) => void = () => {
-    router.navigateTo('/');
+  private onSubmit: (formState: any) => void = async () => {
+    try {
+      const response = await NETWORK.post('/api/validator/manage', this.formState, { showLoading: true });
+      ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
+        console.log('response', response);
+        router.navigateTo('/dashboard');
+      });
+    } catch (error: any) {
+      console.error('Error submitting application:', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': `Failed to submit application: ${error.message}`,
+        '.modal-data': error.data,
+        '.modal-servletClass': error.servlet,
+        '.modal-uri': error.uri,
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors, true).then(() => {
+        ModalManager.hide('alertForErrors');
+      });
+    }
+
+    // router.navigateTo('/dashboard');
   };
 
   render(q: Quark): void {
@@ -48,12 +88,12 @@ class ValidatorApplication extends View {
         title: 'Project Details',
         step: new ProjectDetails(),
         stateUsed: {
-          name: 'optional',
-          email: 'optional',
-          mobile: 'optional',
-          country: 'optional',
+          name: 'required',
+          email: 'required',
+          mobile: 'required',
+          country: 'required',
           linkedin: 'optional',
-          dateOfBirth: 'optional',
+          dateOfBirth: 'required',
         },
       },
       {
@@ -72,7 +112,7 @@ class ValidatorApplication extends View {
         title: 'Terms and Conditions',
         step: new TermsAndConditions(),
         stateUsed: {
-          termsAndConditions: 'required',
+          termsAndConditions: 'optional',
           comments: 'optional',
         },
       },
@@ -80,7 +120,7 @@ class ValidatorApplication extends View {
 
     const validationSchema: ValidationSchema = {
       name: 'string',
-      email: 'string',
+      email: 'email',
       mobile: 'string',
       country: 'string',
       linkedin: 'string',
@@ -90,7 +130,7 @@ class ValidatorApplication extends View {
       cv: 'string',
       references: 'string',
       relevantExperience: 'string',
-      areaOfExpertise: 'string',
+      areaOfExpertise: 'object|string',
       comments: 'string',
     };
 

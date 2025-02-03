@@ -1,3 +1,5 @@
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
+
 /**
  * Class representing a network service for making HTTP requests.
  */
@@ -70,6 +72,40 @@ class Network {
       }
     });
   };
+
+  public get(url: string): Promise<any> {
+    return this.sendHttpRequest('GET', url, {}, 'application/json');
+  }
+
+  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    if (options.showLoading) {
+      console.log('Showing loading screen');
+      LoadingScreen.show();
+    }
+    try {
+      const response = await this.sendHttpRequest('POST', url, data, 'application/json');
+      if (options.showLoading) {
+        console.log('Hiding loading screen');
+        LoadingScreen.hide();
+      }
+      return response;
+    } catch (error) {
+      console.error('Error:', error);
+      if (options.showLoading) {
+        console.log('Hiding loading screen');
+        LoadingScreen.hide();
+      }
+      throw error;
+    }
+  }
+
+  public put(url: string, data: any): Promise<any> {
+    return this.sendHttpRequest('PUT', url, data, 'application/json');
+  }
+
+  public delete(url: string): Promise<any> {
+    return this.sendHttpRequest('DELETE', url, {}, 'application/json');
+  }
 }
 
 /**
@@ -120,7 +156,7 @@ export class NetworkError {
         this.errorDescription = data['error'];
         this.stackTrace = data['trace'];
         this.message = data['message'];
-        this.uri = data['uri'];
+        // this.uri = data['uri'];
         this.code = data['code'];
         this.servlet = data['servletClass'];
         this.data = data['data'];

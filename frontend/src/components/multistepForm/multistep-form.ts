@@ -1,15 +1,17 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ButtonType } from '../button/base';
 import { FormButton } from '../button/form.button';
-import { isValidDate, validateField, validateFormState } from './validationUtils';
+// import { validateField, validateFormState } from './validationUtils';
+import { validateField } from './validationUtils';
 import './multistep-form.scss';
-import ModalManager from '../ModalManager/ModalManager';
+import ModalManager, { setContent } from '../ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
 
 export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 export interface ValidationSchema {
-  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url';
+  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email';
 }
 
 export interface Steps {
@@ -53,13 +55,21 @@ class MultistepForm {
   }
 
   private validateCurrentTab(): boolean {
+    console.log('validateCurrentTab', this.activeTabIndex);
     const currentStep = this.steps[this.activeTabIndex];
     let errorMessages: string[] = [];
 
     for (const key in currentStep.stateUsed) {
       const value = this.formState[key];
       // Validate only if the field is required and has a value
-      if (value !== undefined && value !== null && value !== '') {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        !(Array.isArray(value) && value.length === 0) &&
+        !(typeof value === 'object' && value !== null && Object.values(value).every((v) => !v))
+      ) {
+        console.log('validateField', key, value);
         const validation = validateField(key, value, this.validationSchema[key]);
         if (!validation.result) {
           errorMessages.push(validation.message);
@@ -68,7 +78,11 @@ class MultistepForm {
     }
 
     if (errorMessages.length > 0) {
-      ModalManager.show('validateErrorModal', errorMessages.join('\n'));
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': errorMessages.join('\n'),
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return false;
     }
 
@@ -130,32 +144,47 @@ class MultistepForm {
 
   checkBeforeSubmit(): boolean {
     console.log('checkBeforeSubmit', this.formState, this.validationSchema);
-    if (validateFormState(this.formState, this.validationSchema)) {
-      if (this.isCurrentTabValid()) {
-        this.onSubmit(this.formState);
-        return true;
-      } else {
-        alert('Fill all required fields');
-        return false;
-      }
+    // if (validateFormState(this.formState, this.validationSchema)) {
+    if (this.isCurrentTabValid()) {
+      console.log('checkBeforeSubmit passed');
+      this.onSubmit(this.formState);
+      return true;
     } else {
-      // alert('Form is invalid');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': 'Please fill all required fields',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return false;
     }
+    // } else {
+    // alert('Form is invalid');
+    // return false;
+    // }
   }
   nextTab(): void {
     //console.log('Next Tab Clicked');
     if (!this.validateCurrentTab()) {
-      alert('Please correct the errors in the current tab before proceeding.');
+      console.log('validateCurrentTab failed');
+      // setContent(validateErrorModal, {
+      //   '.modal-title': 'Validation Error',
+      //   '.modal-message': 'Please correct the errors in the current tab before proceeding.',
+      // });
+      // ModalManager.show('validateErrorModal', validateErrorModal);
       return;
     }
+    console.log('validateCurrentTab passed');
     if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
       this.switchTab(this.activeTabIndex + 1);
     } else if (this.isCurrentTabValid()) {
       this.stage++;
       this.switchTab(this.activeTabIndex + 1);
     } else {
-      alert('Please fill in all the required fields.');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': 'Please fill in all the required fields.',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
     }
   }
 
@@ -200,7 +229,7 @@ class MultistepForm {
 
   private isCurrentTabValid(): boolean {
     if (this.checkIfRequiredFieldsAreFilled()) {
-      //console.log('Required fields are filled');
+      console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);
     }
     return this.tabValidityStates[this.activeTabIndex];

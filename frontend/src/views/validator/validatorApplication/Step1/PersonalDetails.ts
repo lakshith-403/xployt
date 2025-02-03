@@ -52,7 +52,7 @@ class PersonalDetails implements Step {
     for (const field of Object.values(this.fields)) {
       field.setOnChange((value) => {
         const keys = field.name.split('.');
-        console.log(keys);
+        // console.log(keys);
         if (keys.length > 1) {
           const nestedState = keys.reduceRight<any>((acc, key) => ({ [key]: acc }), value);
           // console.log(nestedState);

@@ -1,6 +1,6 @@
 .loading-screen {
   position: absolute;
-  z-index: 1000;
+  z-index: 900;
   top: 0;
   left: 0;
   width: calc(100vw - var(--sidebar-width));
