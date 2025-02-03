@@ -1,6 +1,5 @@
-import { IconButton } from '../components/button/icon.button';
 import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
-import { View, ViewHandler } from '../ui_lib/view';
+import { View, ViewHandler } from '@ui_lib/view';
 import { Button, ButtonType } from '@components/button/base';
 import { router } from '@ui_lib/router';
 // import './../assets/landing.webp';
@@ -15,14 +14,14 @@ class HomeView extends View {
     this.clientButton = new Button({
       label: 'Submit a Project',
       onClick: () => {
-        router.navigateTo('/dashboard');
+        router.navigateTo('/client');
       },
     });
     this.hackerButton = new Button({
       label: 'Start Hacking',
       type: ButtonType.SECONDARY,
       onClick: () => {
-        router.navigateTo('/dashboard');
+        router.navigateTo('/hacker');
       },
     });
   }

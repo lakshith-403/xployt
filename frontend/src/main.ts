@@ -33,6 +33,8 @@ import { CACHE_STORE } from './data/cache';
 import { convertToDom } from './components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
+import {hackerLandingPageViewHandler} from "@views/common/LandingPages/landing.hacker";
+import {clientLandingPageViewHandler} from "@views/common/LandingPages/client.landing";
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
 import alertForErrors from '@alerts/alertForErrors.html';
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
@@ -159,7 +161,7 @@ class TopNavigationView implements NavigationView {
         '',
         {
           onclick: () => {
-            router.navigateTo('/');
+            router.navigateTo('/hacker');
           },
         },
         'Hackers'
@@ -181,7 +183,7 @@ class TopNavigationView implements NavigationView {
         '',
         {
           onclick: () => {
-            router.navigateTo('/validator/application');
+            router.navigateTo('/client');
           },
         },
         'Organizations'
@@ -260,6 +262,8 @@ const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginView
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const HackerLandingRouteHandler = new RouteHandler('/hacker', [hackerLandingPageViewHandler], undefined, false, false);
+const ClientLandingRouteHandler = new RouteHandler('/client', [clientLandingPageViewHandler], undefined, false, false);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
@@ -277,6 +281,8 @@ router.addRouteHandler(AboutRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(ProfileRouteHandler);
+router.addRouteHandler(HackerLandingRouteHandler);
+router.addRouteHandler(ClientLandingRouteHandler);
 
 // Instantiate the UserRoleToggler to attach it to the page
 // new UserRoleToggler();
