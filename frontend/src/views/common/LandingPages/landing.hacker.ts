@@ -5,13 +5,10 @@ import {Button, ButtonType} from "@components/button/base";
 import {LandingTestimonials} from "@views/common/LandingPages/components/LandingTestimonials";
 import {router} from "@ui_lib/router";
 
-class LandingPage extends View {
-    // private userCache: UserCache;
-    private type: string;
+class LandingPageHacker extends View {
 
-    constructor(type: string = 'Hacker') {
+    constructor() {
         super();
-        this.type = type;
     }
 
     private howToContent = ['Sign up and create your profile.',
@@ -71,4 +68,4 @@ class LandingPage extends View {
     }
 }
 
-export const landingPageViewHandler = new ViewHandler('', LandingPage);
+export const hackerLandingPageViewHandler = new ViewHandler('', LandingPageHacker);

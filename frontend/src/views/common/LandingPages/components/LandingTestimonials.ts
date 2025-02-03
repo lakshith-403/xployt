@@ -1,8 +1,7 @@
 import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 import '../landing.scss'
 import {CACHE_STORE} from "@data/cache";
-import {UserProfile, UserProfileCache} from "@data/user/cache/userProfile";
-import {IconButton} from "@components/button/icon.button";
+import {UserProfileCache} from "@data/user/cache/userProfile";
 
 export interface Testimonial {
     message: string;
@@ -38,7 +37,7 @@ export class LandingTestimonials {
             $(q, 'div', 'testimonials-content', {}, (q) => {
                 for (const testimonial of this.testimonials) {
                     $(q, 'div', 'testimonial', {}, (q) => {
-                        $(q, 'img', 'quote', {src: '../../../assets/1.png'});
+                        $(q, 'img', 'quote', {src: '../../../assets/quote.png'});
                         $(q, 'p', 'message', {}, testimonial.message);
                         $(q, 'div', 'user', {}, (q) => {
                             $(q, 'img', 'avatar', {src: testimonial.user?.profilePicture});
