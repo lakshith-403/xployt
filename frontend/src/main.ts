@@ -25,7 +25,7 @@ import { projectRequestFormViewHandler } from './views/client/projectRequestForm
 import { NotificationList } from '@components/notifications/notificationsList';
 import { NotificationButton } from '@components/notifications/notificationButton';
 import { discussionViewHandler } from './views/discussion/Discussion';
-import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
+// import { UserRoleToggler } from '@components/userRoleToggler/userRoleToggler';
 import { userDashboardViewHandler } from '@views/UserDashboard';
 import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/inviteHackers';
 import { Button } from './components/button/base';

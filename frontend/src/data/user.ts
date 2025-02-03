@@ -59,6 +59,7 @@ export class User {
   }
 }
 
+// Getting an error is expected if you aren't logged in
 export class UserCache extends CacheObject<User> {
   async load(): Promise<User> {
     try {
