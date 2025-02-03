@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"path": "../../../../../../xployt-backend"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default",
+					"enableSsl": "Enabled",
+					"ssl": {
+						"ca": "D:\\Downloads\\ca (2).pem"
+					}
+				},
+				"previewLimit": 50,
+				"server": "xployt-xployt.b.aivencloud.com",
+				"port": 17847,
+				"driver": "MySQL",
+				"name": "xployt",
+				"database": "defaultdb",
+				"username": "avnadmin",
+				"password": "AVNS_5G4ol30FyzBOm-NNf6x"
+			}
+		]
+	}
+}
