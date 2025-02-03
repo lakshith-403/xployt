@@ -68,4 +68,4 @@ class LandingPageHacker extends View {
     }
 }
 
-export const hackerLandingPageViewHandler = new ViewHandler('', LandingPageHacker);
+export const hackerLandingPageViewHandler = new ViewHandler('hacker', LandingPageHacker);

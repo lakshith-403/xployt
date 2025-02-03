@@ -38,7 +38,7 @@ class LandingPageValidator extends View {
 
     render(q: Quark): void {
         q.innerHTML = '';
-        $(q, 'div', 'landing', {id: 'landing-hacker'}, (q) => {
+        $(q, 'div', 'landing', {id: 'landing-validator'}, (q) => {
             $(q, 'div', 'landing-comp', {}, (q) => {
                 $(q, 'h1', 'title', {}, 'Validate. Secure. Strengthen.');
                 $(q, 'ul', '', {}, (q) => {
@@ -59,4 +59,4 @@ class LandingPageValidator extends View {
     }
 }
 
-export const validatorLandingPageViewHandler = new ViewHandler('', LandingPageValidator);
+export const validatorLandingPageViewHandler = new ViewHandler('validator', LandingPageValidator);
