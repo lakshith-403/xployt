@@ -76,4 +76,4 @@ class LandingPageClient extends View {
     }
 }
 
-export const clientLandingPageViewHandler = new ViewHandler('', LandingPageClient);
+export const clientLandingPageViewHandler = new ViewHandler('client', LandingPageClient);
