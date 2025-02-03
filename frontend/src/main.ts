@@ -35,15 +35,25 @@ import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 import {hackerLandingPageViewHandler} from "@views/common/LandingPages/landing.hacker";
 import {clientLandingPageViewHandler} from "@views/common/LandingPages/landing.client";
+import alertOnlyOK from '@alerts/alertOnlyOK.html';
+import alertForErrors from '@alerts/alertForErrors.html';
 import {validatorLandingPageViewHandler} from "@views/common/LandingPages/landing.validator";
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 // import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
 
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
+
 ModalManager.includeModal('alertOnlyCancel', {
   '.button-cancel': () => ModalManager.hide('alertOnlyCancel'),
 });
-
+export const modalAlertOnlyOK = convertToDom(alertOnlyOK);
+ModalManager.includeModal('alertOnlyOK', {
+  '.button-ok': () => ModalManager.hide('alertOnlyOK'),
+});
+export const modalAlertForErrors = convertToDom(alertForErrors);
+ModalManager.includeModal('alertForErrors', {
+  '.button-ok': () => ModalManager.hide('alertForErrors'),
+});
 // export const modalAlertOnlyConfirm = convertToDom(alertOnlyConfirm);
 // ModalManager.includeModal('alertOnlyConfirm', {
 //   '.button-confirm': () => ModalManager.hide('alertOnlyConfirm'),
