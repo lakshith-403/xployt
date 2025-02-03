@@ -33,7 +33,7 @@ import { CACHE_STORE } from './data/cache';
 import { convertToDom } from './components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
 import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
-import {landingPageViewHandler} from "@views/common/LandingPages/landing.base";
+import {landingPageViewHandler} from "@views/common/LandingPages/landing.hacker";
 // import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 // import alertCancelConfirm from '@alerts/alertCancelConfirm.html';
 
@@ -251,7 +251,7 @@ const AboutRouteHandler = new RouteHandler('/about', [homeViewHandler, loginView
 
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
-const LandingRouteHandler = new RouteHandler('/landing', [landingPageViewHandler], undefined, false, false);
+const LandingRouteHandler = new RouteHandler('/hacker', [landingPageViewHandler], undefined, false, false);
 const ProfileRouteHandler = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);

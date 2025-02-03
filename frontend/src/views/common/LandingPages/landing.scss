@@ -15,7 +15,7 @@
   gap: 3rem;
 
   .landing-comp {
-    flex: 1;
+    flex: 0.5;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -48,40 +48,102 @@
 
 #how-to {
   background-color: var(--background-secondary);
-  padding: 4rem 10rem 10rem 10rem;
+  padding: 4rem 10rem 4rem 10rem;
   display: flex;
   flex-direction: column;
+  //grid-template-columns: repeat(2, minmax(160px, 1fr));
   color: var(--color-primary);
 
-  h1 {
-    height: 8rem;
-  }
-
   .how-to-content{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+    //flex-wrap: wrap;
     gap: 4rem;
     align-items: center;
     justify-content: center;
+    padding-block: 3rem;
 
     .how-to-card{
       display: flex;
       flex-direction: row;
       width: 25rem;
-      gap: 1rem;
+      gap: 2rem;
       padding: 3rem;
       border-radius: 1rem;
       background-color: var(--background-primary);
-      box-shadow: 0 0.2rem 3rem rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.3);
 
       .number{
         font-size: 6rem;
         font-weight: bold;
-        color: var(--dark-green);
+        color: var(--light-green);
         margin: 0;
         line-height: 0.8;
+        padding-right: 1rem;
+        border-right: var(--light-green) 2px solid;
       }
     }
 
   }
+}
+
+#testimonials {
+  padding: 4rem 10rem 4rem 10rem;
+  display: flex;
+  flex-direction: column;
+
+  .testimonials-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-self: center;
+    padding-block: 3rem;
+    gap: 3rem;
+    justify-content: center;
+
+    .testimonial {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      width: 25rem;
+      background-color: var(--background-secondary);
+      border-radius: 1rem;
+      box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.3);
+
+      .quote{
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+      }
+      .message{
+        padding-bottom: 3rem;
+        padding-left: 1rem;
+        margin: 0;
+        font-style: italic;
+        font-size: 1.2rem;
+        color: var(--color-primary);
+      }
+      .user{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+
+        .avatar{
+          height: 3rem;
+          width: 3rem;
+          border-radius: 50%;
+          border: 2px solid var(--color-primary);
+        }
+
+        .name{
+          color: var(--color-primary);
+          //opacity: 80%;
+        }
+      }
+    }
+  }
+
 }

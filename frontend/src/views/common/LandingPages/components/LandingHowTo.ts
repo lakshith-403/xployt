@@ -9,9 +9,8 @@ export class LandingHowTo {
     }
 
     render(q: Quark): void {
-        // q.innerHTML = '';
         $(q, 'div', '', {id: 'how-to'}, (q) => {
-            $(q, 'h1', '', {}, 'How it works?');
+            $(q, 'h1', 'title', {}, 'How it works?');
             $(q, 'div', 'how-to-content', {}, (q) => {
                 for (const item in this.content) {
                     $(q, 'div', 'how-to-card', {}, (q) => {
