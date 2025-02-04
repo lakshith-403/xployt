@@ -12,6 +12,9 @@ import { getProjects } from '@/services/projects';
 import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
 import { Project as ClientProject } from '@data/client/cache/projects.cache';
 import { UserType } from '@data/user';
+import { ButtonType } from '@/components/button/base';
+import { FormButton } from '@/components/button/form.button';
+import { router } from '@/ui_lib/router';
 export default class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache!: ProjectsCache;
@@ -40,6 +43,7 @@ export default class ProjectsView extends View {
       this.userId = user.id;
       console.log('user id', this.userId);
       this.projects = await getProjects(this.userId, user.type);
+      console.log('projects', this.projects);
       this.userType = user.type;
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
@@ -72,12 +76,27 @@ export default class ProjectsView extends View {
     loading.hide();
 
     q.innerHTML = '';
-    $(q, 'div', 'projects validator', {}, (q) => {
-      const pendingProjects = this.projects[0]!;
-      const completedProjects = this.projects[1]!;
+    $(q, 'div', 'projects validator d-flex flex-column container-lg p-4', {}, (q) => {
+      $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
+        const button = new FormButton({
+          label: 'Add Project',
+          onClick: () => router.navigateTo('/project-request'),
+          type: ButtonType.PRIMARY,
+        });
+        button.render(q);
+      });
 
-      this.renderProjectSection(q, 'Pending Projects', pendingProjects);
-      this.renderProjectSection(q, 'Completed Projects', completedProjects);
+      if (this.projects.length === 0) {
+        $(q, 'div', 'table-row', {}, (q) => {
+          $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
+        });
+      } else {
+        const pendingProjects = this.projects[0]!;
+        const completedProjects = this.projects[1]!;
+
+        this.renderProjectSection(q, 'Pending Projects', pendingProjects);
+        this.renderProjectSection(q, 'Completed Projects', completedProjects);
+      }
     });
   }
 }

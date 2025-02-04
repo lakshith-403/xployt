@@ -39,7 +39,6 @@ export default class Hacker {
       $(q, 'div', '', { id: 'basic-info' }, (q) => {
         new OverviewBasicInfo(this.projectId, this.projectInfo.client).render(q);
       });
-
       $(q, 'section', '', {}, (q) => {
         $(q, 'h2', '', {}, 'Rules and Scope');
         $(q, 'ul', 'section-content', {}, (q) => {
@@ -53,7 +52,6 @@ export default class Hacker {
         $(q, 'h2', '', {}, 'Payments');
         new OverviewPayments(this.projectId).render(q);
       });
-
       $(q, 'section', '', { id: 'reports' }, (q) => {
         $(q, 'span', '', {}, (q) => {
           $(q, 'h2', '', {}, 'Reports');

@@ -1,3 +1,5 @@
+import LoadingScreen from '@components/loadingScreen/loadingScreen';
+
 /**
  * Class representing a network service for making HTTP requests.
  */
@@ -28,10 +30,10 @@ class Network {
     return new Promise((resolve, reject) => {
       // Validate method and URL
       if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method.toUpperCase())) {
-        return reject(new Error('Invalid HTTP method'));
+        return reject(new NetworkError(0, url, null, 'Invalid HTTP method'));
       }
       if (!url || typeof url !== 'string') {
-        return reject(new Error('Invalid URL'));
+        return reject(new NetworkError(0, url, null, 'Invalid URL'));
       }
 
       console.log(`Sending ${method} request to ${url}`);
@@ -43,19 +45,23 @@ class Network {
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
+        console.log(xhr.response);
         if (xhr.status >= 400) {
+          console.log('> 400');
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
+            console.log('response', response);
             resolve(response);
           } catch (e) {
-            reject(new Error('Failed to parse JSON response'));
+            reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
           }
         }
       };
 
       xhr.onerror = (event) => {
+        console.log('XHR request failed: ' + event.type);
         reject(new NetworkError(xhr.status, url, null, `XHR request failed: ${event.type}`));
       };
 
@@ -66,6 +72,40 @@ class Network {
       }
     });
   };
+
+  public get(url: string): Promise<any> {
+    return this.sendHttpRequest('GET', url, {}, 'application/json');
+  }
+
+  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    if (options.showLoading) {
+      console.log('Showing loading screen');
+      LoadingScreen.show();
+    }
+    try {
+      const response = await this.sendHttpRequest('POST', url, data, 'application/json');
+      if (options.showLoading) {
+        console.log('Hiding loading screen');
+        LoadingScreen.hide();
+      }
+      return response;
+    } catch (error) {
+      console.error('Error:', error);
+      if (options.showLoading) {
+        console.log('Hiding loading screen');
+        LoadingScreen.hide();
+      }
+      throw error;
+    }
+  }
+
+  public put(url: string, data: any): Promise<any> {
+    return this.sendHttpRequest('PUT', url, data, 'application/json');
+  }
+
+  public delete(url: string): Promise<any> {
+    return this.sendHttpRequest('DELETE', url, {}, 'application/json');
+  }
 }
 
 /**
@@ -88,6 +128,11 @@ export class NetworkError {
   stackTrace?: string;
   message?: string;
 
+  servlet?: string; // The servlet that handled the request
+  uri?: string; // The URI of the request
+  code?: string; // The code of the error
+  data?: any; // The data from the server
+
   /**
    * Creates an instance of NetworkError.
    *
@@ -100,10 +145,28 @@ export class NetworkError {
     this.statusCode = statusCode;
     this.url = url;
     this.message = message;
+    console.log('data', data);
     if (data) {
       try {
+        if (typeof data === 'string') {
+          console.log('Data is a string. Attempting to parse as JSON...');
+          data = JSON.parse(data); // Parse the JSON string into an object
+        }
+
         this.errorDescription = data['error'];
         this.stackTrace = data['trace'];
+        this.message = data['message'];
+        // this.uri = data['uri'];
+        this.code = data['code'];
+        this.servlet = data['servletClass'];
+        this.data = data['data'];
+        // console.log('this.data', this.data);
+        // console.log('this.message', this.message);
+        // console.log('this.errorDescription', this.errorDescription);
+        // console.log('this.stackTrace', this.stackTrace);
+        // console.log('this.uri', this.uri);
+        // console.log('this.code', this.code);
+        // console.log('this.servlet', this.servlet);
       } catch (e: any) {
         this.stackTrace = e.stack;
         this.errorDescription = 'Failed to extract data from network error: ' + e.message;

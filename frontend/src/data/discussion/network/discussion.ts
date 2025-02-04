@@ -3,6 +3,10 @@ import NETWORK, { Response } from './../../network/network';
 export class DiscussionEndpoints {
   private static readonly BASE_URL = '/api/discussions';
 
+  static async getDiscussions(projectId: string): Promise<Response> {
+    return NETWORK.sendHttpRequest('GET', `/api/project_discussions/${projectId}`);
+  }
+
   static async getDiscussion(discussionId: string): Promise<Response> {
     return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}/${discussionId}`);
   }

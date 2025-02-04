@@ -1,10 +1,17 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ButtonType } from '../button/base';
 import { FormButton } from '../button/form.button';
+// import { validateField, validateFormState } from './validationUtils';
+import { validateField } from './validationUtils';
 import './multistep-form.scss';
+import ModalManager, { setContent } from '../ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
 
 export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
+}
+export interface ValidationSchema {
+  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email';
 }
 
 export interface Steps {
@@ -32,8 +39,10 @@ class MultistepForm {
   private lastAction: 'Submit' | 'Apply' = 'Submit';
   private onSubmit: (formState: any) => void;
   private config: { [key: string]: any } = {};
+  private validationSchema: ValidationSchema;
 
-  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
+    this.validationSchema = validationSchema;
     this.steps = steps;
     this.activeTabIndex = 0;
     this.tabValidityStates = new Array(steps.length).fill(false);
@@ -43,6 +52,41 @@ class MultistepForm {
     this.onSubmit = onSubmit;
     this.config = config || {};
     // //console.log(this.numOfSteps);
+  }
+
+  private validateCurrentTab(): boolean {
+    console.log('validateCurrentTab', this.activeTabIndex);
+    const currentStep = this.steps[this.activeTabIndex];
+    let errorMessages: string[] = [];
+
+    for (const key in currentStep.stateUsed) {
+      const value = this.formState[key];
+      // Validate only if the field is required and has a value
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        !(Array.isArray(value) && value.length === 0) &&
+        !(typeof value === 'object' && value !== null && Object.values(value).every((v) => !v))
+      ) {
+        console.log('validateField', key, value);
+        const validation = validateField(key, value, this.validationSchema[key]);
+        if (!validation.result) {
+          errorMessages.push(validation.message);
+        }
+      }
+    }
+
+    if (errorMessages.length > 0) {
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': errorMessages.join('\n'),
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+      return false;
+    }
+
+    return true;
   }
 
   render(q: Quark): void {
@@ -99,23 +143,48 @@ class MultistepForm {
   }
 
   checkBeforeSubmit(): boolean {
+    console.log('checkBeforeSubmit', this.formState, this.validationSchema);
+    // if (validateFormState(this.formState, this.validationSchema)) {
     if (this.isCurrentTabValid()) {
+      console.log('checkBeforeSubmit passed');
       this.onSubmit(this.formState);
       return true;
     } else {
-      alert('Acccept all terms and conditions');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': 'Please fill all required fields',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
       return false;
     }
+    // } else {
+    // alert('Form is invalid');
+    // return false;
+    // }
   }
   nextTab(): void {
     //console.log('Next Tab Clicked');
+    if (!this.validateCurrentTab()) {
+      console.log('validateCurrentTab failed');
+      // setContent(validateErrorModal, {
+      //   '.modal-title': 'Validation Error',
+      //   '.modal-message': 'Please correct the errors in the current tab before proceeding.',
+      // });
+      // ModalManager.show('validateErrorModal', validateErrorModal);
+      return;
+    }
+    console.log('validateCurrentTab passed');
     if (this.activeTabIndex + 1 <= this.stage && this.isCurrentTabValid()) {
       this.switchTab(this.activeTabIndex + 1);
     } else if (this.isCurrentTabValid()) {
       this.stage++;
       this.switchTab(this.activeTabIndex + 1);
     } else {
-      alert('Please fill in all the required fields.');
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': 'Please fill in all the required fields.',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
     }
   }
 
@@ -160,7 +229,7 @@ class MultistepForm {
 
   private isCurrentTabValid(): boolean {
     if (this.checkIfRequiredFieldsAreFilled()) {
-      //console.log('Required fields are filled');
+      console.log('Required fields are filled');
       this.updateTabValidity(this.activeTabIndex, true);
     }
     return this.tabValidityStates[this.activeTabIndex];
@@ -169,6 +238,8 @@ class MultistepForm {
   private checkIfRequiredFieldsAreFilled(): boolean {
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
+        // console.log(key, this.formState[key]);
+        // console.log(key, this.formState[key], this.formState);
         const fieldValue = this.formState[key];
         if (fieldValue === undefined || fieldValue === '') {
           //console.log(`Field "${key}" is required but is empty`);
@@ -210,18 +281,22 @@ class MultistepForm {
    * updateFormState('address', { street: '123 Main St', city: 'Anytown' });
    */
   private updateFormState(keyOrState: string | { [key: string]: any }, value?: any): void {
-    //console.log('Update form state', keyOrState, value);
+    // console.log('Update form state', keyOrState, value);
     if (typeof keyOrState === 'string') {
       if (this.formState[keyOrState] instanceof Object && value instanceof Object) {
+        // console.log('type 1', keyOrState, value);
         this.formState[keyOrState] = { ...this.formState[keyOrState], ...value };
       } else {
+        // console.log('type 2', keyOrState, value);
         this.formState[keyOrState] = value;
       }
     } else {
       for (const [key, val] of Object.entries(keyOrState)) {
         if (this.formState[key] instanceof Object && val instanceof Object) {
+          // console.log('type 3', key, val);
           this.formState[key] = { ...this.formState[key], ...val };
         } else {
+          // console.log('type 4', key, val);
           this.formState[key] = val;
         }
       }

@@ -50,6 +50,9 @@ export class ProjectTable extends ClickableFilterableTableWithCrumbs {
                 $(q, 'div', 'table-row', {}, (q) => {
                   const values = Object.values(item);
                   values.forEach((element, index) => {
+                    if (element == undefined) {
+                      element = '-';
+                    }
                     const isLastCell = index === values.length - 1;
                     $(
                       q,

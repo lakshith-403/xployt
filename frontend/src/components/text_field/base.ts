@@ -52,13 +52,13 @@ export class TextField {
     return (this.element as HTMLInputElement)?.value || '';
   }
 
-  setValue = (value: string): void => { 
-    console.log('TextField: Setting value:', value, "for element:", this.element);
+  setValue = (value: string): void => {
+    // console.log('TextField: Setting value:', value, "for element:", this.element);
     if (this.element) {
-      console.log('TextField: Setting value:', value);
+      // console.log('TextField: Setting value:', value);
       (this.element as HTMLInputElement).value = value;
     }
-  }
+  };
 
   setOnChange(onChange: (value: string) => void): void {
     this.onChange = onChange;

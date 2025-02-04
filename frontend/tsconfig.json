@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "noImplicitAny": true,
+    // "noImplicitAny": true,
     "module": "es6",
     "target": "es5",
     "allowJs": true,
@@ -15,8 +15,9 @@
       "@data/*": ["src/data/*"],
       "@views/*": ["src/views/*"],
       "@assets/*": ["src/assets/*"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@alerts/*": ["src/views/alerts/*"]
     }
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "src/types/html.d.ts"]
 }

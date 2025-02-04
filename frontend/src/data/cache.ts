@@ -6,7 +6,7 @@ import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cach
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
 import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
-import { ClientCacheMock } from './projectLead/cache/client.cache';
+import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
 import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
@@ -23,7 +23,7 @@ class CacheStore {
   private readonly projectTeamsMap: Map<string, ProjectTeamCache>;
   private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
-  private readonly clientMap: Map<string, ClientCacheMock>;
+  // private readonly clientMap: Map<string, ClientCache>; // No longer needed
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
   private readonly invitationsMap: Map<string, InvitationsCache>;
   private readonly discussionMap: Map<string, DiscussionCache>;
@@ -40,7 +40,7 @@ class CacheStore {
     this.projectTeamsMap = new Map();
     this.hackerProjectInfoMap = new Map();
     this.projectConfigInfoMap = new Map();
-    this.clientMap = new Map();
+    // this.clientMap = new Map();
     this.notificationsListMap = new Map();
     this.invitationsMap = new Map();
     // this.projects = [];
@@ -78,12 +78,13 @@ class CacheStore {
 
     return this.projectInfoMap.get(projectId)!;
   }
-  public getClient(clientId: string): ClientCacheMock {
-    if (!this.clientMap.has(clientId)) {
-      this.clientMap.set(clientId, new ClientCacheMock());
-    }
-    return this.clientMap.get(clientId)!;
-  }
+  // TODO: remove this
+  // public getClient(userId: string): ClientCache {
+  //   if (!this.clientMap.has(userId)) {
+  //     this.clientMap.set(userId, new ClientCache());
+  //   }
+  //   return this.clientMap.get(userId)!;
+  // }
 
   public getProjects(): ProjectsCache {
     return this.projects;

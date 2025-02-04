@@ -21,6 +21,7 @@ export class HackerDashboard extends View {
     private async loadInvitations(): Promise<void>{
         try{
             this.invitations = await this.invitationCache.get(false, this.params.userId) as Invitation[];
+
         }catch (error) {
             console.error('Failed to load invitations:', error);
         }

@@ -1,6 +1,6 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
-import MultistepForm from '@components/multistepForm/multistep-form';
+import MultistepForm, { ValidationSchema } from '@components/multistepForm/multistep-form';
 import './projectConfigForm.scss';
 import { Steps } from '@components/multistepForm/multistep-form';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
@@ -49,7 +49,18 @@ class ProjectConfigForm extends View {
     attachments: null as File | null,
     initialFunding: '',
   };
-
+  private validationSchema: ValidationSchema = {
+    testingScope: 'string',
+    outOfScope: 'string',
+    objectives: 'string',
+    securityRequirements: 'string',
+    critical: 'array|string',
+    high: 'array|string',
+    medium: 'array|string',
+    low: 'array|string',
+    informative: 'array|string',
+    visibility: 'string',
+  };
   private onSubmit: (formState: any) => void = async (formState: any) => {
     const loading = new LoadingScreen(document.body);
     loading.show();
@@ -93,7 +104,7 @@ class ProjectConfigForm extends View {
       },
     ];
 
-    const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit);
+    const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, this.validationSchema);
     $(q, 'div', 'project-config-form', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {

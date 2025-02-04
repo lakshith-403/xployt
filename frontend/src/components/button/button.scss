@@ -25,6 +25,11 @@ button.button-component {
     border-color: var(--color-primary);
 
   }
+  &.button-tertiary{
+    background-color: #d94338;
+    color: white;
+    border: none;
+  }
 }
 
 // .button-component {

@@ -18,7 +18,7 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.html'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@ui_lib': path.resolve(__dirname, 'src/ui_lib'),
@@ -26,18 +26,43 @@ module.exports = {
       '@data': path.resolve(__dirname, 'src/data'),
       '@views': path.resolve(__dirname, 'src/views'),
       '@assets': path.resolve(__dirname, 'src/assets'),
+      '@alerts': path.resolve(__dirname, 'src/views/alerts'),
     },
   },
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              compilerOptions: {
+                sourceMap: true, // Ensure TypeScript emits source maps
+              },
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
+      // {
+      //   test: /\.ts$/,
+      //   use: [
+      //     {
+      //       loader: path.resolve(__dirname, 'src/utils/custom-logger.js'),
+      //     },
+      //   ],
+      //   include: [path.resolve(__dirname, 'src/components')],
+      //   exclude: /node_modules/,
+      // },
       {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.html$/,
+        use: 'html-loader',
+        exclude: /index\.html/,
       },
     ],
   },
