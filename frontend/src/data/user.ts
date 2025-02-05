@@ -1,7 +1,7 @@
 import { router } from '@/ui_lib/router';
 import { CacheObject, DataFailure } from './cacheBase';
 import { AuthEndpoints } from './network/auth.network';
-export type UserType = 'Client' | 'Validator' | 'ProjectLead' | 'Hacker' | 'Guest';
+export type UserType = 'Client' | 'Validator' | 'ProjectLead' | 'Hacker' | 'Guest' | 'Admin';
 
 interface UserResponse {
   id: string;
