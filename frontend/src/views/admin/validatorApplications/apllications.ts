@@ -3,8 +3,10 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 
 export class ValidatorApplications extends View {
-  constructor() {
+  params: any;
+  constructor(params: any) {
     super();
+    this.params = params;
   }
 
   async render(q: Quark): Promise<void> {
@@ -15,4 +17,4 @@ export class ValidatorApplications extends View {
   }
 }
 
-export const validatorApplicationsViewHandler = new ViewHandler('validator-applications', ValidatorApplications);
+export const validatorApplicationsViewHandler = new ViewHandler('validatorApplications', ValidatorApplications);

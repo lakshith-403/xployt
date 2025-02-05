@@ -15,3 +15,5 @@ export class AdminDashboard extends View {
     });
   }
 }
+
+export const adminDashboardViewHandler = new ViewHandler('', AdminDashboard);

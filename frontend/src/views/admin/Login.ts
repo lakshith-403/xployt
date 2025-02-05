@@ -21,9 +21,9 @@ setContent(modalElement, {
 });
 
 // Add event listeners to the modal buttons
-ModalManager.includeModal('loginAlert', {
+ModalManager.includeModal('adminLoginAlert', {
   '.button-confirm': () => {
-    ModalManager.hide('loginAlert');
+    ModalManager.hide('adminLoginAlert');
     router.navigateTo('/admin');
   },
 });
@@ -97,9 +97,10 @@ export class AdminLoginView extends View {
         console.log('User logged in:', user);
 
         // Method 1: Using a promise
-        ModalManager.show('loginAlert', modalElement, true).then(() => {
+        ModalManager.show('adminLoginAlert', modalElement, true).then(() => {
           console.log('ModalManager.show resolved');
         });
+
         // Method 2 : Basic modal
         // ModalManager.show('loginAlert', modalElement);
       })

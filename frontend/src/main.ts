@@ -45,6 +45,12 @@ import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/
 import { hackerLandingPageViewHandler } from '@views/common/LandingPages/landing.hacker';
 import { clientLandingPageViewHandler } from '@views/common/LandingPages/landing.client';
 import { validatorLandingPageViewHandler } from '@views/common/LandingPages/landing.validator';
+import { adminLoginViewHandler } from '@views/admin/Login';
+import { validatorApplicationsViewHandler } from '@views/admin/validatorApplications/apllications';
+import { adminDashboardViewHandler } from '@views/admin/dashboard/dashboard';
+
+// Sidebars
+import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -61,24 +67,6 @@ export const modalAlertForErrors = convertToDom(alertForErrors);
 ModalManager.includeModal('alertForErrors', {
   '.button-ok': () => ModalManager.hide('alertForErrors'),
 });
-
-const HomeSidebar: SidebarTab[] = [
-  {
-    id: 'dashboard',
-    title: 'Dashboard',
-    url: 'dashboard',
-  },
-  {
-    id: 'projects',
-    title: 'Projects',
-    url: 'projects',
-  },
-  {
-    id: 'reports',
-    title: 'Reports',
-    url: 'reports',
-  },
-];
 
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
@@ -185,6 +173,7 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
 
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
 const LandingRouteHandlers = new RouteHandler('/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false);
@@ -209,6 +198,8 @@ const ClientViewHandlers = new RouteHandler('/client', [projectRequestFormViewHa
 
 const ProjectLeadViewHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
+const AdminViewHandlers = new RouteHandler('/admin', [adminDashboardViewHandler, validatorApplicationsViewHandler], new SidebarView('/', AdminSidebar), false, false, false, false);
+
 const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
@@ -222,6 +213,7 @@ router.setTopNavigationView(new TopNavigationView());
 router.addRouteHandler(HomeRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
+router.addRouteHandler(AdminLoginRouteHandler);
 router.addRouteHandler(LandingRouteHandlers);
 router.addRouteHandler(ValidatorApplicationRouteHandler);
 
@@ -232,6 +224,7 @@ router.addRouteHandler(ValidatorViewHandlers);
 router.addRouteHandler(HackerViewHandlers);
 router.addRouteHandler(ClientViewHandlers);
 router.addRouteHandler(ProjectLeadViewHandlers);
+router.addRouteHandler(AdminViewHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
