@@ -20,6 +20,8 @@ const numberRegex = /^\d+$/; // Matches only numbers
 
 const stringRegex = /^[a-zA-Z0-9 ]+$/; // Matches letters and numbers
 
+const string2Regex = /^[a-zA-Z0-9]+ [a-zA-Z0-9]+$/; // Matches letters and numbers
+
 const stringStrictRegex = /^[a-zA-Z ]+$/; // Matches only letters
 
 const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
@@ -134,6 +136,23 @@ export function validateField(key: string, value: any, expectedType: string): { 
     console.log('checking number: ', key, value);
     if (!numberRegex.test(value)) {
       return { result: false, message: `${key} must be a number` };
+    }
+  }
+
+  // Verifying a url
+  if (expectedType === 'url') {
+    console.log('checking url: ', key, value);
+    if (!urlRegex.test(value)) {
+      return { result: false, message: `${key} must be a valid URL` };
+    }
+  }
+
+  // Verifying a string(2)
+
+  if (expectedType === 'string|2') {
+    console.log('checking string|2: ', key, value);
+    if (!string2Regex.test(value)) {
+      return { result: false, message: `${key} must be a string with 2 words` };
     }
   }
   return { result: true, message: '' };

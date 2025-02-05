@@ -11,7 +11,7 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 export interface ValidationSchema {
-  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email';
+  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email' | 'string|2';
 }
 
 export interface Steps {
