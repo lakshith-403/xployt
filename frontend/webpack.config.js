@@ -27,8 +27,10 @@ module.exports = {
       '@views': path.resolve(__dirname, 'src/views'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@alerts': path.resolve(__dirname, 'src/views/alerts'),
+      '@main': path.resolve(__dirname, 'src/main.ts'),
     },
   },
+
   module: {
     rules: [
       {
