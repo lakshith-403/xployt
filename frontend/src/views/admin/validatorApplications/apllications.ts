@@ -17,4 +17,4 @@ export class ValidatorApplications extends View {
   }
 }
 
-export const validatorApplicationsViewHandler = new ViewHandler('validatorApplications', ValidatorApplications);
+export const validatorApplicationsViewHandler = new ViewHandler('/validator-applications', ValidatorApplications);
