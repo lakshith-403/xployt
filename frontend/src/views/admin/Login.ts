@@ -16,7 +16,7 @@ const modalElement = convertToDom(alertOnlyConfirm);
 
 // Set text content of modal elements
 setContent(modalElement, {
-  '.modal-title': 'Login',
+  '.modal-title': 'Admin Login',
   '.modal-message': 'Login successful!',
 });
 
