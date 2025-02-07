@@ -221,7 +221,7 @@ const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler],
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
-const UserViewHandlers = new RouteHandler('/user', [profileViewHandler], undefined, false, false, false, true);
+const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
