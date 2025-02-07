@@ -177,6 +177,14 @@ class TopNavigationView implements NavigationView {
               this.renderButtons();
             },
           }).render(this.buttonContainer);
+
+          new Button({
+            label: 'Admin Sign In',
+            onClick: () => {
+              router.navigateTo('/adminLogin');
+              this.renderButtons();
+            },
+          }).render(this.buttonContainer);
         }
       });
   }
