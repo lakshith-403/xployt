@@ -165,6 +165,14 @@ class TopNavigationView implements NavigationView {
               this.renderButtons();
             },
           }).render(this.buttonContainer);
+
+          new Button({
+            label: 'Admin Sign In',
+            onClick: () => {
+              router.navigateTo('/adminLogin');
+              this.renderButtons();
+            },
+          }).render(this.buttonContainer);
         }
       });
   }
@@ -204,7 +212,7 @@ const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler],
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
-const UserViewHandlers = new RouteHandler('/user', [profileViewHandler], undefined, false, false, false, true);
+const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
