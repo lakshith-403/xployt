@@ -24,29 +24,24 @@ export class ValidatorApplications extends View {
 
   async getApplications(): Promise<any> {
     const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true });
+    this.applications = response.data.validators;
     console.log('response: ', response);
-    // return response.data.validators.map((validator: any) => ({
-    //   id: validator.userId,
-    //   name: validator.name,
-    //   email: validator.email,
-    // }));
   }
 
   private async loadApplications(): Promise<void> {
     for (const application of this.applications) {
       try {
         console.log(`Project Info for ${application.projectId}:`, application);
-        const popupElement = await this.ApplicationsPopup({ projectId: application.projectId });
-        // this.applicationsTableContent.push({
-        //   id: application.projectId,
-
-        //   Date: application.timestamp,
-        //   title: application.title,
-        //   startDate: application.startDate,
-        //   popup: new Popup(popupElement),
-        // });
+        const popupElement = await this.ApplicationsPopup({ userId: application.userId });
+        this.applicationsTableContent.push({
+          id: application.userId,
+          Name: application.name,
+          Email: application.email,
+          Date: application.createdAt,
+          popup: new Popup(popupElement),
+        });
       } catch (error) {
-        console.error(`Failed to load project info for ${application.projectId}:`, error);
+        console.error(`Failed to load project info for ${application.userId}:`, error);
       }
     }
   }
@@ -61,7 +56,7 @@ export class ValidatorApplications extends View {
       $(q, 'h1', 'validator-applications-title', {}, 'Validator Applications');
 
       $(q, 'div', 'validator-applications-table', {}, (q) => {
-        const requestsTable = new PopupTable(this.applicationsTableContent, ['Name', 'Email']);
+        const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
         requestsTable.render(q);
       });
     });

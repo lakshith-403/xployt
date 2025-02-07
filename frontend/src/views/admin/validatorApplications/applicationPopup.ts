@@ -8,17 +8,17 @@ import { ButtonType } from '@components/button/base';
 import NETWORK from '@/data/network/network';
 
 export class ApplicationPopup {
-  private readonly requestId: string;
+  private readonly userId: string;
   private application: any;
 
-  constructor(params: { requestId: string }) {
-    this.requestId = params.requestId;
+  constructor(params: { userId: string }) {
+    this.userId = params.userId;
   }
 
   async loadData(): Promise<void> {
     try {
-      const response = await NETWORK.get(`/api/admin/applicationData/${this.requestId}`, { showLoading: true });
-      this.application = response.data;
+      const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`, { showLoading: true });
+      this.application = response.data.applicationData[0];
       console.log('application data: ', this.application);
     } catch (error) {
       console.error('Failed to load project data', error);
@@ -33,20 +33,29 @@ export class ApplicationPopup {
     await this.loadData();
     loading.hide();
 
-    $(q, 'div', 'hacker-invitation', {}, (q) => {
-      // $(q, 'h2', '', {}, `Application: ${this.application.title} #${convertToTitleCase(this.requestId)}`);
+    $(q, 'div', 'hacker-application', {}, (q) => {
       $(q, 'div', 'content', {}, (q) => {
-        $(q, 'h3', '', {}, 'Rules and Scope');
-        $(q, 'ul', '', {}, (q) => {
-          // this.projectInfo.scope.forEach((rule) => {
-          //   $(q, 'li', '', {}, rule);
-          // });
+        $(q, 'div', 'heading', {}, (q) => {
+          $(q, 'h3', '', {}, 'Applicant Details');
         });
+
+        $(q, 'div', 'applicant-details', {}, (q) => {
+          $(q, 'p', '', {}, `First Name: ${this.application.firstName}`);
+
+          $(q, 'p', '', {}, `Last Name: ${this.application.lastName}`);
+          $(q, 'p', '', {}, `Email: ${this.application.email}`);
+
+          $(q, 'p', '', {}, `Mobile: ${this.application.phone}`);
+          $(q, 'p', '', {}, `LinkedIn: ${this.application.linkedIn ? this.application.linkedIn : 'Not provided'}`);
+          $(q, 'p', '', {}, `Date of Birth: ${this.application.dob}`);
+        });
+
+        $(q, 'ul', '', {}, (q) => {});
         $(q, 'div', 'buttons', {}, (q) => {
           new IconButton({
             type: ButtonType.PRIMARY,
             icon: 'fa-solid fa-check',
-            label: 'Accept Invitation',
+            label: 'Accept Application',
             onClick: () => {
               console.log('Accept Application');
             },
@@ -54,7 +63,7 @@ export class ApplicationPopup {
           new IconButton({
             type: ButtonType.TERTIARY,
             icon: 'fa-solid fa-times',
-            label: 'Reject Invitation',
+            label: 'Reject Application',
             onClick: () => {
               console.log('Reject Application');
             },
