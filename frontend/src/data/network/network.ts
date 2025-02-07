@@ -91,18 +91,20 @@ class Network {
     }
   }
 
-  public async get(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {}
+  public async get(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('GET', url, {}, options);
+  }
 
   public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
     return this.handleRequest('POST', url, data, options);
   }
 
-  public put(url: string, data: any): Promise<any> {
-    return this.sendHttpRequest('PUT', url, data, 'application/json');
+  public put(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('PUT', url, data, options);
   }
 
-  public delete(url: string): Promise<any> {
-    return this.sendHttpRequest('DELETE', url, {}, 'application/json');
+  public delete(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('DELETE', url, {}, options);
   }
 }
 
