@@ -45,6 +45,12 @@ import { clientHackerInvitationsViewHandler } from '@views/client/inviteHackers/
 import { hackerLandingPageViewHandler } from '@views/common/LandingPages/landing.hacker';
 import { clientLandingPageViewHandler } from '@views/common/LandingPages/landing.client';
 import { validatorLandingPageViewHandler } from '@views/common/LandingPages/landing.validator';
+import { adminLoginViewHandler } from '@views/admin/Login';
+import { validatorApplicationsViewHandler } from '@views/admin/validatorApplications/apllications';
+import { adminDashboardViewHandler } from '@views/admin/dashboard/dashboard';
+
+// Sidebars
+import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -61,24 +67,6 @@ export const modalAlertForErrors = convertToDom(alertForErrors);
 ModalManager.includeModal('alertForErrors', {
   '.button-ok': () => ModalManager.hide('alertForErrors'),
 });
-
-const HomeSidebar: SidebarTab[] = [
-  {
-    id: 'dashboard',
-    title: 'Dashboard',
-    url: 'dashboard',
-  },
-  {
-    id: 'projects',
-    title: 'Projects',
-    url: 'projects',
-  },
-  {
-    id: 'reports',
-    title: 'Reports',
-    url: 'reports',
-  },
-];
 
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
@@ -193,6 +181,7 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
 
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
 const LandingRouteHandlers = new RouteHandler('/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false);
@@ -209,13 +198,15 @@ const CommonRouteHandlers = new RouteHandler(
   true
 );
 
-const ValidatorViewHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const HackerViewHandlers = new RouteHandler('/hacker', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ClientViewHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectLeadViewHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+
+const AdminRouteHandlers = new RouteHandler('/admin', [adminDashboardViewHandler, validatorApplicationsViewHandler], new SidebarView('/', AdminSidebar), false, false, false, false);
 
 const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
@@ -230,16 +221,18 @@ router.setTopNavigationView(new TopNavigationView());
 router.addRouteHandler(HomeRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
+router.addRouteHandler(AdminLoginRouteHandler);
 router.addRouteHandler(LandingRouteHandlers);
 router.addRouteHandler(ValidatorApplicationRouteHandler);
 
 router.addRouteHandler(CommonRouteHandlers);
 router.addRouteHandler(TestRouteHandlers);
 
-router.addRouteHandler(ValidatorViewHandlers);
-router.addRouteHandler(HackerViewHandlers);
-router.addRouteHandler(ClientViewHandlers);
-router.addRouteHandler(ProjectLeadViewHandlers);
+router.addRouteHandler(ValidatorRouteHandlers);
+router.addRouteHandler(HackerRouteHandlers);
+router.addRouteHandler(ClientRouteHandlers);
+router.addRouteHandler(ProjectLeadRouteHandlers);
+router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);

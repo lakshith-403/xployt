@@ -72,39 +72,39 @@ class Network {
       }
     });
   };
-
-  public get(url: string): Promise<any> {
-    return this.sendHttpRequest('GET', url, {}, 'application/json');
-  }
-
-  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+  private async handleRequest(method: string, url: string, data: any = {}, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
     if (options.showLoading) {
       console.log('Showing loading screen');
       LoadingScreen.show();
     }
     try {
-      const response = await this.sendHttpRequest('POST', url, data, 'application/json');
-      if (options.showLoading) {
-        console.log('Hiding loading screen');
-        LoadingScreen.hide();
-      }
+      const response = await this.sendHttpRequest(method, url, data, 'application/json');
       return response;
     } catch (error) {
       console.error('Error:', error);
+      throw error;
+    } finally {
       if (options.showLoading) {
         console.log('Hiding loading screen');
         LoadingScreen.hide();
       }
-      throw error;
     }
   }
 
-  public put(url: string, data: any): Promise<any> {
-    return this.sendHttpRequest('PUT', url, data, 'application/json');
+  public async get(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('GET', url, {}, options);
   }
 
-  public delete(url: string): Promise<any> {
-    return this.sendHttpRequest('DELETE', url, {}, 'application/json');
+  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('POST', url, data, options);
+  }
+
+  public put(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('PUT', url, data, options);
+  }
+
+  public delete(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+    return this.handleRequest('DELETE', url, {}, options);
   }
 }
 

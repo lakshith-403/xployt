@@ -34,27 +34,28 @@ interface Step {
 
 class ValidatorApplication extends View {
   private formState: any = {
-    name: '',
-    email: '',
-    mobile: '',
-    country: '',
-    linkedin: '',
+    name: 'Geetha Savith',
+    email: 'geetha@gmail.com',
+    mobile: '9876543210',
+    country: 'India',
+    linkedin: 'https://www.linkedin.com/in/geetha/',
     dateOfBirth: {
-      day: '',
-      month: '',
-      year: '',
+      day: '1',
+      month: '1',
+      year: '1990',
     },
     skills: '',
     certificates: '',
     cv: null as File | null,
     references: '',
     relevantExperience: '',
-    areaOfExpertise: [],
+    areaOfExpertise: ['Data Science', 'Machine Learning'],
     termsAndConditions: {
-      0: false,
-      1: false,
-      2: false,
+      0: true,
+      1: true,
+      2: true,
     },
+
     comments: '',
   };
 
@@ -63,7 +64,7 @@ class ValidatorApplication extends View {
       const response = await NETWORK.post('/api/validator/manage', this.formState, { showLoading: true });
       ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
         console.log('response', response);
-        router.navigateTo('/dashboard');
+        // router.navigateTo('/dashboard');
       });
     } catch (error: any) {
       console.error('Error submitting application:', error);
@@ -119,11 +120,11 @@ class ValidatorApplication extends View {
     ];
 
     const validationSchema: ValidationSchema = {
-      name: 'string',
+      name: 'string|2',
       email: 'email',
       mobile: 'string',
       country: 'string',
-      linkedin: 'string',
+      linkedin: 'url',
       dateOfBirth: 'date',
       skills: 'string',
       certificates: 'string',
