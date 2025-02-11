@@ -36,6 +36,6 @@ export class Popup {
     render(container: Quark): void {
         this.container = container;
         this.button.render(this.container);
-        this.popUpOverlay.render(this.container);
+        !this.disable && this.popUpOverlay.render(this.container);
     }
 }
