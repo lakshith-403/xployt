@@ -1,43 +1,52 @@
 import {QuarkFunction as $} from '@ui_lib/quark';
 import {CACHE_STORE} from '@data/cache';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
-import {ProjectInfo, ProjectInfoCacheMock} from "@data/validator/cache/projectInfo";
+import {ProjectInfo} from "@data/validator/cache/projectInfo";
 import './InvitationPopup.scss'
 import {IconButton} from "@components/button/icon.button";
 import {ButtonType} from "@components/button/base";
+import {InvitationsCache} from "@data/common/cache/invitations.cache";
 
 export class InvitationPopup {
-    private readonly projectId: string;
-    private projectInfo: ProjectInfo = {} as ProjectInfo;
+    private readonly projectInfo: ProjectInfo;
+    private readonly hackerId: string;
+    // private projectInfo: ProjectInfo = {} as ProjectInfo;
+    private invitationsCache: InvitationsCache;
 
-    constructor(params: { projectId: string }) {
-        this.projectId = params.projectId;
+    constructor(params: { projectInfo: ProjectInfo, hackerId: string }) {
+        this.projectInfo = params.projectInfo;
+        this.hackerId = params.hackerId;
+        this.invitationsCache = CACHE_STORE.getHackerInvitations(this.hackerId) as InvitationsCache;
     }
 
+    private async acceptInvitation(): Promise<void> {
+        try{
+            await this.invitationsCache.accept(this.projectInfo.id.toString(), this.hackerId, true);
+        }
+        catch (error) {
+            console.error('Failed to accept invitation:', error);
 
-    async loadData(): Promise<void> {
-        try {
-            const projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId) as ProjectInfoCacheMock;
-            this.projectInfo = await projectInfoCache.get(false, this.projectId);
-        } catch (error) {
-            console.error('Failed to load project data', error);
         }
     }
 
+    private async rejectInvitation(): Promise<void> {
+        try{
+            await this.invitationsCache.accept(this.projectInfo.id.toString(), this.hackerId, false);
+        }
+        catch (error) {
+            console.error('Failed to reject invitation:', error);
+        }
+    }
+
+
     async render(): Promise<HTMLElement> {
         const q = document.createElement('div');
-        const loading = new LoadingScreen(q);
-        loading.show();
-
-        await this.loadData();
-        loading.hide();
 
         $(q, 'div', 'hacker-invitation', {}, (q) => {
-            $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectId)}`);
+            $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectInfo.id.toString())}`);
             $(q, 'div', 'content', {}, (q) => {
                 $(q, 'div', '', {id: 'basic-info'}, (q) => {
-                    new BasicInfoComponent(this.projectId, this.projectInfo.client).render(q);
+                    new BasicInfoComponent(this.projectInfo.id.toString(), this.projectInfo.client).render(q);
                 });
 
                 $(q, 'h3', '', {}, 'Rules and Scope');
@@ -52,7 +61,7 @@ export class InvitationPopup {
                         icon: 'fa-solid fa-check',
                         label: 'Accept Invitation',
                         onClick: () => {
-                            console.log('Accept Invitation');
+                            this.acceptInvitation();
                         }
                     }).render(q);
                     new IconButton({
@@ -60,7 +69,7 @@ export class InvitationPopup {
                         icon: 'fa-solid fa-times',
                         label: 'Reject Invitation',
                         onClick: () => {
-                            console.log('Reject Invitation');
+                            this.rejectInvitation();
                         }
                     }).render(q);
                 });
