@@ -47,14 +47,14 @@ class Network {
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
-        console.log(xhr.response);
+        // console.log(xhr.response);
         if (xhr.status >= 400) {
-          console.log('> 400');
+          // console.log('> 400');
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
-            console.log('response', response);
+            // console.log('response', response);
             resolve(response);
           } catch (e) {
             reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
@@ -86,7 +86,7 @@ class Network {
         console.error(`Unrecognized option in network options`);
         throw new Error(`Unrecognized option`);
       }
-      console.log('key was good:', key);
+      // console.log('key was good:', key);
     });
 
     return { ...defaultOptions, ...options }; // Merge with defaults
@@ -96,12 +96,12 @@ class Network {
     let normalizedOptions: any;
     try {
       normalizedOptions = this.normalizeOptions(options);
-      console.log('normalizedOptions', normalizedOptions);
+      // console.log('normalizedOptions', normalizedOptions);
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
     }
     if (normalizedOptions.showLoading) {
-      console.log('Showing loading screen');
+      // console.log('Showing loading screen');
 
       LoadingScreen.show();
     }
@@ -124,7 +124,7 @@ class Network {
       }
     } finally {
       if (options.showLoading) {
-        console.log('Hiding loading screen');
+        // console.log('Hiding loading screen');
         LoadingScreen.hide();
       }
     }
@@ -184,11 +184,11 @@ export class NetworkError {
     this.statusCode = statusCode;
     this.url = url;
     this.message = message;
-    console.log('data', data);
+    // console.log('data', data);
     if (data) {
       try {
         if (typeof data === 'string') {
-          console.log('Data is a string. Attempting to parse as JSON...');
+          // console.log('Data is a string. Attempting to parse as JSON...');
           data = JSON.parse(data); // Parse the JSON string into an object
         }
 
