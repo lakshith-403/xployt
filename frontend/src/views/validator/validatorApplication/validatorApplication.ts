@@ -73,7 +73,7 @@ class ValidatorApplication extends View {
         '.modal-message': `Failed to submit application: ${error.message}`,
         '.modal-data': error.data,
         '.modal-servletClass': error.servlet,
-        '.modal-uri': error.uri,
+        '.modal-url': error.uri,
       });
       ModalManager.show('alertForErrors', modalAlertForErrors, true).then(() => {
         ModalManager.hide('alertForErrors');

@@ -6,7 +6,8 @@ import NETWORK from '@/data/network/network';
 import { PopupTable, ContentItem } from '@components/table/popup.clickable.table';
 import { ApplicationPopup } from './applicationPopup';
 import { Popup } from '@components/popup/popup.base';
-
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 export class ValidatorApplications extends View {
   private applicationsTableContent: ContentItem[] = [];
   private ApplicationsPopup: (params: any) => Promise<HTMLElement>;
@@ -23,9 +24,21 @@ export class ValidatorApplications extends View {
   }
 
   async getApplications(): Promise<any> {
-    const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true });
-    this.applications = response.data.validators;
-    console.log('response: ', response);
+    try {
+      const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true });
+      this.applications = response.data.validators;
+      console.log('response: ', response);
+    } catch (error: any) {
+      console.log('error: ', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': `Failed to get applications: ${error.message ?? 'N/A'} `,
+        '.modal-data': error.data ?? '',
+        '.modal-servletClass': error.servlet ?? '',
+        '.modal-url': error.uri ?? '',
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors);
+    }
   }
 
   private async loadApplications(): Promise<void> {
@@ -49,7 +62,9 @@ export class ValidatorApplications extends View {
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
     await this.getApplications();
+    if (!this.applications) return;
     await this.loadApplications();
+
     console.log('applications: ', this.applications);
 
     $(q, 'div', 'validator-applications', {}, (q) => {
