@@ -1,4 +1,6 @@
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 
 /**
  * Class representing a network service for making HTTP requests.
@@ -45,14 +47,14 @@ class Network {
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
-        console.log(xhr.response);
+        // console.log(xhr.response);
         if (xhr.status >= 400) {
-          console.log('> 400');
+          // console.log('> 400');
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
-            console.log('response', response);
+            // console.log('response', response);
             resolve(response);
           } catch (e) {
             reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
@@ -72,38 +74,75 @@ class Network {
       }
     });
   };
-  private async handleRequest(method: string, url: string, data: any = {}, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
-    if (options.showLoading) {
-      console.log('Showing loading screen');
+
+  private recognizedOptions = ['showLoading', 'handleError']; // Define recognized options
+
+  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean } {
+    const defaultOptions = { showLoading: false, handleError: false };
+
+    // Check if any unrecognized option is set
+    Object.keys(options).forEach((key) => {
+      if (!this.recognizedOptions.includes(key)) {
+        console.error(`Unrecognized option in network options`);
+        throw new Error(`Unrecognized option`);
+      }
+      // console.log('key was good:', key);
+    });
+
+    return { ...defaultOptions, ...options }; // Merge with defaults
+  }
+
+  private async handleRequest(method: string, url: string, data: any = {}, options: any = {}): Promise<any> {
+    let normalizedOptions: any;
+    try {
+      normalizedOptions = this.normalizeOptions(options);
+      // console.log('normalizedOptions', normalizedOptions);
+    } catch (error: any) {
+      console.error(`Error catched in handleRequest: ${method}:`, error);
+    }
+    if (normalizedOptions.showLoading) {
+      // console.log('Showing loading screen');
+
       LoadingScreen.show();
     }
     try {
       const response = await this.sendHttpRequest(method, url, data, 'application/json');
       return response;
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
+    } catch (error: any) {
+      console.error(`Error catched in handleRequest: ${method}:`, error);
+      if (options.handleError) {
+        setContent(modalAlertForErrors, {
+          '.modal-title': 'Error',
+          '.modal-message': `Failed to ${method} ${url}: ${error.message ?? 'N/A'} `,
+          '.modal-data': error.data ?? 'Data not available',
+          '.modal-servletClass': error.servlet ?? 'Servlet not available',
+          '.modal-url': error.url ?? 'URL not available',
+        });
+        ModalManager.show('alertForErrors', modalAlertForErrors);
+      } else {
+        throw error;
+      }
     } finally {
       if (options.showLoading) {
-        console.log('Hiding loading screen');
+        // console.log('Hiding loading screen');
         LoadingScreen.hide();
       }
     }
   }
 
-  public async get(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+  public async get(url: string, options: any = {}): Promise<any> {
     return this.handleRequest('GET', url, {}, options);
   }
 
-  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+  public async post(url: string, data: any, options: any = {}): Promise<any> {
     return this.handleRequest('POST', url, data, options);
   }
 
-  public put(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+  public put(url: string, data: any, options: any = {}): Promise<any> {
     return this.handleRequest('PUT', url, data, options);
   }
 
-  public delete(url: string, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
+  public delete(url: string, options: any = {}): Promise<any> {
     return this.handleRequest('DELETE', url, {}, options);
   }
 }
@@ -145,11 +184,11 @@ export class NetworkError {
     this.statusCode = statusCode;
     this.url = url;
     this.message = message;
-    console.log('data', data);
+    // console.log('data', data);
     if (data) {
       try {
         if (typeof data === 'string') {
-          console.log('Data is a string. Attempting to parse as JSON...');
+          // console.log('Data is a string. Attempting to parse as JSON...');
           data = JSON.parse(data); // Parse the JSON string into an object
         }
 

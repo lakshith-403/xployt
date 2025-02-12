@@ -6,6 +6,9 @@ import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
 import { IconButton } from '@components/button/icon.button';
 import { ButtonType } from '@components/button/base';
 import NETWORK from '@/data/network/network';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
+import { router } from '@/ui_lib/router';
 
 export class ApplicationPopup {
   private readonly userId: string;
@@ -56,16 +59,57 @@ export class ApplicationPopup {
             type: ButtonType.PRIMARY,
             icon: 'fa-solid fa-check',
             label: 'Accept Application',
-            onClick: () => {
+            onClick: async () => {
               console.log('Accept Application');
+              try {
+                await NETWORK.post(`/api/admin/validatorApplications`, { userId: this.userId, status: 'active' }, { showLoading: true });
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Success',
+                  '.modal-message': 'Application accepted successfully',
+                });
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+              } catch (error: any) {
+                console.error('Failed to accept application', error);
+                setContent(modalAlertForErrors, {
+                  '.modal-title': 'Error',
+                  '.modal-message': `Failed to accept application: ${error.message ?? 'N/A'} `,
+                  '.modal-data': error.data ?? 'Data not available',
+                  '.modal-servletClass': error.servlet ?? 'Servlet not available',
+                  '.modal-url': error.url ?? 'URL not available',
+                });
+                ModalManager.show('alertForErrors', modalAlertForErrors);
+              }
             },
           }).render(q);
           new IconButton({
             type: ButtonType.TERTIARY,
             icon: 'fa-solid fa-times',
             label: 'Reject Application',
-            onClick: () => {
+            onClick: async () => {
               console.log('Reject Application');
+              try {
+                await NETWORK.post(`/api/admin/validatorApplications`, { userId: this.userId, status: 'rejected' }, { showLoading: true });
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Success',
+                  '.modal-message': 'Application rejected successfully',
+                });
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                  router.navigateTo('/admin/validatorApplications');
+                });
+              } catch (error: any) {
+                console.error('Failed to reject application', error);
+                setContent(modalAlertForErrors, {
+                  '.modal-title': 'Error',
+                  '.modal-message': `Failed to reject application: ${error.message ?? 'N/A'} `,
+                  '.modal-data': error.data ?? 'Data not available',
+                  '.modal-servletClass': error.servlet ?? 'Servlet not available',
+                  '.modal-url': error.url ?? 'URL not available',
+                });
+                ModalManager.show('alertForErrors', modalAlertForErrors, true).then(async () => {
+                  const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true, handleError: true });
+                  console.log('response: ', response);
+                });
+              }
             },
           }).render(q);
         });
@@ -74,11 +118,4 @@ export class ApplicationPopup {
 
     return q;
   }
-}
-
-function convertToTitleCase(input: string): string {
-  const words = input.replace(/([A-Z])/g, ' $1').trim();
-  return words.replace(/\w\S*/g, (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
 }

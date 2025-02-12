@@ -33,4 +33,9 @@ export const AdminSidebar: SidebarTab[] = [
     title: 'Validator Applications',
     url: 'admin/validator-applications',
   },
+  {
+    id: 'list-validators',
+    title: 'List Validators',
+    url: 'admin/list-validators',
+  },
 ];

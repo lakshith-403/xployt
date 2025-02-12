@@ -48,7 +48,7 @@ import { validatorLandingPageViewHandler } from '@views/common/LandingPages/land
 import { adminLoginViewHandler } from '@views/admin/Login';
 import { validatorApplicationsViewHandler } from '@views/admin/validatorApplications/apllications';
 import { adminDashboardViewHandler } from '@views/admin/dashboard/dashboard';
-
+import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValidators';
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
@@ -206,7 +206,15 @@ const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewH
 
 const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const AdminRouteHandlers = new RouteHandler('/admin', [adminDashboardViewHandler, validatorApplicationsViewHandler], new SidebarView('/', AdminSidebar), false, false, false, false);
+const AdminRouteHandlers = new RouteHandler(
+  '/admin',
+  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler],
+  new SidebarView('/', AdminSidebar),
+  false,
+  false,
+  false,
+  false
+);
 
 const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
