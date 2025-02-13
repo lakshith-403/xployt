@@ -1,7 +1,7 @@
 //styles
 import './styles/styles.scss';
-import './styles/custom-bootstrap.scss';
-
+import './styles/X-bootstrap.scss';
+import './styles/X-typography.scss';
 //utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from '@ui_lib/route';

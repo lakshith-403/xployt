@@ -3,30 +3,30 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import NETWORK from '@/data/network/network';
 // import { ClickableTable } from '@/components/table/clickable.table';
-import { PopupTable, ContentItem } from '@components/table/popup.clickable.table';
-import { Popup } from '@components/popup/popup.base';
+import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import { confirmPromoteToLead } from './confirmPopup';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { Button } from '@/components/button/base';
 
 export class ListValidators extends View {
   private validatorsTableContent: ContentItem[] = [];
-  private confirmPopup: (params: any) => Promise<HTMLElement>;
+  // private confirmPopup: (params: any) => void;
 
   params: any;
   validators: any;
   constructor(params: any) {
     super();
     this.params = params;
-    this.confirmPopup = async (params: any) => {
-      const popup = new confirmPromoteToLead(params);
-      return await popup.render();
-    };
+    // this.confirmPopup = (params: any) => {
+    //   new confirmPromoteToLead(params);
+    // };
+    // return await popup.render();
   }
 
   async getValidators(): Promise<any> {
     try {
-      const response = await NETWORK.get('/api/admin/promoteToValidator/', { showLoading: true });
+      const response = await NETWORK.get('/api/admin/promoteToLead/', { showLoading: true });
       this.validators = response.data.validatorData;
       console.log('response: ', response);
     } catch (error: any) {
@@ -42,16 +42,23 @@ export class ListValidators extends View {
     }
   }
 
-  private async loadValidators(): Promise<void> {
+  private async loadValidators(q: Quark): Promise<void> {
     for (const validator of this.validators) {
       try {
         console.log(`Validator Info for ${validator.userId}:`, validator);
-        const popupElement = await this.confirmPopup({ userId: validator.userId });
+        const popupElement = new confirmPromoteToLead({ userId: validator.userId });
         this.validatorsTableContent.push({
           id: validator.userId,
           Name: validator.name,
           Email: validator.email,
-          popup: new Popup(popupElement),
+          button: new Button({
+            label: 'Promote to Lead',
+            onClick: () => {
+              console.log('button clicked');
+              popupElement.render(q);
+              popupElement.loadData();
+            },
+          }),
         });
       } catch (error) {
         console.error(`Failed to get validator info for ${validator.userId}:`, error);
@@ -63,21 +70,17 @@ export class ListValidators extends View {
     q.innerHTML = '';
 
     await this.getValidators();
+    await this.loadValidators(q);
     console.log('validators: ', this.validators);
 
-    if (!this.validators) {
-      $(q, 'div', 'list-validators', {}, (q) => {
+    $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center', {}, (q) => {
+      if (!this.validators) {
         $(q, 'h1', 'list-validators-title', {}, 'No validators found');
-      });
-      return;
-    }
+        return;
+      }
 
-    await this.loadValidators();
-
-    $(q, 'div', 'list-validators', {}, (q) => {
-      $(q, 'h1', 'list-validators-title', {}, 'Validators List');
-
-      $(q, 'div', 'promote-to-lead-table', {}, (q) => {
+      $(q, 'h1', 'list-validators-title text-center', {}, 'Validators List');
+      $(q, 'div', 'promote-to-lead-table container', {}, (q) => {
         const requestsTable = new PopupTable(this.validatorsTableContent, ['Id', 'Name', 'Email', 'Actions']);
         requestsTable.render(q);
       });
