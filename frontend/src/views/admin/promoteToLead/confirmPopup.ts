@@ -25,26 +25,65 @@ export class confirmPromoteToLead {
   }
 
   async render(parent: HTMLElement): Promise<void> {
-    $(parent, 'div', 'confirm-promote-to-lead position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center', {}, (q) => {
+    await this.loadData();
+    const overlay = $(parent, 'div', 'confirm-promote-to-lead position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center', {}, (q) => {
       // Content
-      $(q, 'div', 'position-relative mx-auto container-md bg-secondary p-3 rounded-3', {}, (q) => {
+      const content = $(q, 'div', 'position-relative mx-auto container-md bg-secondary px-3 py-2 rounded-3', {}, (q) => {
         $(q, 'div', 'heading', {}, (q) => {
           $(q, 'h3', '', {}, 'Validator Details');
         });
 
-        $(q, 'ul', '', {}, (q) => {});
+        $(q, 'ul', '', {}, (q) => {
+          console.log('application fields: ', this.application);
+          Object.keys(this.application).forEach((key) => {
+            $(q, 'li', '', {}, (q) => {
+              $(q, 'span', '', {}, key);
+              $(q, 'span', '', {}, this.application[key]);
+            });
+          });
+        });
+
         $(q, 'div', 'buttons', {}, (q) => {
           new IconButton({
             type: ButtonType.PRIMARY,
             icon: 'fa-solid fa-check',
             label: 'Promote',
             onClick: async () => {
-              console.log('Promote');
-              // Fetch data when the button is clicked
+              try {
+                await NETWORK.post(`/api/admin/promoteToLead/`, { userId: this.userId, status: 'active' }, { showLoading: true });
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Success',
+                  '.modal-message': 'Application accepted successfully',
+                });
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                  this.closePopup(overlay);
+                });
+              } catch (error: any) {
+                console.error('Failed to accept application', error);
+                setContent(modalAlertForErrors, {
+                  '.modal-title': 'Error',
+                  '.modal-message': `Failed to promote to lead: ${error.message ?? 'N/A'} `,
+                  '.modal-data': error.data ?? 'Data not available',
+                  '.modal-servletClass': error.servlet ?? 'Servlet not available',
+                  '.modal-url': error.url ?? 'URL not available',
+                });
+                ModalManager.show('alertForErrors', modalAlertForErrors);
+              }
             },
           }).render(q);
         });
       });
     });
+
+    overlay.addEventListener('click', (event) => {
+      console.log('clicked on event: ', event.target);
+      if (event.target === overlay) {
+        this.closePopup(overlay);
+      }
+    });
+  }
+
+  private closePopup(overlay: HTMLElement): void {
+    overlay.remove();
   }
 }

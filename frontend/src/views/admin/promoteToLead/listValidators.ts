@@ -56,7 +56,6 @@ export class ListValidators extends View {
             onClick: () => {
               console.log('button clicked');
               popupElement.render(q);
-              popupElement.loadData();
             },
           }),
         });
