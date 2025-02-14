@@ -22,7 +22,7 @@ export class dashClientSummary {
             new Button({
               label: 'Request a Project',
               onClick: () => {
-                router.navigateTo('/client/project-request');
+                router.navigateTo('client/project-request');
               },
             }).render(q);
           }),

@@ -4,12 +4,13 @@ import { View } from '@ui_lib/view';
 import NETWORK from '@/data/network/network';
 // import { ClickableTable } from '@/components/table/clickable.table';
 import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
+import { FilterableTable } from '@components/table/filterable.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { InfoPopup } from './infoPopup';
 import { Button } from '@/components/button/base';
 
-export class ListValidators extends View {
+export class ListUsers extends View {
   private usersTableContent: ContentItem[] = [];
   // private confirmPopup: (params: any) => void;
 
@@ -20,36 +21,43 @@ export class ListValidators extends View {
     this.params = params;
   }
 
-  async getValidators(): Promise<any> {
+  async getUsers(): Promise<any> {
     try {
-      const response = await NETWORK.get('/api/admin/userManagement/listUsers', { showLoading: true });
-      this.users = response.data.userData;
+      const response = await NETWORK.get('/api/admin/userManagement/', { showLoading: true });
+      this.users = response.data.users;
     } catch (error: any) {
       setContent(modalAlertForErrors, {
         '.modal-title': 'Error',
-        '.modal-message': `Failed to get validators: ${error.message ?? 'N/A'} `,
+        '.modal-message': `Failed to get users: ${error.message ?? 'N/A'} `,
         '.modal-data': error.data ?? '',
         '.modal-servletClass': error.servlet ?? '',
         '.modal-url': error.uri ?? '',
       });
       ModalManager.show('alertForErrors', modalAlertForErrors);
+      throw error;
     }
   }
 
-  private async loadValidators(q: Quark): Promise<void> {
+  private async loadUsers(q: Quark): Promise<void> {
     if (!this.users || this.users.length == 0) return;
     for (const user of this.users) {
       try {
         console.log(`User Info for ${user.userId}:`, user);
-        const popupElement = new InfoPopup({ userId: user.userId });
+        const popupElement = new InfoPopup({ userId: user.userId, user: user });
         this.usersTableContent.push({
           id: user.userId,
           Name: user.name,
           Email: user.email,
           button: new Button({
-            label: 'Promote to Lead',
+            label: 'View Info',
             onClick: () => {
               popupElement.render(q);
+            },
+          }),
+          button2: new Button({
+            label: 'Delete User',
+            onClick: () => {
+              // this.deleteUser(user.userId);
             },
           }),
         });
@@ -62,17 +70,21 @@ export class ListValidators extends View {
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
 
-    await this.getValidators();
-    await this.loadValidators(q);
+    try {
+      await this.getUsers();
+      await this.loadUsers(q);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
 
-    $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center', {}, (q) => {
+    $(q, 'div', 'list-users py-2 d-flex flex-column align-items-center', {}, (q) => {
       if (!this.users) {
-        $(q, 'h1', 'list-validators-title', {}, 'No users found');
+        $(q, 'h1', 'list-users-title', {}, 'No users found');
         return;
       }
 
-      $(q, 'h1', 'list-validators-title text-center', {}, 'Users List');
-      $(q, 'div', 'promote-to-lead-table container', {}, (q) => {
+      $(q, 'h1', 'list-users-title text-center', {}, 'Users List');
+      $(q, 'div', 'list-users-table container', {}, (q) => {
         const requestsTable = new PopupTable(this.usersTableContent, ['Id', 'Name', 'Email', 'Actions']);
         requestsTable.render(q);
       });
@@ -80,4 +92,4 @@ export class ListValidators extends View {
   }
 }
 
-export const listValidatorsViewHandler = new ViewHandler('/list-validators', ListValidators);
+export const listUsersViewHandler = new ViewHandler('/list-users', ListUsers);

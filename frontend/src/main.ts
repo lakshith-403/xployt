@@ -2,6 +2,7 @@
 import './styles/styles.scss';
 import './styles/X-bootstrap.scss';
 import './styles/X-typography.scss';
+import './styles/X-colors.scss';
 //utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from '@ui_lib/route';
@@ -49,6 +50,8 @@ import { adminLoginViewHandler } from '@views/admin/Login';
 import { validatorApplicationsViewHandler } from '@views/admin/validatorApplications/apllications';
 import { adminDashboardViewHandler } from '@views/admin/dashboard/dashboard';
 import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValidators';
+import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
+import { styleGuideViewHandler } from '@views/common/styleGuide';
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
@@ -207,7 +210,7 @@ const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandle
 
 const AdminRouteHandlers = new RouteHandler(
   '/admin',
-  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler],
+  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler, listUsersViewHandler],
   new SidebarView('/', AdminSidebar),
   false,
   false,
@@ -215,7 +218,7 @@ const AdminRouteHandlers = new RouteHandler(
   false
 );
 
-const TestRouteHandlers = new RouteHandler('/', [validatorDashboardViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const TestRouteHandlers = new RouteHandler('/test', [validatorDashboardViewHandler, styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
