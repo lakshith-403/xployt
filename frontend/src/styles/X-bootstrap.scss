@@ -50,6 +50,13 @@ $container-padding: 15px;
   padding-right: $container-padding;
 }
 
+// rounded corners
+@for $i from 1 through 3 {
+  .rounded-#{$i} {
+    border-radius: 0.5rem * $i;
+  }
+}
+
 // Width and Height Variables
 $widths: (
   'auto': auto,
@@ -161,8 +168,36 @@ $heights: (
   }
 }
 
+// Position Utilities
+.position-relative {
+  position: relative;
+}
+.position-fixed {
+  position: fixed;
+}
+.position-absolute {
+  position: absolute;
+}
+.top-0 {
+  top: 0;
+}
+.left-0 {
+  left: 0;
+}
+.right-0 {
+  right: 0;
+}
+.bottom-0 {
+  bottom: 0;
+}
+
 // Spacing Utilities
 @for $i from 0 through 10 {
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .m-#{$i} {
     margin: #{$i}rem;
   }
@@ -203,17 +238,3 @@ $heights: (
     padding-right: #{$i}rem;
   }
 }
-
-// // Typography
-// h1,
-// h2,
-// h3,
-// h4,
-// h5,
-// h6 {
-//   margin: 0;
-// }
-
-// p {
-//   margin: 0;
-// }

@@ -161,7 +161,7 @@ export class RegisterView extends View {
           '.modal-message': `Failed to register user: ${error.message}`,
           '.modal-data': error.data,
           '.modal-servletClass': error.servlet,
-          '.modal-uri': error.uri,
+          '.modal-url': error.uri,
         });
         ModalManager.show('alertForErrors', modalAlertForErrors);
       });

@@ -2,6 +2,8 @@ import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import './loadingScreen.scss';
 export default class LoadingScreen {
   private container: HTMLElement;
+  private static body: HTMLElement;
+  private static instance: HTMLElement;
 
   constructor(q: Quark) {
     this.container = $(q, 'div', 'loading-screen', {}, (q) => {
@@ -29,5 +31,28 @@ export default class LoadingScreen {
     if (this.container) {
       this.container.style.display = 'flex';
     }
+  }
+
+  static show() {
+    if (!this.instance) {
+      this.instance = $(this.getBody(), 'div', 'loading-screen', {}, (q) => {
+        $(q, 'div', 'spinner', {}, (q) => {});
+      });
+    }
+    this.instance.style.display = 'flex';
+  }
+
+  static hide() {
+    if (this.instance) {
+      this.instance.style.display = 'none';
+    }
+  }
+
+  static getBody() {
+    if (this.body) {
+      return this.body;
+    }
+    this.body = document.querySelector('body')!;
+    return this.body;
   }
 }

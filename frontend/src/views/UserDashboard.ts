@@ -6,6 +6,7 @@ import { ClientDashboard } from '@views/client/dashboard/dashboard';
 import { User, UserCache } from '@/data/user';
 import { CACHE_STORE } from '@data/cache';
 import ProjectsView from '@views/common/projects/Projects';
+
 class UserDashboard extends View {
   private user!: User;
   private userCache: UserCache;

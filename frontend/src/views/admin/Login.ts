@@ -1,33 +1,34 @@
-import { View, ViewHandler } from '../ui_lib/view';
-import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
-import { TextField } from '../components/text_field/base';
-import { Button, ButtonType } from '../components/button/base';
+import { View, ViewHandler } from '@ui_lib/view';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { TextField } from '@components/text_field/base';
+import { Button, ButtonType } from '@components/button/base';
 import { UserCache } from '@/data/user';
 import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
+
 import { CACHE_STORE } from '@/data/cache';
 import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
 import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
-import { modalAlertOnlyOK } from '../main';
+import { modalAlertOnlyOK } from '@/main';
 
 // Convert the HTML string to a DOM element
 const modalElement = convertToDom(alertOnlyConfirm);
 
 // Set text content of modal elements
 setContent(modalElement, {
-  '.modal-title': 'Login Message',
+  '.modal-title': 'Admin Login',
   '.modal-message': 'Login successful!',
 });
 
 // Add event listeners to the modal buttons
-ModalManager.includeModal('loginAlert', {
+ModalManager.includeModal('adminLoginAlert', {
   '.button-confirm': () => {
-    ModalManager.hide('loginAlert');
-    router.navigateTo('/dashboard');
+    ModalManager.hide('adminLoginAlert');
+    router.navigateTo('/admin');
   },
 });
 
-export class LoginView extends View {
+export class AdminLoginView extends View {
   private emailField: TextField;
   private passwordField: TextField;
   private loginButton: Button;
@@ -61,29 +62,15 @@ export class LoginView extends View {
 
         $(q, 'p', 'login-description', {}, '');
       });
+
       $(q, 'div', 'login-container', {}, (q) => {
-        $(q, 'h1', 'login-title', {}, 'Sign in');
+        $(q, 'h1', 'login-title', {}, 'Admin Login');
 
         this.emailField.render(q);
         this.passwordField.render(q);
 
-        // $(q, 'div', 'spaced-row', {}, (q) => {
-        //   $(q, 'div', 'remember-me', {}, (q) => {
-        //     $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
-        //     $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
-        //   });
-
-        //   $(q, 'a', 'label', {}, 'Forgot password?');
-        // });
-
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.loginButton.render(q);
-
-          new Button({
-            label: 'Sign up',
-            type: ButtonType.SECONDARY,
-            onClick: () => router.navigateTo('/register'),
-          }).render(q);
         });
       });
     });
@@ -110,9 +97,10 @@ export class LoginView extends View {
         console.log('User logged in:', user);
 
         // Method 1: Using a promise
-        ModalManager.show('loginAlert', modalElement, true).then(() => {
+        ModalManager.show('adminLoginAlert', modalElement, true).then(() => {
           console.log('ModalManager.show resolved');
         });
+
         // Method 2 : Basic modal
         // ModalManager.show('loginAlert', modalElement);
       })
@@ -137,4 +125,4 @@ export class LoginView extends View {
   }
 }
 
-export const loginViewHandler = new ViewHandler('', LoginView);
+export const adminLoginViewHandler = new ViewHandler('', AdminLoginView);

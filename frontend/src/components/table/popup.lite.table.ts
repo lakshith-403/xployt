@@ -3,7 +3,7 @@ import { ContentItem, ClickableTable } from './clickable.table';
 import { Popup } from '../popup/popup.base';
 
 export class PopupTable extends ClickableTable {
-  constructor(content: ContentItem[], headers: string[], className: string = '', onClick: (id: number) => void = () => {}) {
+  constructor(content: ContentItem[], headers: string[], className: string = '', onClick: () => void = () => {}) {
     super(content, headers, className, onClick);
     //pass a popup component for each content item
   }
@@ -23,9 +23,9 @@ export class PopupTable extends ClickableTable {
             if (typeof element === 'string' || typeof element === 'number') {
               console.log('string', element);
               $(q, 'span', 'table-cell', {}, element.toString());
-            } else if (element instanceof Popup) {
+            } else if (typeof element.render === 'function') {
               $(q, 'span', 'table-cell', {}, (q) => {
-                console.log('element', element);
+                console.log('encountered element', element);
                 element.render(q);
               });
             }

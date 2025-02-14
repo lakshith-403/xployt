@@ -56,7 +56,7 @@ export async function requestProject(formData: any): Promise<void> {
       '.modal-message': `Failed to submit project configuration: ${response.message}`,
       '.modal-data': response.body.error,
       '.modal-servletClass': response.servlet,
-      '.modal-uri': response.uri,
+      '.modal-url': response.uri,
     });
     ModalManager.show('alertForErrors', modalAlertForErrors);
   }

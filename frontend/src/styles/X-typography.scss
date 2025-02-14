@@ -1,0 +1,43 @@
+// Color Classes
+.bg-primary {
+  // Root background color
+  background-color: var(--background-primary) !important;
+}
+
+.bg-secondary {
+  // Footer, TextArea, Input
+  background-color: var(--background-secondary) !important;
+}
+
+.bg-tertiary {
+  // Navbat, Header
+  background-color: var(--background-tertiary) !important;
+}
+
+.text-primary {
+  // Most text
+  color: var(--color-primary) !important;
+}
+
+.text-secondary {
+  // Highlighted text
+  color: var(--color-secondary) !important;
+}
+
+.text-light-green {
+  color: var(--light-green) !important;
+}
+
+.text-grey-green {
+  // Footer-hr
+  color: var(--grey-green) !important;
+}
+
+.text-dark-green {
+  color: var(--dark-green) !important;
+}
+
+.text-light-grey {
+  // input-tags
+  color: var(--light-grey) !important;
+}
