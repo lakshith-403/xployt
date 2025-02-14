@@ -9,7 +9,7 @@ import ModalManager, { setContent } from '@/components/ModalManager/ModalManager
 import { Button } from '@/components/button/base';
 export class ValidatorApplications extends View {
   private applicationsTableContent: ContentItem[] = [];
-
+  private applicationsTable!: HTMLElement;
   params: any;
   applications: any;
   constructor(params: any) {
@@ -62,20 +62,32 @@ export class ValidatorApplications extends View {
 
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
-    await this.getApplications();
-    if (!this.applications) return;
-    await this.loadApplications(q);
 
     console.log('applications: ', this.applications);
 
-    $(q, 'div', 'validator-applications', {}, (q) => {
-      $(q, 'h1', 'validator-applications-title', {}, 'Validator Applications');
+    $(q, 'div', 'validator-applications  py-2 d-flex flex-column align-items-center', {}, (q) => {
+      $(q, 'h1', 'validator-applications-title text-center', {}, 'Validator Applications');
 
-      $(q, 'div', 'validator-applications-table', {}, (q) => {
-        const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
-        requestsTable.render(q);
+      this.applicationsTable = $(q, 'div', 'validator-applications-table container', {}, (q) => {
+        //   const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
+        //   requestsTable.render(q);
       });
+      $(q, 'h1', 'validator-applications-title text-center', {}, 'No applications found');
     });
+
+    await this.getApplications();
+    if (!this.applications) return;
+    await this.loadApplications(q);
+    this.renderApplicationsTable(q);
+  }
+
+  private renderApplicationsTable(q: Quark): void {
+    const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
+    const table = document.getElementById('validator-applications-table');
+    if (table) {
+      table.innerHTML = '';
+      requestsTable.render(table);
+    }
   }
 }
 
