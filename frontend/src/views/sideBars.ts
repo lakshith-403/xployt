@@ -38,4 +38,9 @@ export const AdminSidebar: SidebarTab[] = [
     title: 'List Validators',
     url: 'admin/list-validators',
   },
+  {
+    id: 'list-users',
+    title: 'List Users',
+    url: 'admin/list-users',
+  },
 ];

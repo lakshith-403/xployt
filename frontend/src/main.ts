@@ -49,6 +49,7 @@ import { adminLoginViewHandler } from '@views/admin/Login';
 import { validatorApplicationsViewHandler } from '@views/admin/validatorApplications/apllications';
 import { adminDashboardViewHandler } from '@views/admin/dashboard/dashboard';
 import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValidators';
+import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
@@ -208,7 +209,7 @@ const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandle
 
 const AdminRouteHandlers = new RouteHandler(
   '/admin',
-  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler],
+  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler, listUsersViewHandler],
   new SidebarView('/', AdminSidebar),
   false,
   false,
