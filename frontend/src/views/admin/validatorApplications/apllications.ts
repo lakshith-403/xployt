@@ -39,7 +39,7 @@ export class ValidatorApplications extends View {
     if (!this.applications || this.applications.length == 0) return;
     for (const application of this.applications) {
       try {
-        console.log(`Project Info for ${application.projectId}:`, application);
+        console.log(`Project Info for ${application.userId}:`, application);
         const popupElement = new ApplicationPopup({ userId: application.userId });
 
         this.applicationsTableContent.push({
@@ -66,27 +66,28 @@ export class ValidatorApplications extends View {
     console.log('applications: ', this.applications);
 
     $(q, 'div', 'validator-applications  py-2 d-flex flex-column align-items-center', {}, (q) => {
-      $(q, 'h1', 'validator-applications-title text-center', {}, 'Validator Applications');
+      $(q, 'h1', 'validator-applications-title text-center heading-1', {}, 'Validator Applications');
 
-      this.applicationsTable = $(q, 'div', 'validator-applications-table container', {}, (q) => {
+      this.applicationsTable = $(q, 'div', 'validator-applications-table-container container', {}, (q) => {
         //   const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
         //   requestsTable.render(q);
+        $(q, 'div', 'validator-applications-no-applications text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'No applications found');
       });
-      $(q, 'h1', 'validator-applications-title text-center', {}, 'No applications found');
     });
 
     await this.getApplications();
     if (!this.applications) return;
+    console.log('applications: ', this.applications);
     await this.loadApplications(q);
     this.renderApplicationsTable(q);
   }
 
   private renderApplicationsTable(q: Quark): void {
+    console.log('applicationsTableContent: ', this.applicationsTableContent);
     const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
-    const table = document.getElementById('validator-applications-table');
-    if (table) {
-      table.innerHTML = '';
-      requestsTable.render(table);
+    if (this.applicationsTable) {
+      this.applicationsTable.innerHTML = '';
+      requestsTable.render(this.applicationsTable);
     }
   }
 }
