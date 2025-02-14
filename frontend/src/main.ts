@@ -137,13 +137,12 @@ class TopNavigationView implements NavigationView {
   }
 
   private renderButtons(): void {
-    this.buttonContainer.innerHTML = '';
-
     CACHE_STORE.getUser()
       .get()
       .then((user) => {
         console.log(user);
         // @ts-ignore
+        this.buttonContainer.innerHTML = '';
         if (user.type != 'Guest') {
           new Button({
             label: 'Sign Out',
