@@ -158,17 +158,18 @@ export function validateField(key: string, value: any, expectedType: string): { 
   return { result: true, message: '' };
 }
 
-// export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
-//   for (const key in validationSchema) {
-//     const fieldValidation = validateField(key, formState[key], validationSchema[key]);
-//     if (!fieldValidation.result) {
-//       setContent(modalAlertOnlyOK, {
-//         '.modal-title': 'Validation Error',
-//         '.modal-message': fieldValidation.message,
-//       });
-//       ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
-//       return false;
-//     }
-//   }
-//   return true;
-// }
+export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
+  for (const key in validationSchema) {
+    const fieldValidation = validateField(key, formState[key], validationSchema[key]);
+    if (!fieldValidation.result) {
+      console.error('validation error: ', fieldValidation.message);
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': fieldValidation.message,
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+      return false;
+    }
+  }
+  return true;
+}

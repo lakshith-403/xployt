@@ -4,6 +4,7 @@ import { View } from '@ui_lib/view';
 import NETWORK from '@/data/network/network';
 // import { ClickableTable } from '@/components/table/clickable.table';
 import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
+import { FilterableTable } from '@components/table/filterable.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { InfoPopup } from './infoPopup';
@@ -47,11 +48,17 @@ export class ListValidators extends View {
           Name: user.name,
           Email: user.email,
           button: new Button({
-            label: 'Promote to Lead',
+            label: 'View Info',
             onClick: () => {
               popupElement.render(q);
             },
           }),
+          // button2: new Button({
+          //   label: 'Delete User',
+          //   onClick: () => {
+          //     this.deleteUser(user.userId);
+          //   },
+          // }),
         });
       } catch (error) {
         console.error(`Failed to get user info for ${user.userId}:`, error);
