@@ -22,7 +22,7 @@ export class InviteHackers extends View {
     projectTeam = {} as ProjectTeam;
     private readonly projectInfoCache: ProjectInfoCacheMock;
     private readonly projectTeamCache: ProjectTeamCache;
-    private invitationsCache: InvitationsCache = new InvitationsCache();
+    private invitationsCache: InvitationsCache = new InvitationsCache(this.projectId);
     private availableHackers = [
         {
             id: 104,

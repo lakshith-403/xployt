@@ -147,14 +147,14 @@ class CacheStore {
 
   public getProjectInvitations(projectId: string): InvitationsCache {
     if (!this.invitationsMap.has(projectId)) {
-      this.invitationsMap.set(projectId, new InvitationsCache());
+      this.invitationsMap.set(projectId, new InvitationsCache(projectId));
     }
     return this.invitationsMap.get(projectId)!;
   }
 
   public getHackerInvitations(hackerId: string): InvitationsCache {
     if (!this.invitationsMap.has(hackerId)) {
-      this.invitationsMap.set(hackerId, new InvitationsCache());
+      this.invitationsMap.set(hackerId, new InvitationsCache(hackerId));
     }
     return this.invitationsMap.get(hackerId)!;
   }

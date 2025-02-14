@@ -1,6 +1,6 @@
 import NETWORK, {Response} from "@data/network/network";
 
-export class InvitaiotnEndpoints {
+export class InvitationEndpoints {
     static async getHackerInvitations(userId: string): Promise<Response> {
         return NETWORK.sendHttpRequest(
             'GET',
@@ -22,6 +22,17 @@ export class InvitaiotnEndpoints {
             {
                 projectId: projectId,
                 hackerId: hackerId
+            }
+        )
+    }
+    static async acceptInvitation(projectId: string, hackerId: string, accept: boolean){
+        return NETWORK.sendHttpRequest(
+            'PUT',
+            `/api/invitations/hacker/`,
+            {
+                projectId: projectId,
+                hackerId: hackerId,
+                accept: accept
             }
         )
     }

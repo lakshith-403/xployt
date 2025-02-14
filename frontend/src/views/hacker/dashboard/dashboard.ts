@@ -1,4 +1,3 @@
-import { ViewHandler } from '@/ui_lib/view';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import './dashboard.scss'
@@ -32,7 +31,7 @@ export class HackerDashboard extends View {
         q.innerHTML = '';
         $(q, 'div', 'hacker-dashboard', {}, (q) => {
             new dashHackerSummary().render(q);
-            new dashHackerInvitations(this.invitations).render(q);
+            new dashHackerInvitations(this.params.userId, this.invitations).render(q);
         });
 
     }
