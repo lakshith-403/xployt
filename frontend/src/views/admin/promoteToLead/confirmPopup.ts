@@ -18,17 +18,29 @@ export class confirmPromoteToLead {
     try {
       const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`, { showLoading: true });
       this.application = response.data.applicationData[0];
-      console.log('application data: ', this.application);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load project data', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': `Failed to load project data: ${error.message ?? 'N/A'} `,
+        '.modal-data': error.data ?? 'Data not available',
+        '.modal-servletClass': error.servlet ?? 'Servlet not available',
+        '.modal-url': error.url ?? 'URL not available',
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors);
+      throw error;
     }
   }
 
   async render(parent: HTMLElement): Promise<void> {
-    await this.loadData();
+    try {
+      await this.loadData();
+    } catch (error: any) {
+      return;
+    }
     const overlay = $(parent, 'div', 'confirm-promote-to-lead position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center', {}, (q) => {
       // Content
-      const content = $(q, 'div', 'position-relative mx-auto container-md bg-secondary px-3 py-2 rounded-3', {}, (q) => {
+      $(q, 'div', 'position-relative mx-auto container-md bg-secondary px-3 py-2 rounded-3', {}, (q) => {
         $(q, 'div', 'heading', {}, (q) => {
           $(q, 'h3', '', {}, 'Validator Details');
         });
@@ -57,6 +69,7 @@ export class confirmPromoteToLead {
                 });
                 ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
                   this.closePopup(overlay);
+                  window.location.reload();
                 });
               } catch (error: any) {
                 console.error('Failed to accept application', error);

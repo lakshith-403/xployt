@@ -18,19 +18,13 @@ export class ListValidators extends View {
   constructor(params: any) {
     super();
     this.params = params;
-    // this.confirmPopup = (params: any) => {
-    //   new confirmPromoteToLead(params);
-    // };
-    // return await popup.render();
   }
 
   async getValidators(): Promise<any> {
     try {
       const response = await NETWORK.get('/api/admin/promoteToLead/', { showLoading: true });
       this.validators = response.data.validatorData;
-      console.log('response: ', response);
     } catch (error: any) {
-      console.log('error: ', error);
       setContent(modalAlertForErrors, {
         '.modal-title': 'Error',
         '.modal-message': `Failed to get validators: ${error.message ?? 'N/A'} `,
@@ -43,6 +37,7 @@ export class ListValidators extends View {
   }
 
   private async loadValidators(q: Quark): Promise<void> {
+    if (!this.validators || this.validators.length == 0) return;
     for (const validator of this.validators) {
       try {
         console.log(`Validator Info for ${validator.userId}:`, validator);
@@ -54,7 +49,6 @@ export class ListValidators extends View {
           button: new Button({
             label: 'Promote to Lead',
             onClick: () => {
-              console.log('button clicked');
               popupElement.render(q);
             },
           }),
@@ -70,7 +64,6 @@ export class ListValidators extends View {
 
     await this.getValidators();
     await this.loadValidators(q);
-    console.log('validators: ', this.validators);
 
     $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center', {}, (q) => {
       if (!this.validators) {
