@@ -1,43 +1,70 @@
-// Color Classes
-.bg-primary {
-  // Root background color
-  background-color: var(--background-primary) !important;
+// -------- Text Alignment ---------
+.text-center {
+  text-align: center !important;
 }
 
-.bg-secondary {
-  // Footer, TextArea, Input
-  background-color: var(--background-secondary) !important;
+.text-left {
+  text-align: left !important;
 }
 
-.bg-tertiary {
-  // Navbat, Header
-  background-color: var(--background-tertiary) !important;
+.text-right {
+  text-align: right !important;
 }
 
-.text-primary {
-  // Most text
-  color: var(--color-primary) !important;
+.text-justify {
+  text-align: justify !important;
 }
 
-.text-secondary {
-  // Highlighted text
-  color: var(--color-secondary) !important;
+.text-nowrap {
+  white-space: nowrap !important;
 }
 
-.text-light-green {
-  color: var(--light-green) !important;
+.text-uppercase {
+  text-transform: uppercase !important;
 }
 
-.text-grey-green {
-  // Footer-hr
-  color: var(--grey-green) !important;
+.text-lowercase {
+  text-transform: lowercase !important;
 }
 
-.text-dark-green {
-  color: var(--dark-green) !important;
+// -------- text styles --------
+.x-heading-1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.x-heading-2 {
+  font-size: 1.8rem;
+  font-weight: 500;
 }
 
-.text-light-grey {
-  // input-tags
-  color: var(--light-grey) !important;
+.x-sub-heading-1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.x-sub-heading-2 {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.x-paragraph {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+// -------- font styles --------
+.x-font-bold {
+  font-weight: 600;
+}
+
+.x-font-medium {
+  font-weight: 500;
+}
+
+.x-font-normal {
+  font-weight: 400;
+}
+
+.x-font-light {
+  font-weight: 300;
 }
