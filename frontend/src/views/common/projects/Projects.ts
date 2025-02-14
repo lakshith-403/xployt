@@ -57,7 +57,7 @@ export default class ProjectsView extends View {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
 
-    const table = new ProjectTable(projects, this.TABLE_HEADERS, {}, 'status', '');
+    const table = new ProjectTable(projects, this.TABLE_HEADERS, {}, 'status', '', 'No projects to show');
 
     $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');

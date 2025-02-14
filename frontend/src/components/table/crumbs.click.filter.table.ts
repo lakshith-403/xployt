@@ -8,8 +8,18 @@ interface ContentItem {
 }
 
 export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable {
-  constructor(content: ContentItem[], headers: string[], checkboxState: { [key: string]: boolean }, filteredField: string, className: string = '') {
+  public noDataMessage: string;
+
+  constructor(
+    content: ContentItem[],
+    headers: string[],
+    checkboxState: { [key: string]: boolean },
+    filteredField: string,
+    className: string = '',
+    noDataMessage: string = 'No data available'
+  ) {
     super(content, headers, checkboxState, filteredField, className);
+    this.noDataMessage = noDataMessage;
   }
 
   public render(q: Quark): void {
@@ -25,7 +35,7 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
         if (!this.content || this.content.length === 0) {
           console.log('No data available');
           $(q, 'div', 'table-row', {}, (q) => {
-            $(q, 'span', 'table-cell last-cell', {}, 'No data available');
+            $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
           });
         } else {
           this.content.forEach((item) => {
@@ -76,7 +86,7 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
     if (!this.content || this.content.length === 0) {
       console.log('No data available');
       $(this.rows!, 'div', 'table-row', {}, (q) => {
-        $(q, 'span', 'table-cell last-cell', {}, 'No data available');
+        $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
       });
     } else {
       this.content.forEach((item) => {
@@ -98,6 +108,11 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
         }).addEventListener('click', () => {
           router.navigateTo(url);
         });
+      });
+    }
+    if (this.rows!.innerHTML === '') {
+      $(this.rows!, 'div', 'table-row', {}, (q) => {
+        $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
       });
     }
   }
