@@ -5,7 +5,7 @@ import NETWORK from '@/data/network/network';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 
-export class confirmPromoteToLead {
+export class InfoPopup {
   private readonly userId: string;
   private application: any;
 
@@ -15,13 +15,13 @@ export class confirmPromoteToLead {
 
   async loadData(): Promise<void> {
     try {
-      const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`, { showLoading: true });
+      const response = await NETWORK.get(`/api/admin/userManagement/listUsers`, { showLoading: true });
       this.application = response.data.applicationData[0];
     } catch (error: any) {
       console.error('Failed to load project data', error);
       setContent(modalAlertForErrors, {
         '.modal-title': 'Error',
-        '.modal-message': `Failed to load project data: ${error.message ?? 'N/A'} `,
+        '.modal-message': `Failed to load users data: ${error.message ?? 'N/A'} `,
         '.modal-data': error.data ?? 'Data not available',
         '.modal-servletClass': error.servlet ?? 'Servlet not available',
         '.modal-url': error.url ?? 'URL not available',
