@@ -9,7 +9,7 @@ import ModalManager, { setContent } from '@/components/ModalManager/ModalManager
 import { Button } from '@/components/button/base';
 export class ValidatorApplications extends View {
   private applicationsTableContent: ContentItem[] = [];
-  private applicationsTable!: HTMLElement;
+  private applicationsTableContainer!: HTMLElement;
   params: any;
   applications: any;
   constructor(params: any) {
@@ -68,26 +68,26 @@ export class ValidatorApplications extends View {
     $(q, 'div', 'validator-applications  py-2 d-flex flex-column align-items-center', {}, (q) => {
       $(q, 'h1', 'validator-applications-title text-center heading-1', {}, 'Validator Applications');
 
-      this.applicationsTable = $(q, 'div', 'validator-applications-table-container container', {}, (q) => {
-        //   const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
-        //   requestsTable.render(q);
-        $(q, 'div', 'validator-applications-no-applications text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'No applications found');
+      this.applicationsTableContainer = $(q, 'div', 'validator-applications-table-container container', {}, (q) => {
+        $(q, 'div', 'validator-applications-no-applications text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'Loading applications...');
       });
     });
 
     await this.getApplications();
-    if (!this.applications) return;
-    console.log('applications: ', this.applications);
-    await this.loadApplications(q);
-    this.renderApplicationsTable(q);
+    if (this.applications && this.applications.length > 0) {
+      await this.loadApplications(q);
+      this.renderApplicationsTable(q);
+    } else {
+      this.applicationsTableContainer.innerHTML = 'No applications found';
+    }
   }
 
   private renderApplicationsTable(q: Quark): void {
     console.log('applicationsTableContent: ', this.applicationsTableContent);
     const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
-    if (this.applicationsTable) {
-      this.applicationsTable.innerHTML = '';
-      requestsTable.render(this.applicationsTable);
+    if (this.applicationsTableContainer) {
+      this.applicationsTableContainer.innerHTML = '';
+      requestsTable.render(this.applicationsTableContainer);
     }
   }
 }

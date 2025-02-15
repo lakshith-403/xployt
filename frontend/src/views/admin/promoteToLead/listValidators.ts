@@ -10,7 +10,7 @@ import { Button } from '@/components/button/base';
 
 export class ListValidators extends View {
   private validatorsTableContent: ContentItem[] = [];
-  // private confirmPopup: (params: any) => void;
+  private validatorsTableContainer!: HTMLElement;
 
   params: any;
   validators: any;
@@ -36,46 +36,48 @@ export class ListValidators extends View {
   }
 
   private async loadValidators(q: Quark): Promise<void> {
-    if (!this.validators || this.validators.length == 0) return;
     for (const validator of this.validators) {
-      try {
-        console.log(`Validator Info for ${validator.userId}:`, validator);
-        const popupElement = new confirmPromoteToLead({ userId: validator.userId });
-        this.validatorsTableContent.push({
-          id: validator.userId,
-          Name: validator.name,
-          Email: validator.email,
-          button: new Button({
-            label: 'Promote to Lead',
-            onClick: () => {
-              popupElement.render(q);
-            },
-          }),
-        });
-      } catch (error) {
-        console.error(`Failed to get validator info for ${validator.userId}:`, error);
-      }
+      console.log(`Validator Info for ${validator.userId}:`, validator);
+      const popupElement = new confirmPromoteToLead({ userId: validator.userId });
+      this.validatorsTableContent.push({
+        id: validator.userId,
+        Name: validator.name,
+        Email: validator.email,
+        button: new Button({
+          label: 'Promote to Lead',
+          onClick: () => {
+            popupElement.render(q);
+          },
+        }),
+      });
     }
   }
 
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
 
-    await this.getValidators();
-    await this.loadValidators(q);
-
-    $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center', {}, (q) => {
-      if (!this.validators) {
-        $(q, 'h1', 'list-validators-title', {}, 'No validators found');
-        return;
-      }
-
+    $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center container', {}, (q) => {
       $(q, 'h1', 'list-validators-title text-center', {}, 'Validators List');
       $(q, 'div', 'promote-to-lead-table container', {}, (q) => {
-        const requestsTable = new PopupTable(this.validatorsTableContent, ['Id', 'Name', 'Email', 'Actions']);
-        requestsTable.render(q);
+        this.validatorsTableContainer = $(q, 'div', 'promote-to-lead-no-validators text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'Loading validators...');
       });
     });
+
+    await this.getValidators();
+    if (this.validators && this.validators.length > 0) {
+      await this.loadValidators(q);
+      this.renderValidatorsTable(q);
+    } else {
+      this.validatorsTableContainer.innerHTML = 'No validators found';
+    }
+  }
+
+  private renderValidatorsTable(q: Quark): void {
+    if (this.validatorsTableContent.length === 0) {
+      q.innerHTML = '';
+      const requestsTable = new PopupTable(this.validatorsTableContent, ['Id', 'Name', 'Email', 'Actions']);
+      requestsTable.render(q);
+    }
   }
 }
 

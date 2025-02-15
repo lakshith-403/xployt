@@ -9,22 +9,78 @@ import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { InfoPopup } from './infoPopup';
 import { Button } from '@/components/button/base';
+import { CollapsibleBase } from '@/components/Collapsible/collap.base';
+import { CustomTable } from '@/components/table/customTable';
+import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
 
 export class ListUsers extends View {
-  private usersTableContent: ContentItem[] = [];
+  private usersTableContainer!: HTMLElement;
+  private TABLE_HEADERS = ['Id', 'Name', 'Email', 'Status', 'View Info', 'Delete User'];
+  private static readonly FILTER_OPTIONS_VALIDATORS = ['active', 'pending', 'inactive'];
+  private static readonly FILTER_OPTIONS_PROJECT_LEADS = ['active', 'pending', 'inactive'];
+
   // private confirmPopup: (params: any) => void;
 
   params: any;
-  users: any;
+  validators: ContentItem[] = [];
+  projectLeads: ContentItem[] = [];
   constructor(params: any) {
     super();
     this.params = params;
   }
 
-  async getUsers(): Promise<any> {
+  private async fetchAndLoadUsers(q: Quark, type: string): Promise<void> {
     try {
-      const response = await NETWORK.get('/api/admin/userManagement/', { showLoading: true });
-      this.users = response.data.users;
+      const response = await NETWORK.get(`/api/admin/userManagement/${type}`, { showLoading: true });
+      const users = response.data.users;
+
+      for (const user of users) {
+        try {
+          // console.log(`User Info for ${user.userId}:`, user);
+          const popupElement = new InfoPopup({ userId: user.userId, user: user });
+          if (type === 'Validator') {
+            this.validators.push({
+              id: user.userId,
+              Name: user.name,
+              Email: user.email,
+              Status: user.status,
+              button: new Button({
+                label: 'View Info',
+                onClick: () => {
+                  popupElement.render(q);
+                },
+              }),
+              button2: new Button({
+                label: 'Delete User',
+                onClick: () => {
+                  // this.deleteUser(user.userId);
+                },
+              }),
+            });
+          } else if (type === 'ProjectLead') {
+            this.projectLeads.push({
+              id: user.userId,
+              Name: user.name,
+              Email: user.email,
+              Status: user.status,
+              button: new Button({
+                label: 'View Info',
+                onClick: () => {
+                  popupElement.render(q);
+                },
+              }),
+              button2: new Button({
+                label: 'Delete User',
+                onClick: () => {
+                  // this.deleteUser(user.userId);
+                },
+              }),
+            });
+          }
+        } catch (error) {
+          console.error(`Failed to get user info for ${user.userId}:`, error);
+        }
+      }
     } catch (error: any) {
       setContent(modalAlertForErrors, {
         '.modal-title': 'Error',
@@ -38,57 +94,53 @@ export class ListUsers extends View {
     }
   }
 
-  private async loadUsers(q: Quark): Promise<void> {
-    if (!this.users || this.users.length == 0) return;
-    for (const user of this.users) {
-      try {
-        console.log(`User Info for ${user.userId}:`, user);
-        const popupElement = new InfoPopup({ userId: user.userId, user: user });
-        this.usersTableContent.push({
-          id: user.userId,
-          Name: user.name,
-          Email: user.email,
-          button: new Button({
-            label: 'View Info',
-            onClick: () => {
-              popupElement.render(q);
-            },
-          }),
-          button2: new Button({
-            label: 'Delete User',
-            onClick: () => {
-              // this.deleteUser(user.userId);
-            },
-          }),
-        });
-      } catch (error) {
-        console.error(`Failed to get user info for ${user.userId}:`, error);
-      }
-    }
-  }
-
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
 
-    try {
-      await this.getUsers();
-      await this.loadUsers(q);
-    } catch (error) {
-      console.error('Failed to load users:', error);
-    }
-
     $(q, 'div', 'list-users py-2 d-flex flex-column align-items-center', {}, (q) => {
-      if (!this.users) {
+      if (!this.validators && !this.projectLeads) {
         $(q, 'h1', 'list-users-title', {}, 'No users found');
         return;
       }
 
       $(q, 'h1', 'list-users-title text-center', {}, 'Users List');
-      $(q, 'div', 'list-users-table container', {}, (q) => {
-        const requestsTable = new PopupTable(this.usersTableContent, ['Id', 'Name', 'Email', 'Actions']);
-        requestsTable.render(q);
-      });
+      this.usersTableContainer = $(q, 'div', 'list-users-table container', {}, (q) => {});
     });
+
+    try {
+      await this.fetchAndLoadUsers(q, 'Validator');
+      if (this.validators.length > 0) {
+        this.renderUsersSection(this.usersTableContainer, 'Validators', this.validators, ListUsers.FILTER_OPTIONS_VALIDATORS);
+      }
+      await this.fetchAndLoadUsers(q, 'ProjectLead');
+      if (this.projectLeads.length > 0) {
+        this.renderUsersSection(this.usersTableContainer, 'Project Leads', this.projectLeads, ListUsers.FILTER_OPTIONS_PROJECT_LEADS);
+      }
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  }
+
+  private renderUsersSection(q: Quark, title: string, users: any[], filterOptions: string[]): void {
+    $(q, 'h2', 'list-users-title text-center', {}, title);
+    console.log('Users:', users);
+    const table = new CustomTable({
+      content: users,
+      headers: this.TABLE_HEADERS,
+      className: 'table-users',
+      options: {
+        filteredField: 'Status',
+        falseKeys: filterOptions,
+        noDataMessage: 'No users to show',
+      },
+    });
+
+    $(q, 'span', 'filter-bar-title', {}, 'Filter:');
+    const checkboxManager = new CheckboxManager(filterOptions, (checkboxValues) => {
+      table.updateRows(checkboxValues);
+    });
+    checkboxManager.render(q);
+    table.render(q);
   }
 }
 
