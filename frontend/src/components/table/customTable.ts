@@ -5,6 +5,7 @@ import { FilterableTable } from './filterable.table';
 interface ContentItem {
   id: number; // or string, depending on your requirements
   [key: string]: any; // Allow other fields
+  render?: (q: Quark) => void;
 }
 
 interface CustomTableParams {
@@ -58,14 +59,7 @@ export class CustomTable {
 
         this.content.forEach((item) => {
           console.log('item', item);
-          if (this.options.filteredField && this.options.falseKeys) {
-            for (const key of this.options.falseKeys) {
-              if (key === item[this.options.filteredField]) {
-                console.log('Filtered key', key);
-                return;
-              }
-            }
-          }
+
           $(q, 'a', 'table-row-link', {}, (q) => {
             const row = $(q, 'div', 'table-row', {}, (q) => {
               this.displayItems(item, q);
@@ -118,9 +112,20 @@ export class CustomTable {
   private displayItems(object: Record<string, any>, q: Quark) {
     Object.keys(object).forEach((key: string) => {
       const element = object[key];
-      const cellContent =
-        typeof element === 'string' ? element : typeof element === 'object' && element !== null && typeof element.render === 'function' ? element.render(q) : String(element) ?? '-';
-      $(q, 'span', 'table-cell', {}, cellContent);
+      switch (typeof element) {
+        case 'string':
+          $(q, 'span', 'table-cell', {}, element);
+          break;
+        case 'object':
+          $(q, 'span', 'table-cell', {}, (q) => {
+            if (element !== null && typeof element.render === 'function') {
+              element.render(q);
+            }
+          });
+          break;
+        default:
+          $(q, 'span', 'table-cell', {}, String(element) ?? '-');
+      }
     });
   }
 
