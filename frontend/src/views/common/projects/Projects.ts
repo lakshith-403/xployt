@@ -80,7 +80,7 @@ export default class ProjectsView extends View {
       $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
         const button = new FormButton({
           label: 'Add Project',
-          onClick: () => router.navigateTo('/project-request'),
+          onClick: () => router.navigateTo('/client/project-request'),
           type: ButtonType.PRIMARY,
         });
         button.render(q);

@@ -6,7 +6,7 @@ import NETWORK, { Response } from '../../network/network';
  * @returns {Promise<void>} A promise that resolves when the request is complete.
  */
 export async function getProjectConfigInfo(projectId: string): Promise<Response> {
-  return NETWORK.sendHttpRequest('GET', `/api/lead/project/${projectId}`);
+  return NETWORK.sendHttpRequest('GET', `/api/lead/project/${projectId}`); // Depracated
 }
 
 export async function rejectProject(projectId: string): Promise<void> {

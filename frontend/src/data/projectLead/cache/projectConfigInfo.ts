@@ -49,7 +49,7 @@ interface ProjectData {
 }
 export class ProjectConfigInfoCache extends CacheObject<ProjectConfigInfo> {
   async load(arg: string[]): Promise<ProjectConfigInfo> {
-    const response = (await getProjectConfigInfo(arg[0])) as ProjectData;
+    const response = (await getProjectConfigInfo(arg[0])) as ProjectData; // Depracated
 
     if (!response.is_successful) throw new DataFailure('load project', response.error ?? '');
 
