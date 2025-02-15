@@ -66,13 +66,18 @@ export class DeleteConfirmPopup {
 
   private async deleteUser(): Promise<void> {
     try {
-      const response = await NETWORK.delete(`/api/admin/userManagement/${this.userType}/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
-      if (response.status === 200) {
+      const response = await NETWORK.delete(`/api/admin/userManagement/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Success',
+        '.modal-message': 'User deleted successfully',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
         this.closePopup(this.overlay);
-      }
+      });
       console.log('deleting user: ', this.userId);
     } catch (error: any) {
-      throw error;
+      this.closePopup(this.overlay);
+      console.error('Error deleting user: ', error);
     }
   }
 }
