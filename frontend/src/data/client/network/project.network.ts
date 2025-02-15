@@ -5,4 +5,9 @@ export class projectEndpoints {
     console.log('GET /api/client/projects/:userId');
     return NETWORK.sendHttpRequest('GET', `/api/client/projects/${userId}`);
   }
+
+  static async getProjectRequests(userId: string): Promise<Response> {
+    console.log('GET /api/client/project/request/:userId');
+    return NETWORK.sendHttpRequest('GET', `/api/client/project/request/${userId}`);
+  }
 }

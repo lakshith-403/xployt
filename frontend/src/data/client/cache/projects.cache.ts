@@ -34,6 +34,7 @@ export class Project {
 }
 
 export class ProjectsClientCache extends CacheObject<Project[][]> {
+
   async load(userId: string): Promise<Project[][]> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
@@ -67,6 +68,26 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
     this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
     console.log('Updated project:', this.data![0]);
   }
+
+  // public async getProjectRequests(userId: string){
+  //   console.log(`Loading project requests for user: ${userId}`);
+  //   let response: ProjectResponse;
+  //
+  //   try{
+  //     response = (await projectEndpoints.getProjectRequests(userId)) as ProjectResponse;
+  //     console.log('Response:', response);
+  //   } catch (error) {
+  //     console.error('Network error while fetching projects:', error);
+  //     throw new DataFailure('load project', 'Network error');
+  //   }
+  //
+  //   if(!response.is_successful){
+  //     console.error('Failed to load projects:', response.error);
+  //     throw new DataFailure('load project', response.error ?? '');
+  //   }
+  //
+  //   return response['data'].map(());
+  // }
 }
 
 export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
