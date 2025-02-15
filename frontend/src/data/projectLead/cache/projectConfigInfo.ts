@@ -13,7 +13,7 @@ export class ProjectConfigInfo {
   endDateMonth: string;
   endDateYear: string;
   technicalStack: string[];
-  status: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed';
+  state: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed';
 
   clientId: number;
   clientName: string;
@@ -25,7 +25,7 @@ export class ProjectConfigInfo {
     this.title = data['title'];
     this.description = data['description'];
     this.technicalStack = data['technicalStack'];
-    this.status = data['status'];
+    this.state = data['state'];
     this.startDateDay = data['startDateDay'];
     this.startDateMonth = data['startDateMonth'];
     this.startDateYear = data['startDateYear'];
@@ -38,8 +38,8 @@ export class ProjectConfigInfo {
     this.clientUsername = data['clientUsername'];
     this.clientName = data['clientName'];
   }
-  public updateStatus(newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): void {
-    this.status = newStatus;
+  public updatestate(newstate: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): void {
+    this.state = newstate;
   }
 }
 interface ProjectData {
@@ -89,7 +89,7 @@ export class ProjectConfigInfoCacheMock extends CacheObject<ProjectConfigInfo> {
         description:
           'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
         technicalStack: ['React', 'Node', 'Express'],
-        status: 'Pending',
+        state: 'Pending',
         clientEmail: 'client1@example.com',
         clientUsername: 'client1',
       });
@@ -108,7 +108,7 @@ export class ProjectConfigInfoCacheMock extends CacheObject<ProjectConfigInfo> {
       description:
         'Acceslink.com is a website that allows you to access links to projects. It is a project that is used to test the acceslink.com website. Also, with the a dvanced search, you can find the project you are looking for.',
       technicalStack: ['React', 'Node', 'Express'],
-      status: 'Pending',
+      state: 'Pending',
       clientEmail: 'client2@example.com',
       clientUsername: 'client2',
     });

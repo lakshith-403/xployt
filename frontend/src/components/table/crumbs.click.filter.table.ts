@@ -2,6 +2,7 @@ import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ClickableFilterableTable } from './clickable.filter.table';
 import { BREADCRUMBS } from '../breadCrumbs/breadCrumbs';
 import { router } from '../../ui_lib/router';
+
 interface ContentItem {
   id: number; // or string, depending on your requirements
   [key: string]: any; // Allow other fields
@@ -23,97 +24,80 @@ export class ClickableFilterableTableWithCrumbs extends ClickableFilterableTable
   }
 
   public render(q: Quark): void {
-    $(q, 'div', `table ${this.className}`, {}, (q) => {
-      if (this.headers && this.headers.length > 0) {
-        $(q, 'div', 'table-header', {}, (q) => {
-          this.headers!.forEach((header) => {
-            $(q, 'span', 'table-header-cell', {}, header);
-          });
-        });
-      }
-      this.rows = $(q, 'div', 'table-rows', {}, (q) => {
-        if (!this.content || this.content.length === 0) {
-          console.log('No data available');
-          $(q, 'div', 'table-row', {}, (q) => {
-            $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
-          });
-        } else {
-          this.content.forEach((item) => {
-            for (const key of this.falseKeys) {
-              if (key === item[this.filteredField]) {
-                return;
-              }
-            }
-            const url = '/projects/' + item.id;
-            $(
-              q,
-              'a',
-              'table-row-link',
-              {
-                onclick: () => {
-                  this.updateCrumbs(item.id, url);
-                  router.navigateTo(url);
-                },
-              },
-              (q) => {
-                $(q, 'div', 'table-row', {}, (q) => {
-                  Object.values(item).forEach((element) => {
-                    if (element == undefined) {
-                      element = '-';
-                    }
-                    $(q, 'span', 'table-cell', {}, element!.toString());
-                  });
-                });
-              }
-            );
-          });
-        }
+    const tableElement = $(q, 'div', `table ${this.className}`, {});
+
+    if (this.headers && this.headers.length > 0) {
+      const headerElement = $(tableElement, 'div', 'table-header', {});
+      this.headers!.forEach((header) => {
+        $(headerElement, 'span', 'table-header-cell', {}, header);
       });
-    });
+    }
+
+    this.rows = $(tableElement, 'div', 'table-rows', {});
+
+    if (!this.content || this.content.length === 0) {
+      console.log('No data available');
+      const noDataRow = $(this.rows, 'div', 'table-row', {});
+      $(noDataRow, 'span', 'table-cell last-cell', {}, this.noDataMessage);
+    } else {
+      this.content.forEach((item) => {
+        if (this.falseKeys.includes(item[this.filteredField])) return;
+
+        const url = '/projects/' + item.id;
+        const rowLink = $(this.rows!, 'a', 'table-row-link', {
+          onclick: () => {
+            this.updateCrumbs(item.id, url);
+            router.navigateTo(url);
+          },
+        });
+
+        const rowDiv = $(rowLink, 'div', 'table-row', {});
+        Object.values(item).forEach((element) => {
+          $(rowDiv, 'span', 'table-cell', {}, element ?? '-');
+        });
+      });
+    }
   }
 
   protected updateCrumbs(id: string, url: string): void {
-    // console.log('updateCrumbs', id, url);
     BREADCRUMBS.addBreadcrumb({ label: 'Projects' + id, link: '/projects' + id });
     BREADCRUMBS.addBreadcrumb({ label: id, link: url });
   }
+
   public updateRows(checkboxState: { [key: string]: boolean }): void {
     this.falseKeys = this.getFalseKeys(checkboxState);
-    if (!this.rows) {
-      return;
-    }
+    if (!this.rows) return;
+
     this.rows.innerHTML = '';
     if (!this.content || this.content.length === 0) {
       console.log('No data available');
-      $(this.rows!, 'div', 'table-row', {}, (q) => {
-        $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
-      });
+      const noDataRow = $(this.rows!, 'div', 'table-row', {});
+      $(noDataRow, 'span', 'table-cell last-cell', {}, this.noDataMessage);
     } else {
       this.content.forEach((item) => {
-        for (const key of this.falseKeys) {
-          if (key === item[this.filteredField]) {
-            return;
-          }
-        }
+        if (this.falseKeys.includes(item[this.filteredField])) return;
+
         const url = item.url; // Assuming the URL is stored in the 'url' field
-        $(this.rows!, 'a', 'table-row-link', {}, (q) => {
-          $(q, 'div', 'table-row', {}, (q) => {
-            Object.values(item).forEach((element) => {
-              if (element == undefined) {
-                element = '-';
-              }
-              $(q, 'span', 'table-cell', {}, element!.toString());
-            });
-          });
-        }).addEventListener('click', () => {
+        const rowLink = $(this.rows!, 'a', 'table-row-link', {});
+        const rowDiv = $(rowLink, 'div', 'table-row', {});
+
+        Object.values(item).forEach((element) => {
+          if (typeof element.render === 'function') {
+            element.render(rowDiv);
+          } else {
+            $(rowDiv, 'span', 'table-cell', {}, typeof element === 'string' ? element : String(element) ?? '-');
+          }
+        });
+
+        rowLink.addEventListener('click', () => {
           router.navigateTo(url);
         });
       });
     }
+
     if (this.rows!.innerHTML === '') {
-      $(this.rows!, 'div', 'table-row', {}, (q) => {
-        $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
-      });
+      const noDataRow = $(this.rows!, 'div', 'table-row', {});
+      $(noDataRow, 'span', 'table-cell last-cell', {}, this.noDataMessage);
     }
   }
 }

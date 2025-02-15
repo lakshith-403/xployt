@@ -7,6 +7,7 @@ import { CACHE_STORE } from '../../../data/cache';
 import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { ProjectTable } from './projectsTable';
+import { CustomTable } from '../../../components/table/customTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 import { getProjects } from '@/services/projects';
 import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
@@ -15,6 +16,7 @@ import { UserType } from '@data/user';
 import { ButtonType } from '@/components/button/base';
 import { FormButton } from '@/components/button/form.button';
 import { router } from '@/ui_lib/router';
+import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 export default class ProjectsView extends View {
   private params: { projectId: string };
   private projectsCache!: ProjectsCache;
@@ -57,7 +59,21 @@ export default class ProjectsView extends View {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
 
-    const table = new ProjectTable(projects, this.TABLE_HEADERS, {}, 'status', '', 'No projects to show');
+    const table = new CustomTable({
+      content: projects,
+      headers: this.TABLE_HEADERS,
+      className: 'table-projects',
+      options: {
+        filteredField: 'state',
+        falseKeys: [],
+        noDataMessage: 'No projects to show',
+        callback: (project) => {
+          BREADCRUMBS.addBreadcrumb({ label: 'Projects', link: '/projects' });
+          BREADCRUMBS.addBreadcrumb({ label: project.id.toString(), link: `/projects/${project.id}` });
+          router.navigateTo(`/projects/${project.id}`);
+        },
+      },
+    });
 
     $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');

@@ -65,8 +65,8 @@ export default class Lead {
       console.log(this.configInfo.state);
 
       $(q, 'section', '', {}, (q) => {
-        $(q, 'div', 'status', {}, (q) => {
-          $(q, 'span', 'label', {}, 'Status');
+        $(q, 'div', 'state', {}, (q) => {
+          $(q, 'span', 'label', {}, 'State');
           $(q, 'span', '', {}, this.configInfo.state);
         });
         switch (this.configInfo.state) {
