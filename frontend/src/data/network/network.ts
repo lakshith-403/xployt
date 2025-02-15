@@ -1,12 +1,14 @@
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { UIManager } from '@/ui_lib/UIManager';
 
 /**
  * Class representing a network service for making HTTP requests.
  */
 class Network {
   baseURL: string;
+  private cache: Map<string, { valid: boolean; response: any }> = new Map();
 
   /**
    * Creates an instance of Network.
@@ -25,7 +27,7 @@ class Network {
    * @param {object} [data={}] - The data to be sent with the request.
    * @returns {Promise<any>} A promise that resolves with the response data.
    */
-  public sendHttpRequest = (method: string, url: string, data: any = {}, type: string = 'application/json'): Promise<any> => {
+  public sendHttpRequest(method: string, url: string, data: any = {}, type: string = 'application/json'): Promise<any> {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
@@ -55,6 +57,9 @@ class Network {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
             // console.log('response', response);
+            if (method === 'GET') {
+              this.cache.set(url, { valid: true, response });
+            }
             resolve(response);
           } catch (e) {
             reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
@@ -73,7 +78,7 @@ class Network {
         xhr.send(data);
       }
     });
-  };
+  }
 
   private recognizedOptions = ['showLoading', 'handleError', 'throwError']; // Define recognized options
 
@@ -96,29 +101,29 @@ class Network {
     let normalizedOptions: any;
     try {
       normalizedOptions = this.normalizeOptions(options);
-      // console.log('normalizedOptions', normalizedOptions);
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
+      throw error;
     }
-    if (normalizedOptions.showLoading) {
-      // console.log('Showing loading screen');
 
-      LoadingScreen.show();
+    if (method === 'GET' && this.cache.has(url) && this.cache.get(url)?.valid) {
+      return this.cache.get(url)?.response;
     }
+
+    if (['POST', 'PUT', 'DELETE'].includes(method)) {
+      this.cache.delete(url);
+    }
+
+    if (options.showLoading) {
+      UIManager.showLoadingScreen();
+    }
+
     try {
-      const response = await this.sendHttpRequest(method, url, data, 'application/json');
-      return response;
+      return await this.sendHttpRequest(method, url, data, 'application/json');
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
       if (options.handleError) {
-        setContent(modalAlertForErrors, {
-          '.modal-title': 'Error',
-          '.modal-message': `Failed to ${method} ${url}: ${error.message ?? 'N/A'} `,
-          '.modal-data': error.data ?? 'Data not available',
-          '.modal-servletClass': error.servlet ?? 'Servlet not available',
-          '.modal-url': error.url ?? 'URL not available',
-        });
-        ModalManager.show('alertForErrors', modalAlertForErrors);
+        UIManager.showErrorModal(method, url, error);
         if (options.throwError) {
           throw error;
         }
@@ -127,8 +132,7 @@ class Network {
       }
     } finally {
       if (options.showLoading) {
-        // console.log('Hiding loading screen');
-        LoadingScreen.hide();
+        UIManager.hideLoadingScreen();
       }
     }
   }
@@ -141,12 +145,16 @@ class Network {
     return this.handleRequest('POST', url, data, options);
   }
 
-  public put(url: string, data: any, options: any = {}): Promise<any> {
+  public async put(url: string, data: any, options: any = {}): Promise<any> {
     return this.handleRequest('PUT', url, data, options);
   }
 
-  public delete(url: string, options: any = {}): Promise<any> {
+  public async delete(url: string, options: any = {}): Promise<any> {
     return this.handleRequest('DELETE', url, {}, options);
+  }
+
+  invalidateCache(url: string): void {
+    this.cache.delete(url);
   }
 }
 
