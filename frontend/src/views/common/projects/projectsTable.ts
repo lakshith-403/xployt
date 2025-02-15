@@ -9,8 +9,15 @@ interface ContentItem {
 }
 
 export class ProjectTable extends ClickableFilterableTableWithCrumbs {
-  constructor(content: ContentItem[], headers: string[], checkboxState: { [key: string]: boolean }, filteredField: string, className: string = '') {
-    super(content, headers, checkboxState, filteredField, className);
+  constructor(
+    content: ContentItem[],
+    headers: string[],
+    checkboxState: { [key: string]: boolean },
+    filteredField: string,
+    className: string = '',
+    noDataMessage: string = 'No data available'
+  ) {
+    super(content, headers, checkboxState, filteredField, className, noDataMessage);
   }
 
   public render(q: Quark): void {
@@ -26,7 +33,7 @@ export class ProjectTable extends ClickableFilterableTableWithCrumbs {
         if (!this.content || this.content.length === 0) {
           console.log('No data available');
           $(q, 'div', 'table-row', {}, (q) => {
-            $(q, 'span', 'table-cell last-cell', {}, 'No data available');
+            $(q, 'span', 'table-cell last-cell', {}, this.noDataMessage);
           });
         } else {
           this.content.forEach((item) => {

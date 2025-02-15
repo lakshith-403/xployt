@@ -1,8 +1,8 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ButtonType } from '../button/base';
 import { FormButton } from '../button/form.button';
-// import { validateField, validateFormState } from './validationUtils';
-import { validateField } from './validationUtils';
+import { validateField, validateFormState } from './validationUtils';
+// import { validateField } from './validationUtils';
 import './multistep-form.scss';
 import ModalManager, { setContent } from '../ModalManager/ModalManager';
 import { modalAlertOnlyOK } from '@/main';
@@ -145,6 +145,9 @@ class MultistepForm {
   checkBeforeSubmit(): boolean {
     console.log('checkBeforeSubmit', this.formState, this.validationSchema);
     // if (validateFormState(this.formState, this.validationSchema)) {
+    if (!validateFormState(this.formState, this.validationSchema)) {
+      return false;
+    }
     if (this.isCurrentTabValid()) {
       console.log('checkBeforeSubmit passed');
       this.onSubmit(this.formState);

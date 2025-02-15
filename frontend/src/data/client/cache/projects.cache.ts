@@ -10,7 +10,7 @@ interface ProjectResponse {
 
 interface ProjectDetails {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
+  state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
   pendingReports: number;
@@ -18,7 +18,7 @@ interface ProjectDetails {
 
 export class Project {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
+  state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
   pendingReports: number;
@@ -26,7 +26,7 @@ export class Project {
 
   constructor(data: ProjectDetails) {
     this.id = data['id'];
-    this.status = data['status'];
+    this.state = data['state'];
     this.title = data['title'];
     this.leadId = data['leadId'];
     this.pendingReports = data['pendingReports'];
@@ -61,10 +61,10 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
       }),
     ];
   }
-  public updateProject(projectId: number, status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
-    console.log('Updating project:', projectId, status);
+  public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
+    console.log('Updating project:', projectId, state);
     console.log('Current projects:', this.data![0]);
-    this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, status } : p));
+    this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
     console.log('Updated project:', this.data![0]);
   }
 }
@@ -75,14 +75,14 @@ export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
       [
         new Project({
           id: 1,
-          status: 'Unconfigured',
+          state: 'Unconfigured',
           title: 'Project GT-175',
           leadId: 'Lead 1',
           pendingReports: 3,
         }),
         new Project({
           id: 2,
-          status: 'Pending',
+          state: 'Pending',
           title: 'Project WV-102',
           leadId: 'Lead 2',
           pendingReports: 0,
@@ -91,7 +91,7 @@ export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
       [
         new Project({
           id: 3,
-          status: 'In progress',
+          state: 'In progress',
           title: 'Project 3',
           leadId: 'Lead 3',
           pendingReports: 1,

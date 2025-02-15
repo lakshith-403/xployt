@@ -2,7 +2,6 @@ import { ViewHandler } from '@/ui_lib/view';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import NETWORK from '@/data/network/network';
-// import { ClickableTable } from '@/components/table/clickable.table';
 import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import { confirmPromoteToLead } from './confirmPopup';

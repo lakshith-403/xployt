@@ -132,9 +132,9 @@ class CacheStore {
     return this.userProfileMap.get(userId)!;
   }
 
-  public async updateLeadProjectConfigInfo(projectId: string, newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
+  public async updateLeadProjectConfigInfo(projectId: string, newState: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
     const projectConfig = await this.getLeadProjectConfigInfo(projectId).get(false, projectId);
-    projectConfig.updateStatus(newStatus);
+    projectConfig.updatestate(newState);
     await this.getLeadProjectConfigInfo(projectId).set(projectConfig);
   }
 

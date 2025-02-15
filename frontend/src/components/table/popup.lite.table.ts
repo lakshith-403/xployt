@@ -1,6 +1,5 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ContentItem, ClickableTable } from './clickable.table';
-import { Popup } from '../popup/popup.base';
 
 export class PopupTable extends ClickableTable {
   constructor(content: ContentItem[], headers: string[], className: string = '', onClick: () => void = () => {}) {

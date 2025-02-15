@@ -71,7 +71,7 @@ class ProjectRequestForm extends View {
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, validationSchema);
     $(q, 'div', 'project-config-form', {}, (q) => {
-      $(q, 'h1', 'title', {}, 'Project Configuration Form');
+      $(q, 'h1', 'title text-center heading-1 mb-2', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);
       });

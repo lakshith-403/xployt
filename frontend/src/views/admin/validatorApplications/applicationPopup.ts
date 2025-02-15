@@ -1,8 +1,5 @@
 import { QuarkFunction as $ } from '@ui_lib/quark';
-import { CACHE_STORE } from '@data/cache';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
-// import './InvitationPopup.scss';
 import { IconButton } from '@components/button/icon.button';
 import { ButtonType } from '@components/button/base';
 import NETWORK from '@/data/network/network';
@@ -23,20 +20,33 @@ export class ApplicationPopup {
       const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`, { showLoading: true });
       this.application = response.data.applicationData[0];
       console.log('application data: ', this.application);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load project data', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': `Failed to load project data: ${error.message ?? 'N/A'} `,
+        '.modal-data': error.data ?? 'Data not available',
+        '.modal-servletClass': error.servlet ?? 'Servlet not available',
+        '.modal-url': error.url ?? 'URL not available',
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors);
+      throw error;
     }
   }
 
-  async render(): Promise<HTMLElement> {
-    const q = document.createElement('div');
-    const loading = new LoadingScreen(q);
-    loading.show();
+  async render(parent: HTMLElement): Promise<void> {
+    // const q = document.createElement('div');
+    // const loading = new LoadingScreen(parent);
+    // loading.show();
+    try {
+      await this.loadData();
+    } catch (error) {
+      console.error('Failed to load application data', error);
+      return;
+    }
+    // loading.hide();
 
-    await this.loadData();
-    loading.hide();
-
-    $(q, 'div', 'hacker-application', {}, (q) => {
+    $(parent, 'div', 'hacker-application', {}, (q) => {
       $(q, 'div', 'content', {}, (q) => {
         $(q, 'div', 'heading', {}, (q) => {
           $(q, 'h3', '', {}, 'Applicant Details');
@@ -115,7 +125,9 @@ export class ApplicationPopup {
         });
       });
     });
+  }
 
-    return q;
+  private closePopup(overlay: HTMLElement): void {
+    overlay.remove();
   }
 }
