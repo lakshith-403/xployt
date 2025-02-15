@@ -38,8 +38,12 @@ export class ApplicationPopup {
     // const q = document.createElement('div');
     // const loading = new LoadingScreen(parent);
     // loading.show();
-
-    await this.loadData();
+    try {
+      await this.loadData();
+    } catch (error) {
+      console.error('Failed to load application data', error);
+      return;
+    }
     // loading.hide();
 
     $(parent, 'div', 'hacker-application', {}, (q) => {

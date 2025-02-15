@@ -31,7 +31,7 @@ VALUES
     (5, 'OSCP', 'https://example.com/oscp');
 
 -- Insert Projects
-INSERT INTO Projects (clientId, leadId, title, description, paymentAmount, visibility, status, startDate, endDate, technicalStack, pendingReports)
+INSERT INTO Projects (clientId, leadId, title, description, paymentAmount, visibility, state, startDate, endDate, technicalStack, pendingReports)
 VALUES 
     (1, 3, 'Project Alpha', 'Alpha project description', 5000.00, 'Private', 'Active', '2024-01-01', '2024-12-31', 'React, Node.js', 0),
     (2, 3, 'Project Beta', 'Beta project description', 7000.00, 'Public', 'Pending', '2024-02-01', '2024-11-30', 'Python, Django', 0);
