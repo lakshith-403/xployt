@@ -58,7 +58,7 @@ export class CustomTable {
         }
 
         this.content.forEach((item) => {
-          console.log('item', item);
+          // console.log('item', item);
 
           $(q, 'a', 'table-row-link', {}, (q) => {
             const row = $(q, 'div', 'table-row', {}, (q) => {

@@ -19,7 +19,7 @@ import { router } from '@/ui_lib/router';
 import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 export default class ProjectsView extends View {
   private params: { projectId: string };
-  private projectsCache!: ProjectsCache;
+  // private projectsCache!: ProjectsCache;
   private userCache: UserCache;
   private projects: (LeadProject | ClientProject)[][] = [];
   private userId: string | null = null;
