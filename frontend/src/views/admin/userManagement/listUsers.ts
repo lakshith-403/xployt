@@ -9,22 +9,34 @@ import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { InfoPopup } from './infoPopup';
 import { Button } from '@/components/button/base';
+import { CollapsibleBase } from '@/components/Collapsible/collap.base';
+import { CustomTable } from '@/components/table/customTable';
+import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
 
 export class ListUsers extends View {
   private usersTableContent: ContentItem[] = [];
+  private usersTableContainer!: HTMLElement;
+  private TABLE_HEADERS = ['Id', 'Name', 'Email', 'View Info', 'Delete User'];
+  private static readonly FILTER_OPTIONS = ['ProjectLead', 'Validator'];
+
   // private confirmPopup: (params: any) => void;
 
   params: any;
-  users: any;
+  validators: any;
+  projectLeads: any;
   constructor(params: any) {
     super();
     this.params = params;
   }
 
-  async getUsers(): Promise<any> {
+  async getUsers(type: string): Promise<any> {
     try {
-      const response = await NETWORK.get('/api/admin/userManagement/', { showLoading: true });
-      this.users = response.data.users;
+      const response = await NETWORK.get(`/api/admin/userManagement/${type}`, { showLoading: true });
+      if (type === 'Validator') {
+        this.validators = response.data.users;
+      } else if (type === 'ProjectLead') {
+        this.projectLeads = response.data.users;
+      }
     } catch (error: any) {
       setContent(modalAlertForErrors, {
         '.modal-title': 'Error',
@@ -38,9 +50,9 @@ export class ListUsers extends View {
     }
   }
 
-  private async loadUsers(q: Quark): Promise<void> {
-    if (!this.users || this.users.length == 0) return;
-    for (const user of this.users) {
+  private async loadUsers(q: Quark, type: string): Promise<void> {
+    if (!this.validators || this.validators.length == 0) return;
+    for (const user of this.validators) {
       try {
         console.log(`User Info for ${user.userId}:`, user);
         const popupElement = new InfoPopup({ userId: user.userId, user: user });
@@ -71,24 +83,46 @@ export class ListUsers extends View {
     q.innerHTML = '';
 
     try {
-      await this.getUsers();
-      await this.loadUsers(q);
+      await this.getUsers('validator');
+      await this.loadUsers(q, 'Validator');
+      await this.getUsers('projectLead');
+      await this.loadUsers(q, 'Project Lead');
     } catch (error) {
       console.error('Failed to load users:', error);
     }
 
     $(q, 'div', 'list-users py-2 d-flex flex-column align-items-center', {}, (q) => {
-      if (!this.users) {
+      if (!this.validators && !this.projectLeads) {
         $(q, 'h1', 'list-users-title', {}, 'No users found');
         return;
       }
 
       $(q, 'h1', 'list-users-title text-center', {}, 'Users List');
       $(q, 'div', 'list-users-table container', {}, (q) => {
-        const requestsTable = new PopupTable(this.usersTableContent, ['Id', 'Name', 'Email', 'Actions']);
-        requestsTable.render(q);
+        this.renderUsersSection(q, 'Validators', this.validators);
+        this.renderUsersSection(q, 'Project Leads', this.projectLeads);
       });
     });
+  }
+
+  private renderUsersSection(q: Quark, title: string, users: any[]): void {
+    const table = new CustomTable({
+      content: users,
+      headers: this.TABLE_HEADERS,
+      className: 'table-users',
+      options: {
+        filteredField: 'state',
+        falseKeys: [],
+        noDataMessage: 'No users to show',
+      },
+    });
+
+    $(q, 'span', 'filter-bar-title', {}, 'Filter:');
+    const checkboxManager = new CheckboxManager(ListUsers.FILTER_OPTIONS, (checkboxValues) => {
+      table.updateRows(checkboxValues);
+    });
+    checkboxManager.render(q);
+    table.render(q);
   }
 }
 
