@@ -31,7 +31,7 @@ export class ClientDashboard extends View {
         q.innerHTML = '';
         $(q, 'div', 'hacker-dashboard', {}, (q) => {
             new dashClientSummary().render(q);
-            new dashClientProjects().render(q);
+            new dashClientProjects(this.params.userId).render(q);
         });
 
     }
