@@ -8,6 +8,7 @@ import { FilterableTable } from '@components/table/filterable.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { InfoPopup } from './infoPopup';
+import { DeleteConfirmPopup } from './deleteConfirmPopup';
 import { Button } from '@/components/button/base';
 import { CollapsibleBase } from '@/components/Collapsible/collap.base';
 import { CustomTable } from '@/components/table/customTable';
@@ -37,45 +38,31 @@ export class ListUsers extends View {
       for (const user of users) {
         try {
           // console.log(`User Info for ${user.userId}:`, user);
-          const popupElement = new InfoPopup({ userId: user.userId, user: user });
+          const popupElement = new InfoPopup({ userId: user.userId, user: user, userType: type });
+          const deleteConfirmPopup = new DeleteConfirmPopup({ userId: user.userId, user: user, userType: type });
+          const userData = {
+            id: user.userId,
+            Name: user.name,
+            Email: user.email,
+            Status: user.status,
+            button: new Button({
+              label: 'View Info',
+              onClick: () => {
+                popupElement.render(q);
+              },
+            }),
+            button2: new Button({
+              label: 'Delete User',
+              onClick: () => {
+                deleteConfirmPopup.render(q);
+              },
+            }),
+          };
+
           if (type === 'Validator') {
-            this.validators.push({
-              id: user.userId,
-              Name: user.name,
-              Email: user.email,
-              Status: user.status,
-              button: new Button({
-                label: 'View Info',
-                onClick: () => {
-                  popupElement.render(q);
-                },
-              }),
-              button2: new Button({
-                label: 'Delete User',
-                onClick: () => {
-                  // this.deleteUser(user.userId);
-                },
-              }),
-            });
+            this.validators.push(userData);
           } else if (type === 'ProjectLead') {
-            this.projectLeads.push({
-              id: user.userId,
-              Name: user.name,
-              Email: user.email,
-              Status: user.status,
-              button: new Button({
-                label: 'View Info',
-                onClick: () => {
-                  popupElement.render(q);
-                },
-              }),
-              button2: new Button({
-                label: 'Delete User',
-                onClick: () => {
-                  // this.deleteUser(user.userId);
-                },
-              }),
-            });
+            this.projectLeads.push(userData);
           }
         } catch (error) {
           console.error(`Failed to get user info for ${user.userId}:`, error);
@@ -122,12 +109,12 @@ export class ListUsers extends View {
   }
 
   private renderUsersSection(q: Quark, title: string, users: any[], filterOptions: string[]): void {
-    $(q, 'h2', 'list-users-title text-center', {}, title);
-    console.log('Users:', users);
+    $(q, 'h2', 'list-users-title text-center sub-heading-2 my-1', {}, title);
+    // console.log('Users:', users);
     const table = new CustomTable({
       content: users,
       headers: this.TABLE_HEADERS,
-      className: 'table-users',
+      className: 'table-users py-1 mb-4',
       options: {
         filteredField: 'Status',
         falseKeys: filterOptions,

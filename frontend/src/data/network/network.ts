@@ -75,10 +75,10 @@ class Network {
     });
   };
 
-  private recognizedOptions = ['showLoading', 'handleError']; // Define recognized options
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError']; // Define recognized options
 
-  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean } {
-    const defaultOptions = { showLoading: false, handleError: false };
+  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean } {
+    const defaultOptions = { showLoading: true, handleError: false, throwError: false };
 
     // Check if any unrecognized option is set
     Object.keys(options).forEach((key) => {
@@ -119,6 +119,9 @@ class Network {
           '.modal-url': error.url ?? 'URL not available',
         });
         ModalManager.show('alertForErrors', modalAlertForErrors);
+        if (options.throwError) {
+          throw error;
+        }
       } else {
         throw error;
       }

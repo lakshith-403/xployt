@@ -65,3 +65,16 @@
 .border-tertiary-thick {
   border: 6px solid var(--background-tertiery) !important;
 }
+
+// -------- opacity --------
+.bg-opacity-25 {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.bg-opacity-75 {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
