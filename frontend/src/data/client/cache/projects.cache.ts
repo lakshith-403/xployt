@@ -2,7 +2,7 @@ import { CacheObject, DataFailure } from '../../cacheBase';
 import { projectEndpoints } from './../network/project.network';
 
 interface ProjectResponse {
-  data: [ProjectDetails[], ProjectDetails[]];
+  data: [ProjectDetails[], ProjectDetails[], ProjectDetails[]];
   is_successful: boolean;
   error?: string;
   trace?: string;
@@ -13,6 +13,9 @@ interface ProjectDetails {
   state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
+  clientId: string;
+  startDate: string;
+  endDate: string;
   pendingReports: number;
 }
 
@@ -21,6 +24,9 @@ export class Project {
   state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
+  clientId: string;
+  startDate: string;
+  endDate: string;
   pendingReports: number;
   // severity: "critical" | "minor" | "informational"
 
@@ -29,6 +35,9 @@ export class Project {
     this.state = data['state'];
     this.title = data['title'];
     this.leadId = data['leadId'];
+    this.clientId = data['clientId'];
+    this.startDate = data['startDate'];
+    this.endDate = data['endDate'];
     this.pendingReports = data['pendingReports'];
   }
 }
@@ -60,6 +69,9 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
       response['data'][1].map((projectDetails: ProjectDetails) => {
         return new Project({ ...projectDetails });
       }),
+        response['data'][2].map((projectDetails: ProjectDetails) => {
+            return new Project({ ...projectDetails });
+        }),
     ];
   }
   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
@@ -68,56 +80,37 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
     this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
     console.log('Updated project:', this.data![0]);
   }
-
-  // public async getProjectRequests(userId: string){
-  //   console.log(`Loading project requests for user: ${userId}`);
-  //   let response: ProjectResponse;
-  //
-  //   try{
-  //     response = (await projectEndpoints.getProjectRequests(userId)) as ProjectResponse;
-  //     console.log('Response:', response);
-  //   } catch (error) {
-  //     console.error('Network error while fetching projects:', error);
-  //     throw new DataFailure('load project', 'Network error');
-  //   }
-  //
-  //   if(!response.is_successful){
-  //     console.error('Failed to load projects:', response.error);
-  //     throw new DataFailure('load project', response.error ?? '');
-  //   }
-  //
-  //   return response['data'].map(());
-  // }
 }
 
-export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
-    return [
-      [
-        new Project({
-          id: 1,
-          state: 'Unconfigured',
-          title: 'Project GT-175',
-          leadId: 'Lead 1',
-          pendingReports: 3,
-        }),
-        new Project({
-          id: 2,
-          state: 'Pending',
-          title: 'Project WV-102',
-          leadId: 'Lead 2',
-          pendingReports: 0,
-        }),
-      ],
-      [
-        new Project({
-          id: 3,
-          state: 'In progress',
-          title: 'Project 3',
-          leadId: 'Lead 3',
-          pendingReports: 1,
-        }),
-      ],
-    ];
-  }
-}
+// export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
+//   async load(userId: string): Promise<Project[][]> {
+//     return [
+//       [
+//         new Project({
+//           id: 1,
+//           state: 'Unconfigured',
+//           title: 'Project GT-175',
+//           leadId: 'Lead 1',
+//
+//           pendingReports: 3,
+//         }),
+//         new Project({
+//           id: 2,
+//           state: 'Pending',
+//           title: 'Project WV-102',
+//           leadId: 'Lead 2',
+//           pendingReports: 0,
+//         }),
+//       ],
+//       [
+//         new Project({
+//           id: 3,
+//           state: 'In progress',
+//           title: 'Project 3',
+//           leadId: 'Lead 3',
+//           pendingReports: 1,
+//         }),
+//       ],
+//     ];
+//   }
+// }
