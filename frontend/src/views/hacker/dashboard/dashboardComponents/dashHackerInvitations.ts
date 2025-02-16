@@ -1,14 +1,14 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { PopupTable, ContentItem } from "@components/table/popup.clickable.table";
 import { Invitation } from "@data/common/cache/invitations.cache";
-import {ProjectInfoCacheMock } from "@data/validator/cache/projectInfo";
+import {ProjectInfoCache } from "@data/validator/cache/projectInfo";
 import { InvitationPopup } from "@views/hacker/dashboard/hackerInvitation/InvitationPopup";
 import { Popup } from "@components/popup/popup.base";
 
 export class dashHackerInvitations {
     private readonly userId: string;
     private readonly invitations: Invitation[] = [];
-    private projectInfoCache: ProjectInfoCacheMock;
+    private projectInfoCache: ProjectInfoCache;
     private headers: string[] = ['ID', 'Date', "Project Title", 'Start Date', 'Status'];
     private invitationsTableContent: ContentItem[] = [];
     private readonly InvitationPopup: (params: any) => Promise<HTMLElement>;
@@ -16,7 +16,7 @@ export class dashHackerInvitations {
     constructor(userId: string, invitations: Invitation[]) {
         this.userId = userId
         this.invitations = invitations;
-        this.projectInfoCache = new ProjectInfoCacheMock();
+        this.projectInfoCache = new ProjectInfoCache();
         this.InvitationPopup = async (params: any) => {
             const popup = new InvitationPopup(params);
             return await popup.render();
@@ -27,7 +27,7 @@ export class dashHackerInvitations {
         for (const invitation of this.invitations) {
             try {
                 const projectInfo = await this.projectInfoCache.get(false, invitation.projectId);
-                console.log(`Project Info for ${invitation.projectId}:`, projectInfo);
+                console.log(`Project Info for invitation ${invitation.projectId}:`, projectInfo);
                 const popupElement = await this.InvitationPopup({ projectInfo: projectInfo, hackerId: this.userId });
                 console.log('in status:', invitation.status);
                 const statusLabels: any = {
