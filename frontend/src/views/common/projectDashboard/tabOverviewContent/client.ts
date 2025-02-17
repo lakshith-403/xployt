@@ -7,6 +7,7 @@ import { OverviewInvitations } from '@views/common/projectDashboard/tabOverviewC
 import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
 
 export default class Hacker {
   projectInfo: ProjectInfo = {} as ProjectInfo;
@@ -38,6 +39,7 @@ export default class Hacker {
 
       $(q, 'div', '', { id: 'basic-info' }, (q) => {
         new OverviewBasicInfo(this.projectId, this.projectInfo.client).render(q);
+        // new BasicInfoComponent()
       });
 
       $(q, 'section', '', {}, (q) => {
