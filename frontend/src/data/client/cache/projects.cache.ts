@@ -2,7 +2,7 @@ import { CacheObject, DataFailure } from '../../cacheBase';
 import { projectEndpoints } from './../network/project.network';
 
 interface ProjectResponse {
-  data: [ProjectDetails[], ProjectDetails[], ProjectDetails[]];
+  data: {active: ProjectDetails[], requested: ProjectDetails[], inactive: ProjectDetails[]};
   is_successful: boolean;
   error?: string;
   trace?: string;
@@ -50,6 +50,7 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
 
     try {
       response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
+      console.log("response projects" + response)
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -62,17 +63,11 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
 
     console.log('Projects loaded successfully:', response.data);
 
-    return [
-      response['data'][0].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-      response['data'][1].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-        response['data'][2].map((projectDetails: ProjectDetails) => {
-            return new Project({ ...projectDetails });
-        }),
-    ];
+    return {
+      active: response.data.active.map(project => new ProjectDetails(project)),
+      requested: response.data.requested.map(project => new Project(project)),
+      inactive: response.data.inactive.map(project => new Project(project))
+    };
   }
   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
     console.log('Updating project:', projectId, state);

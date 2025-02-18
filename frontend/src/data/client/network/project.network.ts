@@ -3,8 +3,8 @@ import {DataFailure} from "@data/cacheBase";
 
 export class projectEndpoints {
   static async getAllProjects(userId: string): Promise<Response> {
-    console.log('GET /api/client/projects/:userId');
-    return NETWORK.sendHttpRequest('GET', `/api/client/projects/${userId}`);
+    console.log('GET /api/projects/:userId');
+    return NETWORK.sendHttpRequest('GET', `/api/projects?userId=${userId}&userStatus=client`);
   }
 
   static async getProjectRequests(userId: string): Promise<Response> {
