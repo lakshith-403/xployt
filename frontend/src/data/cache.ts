@@ -15,6 +15,7 @@ import { DiscussionCache } from './discussion/cache/discussion';
 import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
+import {ProjectCache} from "@data/common/cache/project.cache";
 
 class CacheStore {
   private readonly user: UserCache;
@@ -32,6 +33,7 @@ class CacheStore {
   private readonly userProfileMap: Map<string, UserProfileCache>;
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
+  private projectsMap: Map<string, ProjectCache>;
 
   constructor() {
     this.user = new UserCache();
@@ -50,6 +52,7 @@ class CacheStore {
     this.discussionMap = new Map();
     this.clientProjectsMap = new Map();
     this.leadProjectsMap = new Map();
+    this.projectsMap = new Map()
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -164,6 +167,13 @@ class CacheStore {
       this.discussionMap.set(discussionId, new DiscussionCache(discussionId));
     }
     return this.discussionMap.get(discussionId)!;
+  }
+
+  public getProject(projectId: string): ProjectCache {
+    if (!this.projectsMap.has(projectId)) {
+      this.projectsMap.set(projectId, new ProjectCache(projectId));
+    }
+    return this.projectsMap.get(projectId)!;
   }
 }
 

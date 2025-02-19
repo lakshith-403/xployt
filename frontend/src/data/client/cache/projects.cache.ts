@@ -1,8 +1,14 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
 import { projectEndpoints } from './../network/project.network';
 
+interface ProjectList{
+    active: ProjectBrief[];
+    requested: ProjectBrief[];
+    inactive: ProjectBrief[];
+}
+
 interface ProjectResponse {
-  data: [ProjectDetails[], ProjectDetails[], ProjectDetails[]];
+  data: ProjectList;
   is_successful: boolean;
   error?: string;
   trace?: string;
@@ -19,7 +25,7 @@ interface ProjectDetails {
   pendingReports: number;
 }
 
-export class Project {
+export class ProjectBrief {
   id: number;
   state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
@@ -42,14 +48,15 @@ export class Project {
   }
 }
 
-export class ProjectsClientCache extends CacheObject<Project[][]> {
+export class ProjectsClientCache extends CacheObject<ProjectList> {
 
-  async load(userId: string): Promise<Project[][]> {
+  async load(userId: string): Promise<ProjectList> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
     try {
       response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
+      console.log("response projects" + response)
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -62,24 +69,19 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
 
     console.log('Projects loaded successfully:', response.data);
 
-    return [
-      response['data'][0].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-      response['data'][1].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-        response['data'][2].map((projectDetails: ProjectDetails) => {
-            return new Project({ ...projectDetails });
-        }),
-    ];
+    return {
+      active: response.data.active.map(project => new ProjectBrief(project)),
+      requested: response.data.requested.map(project => new ProjectBrief(project)),
+      inactive: response.data.inactive.map(project => new ProjectBrief(project))
+    };
   }
-  public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
-    console.log('Updating project:', projectId, state);
-    console.log('Current projects:', this.data![0]);
-    this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
-    console.log('Updated project:', this.data![0]);
-  }
+
+//   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
+//     console.log('Updating project:', projectId, state);
+//     console.log('Current projects:', this.data![0]);
+//     this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
+//     console.log('Updated project:', this.data![0]);
+//   }
 }
 
 // export class ProjectsClientCacheMock extends CacheObject<Project[][]> {

@@ -5,13 +5,13 @@ import {CACHE_STORE} from "@data/cache";
 import {dashClientSummary} from "./dashboardComponents/dashClientSummary";
 import {dashClientProjectRequests} from "@views/client/dashboard/dashboardComponents/dashClientProjectRequests";
 import {dashClientActiveProjects} from "@views/client/dashboard/dashboardComponents/dashClientActiveProjects";
-import {Project, ProjectsClientCache} from "@data/client/cache/projects.cache";
+import {ProjectBrief, ProjectsClientCache} from "@data/client/cache/projects.cache";
 
 export class ClientDashboard extends View {
     private userId: string;
     private projectsCache: ProjectsClientCache;
-    private activeProjects: Project[] = [];
-    private requestedProjects: Project[] = [];
+    private activeProjects: ProjectBrief[] = [];
+    private requestedProjects: ProjectBrief[] = [];
 
     constructor(params: {userId: string}) {
         super();
@@ -22,8 +22,8 @@ export class ClientDashboard extends View {
    private async loadProjectInfo(): Promise<void> {
     try {
         const projects = await this.projectsCache.load(this.userId);
-        this.activeProjects = projects[0];
-        this.requestedProjects = projects[1];
+        this.activeProjects = projects.active;
+        this.requestedProjects = projects.requested;
         console.log(this.activeProjects);
     } catch (error) {
         console.error('Failed to load projects:', error);

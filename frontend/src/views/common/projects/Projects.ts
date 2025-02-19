@@ -11,7 +11,7 @@ import { CustomTable } from '../../../components/table/customTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 import { getProjects } from '@/services/projects';
 import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
-import { Project as ClientProject } from '@data/client/cache/projects.cache';
+import { ProjectBrief as ClientProject } from '@data/client/cache/projects.cache';
 import { UserType } from '@data/user';
 import { ButtonType } from '@/components/button/base';
 import { FormButton } from '@/components/button/form.button';

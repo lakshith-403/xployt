@@ -1,15 +1,15 @@
 import {QuarkFunction as $, Quark} from '@ui_lib/quark';
 import {ClickableTable, ContentItem} from "@components/table/clickable.table";
-import {Project} from "@data/client/cache/projects.cache";
+import {ProjectBrief} from "@data/client/cache/projects.cache";
 import {router} from "@ui_lib/router";
 
 export class dashClientActiveProjects {
     private userId: string;
     private headers: string[] = ["Project Title", "Start Date", "End Date"]
     private TableContent: ContentItem[] = [];
-    private projects: Project[] = [];
+    private projects: ProjectBrief[] = [];
 
-    constructor(userId: string, projects: Project[]) {
+    constructor(userId: string, projects: ProjectBrief[]) {
         this.userId = userId;
         this.projects = projects;
 
