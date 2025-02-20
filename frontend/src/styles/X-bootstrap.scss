@@ -50,6 +50,35 @@ $container-padding: 15px;
   padding-right: $container-padding;
 }
 
+.flex-container-lg {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 1140px) {
+    // lg breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-md {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 940px) {
+    // md breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-sm {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 540px) {
+    // sm breakpoint
+    flex-direction: column;
+  }
+}
 // rounded corners
 @for $i from 1 through 3 {
   .rounded-#{$i} {
@@ -82,9 +111,16 @@ $widths: (
 $heights: (
   'auto': auto,
   '25': 25vh,
+  '30': 30vh,
+  '35': 35vh,
+  '40': 40vh,
+  '45': 45vh,
   '50': 50vh,
+  '55': 55vh,
+  '60': 60vh,
+  '65': 65vh,
+  '70': 70vh,
   '75': 75vh,
-  '100': 100vh,
 );
 
 // Width Utilities
@@ -132,13 +168,17 @@ $heights: (
 .justify-content-start {
   justify-content: flex-start;
 }
-
 .justify-content-center {
   justify-content: center;
 }
-
 .justify-content-end {
   justify-content: flex-end;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-around {
+  justify-content: space-around;
 }
 
 .align-items-start {

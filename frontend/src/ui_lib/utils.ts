@@ -5,10 +5,10 @@
  * @returns True if the URL matches the pattern, false otherwise.
  */
 export function matchUrl(url: string, pattern: string): boolean {
-  const [path, _] = url.split('?')
+  const [path, _] = url.split('?');
 
-  const regex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$')
-  return path.match(regex) !== null
+  const regex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$');
+  return path.match(regex) !== null;
 }
 
 /**
@@ -18,9 +18,9 @@ export function matchUrl(url: string, pattern: string): boolean {
  * @returns True if the URL matches the pattern with any additional path, false otherwise.
  */
 export function matchUrlWithBase(url: string, pattern: string): boolean {
-  const [path, _] = url.split('?')
-  const baseRegex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '.*$')
-  return path.match(baseRegex) !== null
+  const [path, _] = url.split('?');
+  const baseRegex = new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '.*$');
+  return path.match(baseRegex) !== null;
 }
 
 /**
@@ -29,39 +29,68 @@ export function matchUrlWithBase(url: string, pattern: string): boolean {
  * @returns An object containing key-value pairs of the query parameters.
  */
 export function extractQueryParams(url: string): Record<string, string> {
-  const [_, queryString] = url.split('?')
+  const [_, queryString] = url.split('?');
 
-  const queryParams: Record<string, string> = {}
+  const queryParams: Record<string, string> = {};
   if (!queryString) {
-      return queryParams
+    return queryParams;
   }
 
-  const pairs = queryString.split('&')
+  const pairs = queryString.split('&');
   for (const pair of pairs) {
-      const [key, value] = pair.split('=')
-      queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '')
+    const [key, value] = pair.split('=');
+    queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '');
   }
 
-  return queryParams
+  return queryParams;
 }
 
 /**
  * Extracts path parameters from a URL based on a specified pattern.
  * The pattern can include placeholders in the format {key} which will be matched against the URL.
- * 
+ *
  * @param url - The URL from which to extract path parameters.
  * @param pattern - The pattern to match against, containing placeholders for parameters.
  * @returns An object containing key-value pairs of the extracted path parameters.
  */
 export function extractPathParams(url: string, pattern: string): Record<string, string> {
-  const paramNames = (pattern.match(/{\w+}/g) || []).map(param => param.slice(1, -1))
-  const params: Record<string, string> = {}
+  const paramNames = (pattern.match(/{\w+}/g) || []).map((param) => param.slice(1, -1));
+  const params: Record<string, string> = {};
 
-  const match = url.match(new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$'))
+  const match = url.match(new RegExp('^' + pattern.replace(/{\w+}/g, '([^/]+)') + '$'));
 
   paramNames.forEach((name, index) => {
-      params[name] = match ? match[index + 1] : ''
-  })
+    params[name] = match ? match[index + 1] : '';
+  });
 
-  return params
+  return params;
+}
+
+/**
+ * Filters an array of objects to only include specified fields.
+ *
+ * @param objects - The array of objects to filter.
+ * @param fields - The array of field names to include in the resulting objects.
+ * @returns An array of objects containing only the specified fields.
+ */
+export function filterObjectsByFields(objects: Record<string, any>[], fields: string[]): Record<string, any>[] {
+  return objects.map((obj) => {
+    const filteredObj: Record<string, any> = {};
+    fields.forEach((field) => {
+      if (obj.hasOwnProperty(field)) {
+        filteredObj[field] = obj[field];
+      }
+    });
+    return filteredObj;
+  });
+}
+
+/**
+ * Converts an array of objects into an array of arrays where only the values are retained.
+ *
+ * @param objects - The array of objects to convert.
+ * @returns An array of arrays containing only the values of the objects.
+ */
+export function convertObjectsToValuesArray(objects: Record<string, any>[]): any[][] {
+  return objects.map((obj) => Object.values(obj));
 }
