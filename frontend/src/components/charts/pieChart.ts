@@ -4,11 +4,13 @@ import './pieChart.scss';
 interface PieChartOptions {
   data: { [key: string]: number };
   title?: string;
+  className?: string;
   subtitle?: string;
   colorScheme?: 'scheme1' | 'scheme2' | 'scheme3' | 'greyTheme' | 'greenTheme' | 'blackTheme';
   width?: number;
   height?: number;
   border?: boolean;
+  foregroundColor?: string;
 }
 class PieChart {
   private options: PieChartOptions;
@@ -23,16 +25,26 @@ class PieChart {
 
   constructor(options: PieChartOptions) {
     this.options = {
-      width: 400,
-      height: 400,
-      colorScheme: 'greyTheme',
-      border: false,
-      ...options,
+      width: options.width ?? 400,
+      height: options.height ?? 400,
+      colorScheme: options.colorScheme ?? 'greyTheme',
+      border: options.border ?? false,
+      foregroundColor: options.foregroundColor ?? '#000000',
+      title: options.title,
+      className: options.className,
+      subtitle: options.subtitle,
+      data: options.data,
     };
   }
 
   public render(q: Quark): void {
-    const canvas = $(q, 'canvas', 'myPieChart', { width: this.options.width!, height: this.options.height!, class: this.options.border ? 'border' : '' }, () => {}) as HTMLCanvasElement;
+    const canvas = $(
+      q,
+      'canvas',
+      'myPieChart ' + this.options.className,
+      { width: this.options.width!, height: this.options.height!, class: this.options.border ? 'border' : '' },
+      () => {}
+    ) as HTMLCanvasElement;
 
     const ctx = canvas.getContext('2d')!;
     const dataValues = Object.values(this.options.data);
@@ -62,7 +74,7 @@ class PieChart {
       const labelX = canvas.width / 2 + (Math.min(canvas.width / 2, canvas.height / 2) / 2) * Math.cos(startAngle + sliceAngle / 2);
       const labelY = canvas.height / 2 + (Math.min(canvas.width / 2, canvas.height / 2) / 2) * Math.sin(startAngle + sliceAngle / 2);
 
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = this.options.foregroundColor ?? '#fff';
       ctx.font = '14px Arial';
       ctx.fillText(labels[index], labelX, labelY);
 
@@ -70,13 +82,13 @@ class PieChart {
     });
 
     if (this.options.title) {
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = this.options.foregroundColor ?? '#fff';
       ctx.font = '16px Arial';
       ctx.fillText(this.options.title, canvas.width / 2, 20);
     }
 
     if (this.options.subtitle) {
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = this.options.foregroundColor ?? '#fff';
       ctx.font = '12px Arial';
       ctx.fillText(this.options.subtitle, canvas.width / 2, 40);
     }

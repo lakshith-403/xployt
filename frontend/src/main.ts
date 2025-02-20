@@ -140,7 +140,7 @@ class TopNavigationView implements NavigationView {
     CACHE_STORE.getUser()
       .get()
       .then((user) => {
-        console.log(user);
+        // console.log(user);
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
         if (user.type != 'Guest') {

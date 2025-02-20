@@ -38,7 +38,7 @@ export class User {
   avatar: string;
 
   constructor(data: UserResponse) {
-    console.log('User constructor', data);
+    // console.log('User constructor', data);
     this.id = data.id;
     this.username = data.username;
     this.name = data.name;

@@ -22,7 +22,7 @@ class Dashboard extends View {
 
   private renderPieChart(q: Quark): void {
     // Create a container for the pie chart
-    const chartContainer = $(q, 'div', 'chart-container', {}, () => {});
+    const chartContainer = $(q, 'div', 'chart-container bg-primary', {}, () => {});
 
     // Define the pie chart options
     const pieChartOptions = {
@@ -33,9 +33,13 @@ class Dashboard extends View {
         'Not Started': 40,
         'On Hold': 50,
       },
-      title: 'Project Distribution',
-      subtitle: 'Current Status of Projects',
+      width: 300,
+      height: 300,
+      // title: 'Project Distribution',
+      // subtitle: 'Current Status of Projects',
       colorScheme: 'greenTheme' as 'greenTheme',
+      className: 'w-30 d-flex justify-content-center align-items-center text-primary',
+      foregroundColor: 'black',
     };
 
     // Instantiate and render the PieChart
@@ -44,4 +48,4 @@ class Dashboard extends View {
   }
 }
 
-export const validatorDashboardViewHandler = new ViewHandler('valdashboard', Dashboard);
+export const validatorDashboardViewHandler = new ViewHandler('/validator-dashboard', Dashboard);
