@@ -15,6 +15,13 @@ export class UIManager {
     return UIManager.instance;
   }
 
+  /**
+   * Lists the properties of an object in a formatted manner.
+   *
+   * @param q - The Quark element to append the list items to.
+   * @param object - The object to list the properties of.
+   * @param ignoreKeys - An array of keys to ignore from the object.
+   */
   public static listObject(q: Quark, object: any, ignoreKeys: string[] = []): void {
     Object.keys(object).forEach((key) => {
       if (ignoreKeys.includes(key)) return;

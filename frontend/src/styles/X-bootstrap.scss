@@ -50,6 +50,35 @@ $container-padding: 15px;
   padding-right: $container-padding;
 }
 
+.flex-container-lg {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 1140px) {
+    // lg breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-md {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 940px) {
+    // md breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-sm {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 540px) {
+    // sm breakpoint
+    flex-direction: column;
+  }
+}
 // rounded corners
 @for $i from 1 through 3 {
   .rounded-#{$i} {
@@ -139,13 +168,17 @@ $heights: (
 .justify-content-start {
   justify-content: flex-start;
 }
-
 .justify-content-center {
   justify-content: center;
 }
-
 .justify-content-end {
   justify-content: flex-end;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-around {
+  justify-content: space-around;
 }
 
 .align-items-start {

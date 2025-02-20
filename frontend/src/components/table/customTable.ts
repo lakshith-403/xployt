@@ -3,7 +3,7 @@ import { router } from '../../ui_lib/router';
 import { FilterableTable } from './filterable.table';
 
 interface ContentItem {
-  id: number; // or string, depending on your requirements
+  // id: number; // or string, depending on your requirements
   [key: string]: any; // Allow other fields
   render?: (q: Quark) => void;
 }

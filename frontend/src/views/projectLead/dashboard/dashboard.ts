@@ -6,65 +6,106 @@ import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
 import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { Button } from '@/components/button/base';
-
+import PieChart from '@/components/charts/pieChart';
+import { CustomTable } from '@/components/table/customTable';
+import * as utils from '@/ui_lib/utils';
+import { CACHE_STORE } from '@/data/cache';
 export class ProjectLeadDashboard extends View {
   private applicationsTableContent: ContentItem[] = [];
   private applicationsTableContainer!: HTMLElement;
+  private userId!: string;
   params: any;
   applications: any;
+  private pieChartContainer!: HTMLElement;
+  private recentProjectsContainer!: HTMLElement;
+
   constructor(params: any) {
     super();
     this.params = params;
   }
 
-  async getApplications(): Promise<any> {
+  private async loadUser(): Promise<any> {
+    const currentUser = await CACHE_STORE.getUser().get();
+    console.log(currentUser);
+    this.userId = currentUser.id;
+  }
+
+  private async loadProjectStats(): Promise<any> {
     try {
-      const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true });
-      this.applications = response.data.validators;
-      console.log('response: ', response);
-    } catch (error: any) {
-      console.log('error: ', error);
-      setContent(modalAlertForErrors, {
-        '.modal-title': 'Error',
-        '.modal-message': `Failed to get applications: ${error.message ?? 'N/A'} `,
-        '.modal-data': error.data ?? '',
-        '.modal-servletClass': error.servlet ?? '',
-        '.modal-url': error.uri ?? '',
-      });
-      ModalManager.show('alertForErrors', modalAlertForErrors);
+      const response = await NETWORK.get(`/api/dashboard/project-stats/projectLead/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
+      console.log(response);
+      const formattedStats = response.data.stats.reduce((acc: any, stat: any) => {
+        acc[stat.state] = stat.count;
+        return acc;
+      }, {});
+      return formattedStats;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   }
 
-  private async loadApplications(q: Quark): Promise<void> {}
+  private async loadRecentProjects(): Promise<any> {
+    try {
+      const response = await NETWORK.get(`/api/dashboard/recent-projects/projectLead/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
+      console.log(response);
+      return response.data; // Assuming you want to return the recent projects data
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
+    $(q, 'div', 'py-2 d-flex flex-column align-items-center', {}, (q) => {
+      $(q, 'h1', 'text-center heading-1', {}, 'Project Lead Dashboard');
+      $(q, 'div', 'container justify-content-between flex-container-lg gap-2', {}, (q) => {
+        this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center', {}, (q) => {
+          $(q, 'p', 'pie-chart-subtitle text-center sub-heading-3', {}, 'Project Statistics');
+        });
+        this.recentProjectsContainer = $(q, 'div', 'recent-projects-container', {}, (q) => {
+          $(q, 'p', 'recent-projects-title text-center sub-heading-3', {}, 'Recent Projects');
+        });
+      });
+    });
 
-    // $(q, 'div', 'validator-applications  py-2 d-flex flex-column align-items-center', {}, (q) => {
-    //   $(q, 'h1', 'validator-applications-title text-center heading-1', {}, 'Validator Applications');
+    try {
+      await this.loadUser();
+      const pieChartData = await this.loadProjectStats();
+      const pieChartOptions = {
+        data: {
+          ...pieChartData,
+        },
+        width: 500,
+        height: 500,
+        colorScheme: 'greenTheme' as 'greenTheme',
+        className: 'w-30 d-flex justify-content-center align-items-center text-primary',
+        foregroundColor: 'black',
+      };
+      const pieChart = new PieChart(pieChartOptions);
+      pieChart.render(this.pieChartContainer);
+    } catch (error) {
+      console.error(error);
+    }
 
-    //   this.applicationsTableContainer = $(q, 'div', 'validator-applications-table-container container', {}, (q) => {
-    //     $(q, 'div', 'validator-applications-no-applications text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'Loading applications...');
-    //   });
-    // });
-
-    // await this.getApplications();
-    // if (this.applications && this.applications.length > 0) {
-    //   await this.loadApplications(q);
-    //   this.renderApplicationsTable(q);
-    // } else {
-    //   this.applicationsTableContainer.innerHTML = 'No applications found';
-    // }
+    try {
+      const recentProjects = await this.loadRecentProjects();
+      const TABLE_HEADERS = ['projectId', 'state', 'title', 'createdAt'];
+      console.log(utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'createdAt']));
+      const table = new CustomTable({
+        content: utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'createdAt']),
+        headers: TABLE_HEADERS,
+        className: 'table-users py-1 mb-4',
+        options: {
+          noDataMessage: 'No projects to show',
+        },
+      });
+      table.render(this.recentProjectsContainer);
+    } catch (error) {
+      console.error(error);
+    }
   }
-
-  // private renderApplicationsTable(q: Quark): void {
-  //   console.log('applicationsTableContent: ', this.applicationsTableContent);
-  //   const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
-  //   if (this.applicationsTableContainer) {
-  //     this.applicationsTableContainer.innerHTML = '';
-  //     requestsTable.render(this.applicationsTableContainer);
-  //   }
-  // }
 }
 
 // export const projectLeadDashboardViewHandler = new ViewHandler('/project-lead-dashboard', ProjectLeadDashboard);
