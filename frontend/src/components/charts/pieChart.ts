@@ -54,6 +54,18 @@ class PieChart {
 
     let startAngle = 0;
 
+    if (dataValues.length === 0) {
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width / 2, canvas.height / 2), 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fillStyle = 'grey';
+      ctx.fill();
+      ctx.fillStyle = 'black'; // Set text color to black for better visibility
+      ctx.font = '16px Arial';
+      ctx.fillText('No data to show', canvas.width / 2, canvas.height / 2);
+      return;
+    }
+
     dataValues.forEach((value, index) => {
       const sliceAngle = (value / totalValue) * 2 * Math.PI;
 

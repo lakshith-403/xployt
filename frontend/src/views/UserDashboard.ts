@@ -6,6 +6,7 @@ import { ClientDashboard } from '@views/client/dashboard/dashboard';
 import { ProjectLeadDashboard } from '@views/projectLead/dashboard/dashboard';
 import { User, UserCache } from '@/data/user';
 import { CACHE_STORE } from '@data/cache';
+import { ValidatorDashboard } from '@views/validator/dashboard/dashboard';
 // import ProjectsView from '@views/common/projects/Projects';
 
 class UserDashboard extends View {
@@ -41,6 +42,10 @@ class UserDashboard extends View {
       case 'Hacker':
         const hackerDashboard = new HackerDashboard({ userId: this.user.id });
         await hackerDashboard.render(q);
+        break;
+      case 'Validator':
+        const validatorDashboard = new ValidatorDashboard({ userId: this.user.id });
+        await validatorDashboard.render(q);
         break;
     }
     // const hackerDashboard = new HackerDashboard({userId: this.user.id});

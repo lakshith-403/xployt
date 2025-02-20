@@ -38,7 +38,7 @@ import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tab
 import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReport';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
-import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
+// import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from '@views/client/projectRequestForm/projectRequestForm';
 import { discussionViewHandler } from '@views/discussion/Discussion';
 import { userDashboardViewHandler } from '@views/UserDashboard';
@@ -218,7 +218,7 @@ const AdminRouteHandlers = new RouteHandler(
   false
 );
 
-const TestRouteHandlers = new RouteHandler('/test', [validatorDashboardViewHandler, styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
