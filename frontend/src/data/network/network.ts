@@ -80,10 +80,10 @@ class Network {
     });
   }
 
-  private recognizedOptions = ['showLoading', 'handleError', 'throwError']; // Define recognized options
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess']; // Define recognized options
 
-  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean } {
-    const defaultOptions = { showLoading: true, handleError: false, throwError: false };
+  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean; showSuccess: boolean; successCallback: () => void } {
+    const defaultOptions = { showLoading: true, handleError: false, throwError: false, showSuccess: false, successCallback: () => {} };
 
     // Check if any unrecognized option is set
     Object.keys(options).forEach((key) => {
@@ -119,7 +119,11 @@ class Network {
     }
 
     try {
-      return await this.sendHttpRequest(method, url, data, 'application/json');
+      const response = await this.sendHttpRequest(method, url, data, 'application/json');
+      if (options.showSuccess) {
+        UIManager.showSuccessModal(response.title, response.message, options.successCallback);
+      }
+      return response;
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
       if (options.handleError) {

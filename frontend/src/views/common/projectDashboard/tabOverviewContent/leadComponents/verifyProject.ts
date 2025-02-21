@@ -10,7 +10,7 @@ import './verifyProject.scss';
 import NETWORK from '@/data/network/network';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { modalAlertOnlyOK, modalAlertForErrors } from '@/main';
-
+import { UIManager } from '@ui_lib/UIManager';
 class VerifyProject extends View {
   params: { projectId: string };
 
@@ -40,6 +40,8 @@ class VerifyProject extends View {
   }
   private async loadData(): Promise<void> {
     this.projectConfigInfo = (await NETWORK.get(`/api/lead/project/${this.params.projectId}`, { showLoading: true })).data;
+    this.projectConfigInfo = UIManager.convertDateFields(this.projectConfigInfo, ['startDate', 'endDate']);
+    // console.log('projectConfigInfo: ', this.projectConfigInfo);
   }
   async render(q: Quark): Promise<void> {
     await this.loadData();
@@ -52,22 +54,22 @@ class VerifyProject extends View {
         $(q, 'div', 'start-date date', {}, (q) => {
           $(q, 'span', '', {}, 'Start Date ');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.startDateDay, this.projectConfigInfo.startDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateMonth, this.projectConfigInfo.startDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateYear, this.projectConfigInfo.startDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateDay, this.projectConfigInfo.startDate_day, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateMonth, this.projectConfigInfo.startDate_month, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateYear, this.projectConfigInfo.startDate_year, 1 / 3);
           });
         });
         $(q, 'div', 'end-date date', {}, (q) => {
           $(q, 'span', '', {}, 'End Date ');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.endDateDay, this.projectConfigInfo.endDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateMonth, this.projectConfigInfo.endDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateYear, this.projectConfigInfo.endDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateDay, this.projectConfigInfo.endDate_day, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateMonth, this.projectConfigInfo.endDate_month, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateYear, this.projectConfigInfo.endDate_year, 1 / 3);
           });
         });
       });
       this.renderFieldFullWidth(q, this.fields.description, this.projectConfigInfo.description);
-      this.renderFieldFullWidth(q, this.fields.url, this.projectConfigInfo.accessLink);
+      this.renderFieldFullWidth(q, this.fields.url, this.projectConfigInfo.url);
       this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectConfigInfo.technicalStack);
 
       $(q, 'div', 'button-container', {}, (q) => {
