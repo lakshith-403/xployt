@@ -52,7 +52,7 @@ export class CustomTable {
       }
 
       this.rows = $(q, 'div', 'table-rows', {}, (q) => {
-        if (this.content.length === 0) {
+        if (!this.content || this.content.length === 0) {
           this.displayNoDataMessage(q);
           return;
         }
@@ -79,6 +79,10 @@ export class CustomTable {
     console.log('Updating rows');
     console.log('checkboxState', checkboxState);
     this.rows!.innerHTML = '';
+    if (!this.content || this.content.length === 0) {
+      this.displayNoDataMessage(this.rows!);
+      return;
+    }
     this.content.forEach((item) => {
       const falseKeys = this.getFalseKeys(checkboxState);
       console.log('falseKeys', falseKeys);
