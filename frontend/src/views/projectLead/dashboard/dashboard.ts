@@ -26,14 +26,14 @@ export class ProjectLeadDashboard extends View {
 
   private async loadUser(): Promise<any> {
     const currentUser = await CACHE_STORE.getUser().get();
-    console.log(currentUser);
+    // console.log(currentUser);
     this.userId = currentUser.id;
   }
 
   private async loadProjectStats(): Promise<any> {
     try {
       const response = await NETWORK.get(`/api/dashboard/project-stats/projectLead/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
-      console.log(response);
+      // console.log(response);
       const formattedStats = response.data.stats.reduce((acc: any, stat: any) => {
         acc[stat.state] = stat.count;
         return acc;
@@ -48,7 +48,7 @@ export class ProjectLeadDashboard extends View {
   private async loadRecentProjects(): Promise<any> {
     try {
       const response = await NETWORK.get(`/api/dashboard/recent-projects/projectLead/${this.userId}`, { showLoading: true, handleError: true, throwError: true });
-      console.log(response);
+      // console.log(response);
       return response.data; // Assuming you want to return the recent projects data
     } catch (error) {
       console.error(error);

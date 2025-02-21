@@ -5,15 +5,18 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
+import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
+import { CACHE_STORE } from '@/data/cache';
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
-
+  private userId!: string;
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
     this.params = params;
+    this.userId = '';
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -49,6 +52,8 @@ class projectDashboardView extends View {
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
 
+    const currentUser = await CACHE_STORE.getUser().get();
+    this.userId = currentUser.id;
     const tabs = [
       {
         title: 'Overview',
@@ -69,7 +74,16 @@ class projectDashboardView extends View {
         },
       },
     ];
-
+    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
+    if (usersWithPaymentsTab.includes(currentUser.type)) {
+      const paymentsTab = new PaymentsTab(this.params.projectId);
+      tabs.push({
+        title: 'Payments',
+        render: (q: Quark) => {
+          paymentsTab.render(q);
+        },
+      });
+    }
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
       $(q, 'span', 'project-title', {}, this.projectTitle);
