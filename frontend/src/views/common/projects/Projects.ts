@@ -4,9 +4,7 @@ import './Projects.scss';
 import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
 import { UserCache, UserCacheMock } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
-import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { ProjectTable } from './projectsTable';
 import { CustomTable } from '../../../components/table/customTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
 import { getProjects } from '@/services/projects';
@@ -40,12 +38,13 @@ export default class ProjectsView extends View {
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
-      console.log('Getting Projects');
-      console.log('user', user);
+      // console.log('Getting Projects');
+      // console.log('user', user);
       this.userId = user.id;
-      console.log('user id', this.userId);
+      // console.log('user id', this.userId);
       this.projects = await getProjects(this.userId, user.type);
       console.log('projects', this.projects);
+      // console.log('projects', this.projects);
       this.userType = user.type;
       // if (this.projects.length === 0) {
       //   this.projects = [[], []];
@@ -86,10 +85,7 @@ export default class ProjectsView extends View {
   }
 
   async render(q: Quark): Promise<void> {
-    const loading = new LoadingScreen(q);
-    loading.show();
     await this.loadProjects();
-    loading.hide();
 
     q.innerHTML = '';
     $(q, 'div', 'projects validator d-flex flex-column container-lg p-4', {}, (q) => {
