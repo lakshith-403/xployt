@@ -1,10 +1,10 @@
-import { CacheObject, DataFailure } from '../../cacheBase';
-import { projectEndpoints } from './../network/project.network';
+import {CacheObject, DataFailure} from '../../cacheBase';
+import {projectEndpoints} from './../network/project.network';
 
 interface ProjectList{
-    active: ProjectBrief[];
-    requested: ProjectBrief[];
-    inactive: ProjectBrief[];
+    activeProjects: ProjectBrief[];
+    requestedProjects: ProjectBrief[];
+    inactiveProjects: ProjectBrief[];
 }
 
 interface ProjectResponse {
@@ -56,7 +56,6 @@ export class ProjectsClientCache extends CacheObject<ProjectList> {
 
     try {
       response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
-      console.log("response projects" + response)
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -70,9 +69,16 @@ export class ProjectsClientCache extends CacheObject<ProjectList> {
     console.log('Projects loaded successfully:', response.data);
 
     return {
-      active: response.data.active.map(project => new ProjectBrief(project)),
-      requested: response.data.requested.map(project => new ProjectBrief(project)),
-      inactive: response.data.inactive.map(project => new ProjectBrief(project))
+      activeProjects:
+          response.data.activeProjects.length > 0
+              ? response.data.activeProjects.map(project => new ProjectBrief(project))
+              : [],
+      requestedProjects: response.data.requestedProjects.length > 0
+          ? response.data.requestedProjects.map(project => new ProjectBrief(project))
+          : [],
+      inactiveProjects: response.data.inactiveProjects.length > 0
+          ? response.data.inactiveProjects.map(project => new ProjectBrief(project))
+          : [],
     };
   }
 
