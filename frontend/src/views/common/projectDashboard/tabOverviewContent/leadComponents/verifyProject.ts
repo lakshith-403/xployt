@@ -1,26 +1,19 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { FormTextField } from '@components/text_field/form.text_field';
-// import './verifyProject.scss';
 import { router } from '@ui_lib/router';
 import { View, ViewHandler } from '@ui_lib/view';
-// import { Step } from './../../../../components/multistepForm/multistep-form';
-import { CACHE_STORE } from '@data/cache';
 import { FormTextFieldDisabled } from '@components/text_field/form.text_fields.disabled';
 import { ButtonType } from '@components/button/base';
 import { FormButton } from '@components/button/form.button';
-import { rejectProject, acceptProject } from '@data/projectLead/network/projectConfig.network';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './verifyProject.scss';
-// import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
 import NETWORK from '@/data/network/network';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
 import { modalAlertOnlyOK, modalAlertForErrors } from '@/main';
-// import { CacheObject } from '@/data/cacheBase';
 
 class VerifyProject extends View {
   params: { projectId: string };
-  // private projectConfigInfo!: ProjectConfigInfo;
-  // private projectConfigInfoCache!: ProjectConfigInfoCache;
+
   private projectConfigInfo: Record<string, any> = {};
   protected shouldRenderBreadcrumbs(): boolean {
     return true;
@@ -44,7 +37,6 @@ class VerifyProject extends View {
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
-    // this.projectConfigInfoCache = CACHE_STORE.getLeadProjectConfigInfo(this.params.projectId) as ProjectConfigInfoCache;
   }
   private async loadData(): Promise<void> {
     this.projectConfigInfo = (await NETWORK.get(`/api/lead/project/${this.params.projectId}`, { showLoading: true })).data;
@@ -85,19 +77,15 @@ class VerifyProject extends View {
           type: ButtonType.SECONDARY,
           onClick: async () => {
             console.log('Reject');
-            // await rejectProject(this.params.projectId);
             const response = await NETWORK.post(`/api/lead/initiate/project/reject/${this.params.projectId}`, {}, { showLoading: true, handleError: true });
-            if (response.is_successful) {
-              ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
-                router.navigateTo(`/projects/${this.params.projectId}`);
-                window.location.reload();
-              });
-            }
-
-            // await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Rejected');
-            // CACHE_STORE.getProjects().updateProject(parseInt(this.params.projectId), 'Rejected');
-            // router.navigateTo(`/projects/${this.params.projectId}`);
-            // window.location.reload();
+            setContent(modalAlertOnlyOK, {
+              '.modal-title': 'Success',
+              '.modal-message': 'Project rejected successfully.',
+            });
+            ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+              router.navigateTo(`/projects/${this.params.projectId}`);
+              window.location.reload();
+            });
           },
         });
         rejectButton.render(q);
@@ -106,14 +94,16 @@ class VerifyProject extends View {
           label: 'Accept',
           type: ButtonType.PRIMARY,
           onClick: async () => {
-            loading.show();
             console.log('Accept');
-            await acceptProject(this.params.projectId);
-            // await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Unconfigured');
-            // CACHE_STORE.getLeadProjects((await CACHE_STORE.getUser().get()).id).updateProject(parseInt(this.params.projectId), 'Unconfigured');
-            $(q, 'a', 'button', { href: `/projects/${this.params.projectId}` }, 'Go to Project').click();
-            // router.navigateTo(`/projects/${this.params.projectId}`);
-            loading.hide();
+            const response = await NETWORK.post(`/api/lead/initiate/project/accept/${this.params.projectId}`, {}, { showLoading: true, handleError: true });
+            setContent(modalAlertOnlyOK, {
+              '.modal-title': 'Success',
+              '.modal-message': 'Project verifed and accepted successfully.',
+            });
+            ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+              router.navigateTo(`/projects/${this.params.projectId}`);
+              window.location.reload();
+            });
           },
         });
         acceptButton.render(q);

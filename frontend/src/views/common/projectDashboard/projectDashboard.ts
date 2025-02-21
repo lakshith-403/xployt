@@ -5,43 +5,15 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import { CACHE_STORE } from '@data/cache';
-import { Project, ProjectsCache } from '@data/validator/cache/projects.cache';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
-
+import NETWORK from '@/data/network/network';
 class projectDashboardView extends View {
   params: { projectId: string };
-  private projectsCache: ProjectsCache;
   private projectTitle!: string;
 
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
     this.params = params;
-    this.projectsCache = CACHE_STORE.getProjects();
-  }
-  async loadProject(): Promise<void> {
-    try {
-      console.log('loadProject executed');
-      console.log('project id is ', this.params.projectId);
-      const projects: Project[][] = await this.projectsCache.get(false, this.params.projectId);
-
-      // Flatten the array and find the project
-      const flatProjects = projects.flatMap((projectArray) => projectArray);
-      const project = flatProjects.find((project) => String(project.id) === String(this.params.projectId));
-
-      if (!project) {
-        console.error('Project not found');
-        this.projectTitle = 'Project ';
-        return;
-      }
-
-      this.projectTitle = project.title;
-      console.log('Project title set to:', this.projectTitle);
-    } catch (error) {
-      console.error('Failed to load project data:', error);
-      this.projectTitle = 'Error Loading Project';
-    }
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -63,12 +35,15 @@ class projectDashboardView extends View {
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
     console.log('projectDashboardView render executed');
-    const loading = new LoadingScreen(q);
-    loading.show();
-
-    // await this.loadProject();
+    try {
+      const response = await NETWORK.get(`/api/project/${this.params.projectId}`, { showLoading: true, handleError: true, throwError: true });
+      console.log('response: ', response.data);
+      this.projectTitle = response.data.title;
+    } catch (error) {
+      console.error('Failed to load project data:', error);
+      this.projectTitle = 'Error Loading Project';
+    }
     q.innerHTML = '';
-    loading.hide();
 
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
