@@ -69,71 +69,64 @@ export default class Lead {
           $(q, 'span', 'label', {}, 'State');
           $(q, 'span', '', {}, this.configInfo.state);
         });
+
+        const renderButton = (label: string, route: string) => {
+          $(q, 'div', '', {}, (q) => {
+            const button = new FormButton({
+              label,
+              type: ButtonType.PRIMARY,
+              onClick: () => {
+                console.log(label);
+                router.navigateTo(route);
+              },
+            });
+            button.render(q);
+          });
+        };
+
+        const renderPaymentsSection = () => {
+          $(q, 'div', '', { id: 'basic-info' }, (q) => {
+            $(q, 'section', '', { id: 'payments' }, (q) => {
+              $(q, 'div', '', {}, (q) => {
+                $(q, 'h2', '', {}, 'Payments');
+                new OverviewPayments(this.projectId).render(q);
+              });
+              $(q, 'div', '', {}, (q) => {
+                const pieChartOptions = {
+                  data: {
+                    'Pending Payments': 30000,
+                    Paid: 20000,
+                    Remaining: 30000,
+                    'On Hold': 40000,
+                  },
+                  title: '',
+                  subtitle: '',
+                  colorScheme: 'greenTheme' as 'greenTheme',
+                };
+
+                $(q, 'div', '', {}, (q) => {
+                  $(q, 'h2', '', {}, 'Payments Distribution');
+                  const pieChart = new PieChart(pieChartOptions);
+                  pieChart.render(q);
+                });
+              });
+            });
+            $(q, 'div', 'section-content', {}, (q) => {
+              $(q, 'h2', '', {}, 'Reports');
+              new OverviewReports({ reportId: '1' }).render(q);
+            });
+          });
+        };
+
         switch (this.configInfo.state) {
           case 'Pending':
-            $(q, 'div', '', {}, (q) => {
-              const verifyButton = new FormButton({
-                label: 'Verify Project',
-                type: ButtonType.PRIMARY,
-                onClick: () => {
-                  console.log('Verify Project');
-                  router.navigateTo(`/projects/${this.projectId}/verify`);
-                },
-              });
-              verifyButton.render(q);
-            });
+            renderButton('Verify Project', `/projects/${this.projectId}/verify`);
             break;
           case 'Unconfigured':
-            $(q, 'div', '', {}, (q) => {
-              $(q, 'div', '', {}, (q) => {
-                $(q, 'h2', '', {}, '');
-              });
-              $(q, 'div', '', {}, (q) => {
-                const configureButton = new FormButton({
-                  label: 'Configure Project',
-                  type: ButtonType.PRIMARY,
-                  onClick: () => {
-                    console.log('Configure Project');
-                    router.navigateTo(`/projects/${this.projectId}/configure`);
-                  },
-                });
-                configureButton.render(q);
-              });
-            });
+            renderButton('Configure Project', `/projects/${this.projectId}/configure`);
             break;
           case 'Active':
-            $(q, 'div', '', { id: 'basic-info' }, (q) => {
-              $(q, 'section', '', { id: 'payments' }, (q) => {
-                $(q, 'div', '', {}, (q) => {
-                  $(q, 'h2', '', {}, 'Payments');
-                  new OverviewPayments(this.projectId).render(q);
-                });
-                $(q, 'div', '', {}, (q) => {
-                  const pieChartOptions = {
-                    data: {
-                      'Pending Payments': 30000,
-                      Paid: 20000,
-                      Remaining: 30000,
-                      'On Hold': 40000,
-                    },
-                    title: '',
-                    subtitle: '',
-                    colorScheme: 'greenTheme' as 'greenTheme',
-                  };
-
-                  // Instantiate and render the PieChart
-                  $(q, 'div', '', {}, (q) => {
-                    $(q, 'h2', '', {}, 'Payments Distribution');
-                    const pieChart = new PieChart(pieChartOptions);
-                    pieChart.render(q);
-                  });
-                });
-              });
-              $(q, 'div', 'section-content', {}, (q) => {
-                $(q, 'h2', '', {}, 'Reports');
-                new OverviewReports({ reportId: '1' }).render(q);
-              });
-            });
+            renderPaymentsSection();
             break;
         }
       });
