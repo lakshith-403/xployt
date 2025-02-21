@@ -42,7 +42,7 @@ export class AdminDashboard extends View {
 
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
-    $(q, 'div', ' py-2 d-flex flex-column align-items-center', {}, (q) => {
+    $(q, 'div', ' py-2 d-flex flex-column align-items-center px-2', {}, (q) => {
       $(q, 'h1', 'text-center heading-1', {}, 'Admin Dashboard');
       $(q, 'div', 'container justify-content-between flex-container-lg gap-2', {}, (q) => {
         this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center', {}, (q) => {

@@ -1,6 +1,4 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import { router } from '../../ui_lib/router';
-import { FilterableTable } from './filterable.table';
 
 interface ContentItem {
   // id: number; // or string, depending on your requirements
@@ -20,6 +18,7 @@ interface Options {
   filteredField?: string; // Made optional
   falseKeys?: string[]; // Made optional
   noDataMessage?: string;
+  orderIndices?: number[]; // New option for specifying order
 }
 
 export class CustomTable {
@@ -114,7 +113,12 @@ export class CustomTable {
   }
 
   private displayItems(object: Record<string, any>, q: Quark) {
-    Object.keys(object).forEach((key: string) => {
+    const keys = Object.keys(object);
+    console.log('keys', keys);
+    // If orderIndices is provided, reorder keys based on it
+    const orderedKeys = this.options.orderIndices ? this.options.orderIndices.map((index) => keys[index]).filter((key) => key !== undefined) : keys;
+
+    orderedKeys.forEach((key: string) => {
       const element = object[key];
       switch (typeof element) {
         case 'string':
