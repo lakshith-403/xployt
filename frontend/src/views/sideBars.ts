@@ -43,4 +43,9 @@ export const AdminSidebar: SidebarTab[] = [
     title: 'List Users',
     url: 'admin/list-users',
   },
+  {
+    id: 'projects',
+    title: 'Projects',
+    url: 'admin/projects',
+  },
 ];

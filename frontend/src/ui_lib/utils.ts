@@ -84,6 +84,24 @@ export function filterObjectsByFields(objects: Record<string, any>[], fields: st
     return filteredObj;
   });
 }
+/**
+ * Filters an array of objects to exclude specified fields.
+ *
+ * @param objects - The array of objects to filter.
+ * @param fields - The array of field names to exclude from the resulting objects.
+ * @returns An array of objects containing all fields except the specified ones.
+ */
+export function excludeFieldsFromObjects(objects: Record<string, any>[], fields: string[]): Record<string, any>[] {
+  return objects.map((obj) => {
+    const filteredObj: Record<string, any> = {};
+    Object.keys(obj).forEach((key) => {
+      if (!fields.includes(key)) {
+        filteredObj[key] = obj[key];
+      }
+    });
+    return filteredObj;
+  });
+}
 
 /**
  * Converts an array of objects into an array of arrays where only the values are retained.
