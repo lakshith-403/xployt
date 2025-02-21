@@ -1,33 +1,28 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
 import './Projects.scss';
-import { Project, ProjectsCache } from '../../../data/validator/cache/projects.cache';
-import { UserCache, UserCacheMock } from '../../../data/user';
+import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { CustomTable } from '../../../components/table/customTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
-import { getProjects } from '@/services/projects';
-import { Project as LeadProject } from '@data/projectLead/cache/projects.cache';
-import { ProjectBrief as ClientProject } from '@data/client/cache/projects.cache';
-import { UserType } from '@data/user';
+import { UserType, User } from '@data/user';
 import { ButtonType } from '@/components/button/base';
 import { FormButton } from '@/components/button/form.button';
 import { router } from '@/ui_lib/router';
 import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
+import NETWORK from '@/data/network/network';
+import { excludeFieldsFromObjects } from '@/ui_lib/utils';
+
 export default class ProjectsView extends View {
   private params: { projectId: string };
   // private projectsCache!: ProjectsCache;
   private userCache: UserCache;
-  private projects: (LeadProject | ClientProject)[][] = [];
-  private userId: string | null = null;
-  private userType!: UserType;
+  private user: any;
   private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured'];
+  private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed'];
 
-  private get TABLE_HEADERS(): string[] {
-    return ['ID', 'Status', 'Title', this.userType === 'Client' ? 'LeadId' : 'ClientId', 'Pending Reports'];
-  }
-
+  private projects: any[] = [];
   constructor(params: { projectId: string }) {
     super();
     this.params = params;
@@ -38,29 +33,22 @@ export default class ProjectsView extends View {
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
-      // console.log('Getting Projects');
-      // console.log('user', user);
-      this.userId = user.id;
-      // console.log('user id', this.userId);
-      this.projects = await getProjects(this.userId, user.type);
+      this.user = user;
+      const response = await NETWORK.get(`/api/new-project/${user.type}/${user.id}`, { showLoading: true, handleError: true, throwError: true });
+      this.projects = user.type === 'Client' ? excludeFieldsFromObjects(response.data.projects, ['clientId']) : excludeFieldsFromObjects(response.data.projects, ['leadId']);
       console.log('projects', this.projects);
-      // console.log('projects', this.projects);
-      this.userType = user.type;
-      // if (this.projects.length === 0) {
-      //   this.projects = [[], []];
-      // }
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
   }
 
-  private renderProjectSection(q: Quark, title: string, projects: (LeadProject | ClientProject)[]): void {
+  private renderProjectSection(q: Quark, title: string, projects: any[], filterOptions: string[]): void {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
-
+    const TABLE_HEADERS = ['ID', 'Status', 'Title', this.user.type === 'Client' ? 'LeadId' : 'ClientId', 'Pending Reports'];
     const table = new CustomTable({
       content: projects,
-      headers: this.TABLE_HEADERS,
+      headers: TABLE_HEADERS,
       className: 'table-projects',
       options: {
         filteredField: 'state',
@@ -71,12 +59,13 @@ export default class ProjectsView extends View {
           BREADCRUMBS.addBreadcrumb({ label: project.id.toString(), link: `/projects/${project.id}` });
           router.navigateTo(`/projects/${project.id}`);
         },
+        orderIndices: [4, 2, 3, 0, 1],
       },
     });
 
     $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');
-      const checkboxManager = new CheckboxManager(ProjectsView.FILTER_OPTIONS, (checkboxValues) => {
+      const checkboxManager = new CheckboxManager(filterOptions, (checkboxValues) => {
         table.updateRows(checkboxValues);
       });
       checkboxManager.render(q);
@@ -88,26 +77,28 @@ export default class ProjectsView extends View {
     await this.loadProjects();
 
     q.innerHTML = '';
-    $(q, 'div', 'projects validator d-flex flex-column container-lg p-4', {}, (q) => {
-      $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
-        const button = new FormButton({
-          label: 'Add Project',
-          onClick: () => router.navigateTo('/client/project-request'),
-          type: ButtonType.PRIMARY,
+    $(q, 'div', 'projects validator d-flex flex-column container p-4', {}, (q) => {
+      if (this.user.type === 'Client') {
+        $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
+          const button = new FormButton({
+            label: 'Add Project',
+            onClick: () => router.navigateTo('/client/project-request'),
+            type: ButtonType.PRIMARY,
+          });
+          button.render(q);
         });
-        button.render(q);
-      });
+      }
 
       if (this.projects.length === 0) {
         $(q, 'div', 'table-row', {}, (q) => {
           $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
         });
       } else {
-        const pendingProjects = this.projects[0]!;
-        const completedProjects = this.projects[1]!;
+        const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending'].includes(project.state));
+        const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
-        this.renderProjectSection(q, 'Pending Projects', pendingProjects);
-        this.renderProjectSection(q, 'Completed Projects', completedProjects);
+        this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
+        this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
       }
     });
   }

@@ -55,7 +55,7 @@ export class CustomTable {
           this.displayNoDataMessage(q);
           return;
         }
-
+        console.log('content', this.content);
         this.content.forEach((item) => {
           // console.log('item', item);
 
