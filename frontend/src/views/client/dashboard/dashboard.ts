@@ -6,6 +6,7 @@ import {dashClientSummary} from "./dashboardComponents/dashClientSummary";
 import {dashClientProjectRequests} from "@views/client/dashboard/dashboardComponents/dashClientProjectRequests";
 import {dashClientActiveProjects} from "@views/client/dashboard/dashboardComponents/dashClientActiveProjects";
 import {ProjectBrief, ProjectsClientCache} from "@data/client/cache/projects.cache";
+import LoadingScreen from "@components/loadingScreen/loadingScreen";
 
 export class ClientDashboard extends View {
     private userId: string;
@@ -22,8 +23,8 @@ export class ClientDashboard extends View {
    private async loadProjectInfo(): Promise<void> {
     try {
         const projects = await this.projectsCache.load(this.userId);
-        this.activeProjects = projects.active;
-        this.requestedProjects = projects.requested;
+        this.activeProjects = projects.activeProjects;
+        this.requestedProjects = projects.requestedProjects;
         console.log(this.activeProjects);
     } catch (error) {
         console.error('Failed to load projects:', error);
@@ -33,7 +34,10 @@ export class ClientDashboard extends View {
 
 
     async render(q: Quark): Promise<void> {
-        await this.loadProjectInfo()
+        const loading = new LoadingScreen(q);
+        loading.show()
+        await this.loadProjectInfo();
+        loading.hide();
         q.innerHTML = '';
         $(q, 'div', 'client-dashboard', {}, (q) => {
             new dashClientSummary().render(q);
