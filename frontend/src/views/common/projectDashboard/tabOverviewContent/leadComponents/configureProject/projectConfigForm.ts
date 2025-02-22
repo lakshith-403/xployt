@@ -34,7 +34,7 @@ class ProjectConfigForm extends View {
     this.params = params;
   }
   private formState: any = {
-    testingScope: 'testing',
+    testingScope: ['testing'],
     outOfScope: 'outOfScope testing',
     objectives: 'objectives testing',
     securityRequirements: 'securityRequirements testing',
@@ -53,7 +53,7 @@ class ProjectConfigForm extends View {
     informativeFunding: null,
   };
   private validationSchema: ValidationSchema = {
-    testingScope: 'string',
+    testingScope: 'object|string',
     outOfScope: 'string',
     objectives: 'string',
     securityRequirements: 'string',
@@ -129,6 +129,7 @@ export async function submitProjectConfig(projectId: string, formData: any): Pro
       ...formData,
       projectId: projectId,
       attachments: attachmentsAsBase64,
+      testingScope: Object.values(formData.testingScope).join(','),
       low: Object.values(formData.low).join(','),
       medium: Object.values(formData.medium).join(','),
       high: Object.values(formData.high).join(','),

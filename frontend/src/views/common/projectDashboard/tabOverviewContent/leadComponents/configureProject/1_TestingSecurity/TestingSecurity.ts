@@ -17,12 +17,20 @@ class TestingSecurity implements Step {
     });
   }
 
-  private renderFieldFullWidth(q: Quark, field: FormTextField, value: any): void {
-    $(q, 'div', 'form-field', {}, (q) => {
-      field.render(q);
-      field.setValue(value);
-      field.addClass('w-full');
-    });
+  private renderFieldFullWidth(q: Quark, field: FormTextField | TagInput, value: any, className?: string): void {
+    if (field) {
+      $(q, 'div', `${className}`, {}, (q) => {
+        field.render(q);
+        if (field instanceof TagInput) {
+          field.addTags(value);
+        } else if (field instanceof FormTextField) {
+          field.setValue(value);
+        }
+        field.addClass('w-100');
+      });
+    } else {
+      console.error('Field is undefined');
+    }
   }
   private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
     $(q, 'div', 'form-field', {}, (q) => {
