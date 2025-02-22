@@ -32,6 +32,8 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email addres
 
 const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
 
+const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
+
 export function isValidDate(date: any): { result: boolean; message: string } {
   const isDayValid = dayRegex.test(date.day);
   const isMonthValid = monthRegex.test(date.month);
@@ -142,7 +144,7 @@ export function validateField(key: string, value: any, expectedType: string): { 
   // Verifying a number or null
   if (expectedType === 'number|null') {
     console.log('checking number|null: ', key, value);
-    if (typeof value !== 'number' && value !== null && value !== '') {
+    if (!numberRegex.test(value) && value !== null && value !== '') {
       return { result: false, message: `${key} must be a number or null` };
     }
   }
@@ -160,6 +162,13 @@ export function validateField(key: string, value: any, expectedType: string): { 
     console.log('checking string|2: ', key, value);
     if (!string2Regex.test(value)) {
       return { result: false, message: `${key} must be a string with 2 words` };
+    }
+  }
+
+  if (expectedType === 'string|comma') {
+    console.log('checking string|comma: ', key, value);
+    if (!commaWithStringRegex.test(value)) {
+      return { result: false, message: `${key} must be a comma seperated list` };
     }
   }
   return { result: true, message: '' };

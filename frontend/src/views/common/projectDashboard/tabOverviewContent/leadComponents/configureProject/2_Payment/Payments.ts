@@ -53,16 +53,16 @@ class Payments implements Step {
   }
 
   private fields: { [key: string]: any } = {
-    criticalFunding: new FormTextField({ label: 'Bounty for Critical', placeholder: 'Bounty for Critical', name: 'criticalFunding', type: 'number' }),
-    highFunding: new FormTextField({ label: 'Bounty for High', placeholder: 'Bounty for High', name: 'highFunding', type: 'number' }),
-    mediumFunding: new FormTextField({ label: 'Bounty for Medium', placeholder: 'Bounty for Medium', name: 'mediumFunding', type: 'number' }),
-    lowFunding: new FormTextField({ label: 'Bounty for Low', placeholder: 'Bounty for Low', name: 'lowFunding', type: 'number' }),
-    informativeFunding: new FormTextField({ label: 'Bounty for Informative', placeholder: 'Bounty for Informative', name: 'informativeFunding', type: 'number' }),
-    critical: new TagInput({ label: 'Critical', placeholder: 'Areas considered of critical risk', name: 'critical', suggestions: criticalLevelTags }),
-    high: new TagInput({ label: 'High', placeholder: 'Areas considered of high risk', name: 'high', suggestions: highLevelTags }),
-    medium: new TagInput({ label: 'Medium', placeholder: 'Areas considered of medium risk', name: 'medium', suggestions: mediumLevelTags }),
-    low: new TagInput({ label: 'Low', placeholder: 'Areas considered of low risk', name: 'low', suggestions: lowLevelTags }),
-    informative: new TagInput({ label: 'Informative', placeholder: 'Areas considered of informative risk', name: 'informative', suggestions: informativeLevelTags }),
+    criticalFunding: new FormTextField({ label: 'Bounty for Critical', placeholder: 'The bounty for Critical bugs', name: 'criticalFunding', type: 'number' }),
+    highFunding: new FormTextField({ label: 'Bounty for High', placeholder: 'The bounty for High bugs', name: 'highFunding', type: 'number' }),
+    mediumFunding: new FormTextField({ label: 'Bounty for Medium', placeholder: 'The bounty for Medium bugs', name: 'mediumFunding', type: 'number' }),
+    lowFunding: new FormTextField({ label: 'Bounty for Low', placeholder: 'The bounty for Low bugs', name: 'lowFunding', type: 'number' }),
+    informativeFunding: new FormTextField({ label: 'Bounty for Informative', placeholder: 'The bounty for Informative bugs', name: 'informativeFunding', type: 'number' }),
+    critical: new TagInput({ label: 'Critical', placeholder: 'Select areas considered of critical risk from those given', name: 'critical', suggestions: criticalLevelTags }),
+    high: new TagInput({ label: 'High', placeholder: 'Select areas considered of high risk from those given', name: 'high', suggestions: highLevelTags }),
+    medium: new TagInput({ label: 'Medium', placeholder: 'Select areas considered of medium risk from those given', name: 'medium', suggestions: mediumLevelTags }),
+    low: new TagInput({ label: 'Low', placeholder: 'Select areas considered of low risk from those given', name: 'low', suggestions: lowLevelTags }),
+    informative: new TagInput({ label: 'Informative', placeholder: 'Select areas considered of informative risk from those given', name: 'informative', suggestions: informativeLevelTags }),
     visibility: new FormRadioButton({ label: 'Visibility', options: ['Public', 'Private'], name: 'visibility' }),
     attachments: new FileInputBase({ label: 'Attachments', name: 'attachments' }),
   };

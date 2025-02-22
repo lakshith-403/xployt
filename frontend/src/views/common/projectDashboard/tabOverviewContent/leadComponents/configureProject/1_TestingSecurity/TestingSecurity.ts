@@ -26,25 +26,25 @@ class TestingSecurity implements Step {
         } else if (field instanceof FormTextField) {
           field.setValue(value);
         }
-        field.addClass('w-100');
+        field.addClass('mt-1');
       });
     } else {
       console.error('Field is undefined');
     }
   }
-  private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
-    $(q, 'div', 'form-field', {}, (q) => {
-      field.render(q);
-      field.setValue(value);
-      field.addClass(`w-${widthFraction}`);
-    });
-  }
+  // private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
+  //   $(q, 'div', 'form-field', {}, (q) => {
+  //     field.render(q);
+  //     field.setValue(value);
+  //     field.addClass(`w-${widthFraction}`);
+  //   });
+  // }
 
   private fields: { [key: string]: any } = {
-    testingScope: new TagInput({ label: 'Testing Scope', placeholder: 'Scope of testing', name: 'testingScope', suggestions: scopeTags }),
-    outOfScope: new FormTextField({ label: 'Out of Scope', placeholder: 'Areas not covered by testing', name: 'outOfScope' }),
-    objectives: new FormTextField({ label: 'Objectives', placeholder: 'Objectives of testing', name: 'objectives' }),
-    securityRequirements: new FormTextField({ label: 'Security Requirements', placeholder: 'Security requirements', name: 'securityRequirements' }),
+    testingScope: new TagInput({ label: 'Testing Scope *', placeholder: 'Select scope of testing from those given', name: 'testingScope', suggestions: scopeTags }),
+    outOfScope: new FormTextField({ label: 'Out of Scope *', placeholder: 'Areas not covered by testing as a comma seperated list', name: 'outOfScope' }),
+    objectives: new FormTextField({ label: 'Objectives *', placeholder: 'Objectives of testing as a comma seperated list', name: 'objectives' }),
+    securityRequirements: new FormTextField({ label: 'Security Requirements *', placeholder: 'Security requirements as a comma seperated list', name: 'securityRequirements' }),
   };
 
   constructor() {

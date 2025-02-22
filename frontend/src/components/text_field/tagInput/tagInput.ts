@@ -29,6 +29,7 @@ export class TagInput {
     this.textField = new FormTextField({
       label: '',
       class: 'tag-input',
+      parentClass: 'w-100',
       placeholder: options.placeholder || 'Add an area of expertise',
       onChange: (value: string) => {
         this.handleInputChange(value);
@@ -97,7 +98,7 @@ export class TagInput {
         this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag), update: this.updateTags! });
         this.tagList.render(q);
 
-        $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
+        $(q, 'div', 'tag-input-wrapper w-100', {}, (q: Quark) => {
           this.textField?.render(q);
           $(q, 'div', `autocomplete-container autocomplete-container-${this.name}`, {});
         });

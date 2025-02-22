@@ -33,29 +33,29 @@ class ProjectConfigForm extends View {
     this.params = params;
   }
   private formState: any = {
-    testingScope: ['testing'],
-    outOfScope: 'outOfScope testing',
-    objectives: 'objectives testing',
-    securityRequirements: 'securityRequirements testing',
+    testingScope: [],
+    outOfScope: '',
+    objectives: '',
+    securityRequirements: '',
     critical: [],
     high: [],
     medium: [],
     low: [],
     informative: [],
-    visibility: 'visibility testing',
+    visibility: '',
     attachments: null as File | null,
-    initialFunding: 23000,
-    criticalFunding: 23000,
-    highFunding: 23000,
+    initialFunding: null,
+    criticalFunding: null,
+    highFunding: null,
     mediumFunding: null,
     lowFunding: null,
     informativeFunding: null,
   };
   private validationSchema: ValidationSchema = {
     testingScope: 'object|string',
-    outOfScope: 'string',
-    objectives: 'string',
-    securityRequirements: 'string',
+    outOfScope: 'string|comma',
+    objectives: 'string|comma',
+    securityRequirements: 'string|comma',
     critical: 'object|string',
     high: 'object|string',
     medium: 'object|string',
@@ -89,16 +89,26 @@ class ProjectConfigForm extends View {
         { severity: informative, funding: informativeFunding, name: 'Informative' },
       ];
 
+      let atLeastOnePairFilled = false;
+
       for (const pair of severityFundingPairs) {
         if (
           (Object.keys(pair.severity).length > 0 && (pair.funding === null || pair.funding === '')) ||
           (Object.keys(pair.severity).length === 0 && pair.funding !== null && pair.funding !== '')
         ) {
-          UIManager.showErrorModalBrief(`${pair.name} severity is filled but its funding is missing.`);
+          UIManager.showErrorModalBrief(`Data for ${pair.name} severity is incomplete.`);
           return;
         }
+        if (Object.keys(pair.severity).length > 0 && pair.funding !== null && pair.funding !== '') {
+          atLeastOnePairFilled = true;
+        }
       }
-      await submitProjectConfig(this.params.projectId, formState);
+
+      if (!atLeastOnePairFilled) {
+        UIManager.showErrorModalBrief('At least one severity and funding pair must be fully filled.');
+        return;
+      }
+      // await submitProjectConfig(this.params.projectId, formState);
     } catch (error) {
       console.error('Error during form submission:', error);
     }
