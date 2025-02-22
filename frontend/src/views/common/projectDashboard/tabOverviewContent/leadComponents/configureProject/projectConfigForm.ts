@@ -1,7 +1,6 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import MultistepForm, { ValidationSchema } from '@components/multistepForm/multistep-form';
-import './projectConfigForm.scss';
 import { Steps } from '@components/multistepForm/multistep-form';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { submitProjectConfig } from '@data/projectLead/network/projectConfig.network';
@@ -105,7 +104,7 @@ class ProjectConfigForm extends View {
     ];
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, this.validationSchema);
-    $(q, 'div', 'project-config-form', {}, (q) => {
+    $(q, 'div', 'd-flex d-flex flex-column align-items-center justify-content-center', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);

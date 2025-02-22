@@ -1,16 +1,16 @@
 import { router } from '@ui_lib/router';
-// import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
 import { IconButton } from '@components/button/icon.button';
 import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/payments';
 import { OverviewInvitations } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/OverviewReports';
-import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
-// import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
 import NETWORK from '@data/network/network';
 import { Button } from '@/components/button/base';
 import { UIManager } from '@ui_lib/UIManager';
 import UserCard from '@components/UserCard';
+import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
+import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
+// import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
+// import { CACHE_STORE } from '@data/cache';
 export default class Hacker {
   projectInfo: any;
   projectScopeList: any;
@@ -57,9 +57,9 @@ export default class Hacker {
       $(q, 'div', 'd-flex pr-3 py-1', {}, (q) => {
         if (this.projectInfo.state === 'Unconfigured') {
           new Button({
-            label: 'Edit Project',
+            label: 'Configure Project',
             onClick: () => {
-              router.navigateTo('/edit-project');
+              router.navigateTo(`/projects/${this.projectId}/configure`);
             },
           }).render(q);
         } else if (this.projectInfo.state === 'Pending') {
@@ -112,9 +112,9 @@ export default class Hacker {
 
     try {
       if (!['Configured', 'Active'].includes(this.projectInfo.state)) return;
-      const response = await NETWORK.get(`/api/project-scope/${this.projectId}?role=client`);
-      this.projectScopeList.innerHTML = '';
-      UIManager.listObject(this.projectScopeList, response.data.scope);
+      // const response = await NETWORK.get(`/api/project-scope/${this.projectId}?role=client`);
+      // this.projectScopeList.innerHTML = '';
+      // UIManager.listObject(this.projectScopeList, response.data.scope);
     } catch (error) {
       console.error('Failed to load project scope', error);
     }
