@@ -7,8 +7,9 @@ import NETWORK from '@data/network/network';
 import { Button } from '@/components/button/base';
 import { UIManager } from '@ui_lib/UIManager';
 import UserCard from '@components/UserCard';
-import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
-import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
+import GenericCard from '@components/GenericCard';
+// import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
+// import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
 // import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
 // import { CACHE_STORE } from '@data/cache';
 export default class Hacker {
@@ -54,14 +55,24 @@ export default class Hacker {
         UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'visibility', 'technicalStack', 'startDate'], { className: 'd-flex flex-column gap-1' });
       });
 
-      $(q, 'div', 'd-flex pr-3 py-1', {}, (q) => {
+      $(q, 'div', 'd-flex pr-3 py-1 flex-column gap-2', {}, (q) => {
         if (this.projectInfo.state === 'Unconfigured') {
           new Button({
             label: 'Configure Project',
             onClick: () => {
-              router.navigateTo(`/projects/${this.projectId}/configure`);
+              router.navigateTo(`/projects/${this.projectId}/configure/{false}`);
             },
           }).render(q);
+        } else if (this.projectInfo.state === 'Configured') {
+          new Button({
+            label: 'Update Project Config',
+            onClick: () => {
+              router.navigateTo(`/projects/${this.projectId}/configure/{true}`);
+            },
+          }).render(q);
+          $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+            $(q, 'span', '', {}, 'Awaiting Project Lead Confirmation');
+          });
         } else if (this.projectInfo.state === 'Pending') {
           $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
             $(q, 'span', '', {}, 'Waiting approval');
@@ -103,8 +114,9 @@ export default class Hacker {
             }).render(q);
           });
 
-          $(q, 'div', 'section-content', {}, (q) => {
-            new OverviewInvitations({ reportId: '1' }).render(q);
+          $(q, 'div', '', {}, (q) => {
+            // new OverviewInvitations({ reportId: '1' }).render(q);
+            // new GenericCard(`/api/project-invitations/${this.projectId}`, 'Total Price Pool', 'bg-secondary p-1 rounded-2 w-50').render(q);
           });
         });
       }

@@ -94,8 +94,6 @@ class Network {
       // console.log('key was good:', key);
     });
 
-    console.log('options', options);
-    console.log('defaultOptions', defaultOptions);
     return { ...defaultOptions, ...options }; // Merge with defaults
   }
 
@@ -103,7 +101,7 @@ class Network {
     let normalizedOptions: any;
     try {
       normalizedOptions = this.normalizeOptions(options);
-      console.log('normalizedOptions', normalizedOptions);
+      // console.log('normalizedOptions', normalizedOptions);
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
       throw error;
