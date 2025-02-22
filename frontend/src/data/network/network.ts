@@ -83,7 +83,7 @@ class Network {
   private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess']; // Define recognized options
 
   private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean; showSuccess: boolean; successCallback: () => void } {
-    const defaultOptions = { showLoading: true, handleError: false, throwError: false, showSuccess: false, successCallback: () => {} };
+    const defaultOptions = { showLoading: true, handleError: true, throwError: true, showSuccess: false, successCallback: () => {} };
 
     // Check if any unrecognized option is set
     Object.keys(options).forEach((key) => {

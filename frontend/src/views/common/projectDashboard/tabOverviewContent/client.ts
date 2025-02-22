@@ -7,10 +7,11 @@ import { OverviewInvitations } from '@views/common/projectDashboard/tabOverviewC
 import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
-
+import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
+import NETWORK from '@data/network/network';
+import { Button } from '@/components/button/base';
 export default class Hacker {
-  projectInfo: ProjectInfo = {} as ProjectInfo;
+  projectInfo: any;
 
   constructor(private readonly projectId: string) {
     this.projectId = projectId;
@@ -20,7 +21,9 @@ export default class Hacker {
 
   async loadData(): Promise<void> {
     try {
-      this.projectInfo = await this.projectInfoCache.get(false, this.projectId);
+      // this.projectInfo = await this.projectInfoCache.get(false, this.projectId);
+      const response = await NETWORK.get(`/api/single-project/${this.projectId}?role=client`);
+      this.projectInfo = response.data.project;
       console.log('Project Info', this.projectInfo);
     } catch (error) {
       console.error('Failed to load project data', error);
@@ -28,26 +31,36 @@ export default class Hacker {
   }
 
   async render(q: Quark): Promise<void> {
-    const loading = new LoadingScreen(q);
-    loading.show();
-
     await this.loadData();
-    loading.hide();
 
     $(q, 'div', 'project-info', {}, (q) => {
+      $(q, 'div', 'd-flex justify-content-end pr-3', {}, (q) => {
+        new Button({
+          label: 'Edit Project',
+          onClick: () => {
+            router.navigateTo('/edit-project');
+          },
+        }).render(q);
+      });
+
       $(q, 'p', 'project-description', {}, this.projectInfo.description);
 
       $(q, 'div', '', { id: 'basic-info' }, (q) => {
-        new OverviewBasicInfo(this.projectId, this.projectInfo.client).render(q);
-        new BasicInfoComponent(this.projectId, this.projectInfo.client).render(q);
+        new OverviewBasicInfo(this.projectId, this.projectInfo.clientId).render(q);
+        new BasicInfoComponent(this.projectId, this.projectInfo.clientId).render(q);
       });
 
       $(q, 'section', '', {}, (q) => {
         $(q, 'h2', '', {}, 'Rules and Scope');
         $(q, 'ul', 'section-content', {}, (q) => {
-          this.projectInfo.scope.forEach((rule) => {
-            $(q, 'li', '', {}, rule);
-          });
+          // Not supported yet
+          if (this.projectInfo.scope) {
+            this.projectInfo.scope.forEach((rule: string) => {
+              $(q, 'li', '', {}, rule);
+            });
+          } else {
+            $(q, 'li', '', {}, 'No rules or scope defined');
+          }
         });
       });
 
@@ -56,23 +69,25 @@ export default class Hacker {
         new OverviewPayments(this.projectId).render(q);
       });
 
-      $(q, 'section', '', { id: 'reports' }, (q) => {
-        $(q, 'span', '', {}, (q) => {
-          $(q, 'h2', '', {}, 'Hacker Invitations');
-          new IconButton({
-            icon: 'fa fa-plus',
-            label: 'Invite-Hackers',
-            onClick: () => {
-              const url = '/invite-hackers';
-              router.navigateTo(url);
-            },
-          }).render(q);
-        });
+      if (this.projectInfo.state === 'Active') {
+        $(q, 'section', '', { id: 'reports' }, (q) => {
+          $(q, 'span', '', {}, (q) => {
+            $(q, 'h2', '', {}, 'Hacker Invitations');
+            new IconButton({
+              icon: 'fa fa-plus',
+              label: 'Invite-Hackers',
+              onClick: () => {
+                const url = '/invite-hackers';
+                router.navigateTo(url);
+              },
+            }).render(q);
+          });
 
-        $(q, 'div', 'section-content', {}, (q) => {
-          new OverviewInvitations({ reportId: '1' }).render(q);
+          $(q, 'div', 'section-content', {}, (q) => {
+            new OverviewInvitations({ reportId: '1' }).render(q);
+          });
         });
-      });
+      }
     });
   }
 }
