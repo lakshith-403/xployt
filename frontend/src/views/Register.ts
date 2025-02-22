@@ -84,11 +84,11 @@ export class RegisterView extends View {
           this.roleSelect = q as HTMLSelectElement;
           this.roleSelect.innerHTML = `
             <option value="Client">Client</option>
-            <option value="Validator">Validator</option>
-            <option value="ProjectLead">Lead</option>
             <option value="Hacker">Hacker</option>
-          `;
+            `;
         });
+        // <option value="Validator">Validator</option>
+        // <option value="ProjectLead">Lead</option>
 
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.registerButton.render(q);

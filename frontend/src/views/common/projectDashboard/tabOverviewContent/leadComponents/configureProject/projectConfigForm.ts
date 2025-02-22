@@ -278,7 +278,8 @@ export async function submitProjectConfig(projectId: string, formData: any, conf
     {
       showSuccess: true,
       successCallback: () => {
-        router.navigateTo(`/projects/${projectId}`);
+        // router.navigateTo(`/projects/${projectId}`);
+        window.location.href = `/projects/${projectId}`;
       },
     }
   );

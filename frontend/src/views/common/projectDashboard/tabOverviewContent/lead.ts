@@ -45,7 +45,7 @@ export default class Lead {
 
       $(q, 'div', 'd-flex py-1 flex-column gap-2 w-100', {}, (q) => {
         if (['Pending'].includes(this.projectInfo.state)) {
-          $(q, 'div', 'bg-secondary text-light-green px-2 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+          $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
             $(q, 'span', '', {}, 'Waiting approval');
           });
           $(q, 'div', 'd-flex align-items-center justify-content-center', {}, (q) => {
@@ -59,6 +59,10 @@ export default class Lead {
             });
             button.render(q);
             button.setClass('mt-0');
+          });
+        } else if (['Unconfigured'].includes(this.projectInfo.state)) {
+          $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+            $(q, 'span', '', {}, 'Client yet to configure project');
           });
         } else if (['Configured'].includes(this.projectInfo.state)) {
           $(q, 'div', 'd-flex flex-column gap-2 align-items-center', {}, (q) => {
