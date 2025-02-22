@@ -1,7 +1,7 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
 import { ProjectEndpoints } from './../network/project.network';
 
-interface Project {
+export interface Project {
     id: number;
     state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
     title: string;
@@ -13,6 +13,7 @@ interface Project {
     technicalStack: string;
     pendingReports: number;
     url: string;
+    scope: string[];
 }
 
 interface ProjectResponse {
