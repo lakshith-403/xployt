@@ -36,12 +36,12 @@ class MultistepForm {
   private submitButton: FormButton | null = null;
   private tabValidityStates: boolean[] = [];
   private formState: any = {};
-  private lastAction: 'Submit' | 'Apply' = 'Submit';
+  private lastAction: 'Submit' | 'Apply' | 'Update' = 'Submit';
   private onSubmit: (formState: any) => void;
   private config: { [key: string]: any } = {};
   private validationSchema: ValidationSchema;
 
-  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply' | 'Update', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
     this.validationSchema = validationSchema;
     this.steps = steps;
     this.activeTabIndex = 0;
@@ -124,7 +124,7 @@ class MultistepForm {
           this.nextButton.hide();
 
           this.submitButton = new FormButton({
-            label: this.lastAction === 'Submit' ? 'Submit' : 'Apply',
+            label: this.lastAction === 'Submit' ? 'Submit' : this.lastAction === 'Apply' ? 'Apply' : 'Update',
             onClick: () => this.checkBeforeSubmit(),
             type: ButtonType.PRIMARY,
           });

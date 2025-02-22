@@ -12,7 +12,7 @@ export default class ProjectsView extends View {
   private userId: string | null = null;
   private projects: any[] = [];
 
-  private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured'];
+  private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured', 'Configured'];
   private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed'];
   private get TABLE_HEADERS(): string[] {
     return ['ID', 'Title', 'Status', 'LeadId', 'ClientId', 'Pending Reports'];
@@ -75,7 +75,7 @@ export default class ProjectsView extends View {
           $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
         });
       } else {
-        const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending'].includes(project.state));
+        const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured'].includes(project.state));
         const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
         this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
