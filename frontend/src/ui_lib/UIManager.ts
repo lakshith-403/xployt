@@ -22,14 +22,69 @@ export class UIManager {
    * @param object - The object to list the properties of.
    * @param ignoreKeys - An array of keys to ignore from the object.
    */
-  public static listObject(q: Quark, object: any, ignoreKeys: string[] = []): void {
-    Object.keys(object).forEach((key) => {
-      if (ignoreKeys.includes(key)) return;
-      $(q, 'li', '', {}, (q) => {
-        $(q, 'span', '', {}, key);
-        $(q, 'span', '', {}, ' : ');
-        $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+  public static listObject(q: Quark, object: any, ignoreKeys: string[] = [], options: { className: string } = { className: '' }): void {
+    $(q, 'ul', options.className, {}, (q) => {
+      Object.keys(object).forEach((key) => {
+        if (ignoreKeys.includes(key)) return;
+        $(q, 'li', '', {}, (q) => {
+          $(q, 'span', '', {}, key);
+          $(q, 'span', '', {}, ' : ');
+          $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+        });
       });
+    });
+  }
+  /**
+   * Lists the properties of an object in a formatted manner.
+   *
+   * @param q - The Quark element to append the list items to.
+   * @param object - The object to list the properties of.
+   * @param showKeys - An array of keys to show from the object.
+   */
+  public static listObjectGivenKeys(q: Quark, object: any, showKeys: string[] = [], options: { className: string } = { className: '' }): void {
+    $(q, 'ul', options.className, {}, (q) => {
+      Object.keys(object).forEach((key) => {
+        if (!showKeys.includes(key)) return;
+        $(q, 'li', '', {}, (q) => {
+          $(q, 'span', '', {}, key);
+          $(q, 'span', '', {}, ' : ');
+          $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+        });
+      });
+    });
+  }
+
+  /**
+   * Lists only the values of an object in a formatted manner.
+   *
+   * @param q - The Quark element to append the list items to.
+   * @param object - The object to list the values of.
+   * @param highlightKeys - An optional array of keys to highlight.
+   * @param highlightClassName - An optional class name to apply to highlighted keys.
+   * @param showKeys - An optional array of keys to show.
+   */
+  public static listObjectValues(
+    q: Quark,
+    object: any,
+    className: string = '',
+    highlightKeys: string[] = [],
+    highlightClassName: string = '',
+    ignoreKeys: string[] = [],
+    showKeys: string[] = []
+  ): void {
+    $(q, 'ul', className, {}, (q) => {
+      if (object && typeof object === 'object') {
+        Object.keys(object).forEach((key) => {
+          if (showKeys.length > 0 && !showKeys.includes(key)) return;
+          $(q, 'li', highlightKeys.includes(key) ? highlightClassName : '', {}, (q) => {
+            $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+          });
+        });
+      } else {
+        $(q, 'li', '', {}, (q) => {
+          $(q, 'span', '', {}, 'No data');
+        });
+      }
     });
   }
 

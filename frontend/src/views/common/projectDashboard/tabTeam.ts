@@ -1,7 +1,7 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { CollapsibleBase } from '@components/Collapsible/collap.base';
 import { CACHE_STORE } from '@data/cache';
-import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
+import { ProjectTeamCache, ProjectTeam } from '@data/common/cache/projectTeam.cache';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './tabTeam.scss';
 
@@ -12,7 +12,6 @@ export default class Team {
   constructor(private projectId: string) {
     this.projectId = projectId;
     this.projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
-
   }
 
   async loadData(): Promise<void> {
@@ -30,23 +29,24 @@ export default class Team {
 
     await this.loadData();
     loading.hide();
+    $(q, 'div', 'd-flex flex-column gap-2 align-items-center py-2', {}, (q) => {
+      console.log('project team', this.projectTeam);
+      const clientCollapsible = new CollapsibleBase('Client', '');
+      clientCollapsible.render(q);
+      this.createDivsFromObject(this.projectTeam.getClientWithoutId(), clientCollapsible.getContent(), 1);
 
-    console.log('project team', this.projectTeam);
-    const clientCollapsible = new CollapsibleBase('Client', '');
-    clientCollapsible.render(q);
-    this.createDivsFromObject(this.projectTeam.getClientWithoutId(), clientCollapsible.getContent(), 1);
+      const projectLeadCollapsible = new CollapsibleBase('Project Lead', '');
+      projectLeadCollapsible.render(q);
+      this.createDivsFromObject(this.projectTeam.getProjectLeadWithoutId(), projectLeadCollapsible.getContent(), 1);
 
-    const projectLeadCollapsible = new CollapsibleBase('Project Lead', '');
-    projectLeadCollapsible.render(q);
-    this.createDivsFromObject(this.projectTeam.getProjectLeadWithoutId(), projectLeadCollapsible.getContent(), 1);
+      const hackerCollapsible = new CollapsibleBase('Hacker', '');
+      hackerCollapsible.render(q);
+      this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.getHackersWithoutId(), 'Hacker', 1), hackerCollapsible.getContent(), 1);
 
-    const hackerCollapsible = new CollapsibleBase('Hacker', '');
-    hackerCollapsible.render(q);
-    this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.getHackersWithoutId(), 'Hacker', 1), hackerCollapsible.getContent(), 1);
-
-    const validatorCollapsible = new CollapsibleBase('Validator', '');
-    validatorCollapsible.render(q);
-    this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.getValidatorsWithoutId(), 'Validator', 1), validatorCollapsible.getContent(), 1);
+      const validatorCollapsible = new CollapsibleBase('Validator', '');
+      validatorCollapsible.render(q);
+      this.createDivsFromObject(this.convertCacheArrayToObject(this.projectTeam.getValidatorsWithoutId(), 'Validator', 1), validatorCollapsible.getContent(), 1);
+    });
   }
 
   createDivsFromObject(obj: any, parent: Quark, depth: number): void {

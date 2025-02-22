@@ -94,6 +94,8 @@ class Network {
       // console.log('key was good:', key);
     });
 
+    console.log('options', options);
+    console.log('defaultOptions', defaultOptions);
     return { ...defaultOptions, ...options }; // Merge with defaults
   }
 
@@ -101,6 +103,7 @@ class Network {
     let normalizedOptions: any;
     try {
       normalizedOptions = this.normalizeOptions(options);
+      console.log('normalizedOptions', normalizedOptions);
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
       throw error;
@@ -114,28 +117,28 @@ class Network {
       this.cache.delete(url);
     }
 
-    if (options.showLoading) {
+    if (normalizedOptions.showLoading) {
       UIManager.showLoadingScreen();
     }
 
     try {
       const response = await this.sendHttpRequest(method, url, data, 'application/json');
-      if (options.showSuccess) {
-        UIManager.showSuccessModal(response.title, response.message, options.successCallback);
+      if (normalizedOptions.showSuccess) {
+        UIManager.showSuccessModal(response.title, response.message, normalizedOptions.successCallback);
       }
       return response;
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
-      if (options.handleError) {
+      if (normalizedOptions.handleError) {
         UIManager.showErrorModal(method, url, error);
-        if (options.throwError) {
+        if (normalizedOptions.throwError) {
           throw error;
         }
       } else {
         throw error;
       }
     } finally {
-      if (options.showLoading) {
+      if (normalizedOptions.showLoading) {
         UIManager.hideLoadingScreen();
       }
     }
