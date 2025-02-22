@@ -101,6 +101,7 @@ class Network {
     let normalizedOptions: any;
     try {
       normalizedOptions = this.normalizeOptions(options);
+      // console.log('normalizedOptions', normalizedOptions);
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
       throw error;

@@ -11,6 +11,7 @@ import UserCard from '@components/UserCard';
 import { UIManager } from '@ui_lib/UIManager';
 export default class Lead {
   private projectInfo: any;
+  private detailedProjectInfoContainer: any;
   constructor(private projectId: string) {}
   private async loadData(): Promise<void> {
     try {
@@ -42,9 +43,9 @@ export default class Lead {
         UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'visibility', 'technicalStack', 'startDate', 'state'], { className: 'd-flex flex-column gap-1' });
       });
 
-      $(q, 'div', 'd-flex pr-3 py-1', {}, (q) => {
+      $(q, 'div', 'd-flex py-1 flex-column gap-2 w-100', {}, (q) => {
         if (['Pending'].includes(this.projectInfo.state)) {
-          $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+          $(q, 'div', 'bg-secondary text-light-green px-2 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
             $(q, 'span', '', {}, 'Waiting approval');
           });
           $(q, 'div', 'd-flex align-items-center justify-content-center', {}, (q) => {
@@ -58,6 +59,32 @@ export default class Lead {
             });
             button.render(q);
             button.setClass('mt-0');
+          });
+        } else if (['Configured'].includes(this.projectInfo.state)) {
+          $(q, 'div', 'd-flex flex-column gap-2 align-items-center', {}, (q) => {
+            this.detailedProjectInfoContainer = $(q, 'div', 'd-flex flex-column align-items-start gap-2 w-100', {}, '');
+            $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center gap-3 justify-content-center', {}, (q) => {
+              $(q, 'span', '', {}, 'Project Configured');
+
+              const button = new FormButton({
+                label: 'Confirm Project to proceed',
+                type: ButtonType.PRIMARY,
+                onClick: async () => {
+                  await NETWORK.post(
+                    `/api/lead/initiate/project/proceed/${this.projectId}`,
+                    {},
+                    {
+                      showSuccess: true,
+                      successCallback: () => {
+                        window.location.reload();
+                      },
+                    }
+                  );
+                },
+              });
+              button.render(q);
+              button.setClass('mt-0');
+            });
           });
         }
 
@@ -114,5 +141,18 @@ export default class Lead {
           break;
       }
     });
+
+    try {
+      const response = await NETWORK.get(`/api/project/fetch/${this.projectId}`, { showLoading: true });
+      // const data = response.data;
+      // console.log('response', response);
+      this.detailedProjectInfoContainer.innerHTML = '';
+      $(this.detailedProjectInfoContainer, 'div', 'd-flex flex-column gap-2', {}, (q) => {
+        UIManager.listArrayObjectValues(q, 'Payment Amounts', response.data.paymentAmounts, ['amount', 'level'], { className: 'd-flex flex-column gap-1' });
+        UIManager.listArrayObjectValues(q, 'Scopes', response.data.scopes, ['scopeName'], { className: 'd-flex flex-column gap-1' });
+      });
+    } catch (error) {
+      console.error('Failed to load project config info:', error);
+    }
   }
 }

@@ -156,4 +156,80 @@ export class UIManager {
 
     return newObject;
   }
+
+  public static listArrayObjectValues(q: Quark, title: string, objects: any[], keys: string[], options: { className?: string } = {}): void {
+    $(q, 'div', 'd-flex flex-column', {}, (q) => {
+      $(q, 'h2', 'sub-heading-2', {}, title);
+      $(q, 'ul', options.className || '', {}, (q) => {
+        objects.forEach((obj) => {
+          $(q, 'li', 'list-object-values-item', {}, (q) => {
+            const valuesToShow = keys.map((key) => {
+              const value = obj[key];
+              return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value);
+            });
+            $(q, 'span', 'list-object-values-text', {}, valuesToShow.join(' | '));
+          });
+        });
+      });
+    });
+  }
+
+  // public static advancedListObject(q: Quark, object: any, showKeys: string[] = [], options: { className?: string } = {}): void {
+  //   $(q, 'ul', options.className || '', {}, (q) => {
+  //     Object.keys(object).forEach((key) => {
+  //       if (showKeys.length > 0 && !showKeys.includes(key)) return;
+  //       $(q, 'li', '', {}, (q) => {
+  //         // Render the key
+  //         $(q, 'span', '', { style: 'font-weight: bold;' }, key);
+  //         $(q, 'span', '', {}, ' : ');
+
+  //         const value = object[key];
+
+  //         // If value is an object (or array), render recursively with a toggle button
+  //         if (typeof value === 'object' && value !== null) {
+  //           // Create a toggle button to collapse/expand nested content
+  //           $(
+  //             q,
+  //             'button',
+  //             'toggle-button',
+  //             {
+  //               onclick: (event: Event) => {
+  //                 const target = (event.currentTarget as HTMLElement).nextElementSibling;
+  //                 if (target) {
+  //                   (target as HTMLElement).style.display = (target as HTMLElement).style.display === 'none' ? 'block' : 'none';
+  //                 }
+  //               },
+  //             },
+  //             'Toggle'
+  //           );
+
+  //           // Container for nested object/array
+  //           $(q, 'div', 'nested-list', { style: 'display: block; margin-left: 20px;' }, (nestedQ) => {
+  //             if (Array.isArray(value)) {
+  //               // Render array values with indices
+  //               $(nestedQ, 'ul', 'array-list', {}, (arrayQ) => {
+  //                 value.forEach((item, index) => {
+  //                   $(arrayQ, 'li', 'array-item', {}, (itemQ) => {
+  //                     $(itemQ, 'span', 'array-index', { style: 'font-style: italic;' }, `${index}: `);
+  //                     if (typeof item === 'object' && item !== null) {
+  //                       UIManager.advancedListObject(itemQ, item, showKeys, options);
+  //                     } else {
+  //                       $(itemQ, 'span', 'array-value', {}, item.toString());
+  //                     }
+  //                   });
+  //                 });
+  //               });
+  //             } else {
+  //               // Recursively render nested object
+  //               UIManager.advancedListObject(nestedQ, value, showKeys, options);
+  //             }
+  //           });
+  //         } else {
+  //           // Render primitive values directly
+  //           $(q, 'span', 'advanced-value', {}, value.toString());
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
 }
