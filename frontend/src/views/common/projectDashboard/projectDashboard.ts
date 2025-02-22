@@ -39,7 +39,8 @@ class projectDashboardView extends View {
     q.innerHTML = '';
     console.log('projectDashboardView render executed');
     try {
-      const response = await NETWORK.get(`/api/project/${this.params.projectId}`, { showLoading: true, handleError: true, throwError: true });
+      const currentUser = await CACHE_STORE.getUser().get();
+      const response = await NETWORK.get(`/api/single-project/${this.params.projectId}/?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
       this.projectTitle = response.data.title;
     } catch (error) {

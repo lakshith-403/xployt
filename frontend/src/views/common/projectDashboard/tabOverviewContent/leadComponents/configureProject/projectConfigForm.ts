@@ -6,6 +6,7 @@ import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 import NETWORK from '@/data/network/network';
 import { UIManager } from '@/ui_lib/UIManager';
+import { router } from '@/ui_lib/router';
 class ProjectConfigForm extends View {
   params: { projectId: string };
 
@@ -42,7 +43,7 @@ class ProjectConfigForm extends View {
     medium: [],
     low: [],
     informative: [],
-    visibility: '',
+    // visibility: '',
     attachments: null as File | null,
     initialFunding: null,
     criticalFunding: null,
@@ -61,7 +62,7 @@ class ProjectConfigForm extends View {
     medium: 'object|string',
     low: 'object|string',
     informative: 'object|string',
-    visibility: 'string',
+    // visibility: 'string',
     criticalFunding: 'number|null',
     highFunding: 'number|null',
     mediumFunding: 'number|null',
@@ -108,7 +109,7 @@ class ProjectConfigForm extends View {
         UIManager.showErrorModalBrief('At least one severity and funding pair must be fully filled.');
         return;
       }
-      // await submitProjectConfig(this.params.projectId, formState);
+      await submitProjectConfig(this.params.projectId, formState);
     } catch (error) {
       console.error('Error during form submission:', error);
     }
@@ -135,7 +136,7 @@ class ProjectConfigForm extends View {
           medium: 'optional',
           low: 'optional',
           informative: 'optional',
-          visibility: 'optional',
+          // visibility: 'optional',
           initialFunding: 'optional',
           criticalFunding: 'optional',
           highFunding: 'optional',
@@ -176,7 +177,7 @@ export async function submitProjectConfig(projectId: string, formData: any): Pro
     {
       showSuccess: true,
       successCallback: () => {
-        // router.navigateTo(`/projects/${projectId}`);
+        router.navigateTo(`/projects/${projectId}`);
       },
     }
   );

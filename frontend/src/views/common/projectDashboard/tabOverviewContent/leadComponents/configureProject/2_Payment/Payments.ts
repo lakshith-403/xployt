@@ -1,10 +1,10 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { FormTextField } from '@components/text_field/form.text_field';
-import { FormRadioButton } from '@components/text_field/form.radio_button';
 import { FileInputBase } from '@components/input_file/input.file';
 import { TagInput } from '@components/text_field/tagInput/tagInput';
 import { Step } from '@components/multistepForm/multistep-form';
 import { criticalLevelTags, highLevelTags, mediumLevelTags, lowLevelTags, informativeLevelTags } from './data';
+// import { FormRadioButton } from '@components/text_field/form.radio_button';
 class Payments implements Step {
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
@@ -22,7 +22,7 @@ class Payments implements Step {
       this.renderFieldFullWidth(q, this.fields.lowFunding, state.lowFunding, 'mb-2');
       this.renderFieldFullWidth(q, this.fields.informative, state.informative);
       this.renderFieldFullWidth(q, this.fields.informativeFunding, state.informativeFunding);
-      this.renderFieldFullWidth(q, this.fields.visibility, state.visibility);
+      // this.renderFieldFullWidth(q, this.fields.visibility, state.visibility);
       this.renderFieldFullWidth(q, this.fields.attachments, state.attachments);
     });
   }
@@ -44,13 +44,13 @@ class Payments implements Step {
       console.error('Field is undefined');
     }
   }
-  private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
-    $(q, 'div', 'form-field', {}, (q) => {
-      field.render(q);
-      field.setValue(value);
-      field.addClass(`w-${widthFraction}`);
-    });
-  }
+  // private renderCustomField(q: Quark, field: FormTextField, value: any, widthFraction: number): void {
+  //   $(q, 'div', 'form-field', {}, (q) => {
+  //     field.render(q);
+  //     field.setValue(value);
+  //     field.addClass(`w-${widthFraction}`);
+  //   });
+  // }
 
   private fields: { [key: string]: any } = {
     criticalFunding: new FormTextField({ label: 'Bounty for Critical', placeholder: 'The bounty for Critical bugs', name: 'criticalFunding', type: 'number' }),
@@ -63,7 +63,7 @@ class Payments implements Step {
     medium: new TagInput({ label: 'Medium', placeholder: 'Select areas considered of medium risk from those given', name: 'medium', suggestions: mediumLevelTags }),
     low: new TagInput({ label: 'Low', placeholder: 'Select areas considered of low risk from those given', name: 'low', suggestions: lowLevelTags }),
     informative: new TagInput({ label: 'Informative', placeholder: 'Select areas considered of informative risk from those given', name: 'informative', suggestions: informativeLevelTags }),
-    visibility: new FormRadioButton({ label: 'Visibility', options: ['Public', 'Private'], name: 'visibility' }),
+    // visibility: new FormRadioButton({ label: 'Visibility', options: ['Public', 'Private'], name: 'visibility' }),
     attachments: new FileInputBase({ label: 'Attachments', name: 'attachments' }),
   };
 
