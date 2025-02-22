@@ -3,11 +3,10 @@ import { View, ViewHandler } from '@ui_lib/view';
 import MultistepForm, { ValidationSchema } from '@components/multistepForm/multistep-form';
 import { Steps } from '@components/multistepForm/multistep-form';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import { submitProjectConfig } from '@data/projectLead/network/projectConfig.network';
 import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 import { router } from '@/ui_lib/router';
-
+import NETWORK from '@/data/network/network';
 class ProjectConfigForm extends View {
   params: { projectId: string };
 
@@ -35,29 +34,29 @@ class ProjectConfigForm extends View {
     this.params = params;
   }
   private formState: any = {
-    testingScope: '',
-    outOfScope: '',
-    objectives: '',
-    securityRequirements: '',
+    testingScope: 'testing',
+    outOfScope: 'outOfScope testing',
+    objectives: 'objectives testing',
+    securityRequirements: 'securityRequirements testing',
     critical: [],
     high: [],
     medium: [],
     low: [],
     informative: [],
-    visibility: '',
+    visibility: 'visibility testing',
     attachments: null as File | null,
-    initialFunding: '',
+    initialFunding: 'initialFunding testing',
   };
   private validationSchema: ValidationSchema = {
     testingScope: 'string',
     outOfScope: 'string',
     objectives: 'string',
     securityRequirements: 'string',
-    critical: 'array|string',
-    high: 'array|string',
-    medium: 'array|string',
-    low: 'array|string',
-    informative: 'array|string',
+    critical: 'object|string',
+    high: 'object|string',
+    medium: 'object|string',
+    low: 'object|string',
+    informative: 'object|string',
     visibility: 'string',
   };
   private onSubmit: (formState: any) => void = async (formState: any) => {
@@ -66,8 +65,7 @@ class ProjectConfigForm extends View {
 
     try {
       await submitProjectConfig(this.params.projectId, formState);
-      alert('Project configuration submitted successfully.');
-      router.navigateTo(`/projects/${this.params.projectId}`);
+      // router.navigateTo(`/projects/${this.params.projectId}`);
     } catch (error) {
       console.error('Error during form submission:', error);
       alert(`Failed to submit project configuration: ${error}`);
@@ -111,6 +109,43 @@ class ProjectConfigForm extends View {
       });
     });
   }
+}
+
+export async function submitProjectConfig(projectId: string, formData: any): Promise<void> {
+  // Convert files to Base64 strings
+  const attachmentsAsBase64 = await fileToBase64(formData.attachment);
+
+  await NETWORK.post(
+    `/api/lead/project/config`,
+    {
+      ...formData,
+      projectId: projectId,
+      attachments: attachmentsAsBase64,
+      low: Object.values(formData.low).join(','),
+      medium: Object.values(formData.medium).join(','),
+      high: Object.values(formData.high).join(','),
+      critical: Object.values(formData.critical).join(','),
+      informative: Object.values(formData.informative).join(','),
+    },
+    {
+      showSuccess: true,
+      successCallback: () => {
+        router.navigateTo(`/projects/${projectId}`);
+      },
+    }
+  );
+}
+
+function fileToBase64(file: File): Promise<string> {
+  if (!file) {
+    return Promise.resolve('');
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
 }
 
 export const projectConfigFormViewHandler = new ViewHandler('/{projectId}/configure', ProjectConfigForm);

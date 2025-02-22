@@ -80,7 +80,7 @@ class Network {
     });
   }
 
-  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess']; // Define recognized options
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback']; // Define recognized options
 
   private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean; showSuccess: boolean; successCallback: () => void } {
     const defaultOptions = { showLoading: true, handleError: true, throwError: true, showSuccess: false, successCallback: () => {} };
