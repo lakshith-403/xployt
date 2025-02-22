@@ -89,17 +89,17 @@ export default class ProjectsView extends View {
         });
       }
 
-      if (this.projects.length === 0) {
-        $(q, 'div', 'table-row', {}, (q) => {
-          $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
-        });
-      } else {
-        const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending'].includes(project.state));
-        const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
+      // if (this.projects.length === 0) {
+      //   $(q, 'div', 'table-row', {}, (q) => {
+      //     $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
+      //   });
+      // } else {
+      const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending'].includes(project.state));
+      const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
-        this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
-        this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
-      }
+      this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
+      this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
+      // }
     });
   }
 }

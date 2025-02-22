@@ -26,7 +26,7 @@ class Payments implements Step {
   private renderFieldFullWidth(q: Quark, field: FormTextField | TagInput, value: any): void {
     console.log('Rendering field:', field); // Check if field is defined
     if (field) {
-      $(q, 'div', 'form-field', {}, (q) => {
+      $(q, 'div', 'form-field w-100', {}, (q) => {
         field.render(q);
         if (field instanceof TagInput) {
           // console.log('Adding tags:', value);
