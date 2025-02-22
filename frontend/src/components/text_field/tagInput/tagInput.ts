@@ -68,13 +68,15 @@ export class TagInput {
 
   private handleKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter' && this.inputValue.trim()) {
-      this.addTag(this.inputValue.trim());
+      if (this.inputValue.trim() in this.suggestions) {
+        this.addTag(this.inputValue.trim());
+      }
       e.preventDefault();
     }
   }
 
   private renderAutocomplete() {
-    const autocompleteContainer = document.querySelector('.autocomplete-container');
+    const autocompleteContainer = document.querySelector(`.autocomplete-container-${this.name}`);
     if (autocompleteContainer) {
       autocompleteContainer.innerHTML = '';
       new Autocomplete({
@@ -97,7 +99,7 @@ export class TagInput {
 
         $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
           this.textField?.render(q);
-          $(q, 'div', 'autocomplete-container', {});
+          $(q, 'div', `autocomplete-container autocomplete-container-${this.name}`, {});
         });
       });
     });
