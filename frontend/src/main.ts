@@ -53,6 +53,8 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
+import { importDBData } from '@/importDBData';
+
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
@@ -247,3 +249,5 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
+
+importDBData();

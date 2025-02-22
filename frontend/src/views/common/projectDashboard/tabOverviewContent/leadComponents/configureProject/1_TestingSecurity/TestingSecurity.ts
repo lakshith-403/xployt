@@ -1,8 +1,8 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { FormTextField } from '@components/text_field/form.text_field';
-import './TestingSecurity.scss';
 import { Step } from '@components/multistepForm/multistep-form';
-
+import { TagInput } from '@components/text_field/tagInput/tagInput';
+import { scopeTags } from './data';
 class TestingSecurity implements Step {
   render(q: Quark, state: any, updateParentState: (newState: any) => void): void {
     this.updateParentState = updateParentState;
@@ -33,7 +33,7 @@ class TestingSecurity implements Step {
   }
 
   private fields: { [key: string]: any } = {
-    testingScope: new FormTextField({ label: 'Testing Scope', placeholder: 'Scope of testing', name: 'testingScope' }),
+    testingScope: new TagInput({ label: 'Testing Scope', placeholder: 'Scope of testing', name: 'testingScope', suggestions: scopeTags }),
     outOfScope: new FormTextField({ label: 'Out of Scope', placeholder: 'Areas not covered by testing', name: 'outOfScope' }),
     objectives: new FormTextField({ label: 'Objectives', placeholder: 'Objectives of testing', name: 'objectives' }),
     securityRequirements: new FormTextField({ label: 'Security Requirements', placeholder: 'Security requirements', name: 'securityRequirements' }),
