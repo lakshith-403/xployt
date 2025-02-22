@@ -28,7 +28,7 @@ class Payments implements Step {
   }
 
   private renderFieldFullWidth(q: Quark, field: FormTextField | TagInput, value: any, className?: string): void {
-    console.log('Rendering field:', field); // Check if field is defined
+    // console.log('Rendering field:', field); // Check if field is defined
     if (field) {
       $(q, 'div', `${className}`, {}, (q) => {
         field.render(q);
@@ -53,11 +53,11 @@ class Payments implements Step {
   }
 
   private fields: { [key: string]: any } = {
-    criticalFunding: new FormTextField({ label: 'Bounty for Critical', placeholder: 'Bounty for Critical', name: 'criticalFunding' }),
-    highFunding: new FormTextField({ label: 'Bounty for High', placeholder: 'Bounty for High', name: 'highFunding' }),
-    mediumFunding: new FormTextField({ label: 'Bounty for Medium', placeholder: 'Bounty for Medium', name: 'mediumFunding' }),
-    lowFunding: new FormTextField({ label: 'Bounty for Low', placeholder: 'Bounty for Low', name: 'lowFunding' }),
-    informativeFunding: new FormTextField({ label: 'Bounty for Informative', placeholder: 'Bounty for Informative', name: 'informativeFunding' }),
+    criticalFunding: new FormTextField({ label: 'Bounty for Critical', placeholder: 'Bounty for Critical', name: 'criticalFunding', type: 'number' }),
+    highFunding: new FormTextField({ label: 'Bounty for High', placeholder: 'Bounty for High', name: 'highFunding', type: 'number' }),
+    mediumFunding: new FormTextField({ label: 'Bounty for Medium', placeholder: 'Bounty for Medium', name: 'mediumFunding', type: 'number' }),
+    lowFunding: new FormTextField({ label: 'Bounty for Low', placeholder: 'Bounty for Low', name: 'lowFunding', type: 'number' }),
+    informativeFunding: new FormTextField({ label: 'Bounty for Informative', placeholder: 'Bounty for Informative', name: 'informativeFunding', type: 'number' }),
     critical: new TagInput({ label: 'Critical', placeholder: 'Areas considered of critical risk', name: 'critical', suggestions: criticalLevelTags }),
     high: new TagInput({ label: 'High', placeholder: 'Areas considered of high risk', name: 'high', suggestions: highLevelTags }),
     medium: new TagInput({ label: 'Medium', placeholder: 'Areas considered of medium risk', name: 'medium', suggestions: mediumLevelTags }),
@@ -71,7 +71,7 @@ class Payments implements Step {
     for (const field of Object.values(this.fields)) {
       field.setOnChange((value: string) => {
         const keys = field.name.split('.');
-        console.log(keys);
+        // console.log(keys);
         if (keys.length > 1) {
           const nestedState: { [key: string]: any } = keys.reduceRight((acc: any, key: string) => ({ [key]: acc }), value);
           // console.log(nestedState);

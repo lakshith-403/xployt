@@ -106,6 +106,13 @@ export class UIManager {
     });
     ModalManager.show('alertForErrors', modalAlertForErrors);
   }
+  static showErrorModalBrief(message: string): void {
+    setContent(modalAlertOnlyOK, {
+      '.modal-title': 'Error',
+      '.modal-message': message,
+    });
+    ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+  }
 
   static showSuccessModal(title: string, message: string, callback?: () => void): void {
     setContent(modalAlertOnlyOK, {

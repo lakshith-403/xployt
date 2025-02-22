@@ -51,7 +51,7 @@ class TestingSecurity implements Step {
     for (const field of Object.values(this.fields)) {
       field.setOnChange((value: string) => {
         const keys = field.name.split('.');
-        console.log(keys);
+        // console.log(keys);
         if (keys.length > 1) {
           const nestedState: { [key: string]: any } = keys.reduceRight((acc: any, key: string) => ({ [key]: acc }), value);
           // console.log(nestedState);

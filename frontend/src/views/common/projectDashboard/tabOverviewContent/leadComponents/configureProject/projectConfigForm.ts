@@ -2,11 +2,10 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View, ViewHandler } from '@ui_lib/view';
 import MultistepForm, { ValidationSchema } from '@components/multistepForm/multistep-form';
 import { Steps } from '@components/multistepForm/multistep-form';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
-import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
+import { UIManager } from '@/ui_lib/UIManager';
 class ProjectConfigForm extends View {
   params: { projectId: string };
 
@@ -71,6 +70,34 @@ class ProjectConfigForm extends View {
   };
   private onSubmit: (formState: any) => void = async (formState: any) => {
     try {
+      const { critical, high, medium, low, informative, criticalFunding, highFunding, mediumFunding, lowFunding, informativeFunding } = formState;
+      // console.log('Critical:', critical);
+      // console.log('High:', high);
+      // console.log('Medium:', medium);
+      // console.log('Low:', low);
+      // console.log('Informative:', informative);
+      // console.log('Critical Funding:', criticalFunding);
+      // console.log('High Funding:', highFunding);
+      // console.log('Medium Funding:', mediumFunding);
+      // console.log('Low Funding:', lowFunding);
+      // console.log('Informative Funding:', informativeFunding);
+      const severityFundingPairs = [
+        { severity: critical, funding: criticalFunding, name: 'Critical' },
+        { severity: high, funding: highFunding, name: 'High' },
+        { severity: medium, funding: mediumFunding, name: 'Medium' },
+        { severity: low, funding: lowFunding, name: 'Low' },
+        { severity: informative, funding: informativeFunding, name: 'Informative' },
+      ];
+
+      for (const pair of severityFundingPairs) {
+        if (
+          (Object.keys(pair.severity).length > 0 && (pair.funding === null || pair.funding === '')) ||
+          (Object.keys(pair.severity).length === 0 && pair.funding !== null && pair.funding !== '')
+        ) {
+          UIManager.showErrorModalBrief(`${pair.name} severity is filled but its funding is missing.`);
+          return;
+        }
+      }
       await submitProjectConfig(this.params.projectId, formState);
     } catch (error) {
       console.error('Error during form submission:', error);

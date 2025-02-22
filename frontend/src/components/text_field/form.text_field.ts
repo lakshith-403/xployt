@@ -5,6 +5,7 @@ export interface FormTextFieldOptions extends TextFieldOptions {
   class?: string;
   onKeyDown?: (event: KeyboardEvent) => void;
   parentClass?: string;
+  type?: string;
 }
 
 export class FormTextField extends TextField {

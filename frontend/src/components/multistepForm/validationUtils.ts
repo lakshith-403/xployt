@@ -142,7 +142,7 @@ export function validateField(key: string, value: any, expectedType: string): { 
   // Verifying a number or null
   if (expectedType === 'number|null') {
     console.log('checking number|null: ', key, value);
-    if (typeof value !== 'number' && value !== null) {
+    if (typeof value !== 'number' && value !== null && value !== '') {
       return { result: false, message: `${key} must be a number or null` };
     }
   }
