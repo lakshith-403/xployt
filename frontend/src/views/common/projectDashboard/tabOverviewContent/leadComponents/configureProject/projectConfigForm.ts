@@ -45,7 +45,12 @@ class ProjectConfigForm extends View {
     informative: [],
     visibility: 'visibility testing',
     attachments: null as File | null,
-    initialFunding: 'initialFunding testing',
+    initialFunding: 23000,
+    criticalFunding: 23000,
+    highFunding: 23000,
+    mediumFunding: null,
+    lowFunding: null,
+    informativeFunding: null,
   };
   private validationSchema: ValidationSchema = {
     testingScope: 'string',
@@ -58,19 +63,17 @@ class ProjectConfigForm extends View {
     low: 'object|string',
     informative: 'object|string',
     visibility: 'string',
+    criticalFunding: 'number|null',
+    highFunding: 'number|null',
+    mediumFunding: 'number|null',
+    lowFunding: 'number|null',
+    informativeFunding: 'number|null',
   };
   private onSubmit: (formState: any) => void = async (formState: any) => {
-    const loading = new LoadingScreen(document.body);
-    loading.show();
-
     try {
       await submitProjectConfig(this.params.projectId, formState);
-      // router.navigateTo(`/projects/${this.params.projectId}`);
     } catch (error) {
       console.error('Error during form submission:', error);
-      alert(`Failed to submit project configuration: ${error}`);
-    } finally {
-      loading.hide();
     }
   };
 
@@ -97,6 +100,11 @@ class ProjectConfigForm extends View {
           informative: 'optional',
           visibility: 'optional',
           initialFunding: 'optional',
+          criticalFunding: 'optional',
+          highFunding: 'optional',
+          mediumFunding: 'optional',
+          lowFunding: 'optional',
+          informativeFunding: 'optional',
         },
       },
     ];
@@ -130,7 +138,7 @@ export async function submitProjectConfig(projectId: string, formData: any): Pro
     {
       showSuccess: true,
       successCallback: () => {
-        router.navigateTo(`/projects/${projectId}`);
+        // router.navigateTo(`/projects/${projectId}`);
       },
     }
   );
