@@ -32,16 +32,11 @@ class ProjectRequestForm extends View {
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
-    const loading = new LoadingScreen(document.body);
-    loading.show();
-
-    // try {
     await requestProject({
       ...formState,
       startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
       endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
     });
-    loading.hide();
   };
 
   render(q: Quark): void {

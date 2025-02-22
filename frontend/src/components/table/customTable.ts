@@ -18,7 +18,7 @@ interface Options {
   filteredField?: string; // Made optional
   falseKeys?: string[]; // Made optional
   noDataMessage?: string;
-  orderIndices?: number[]; // New option for specifying order
+  orderKeys?: string[]; // New option for specifying order
 }
 
 export class CustomTable {
@@ -37,6 +37,9 @@ export class CustomTable {
     // Set filteredField and falseKeys if options are provided
     if (this.options.filteredField && !this.options.falseKeys) {
       console.error('filteredField and falseKeys are required');
+    }
+    if (this.options.orderKeys && this.options.orderKeys.length !== this.headers.length) {
+      console.error('orderKeys length must match headers length');
     }
   }
 
@@ -114,15 +117,15 @@ export class CustomTable {
 
   private displayItems(object: Record<string, any>, q: Quark) {
     const keys = Object.keys(object);
-    console.log('keys', keys);
-    // If orderIndices is provided, reorder keys based on it
-    const orderedKeys = this.options.orderIndices ? this.options.orderIndices.map((index) => keys[index]).filter((key) => key !== undefined) : keys;
-
+    // console.log('keys', keys);
+    // If orderKeys is provided, reorder keys based on it
+    const orderedKeys = this.options.orderKeys ? this.options.orderKeys.filter((key) => keys.includes(key)) : keys;
+    // console.log('orderedKeys', orderedKeys);
     orderedKeys.forEach((key: string) => {
       const element = object[key];
       switch (typeof element) {
         case 'string':
-          $(q, 'span', 'table-cell', {}, element);
+          $(q, 'span', 'table-cell', {}, element == 'null' ? '-' : element);
           break;
         case 'object':
           $(q, 'span', 'table-cell', {}, (q) => {
