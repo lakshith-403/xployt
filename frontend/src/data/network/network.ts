@@ -158,7 +158,16 @@ class Network {
   }
 
   invalidateCache(url: string): void {
-    this.cache.delete(url);
+    console.log('invalidating cache for', url);
+    try {
+      const regex = new RegExp(url);
+      console.log('regex', regex);
+      const keysToInvalidate = Array.from(this.cache.keys()).filter((cacheUrl) => regex.test(cacheUrl));
+      console.log('keysToInvalidate', keysToInvalidate);
+      keysToInvalidate.forEach((key) => this.cache.delete(key));
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
+    }
   }
 }
 

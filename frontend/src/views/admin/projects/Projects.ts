@@ -51,7 +51,7 @@ export default class ProjectsView extends View {
           BREADCRUMBS.addBreadcrumb({ label: project.projectId.toString(), link: `/admin/projects/${project.projectId}` });
           router.navigateTo(`/admin/projects/${project.projectId}`);
         },
-        orderIndices: [4, 3, 2, 5, 0, 1],
+        orderKeys: ['projectId', 'title', 'state', 'leadId', 'clientId', 'pendingReports'],
       },
     });
 
