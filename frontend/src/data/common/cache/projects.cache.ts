@@ -1,7 +1,7 @@
 import {CacheObject, DataFailure} from '../../cacheBase';
-import {projectEndpoints} from '../../client/network/project.network';
+import {ProjectEndpoints} from '../../common/network/project.network';
 
-interface ProjectList{
+export interface ProjectList{
     activeProjects: ProjectBrief[];
     requestedProjects: ProjectBrief[];
     inactiveProjects: ProjectBrief[];
@@ -48,14 +48,15 @@ export class ProjectBrief {
   }
 }
 
-export class ProjectsClientCache extends CacheObject<ProjectList> {
+export class UserProjectsCache extends CacheObject<ProjectList> {
 
-  async load(userId: string): Promise<ProjectList> {
-    console.log(`Loading projects for user: ${userId}`);
+  async load(...args: any[]): Promise<ProjectList> {
+    const [userId, userStatus] = args;
+    console.log(`Loading projects for ${userStatus}: ${userId}`);
     let response: ProjectResponse;
 
     try {
-      response = (await projectEndpoints.getAllProjects(userId.toString())) as ProjectResponse;
+      response = (await ProjectEndpoints.getAllProjects(userId, userStatus)) as ProjectResponse;
     } catch (error) {
       console.error('Network error while fetching projects:', error);
       throw new DataFailure('load project', 'Network error');
@@ -81,44 +82,4 @@ export class ProjectsClientCache extends CacheObject<ProjectList> {
           : [],
     };
   }
-
-//   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
-//     console.log('Updating project:', projectId, state);
-//     console.log('Current projects:', this.data![0]);
-//     this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
-//     console.log('Updated project:', this.data![0]);
-//   }
 }
-
-// export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
-//   async load(userId: string): Promise<Project[][]> {
-//     return [
-//       [
-//         new Project({
-//           id: 1,
-//           state: 'Unconfigured',
-//           title: 'Project GT-175',
-//           leadId: 'Lead 1',
-//
-//           pendingReports: 3,
-//         }),
-//         new Project({
-//           id: 2,
-//           state: 'Pending',
-//           title: 'Project WV-102',
-//           leadId: 'Lead 2',
-//           pendingReports: 0,
-//         }),
-//       ],
-//       [
-//         new Project({
-//           id: 3,
-//           state: 'In progress',
-//           title: 'Project 3',
-//           leadId: 'Lead 3',
-//           pendingReports: 1,
-//         }),
-//       ],
-//     ];
-//   }
-// }

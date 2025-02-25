@@ -6,4 +6,8 @@ export class ProjectEndpoints {
     static async getProject(projectId: string): Promise<Response> {
         return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}/${projectId}`);
     }
+
+    static async getAllProjects(userId: string, userStatus: string): Promise<Response> {
+        return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}s?userId=${userId}&userStatus=${userStatus}`);
+    }
 }
