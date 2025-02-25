@@ -14,6 +14,7 @@ export class ListValidators extends View {
 
   params: any;
   validators: any;
+  container!: HTMLElement;
   constructor(params: any) {
     super();
     this.params = params;
@@ -58,25 +59,28 @@ export class ListValidators extends View {
 
     $(q, 'div', 'list-validators py-2 d-flex flex-column align-items-center container', {}, (q) => {
       $(q, 'h1', 'list-validators-title text-center', {}, 'Validators List');
-      $(q, 'div', 'promote-to-lead-table container', {}, (q) => {
+      this.container = $(q, 'div', 'promote-to-lead-table container', {}, (q) => {
         this.validatorsTableContainer = $(q, 'div', 'promote-to-lead-no-validators text-center sub-heading-3 bg-secondary container p-2 text-default', {}, 'Loading validators...');
       });
     });
 
     await this.getValidators();
     if (this.validators && this.validators.length > 0) {
+      console.log(this.validators);
       await this.loadValidators(q);
       this.renderValidatorsTable(q);
     } else {
+      console.log('No validators found');
       this.validatorsTableContainer.innerHTML = 'No validators found';
     }
   }
 
   private renderValidatorsTable(q: Quark): void {
-    if (this.validatorsTableContent.length === 0) {
-      q.innerHTML = '';
+    console.log('this.validatorsTableContent', this.validatorsTableContent);
+    if (this.validatorsTableContent.length > 0) {
+      this.container.innerHTML = '';
       const requestsTable = new PopupTable(this.validatorsTableContent, ['Id', 'Name', 'Email', 'Actions']);
-      requestsTable.render(q);
+      requestsTable.render(this.container);
     }
   }
 }
