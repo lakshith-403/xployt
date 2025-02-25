@@ -4,7 +4,7 @@ import { ReportInfoCacheMock, ReportInfoCache } from './projectLead/cache/report
 import { ProjectsCacheMock, ProjectsCache, Project } from './validator/cache/projects.cache';
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
-import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
+// import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projects';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
@@ -22,7 +22,7 @@ class CacheStore {
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCache>;
-  private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  // private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   // private readonly clientMap: Map<string, ClientCache>; // No longer needed
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
@@ -40,7 +40,7 @@ class CacheStore {
     this.projectInfoMap = new Map();
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
-    this.hackerProjectInfoMap = new Map();
+    // this.hackerProjectInfoMap = new Map();
     this.projectConfigInfoMap = new Map();
     // this.clientMap = new Map();
     this.notificationsListMap = new Map();
@@ -110,13 +110,7 @@ class CacheStore {
     }
     return this.projectTeamsMap.get(projectId)!;
   }
-  public getHackerProjectInfo(projectId: string): HackerProjectInfoCache {
-    if (!this.hackerProjectInfoMap.has(projectId)) {
-      this.hackerProjectInfoMap.set(projectId, new HackerProjectInfoCacheMock());
-    }
 
-    return this.hackerProjectInfoMap.get(projectId)!;
-  }
   public getLeadProjectConfigInfo(projectId: string): ProjectConfigInfoCache {
     console.log('at cache.ts getLeadProjectConfigInfo');
     console.log('projectId', projectId);
