@@ -37,11 +37,11 @@ class PersonalDetails implements Step {
   }
 
   private fields: { [key: string]: FormTextField } = {
-    name: new FormTextField({ label: 'Name *', placeholder: 'Enter your name', name: 'name' }),
-    email: new FormTextField({ label: 'Email *', placeholder: 'Enter your email', name: 'email' }),
-    mobile: new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number', name: 'mobile' }),
-    country: new FormTextField({ label: 'Country *', placeholder: 'Select your country', name: 'country' }),
-    linkedin: new FormTextField({ label: 'LinkedIn *', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedin' }),
+    name: new FormTextField({ label: 'Name *', placeholder: 'Enter your name: (e.g. John Doe)', name: 'name' }),
+    email: new FormTextField({ label: 'Email *', placeholder: 'Enter your email: (e.g. john.doe@example.com)', name: 'email' }),
+    mobile: new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number: (e.g. +1234567890)', name: 'mobile' }),
+    country: new FormTextField({ label: 'Country *', placeholder: 'Select your country: (e.g. United States)', name: 'country' }),
+    linkedin: new FormTextField({ label: 'LinkedIn *', placeholder: 'Enter your LinkedIn profile URL: (e.g. https://www.linkedin.com/in/john-doe)', name: 'linkedin' }),
     dobDay: new FormTextField({ label: '', placeholder: 'DD', name: 'dateOfBirth.day' }),
     dobMonth: new FormTextField({ label: '', placeholder: 'MM', name: 'dateOfBirth.month' }),
     dobYear: new FormTextField({ label: '', placeholder: 'YYYY', name: 'dateOfBirth.year' }),

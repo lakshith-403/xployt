@@ -64,7 +64,7 @@ class ValidatorApplication extends View {
       const response = await NETWORK.post('/api/validator/manage', this.formState, { showLoading: true });
       ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
         console.log('response', response);
-        // router.navigateTo('/dashboard');
+        router.navigateTo('/');
       });
     } catch (error: any) {
       console.error('Error submitting application:', error);
@@ -126,11 +126,11 @@ class ValidatorApplication extends View {
       country: 'string',
       linkedin: 'url',
       dateOfBirth: 'date',
-      skills: 'string',
-      certificates: 'string',
+      skills: 'string|comma',
+      certificates: 'string|comma',
       cv: 'string',
-      references: 'string',
-      relevantExperience: 'string',
+      references: 'string|comma',
+      relevantExperience: 'string|comma',
       areaOfExpertise: 'object|string',
       comments: 'string',
     };
