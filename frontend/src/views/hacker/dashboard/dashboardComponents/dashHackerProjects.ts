@@ -1,26 +1,43 @@
 import {QuarkFunction as $, Quark} from '@ui_lib/quark';
-import {Project, ProjectsCacheMock} from "@data/validator/cache/projects.cache";
-import {ProjectInfo, ProjectInfoCacheMock} from "@data/validator/cache/projectInfo";
-import {CACHE_STORE} from "@data/cache";
-import {ClickableTable, ContentItem} from "@components/table/clickable.table";
+import {ContentItem} from "@components/table/clickable.table";
+import {ProjectBrief} from "@data/common/cache/projects.cache";
+import {router} from "@ui_lib/router";
+import {CustomTable} from "@components/table/customTable";
 
 export class dashHackerProjects {
-    private readonly userId: number;
-    private projects: Project[] = [];
-    private ProjectsCache: ProjectsCacheMock;
-    private projectInfoCache: ProjectInfoCacheMock;
+    private readonly userId: string;
+    private projects: ProjectBrief[] = [];
     private tableContent: ContentItem[] = [];
+    private tableHeaders = ['ID', 'Title', 'Start Date'];
 
-    constructor(userId: number) {
+    constructor(userId: string, projects: ProjectBrief[]) {
         this.userId = userId;
-        this.ProjectsCache = CACHE_STORE.getProjects();
-        this.projectInfoCache = new ProjectInfoCacheMock();
+        this.projects = projects;
+
+        this.projects.forEach((project) => {
+            this.tableContent.push({
+                id: project.id,
+                title: project.title,
+                startDate: project.startDate,
+            });
+        });
     }
 
-    private async loadProjects(): Promise<void> {
+    private setTableContent(): void {
+
     }
 
     render(q: Quark): void {
+        this.setTableContent()
         $(q, 'h1', "", {}, 'Projects');
+        new CustomTable({
+            content: this.tableContent,
+            options: {
+            callback: (project) => {
+                router.navigateTo(`/projects/${project.id.toString()}`)
+            }},
+            className: '',
+            headers: this.tableHeaders
+        }).render(q);
     }
 }
