@@ -1,19 +1,18 @@
 import {QuarkFunction as $} from '@ui_lib/quark';
 import {CACHE_STORE} from '@data/cache';
 import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
-import {ProjectInfo} from "@data/validator/cache/projectInfo";
 import './InvitationPopup.scss'
 import {IconButton} from "@components/button/icon.button";
 import {ButtonType} from "@components/button/base";
 import {InvitationsCache} from "@data/common/cache/invitations.cache";
+import {Project} from "@data/common/cache/project.cache";
 
 export class InvitationPopup {
-    private readonly projectInfo: ProjectInfo;
-    private readonly hackerId: string;
-    // private projectInfo: ProjectInfo = {} as ProjectInfo;
+    private projectInfo: Project;
+    private hackerId: string;
     private invitationsCache: InvitationsCache;
 
-    constructor(params: { projectInfo: ProjectInfo, hackerId: string }) {
+    constructor(params: { projectInfo: Project, hackerId: string }) {
         this.projectInfo = params.projectInfo;
         this.hackerId = params.hackerId;
         this.invitationsCache = CACHE_STORE.getHackerInvitations(this.hackerId) as InvitationsCache;
@@ -41,12 +40,13 @@ export class InvitationPopup {
 
     async render(): Promise<HTMLElement> {
         const q = document.createElement('div');
+        console.log('Project Info: Invitation Popup ', this.projectInfo);
 
         $(q, 'div', 'hacker-invitation', {}, (q) => {
             $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectInfo.id.toString())}`);
             $(q, 'div', 'content', {}, (q) => {
                 $(q, 'div', '', {id: 'basic-info'}, (q) => {
-                    new BasicInfoComponent(this.projectInfo.id.toString(), this.projectInfo.client).render(q);
+                    new BasicInfoComponent(this.projectInfo).render(q);
                 });
 
                 $(q, 'h3', '', {}, 'Rules and Scope');

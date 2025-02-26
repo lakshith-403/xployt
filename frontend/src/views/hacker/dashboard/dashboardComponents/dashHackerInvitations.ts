@@ -5,6 +5,7 @@ import { InvitationPopup } from "@views/hacker/dashboard/hackerInvitation/Invita
 import { Popup } from "@components/popup/popup.base";
 import {ProjectCache} from "@data/common/cache/project.cache";
 import {CACHE_STORE} from "@data/cache";
+import {Project} from "@data/common/cache/project.cache";
 
 export class dashHackerInvitations {
     private readonly userId: string;
@@ -26,7 +27,7 @@ export class dashHackerInvitations {
         for (const invitation of this.invitations) {
             try {
                 const projectCache: ProjectCache = CACHE_STORE.getProject(invitation.projectId.toString());
-                const projectInfo = await projectCache.get(true, invitation.projectId.toString());
+                const projectInfo = await projectCache.get(true, invitation.projectId.toString()) as Project;
                 projectInfo.id = invitation.projectId;
                 console.log(`Project Info for invitation ${invitation.projectId}:`, projectInfo);
                 const popupElement = await this.InvitationPopup({ projectInfo: projectInfo, hackerId: this.userId });

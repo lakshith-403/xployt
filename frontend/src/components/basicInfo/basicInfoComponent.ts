@@ -1,33 +1,30 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import { CACHE_STORE } from '@data/cache';
-import { ProjectTeamCache } from "@data/common/cache/projectTeam.cache";
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import { Card } from '@components/card/card.base';
 import './basicInfo.scss';
-import {PublicUser, User} from "@data/user";
+import {User} from "@data/user";
+import {Project} from "@data/common/cache/project.cache";
+import UserCard from "@components/UserCard";
 
 export default class BasicInfoComponent {
-  private projectTeam: { [key: string]: PublicUser } = {} as { [key: string]: PublicUser };
-  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
   private currentUser: User = {} as User;
+  private project: Project;
 
-  constructor(private readonly projectId: string, private readonly client: string) {
-    this.projectId = projectId;
-    this.client = client;
+  constructor(project: Project) {
+    this.project = project;
   }
 
   async loadData(): Promise<void> {
-    try {
-      this.currentUser = await CACHE_STORE.getUser().get();
-      const fullTeam = await this.projectTeamCache.get(true, this.projectId);
-      this.projectTeam.projectLead = fullTeam.projectLead;
-      if (this.currentUser.type === 'Hacker') {
-        this.projectTeam.assignedValidator = fullTeam.validators[0];
-      }
-      console.log('Project Team', this.projectTeam);
-    } catch (error) {
-      console.error('Failed to load project data', error);
-    }
+    // try {
+    //   this.currentUser = await CACHE_STORE.getUser().get();
+    //
+    //   this.projectTeam.projectLead = fullTeam.projectLead;
+    //   if (this.currentUser.type === 'Hacker') {
+    //     this.projectTeam.assignedValidator = fullTeam.validators[0];
+    //   }
+    //   console.log('Project Team', this.projectTeam);
+    // } catch (error) {
+    //   console.error('Failed to load project data', error);
+    // }
   }
 
   async render(q: Quark): Promise<void> {
@@ -42,7 +39,7 @@ export default class BasicInfoComponent {
         $(q, 'div', '', {}, (q) => {
           $(q, 'span', '', {}, (q) => {
             $(q, 'p', 'key', {}, 'Client');
-            $(q, 'p', 'value', {}, this.client);
+            $(q, 'p', 'value', {}, this.project.clientId);
           });
           $(q, 'span', '', {}, (q) => {
             $(q, 'p', 'key', {}, 'Access Link');
@@ -53,26 +50,29 @@ export default class BasicInfoComponent {
         });
         $(q, 'div', '', {}, (q) => {
           if (this.currentUser.type !== 'ProjectLead') {
-            new Card({
-              title: 'Project Lead',
-              content: $(q, 'div', 'description', {}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                  $(q, 'p', 'value', {}, this.projectTeam.projectLead.name);
-                });
-                $(q, 'p', 'value link', {}, this.projectTeam.projectLead.email);
-              }),
-            }).render(q);
+            // new Card({
+            //   title: 'Project Lead',
+            //   content: $(q, 'div', 'description', {}, (q) => {
+            //     $(q, 'span', '', {}, (q) => {
+            //       $(q, 'p', 'value', {}, this.projectTeam.projectLead.name);
+            //     });
+            //     $(q, 'p', 'value link', {}, this.projectTeam.projectLead.email);
+            //   }),
+            // }).render(q);
+            console.log("LeadID", this.project.leadId);
+            new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead').render(q);
           }
           if (this.currentUser.type === 'Hacker') {
-            new Card({
-              title: 'Assigned Validator',
-              content: $(q, 'div', 'description', {}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                  $(q, 'p', 'value', {}, this.projectTeam.assignedValidator.name);
-                });
-                $(q, 'p', 'value link', {}, this.projectTeam.assignedValidator.email);
-              }),
-            }).render(q);
+            // new Card({
+            //   title: 'Assigned Validator',
+            //   content: $(q, 'div', 'description', {}, (q) => {
+            //     $(q, 'span', '', {}, (q) => {
+            //       $(q, 'p', 'value', {}, this.projectTeam.assignedValidator.name);
+            //     });
+            //     $(q, 'p', 'value link', {}, this.projectTeam.assignedValidator.email);
+            //   }),
+            // }).render(q);
+            //   new UserCard(this.project.)
           }
         });
       });
