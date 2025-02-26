@@ -17,30 +17,27 @@ export class ValidatorApplications extends View {
     this.params = params;
   }
 
-  async getApplications(): Promise<any> {
+  public async getApplications(): Promise<any> {
     try {
-      const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true });
+      console.log('getting applications');
+      const response = await NETWORK.get('/api/admin/validatorApplications');
       this.applications = response.data.validators;
       console.log('response: ', response);
     } catch (error: any) {
       console.log('error: ', error);
-      setContent(modalAlertForErrors, {
-        '.modal-title': 'Error',
-        '.modal-message': `Failed to get applications: ${error.message ?? 'N/A'} `,
-        '.modal-data': error.data ?? '',
-        '.modal-servletClass': error.servlet ?? '',
-        '.modal-url': error.uri ?? '',
-      });
-      ModalManager.show('alertForErrors', modalAlertForErrors);
     }
   }
 
-  private async loadApplications(q: Quark): Promise<void> {
+  public async loadApplications(q: Quark): Promise<void> {
+    console.log('loading applications');
     if (!this.applications || this.applications.length == 0) return;
     for (const application of this.applications) {
       try {
         console.log(`Project Info for ${application.userId}:`, application);
-        const popupElement = new ApplicationPopup({ userId: application.userId });
+        const popupElement = new ApplicationPopup({
+          userId: application.userId,
+          renderFunction: (q) => this.renderFunction(q),
+        });
 
         this.applicationsTableContent.push({
           id: application.userId,
@@ -65,7 +62,7 @@ export class ValidatorApplications extends View {
 
     console.log('applications: ', this.applications);
 
-    $(q, 'div', 'validator-applications  py-2 d-flex flex-column align-items-center', {}, (q) => {
+    $(q, 'div', 'validator-applications py-2 d-flex flex-column align-items-center container', {}, (q) => {
       $(q, 'h1', 'validator-applications-title text-center heading-1', {}, 'Validator Applications');
 
       this.applicationsTableContainer = $(q, 'div', 'validator-applications-table-container container', {}, (q) => {
@@ -73,16 +70,20 @@ export class ValidatorApplications extends View {
       });
     });
 
+    this.renderFunction(q);
+  }
+
+  public async renderFunction(q: Quark): Promise<void> {
     await this.getApplications();
     if (this.applications && this.applications.length > 0) {
       await this.loadApplications(q);
-      this.renderApplicationsTable(q);
+      this.renderApplicationsTable();
     } else {
       this.applicationsTableContainer.innerHTML = 'No applications found';
     }
   }
 
-  private renderApplicationsTable(q: Quark): void {
+  private renderApplicationsTable(): void {
     console.log('applicationsTableContent: ', this.applicationsTableContent);
     const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
     if (this.applicationsTableContainer) {

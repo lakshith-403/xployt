@@ -40,7 +40,7 @@ export const AdminSidebar: SidebarTab[] = [
   },
   {
     id: 'list-users',
-    title: 'List Users',
+    title: 'List Staff',
     url: 'admin/list-users',
   },
   {
