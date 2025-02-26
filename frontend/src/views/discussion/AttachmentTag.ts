@@ -1,4 +1,5 @@
 import { Attachment } from '@/data/discussion/discussion';
+import NETWORK from '@/data/network/network';
 import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
 
 export class AttachmentTag {
@@ -30,7 +31,7 @@ export class AttachmentTag {
     }
 
     elem.addEventListener('click', () => {
-      window.open(this.attachment.url, '_blank');
+      window.open(NETWORK.baseURL + '/uploads/' + this.attachment.url, '_blank');
     });
   }
 }

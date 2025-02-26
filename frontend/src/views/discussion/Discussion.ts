@@ -1,6 +1,6 @@
 import { View, ViewHandler } from '@/ui_lib/view';
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import { Discussion, getAttachmentsUtil, Message } from '@/data/discussion/discussion';
+import { Attachment, Discussion, getAttachmentsUtil, Message } from '@/data/discussion/discussion';
 import { TextAreaBase } from '@/components/test_area/textArea.base';
 import { IconButton } from '@/components/button/icon.button';
 import { DiscussionCache } from '@/data/discussion/cache/discussion';
@@ -147,6 +147,24 @@ export class DiscussionView extends View {
     const user = await CACHE_STORE.getUser().get();
     console.log(this.selectedFiles);
 
+    let attachments: Attachment[] = this.selectedFiles.map((file) => ({
+      id: crypto.randomUUID(),
+      type: 'other',
+      url: '',
+      name: file.name,
+      uploadedBy: {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      uploadedAt: new Date(),
+    }));
+
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = attachments[i];
+      attachments[i].url = attachment.id + '.' + attachment.name.split('.').pop();
+    }
+
     const message: Message = {
       content: content,
       id: crypto.randomUUID(),
@@ -155,18 +173,7 @@ export class DiscussionView extends View {
         name: user.name,
         email: user.email,
       },
-      attachments: this.selectedFiles.map((file) => ({
-        id: crypto.randomUUID(),
-        type: 'other',
-        url: URL.createObjectURL(file),
-        name: file.name,
-        uploadedBy: {
-          userId: user.id,
-          name: user.name,
-          email: user.email,
-        },
-        uploadedAt: new Date(),
-      })),
+      attachments: attachments,
       timestamp: new Date().toISOString(),
       type: 'text',
       discussionId: this.discussionId,
