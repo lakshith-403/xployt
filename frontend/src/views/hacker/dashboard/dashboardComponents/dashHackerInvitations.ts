@@ -28,7 +28,7 @@ export class dashHackerInvitations {
             try {
                 const projectCache: ProjectCache = CACHE_STORE.getProject(invitation.projectId.toString());
                 const projectInfo = await projectCache.get(true, invitation.projectId.toString()) as Project;
-                projectInfo.id = invitation.projectId;
+                projectInfo.projectId = invitation.projectId;
                 console.log(`Project Info for invitation ${invitation.projectId}:`, projectInfo);
                 const popupElement = await this.InvitationPopup({ projectInfo: projectInfo, hackerId: this.userId });
                 console.log('in status:', invitation.status);

@@ -20,7 +20,7 @@ export class InvitationPopup {
 
     private async acceptInvitation(): Promise<void> {
         try{
-            await this.invitationsCache.accept(this.projectInfo.id.toString(), this.hackerId, true);
+            await this.invitationsCache.accept(this.projectInfo.projectId.toString(), this.hackerId, true);
         }
         catch (error) {
             console.error('Failed to accept invitation:', error);
@@ -30,7 +30,7 @@ export class InvitationPopup {
 
     private async rejectInvitation(): Promise<void> {
         try{
-            await this.invitationsCache.accept(this.projectInfo.id.toString(), this.hackerId, false);
+            await this.invitationsCache.accept(this.projectInfo.projectId.toString(), this.hackerId, false);
         }
         catch (error) {
             console.error('Failed to reject invitation:', error);
@@ -43,7 +43,7 @@ export class InvitationPopup {
         console.log('Project Info: Invitation Popup ', this.projectInfo);
 
         $(q, 'div', 'hacker-invitation', {}, (q) => {
-            $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectInfo.id.toString())}`);
+            $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectInfo.projectId.toString())}`);
             $(q, 'div', 'content', {}, (q) => {
                 $(q, 'div', '', {id: 'basic-info'}, (q) => {
                     new BasicInfoComponent(this.projectInfo).render(q);

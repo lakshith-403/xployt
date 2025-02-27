@@ -2,17 +2,16 @@ import { CacheObject, DataFailure } from '../../cacheBase';
 import { ProjectEndpoints } from './../network/project.network';
 
 export interface Project {
-    id: number;
-    state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
+    projectId: number;
+    state: 'Pending' | 'Active' | 'Completed' | 'Unconfigured' | 'Rejected' | 'Closed' | 'Configured';
+    clientId: string;
+    leadId: string;
     title: string;
     description: string;
-    leadId: string;
-    clientId: string;
     startDate: string;
     endDate: string;
-    technicalStack: string;
-    pendingReports: number;
     url: string;
+    technicalStack: string;
     scope: string[];
 }
 
