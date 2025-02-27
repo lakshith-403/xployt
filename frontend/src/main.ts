@@ -35,7 +35,7 @@ import { projectDashboardViewHandler } from '@views/common/projectDashboard/proj
 import { reportsViewHandler } from '@views/projectLead/Reports/Report';
 import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
 import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
-import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReport';
+import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
 // import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
