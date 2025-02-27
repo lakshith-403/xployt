@@ -2,7 +2,6 @@ import {CacheObject, DataFailure} from '../../cacheBase';
 import {ProjectTeamEndpoints} from "@data/common/network/projectTeam.network";
 import {PublicUser} from "@data/user";
 
-
 interface ProjectTeamResponse {
     data: ProjectTeamInfo;
     is_successful: boolean;
@@ -69,5 +68,39 @@ export class ProjectTeamCache extends CacheObject<ProjectTeam>{
         }
 
         return new ProjectTeam({...res.data});
+    }
+}
+
+interface AssignedUserResponse {
+    data: PublicUser;
+    is_successful: boolean;
+    error?: string;
+    trace?: string;
+}
+
+export class AssignedUserCache extends CacheObject<PublicUser>{
+
+    constructor() {
+        super();
+    }
+
+    async load(requiredRole: string, projectId: string, userId: string): Promise<PublicUser> {
+        console.log(`Loading assigned user ${userId} of project ${projectId}`);
+        let res: AssignedUserResponse;
+
+        try {
+            res = (await ProjectTeamEndpoints.getAssignedUser(requiredRole, projectId, userId)) as AssignedUserResponse;
+            console.log("Cache: res.data", res);
+        } catch (error) {
+            console.log('Network error while fetching assigned user', error);
+            throw new DataFailure('load assigned user', 'Network error');
+        }
+
+        if (!res.is_successful) {
+            console.error('Failed to load assigned user:', res.error);
+            throw new DataFailure('load assigned user', res.error ?? '');
+        }
+
+        return new PublicUser({...res.data});
     }
 }

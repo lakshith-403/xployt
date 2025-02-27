@@ -7,4 +7,11 @@ export class ProjectTeamEndpoints {
             `/api/project/team/${projectId}`
         );
     }
+
+    static async getAssignedUser(requiredRole:string, projectId: string, userId: string){
+        return NETWORK.sendHttpRequest(
+            'GET',
+            `/api/project/team/assign/${requiredRole}/${projectId}/${userId}`
+        );
+    }
 }

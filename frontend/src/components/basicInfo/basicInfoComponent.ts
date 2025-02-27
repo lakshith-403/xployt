@@ -1,48 +1,54 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import { CACHE_STORE } from '@data/cache';
-import { ProjectTeamCache } from "@data/common/cache/projectTeam.cache";
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
-import { Card } from '@components/card/card.base';
 import './basicInfo.scss';
-import {PublicUser, User} from "@data/user";
+import { User } from "@data/user";
+import {Project} from "@data/common/cache/project.cache";
+import UserCard from "@components/UserCard";
+import {AssignedUserCache} from "@data/common/cache/projectTeam.cache";
+import {CACHE_STORE} from "@data/cache";
+import {router} from "@ui_lib/router";
 
 export default class BasicInfoComponent {
-  private projectTeam: { [key: string]: PublicUser } = {} as { [key: string]: PublicUser };
-  private readonly projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
   private currentUser: User = {} as User;
+  private project: Project;
+  private assignedUserId: string = '';
+  private assignedUserCache = new AssignedUserCache();
 
-  constructor(private readonly projectId: string, private readonly client: string) {
-    this.projectId = projectId;
-    this.client = client;
+  constructor(project: Project) {
+    this.project = project;
   }
 
-  async loadData(): Promise<void> {
-    try {
-      this.currentUser = await CACHE_STORE.getUser().get();
-      const fullTeam = await this.projectTeamCache.get(true, this.projectId);
-      this.projectTeam.projectLead = fullTeam.projectLead;
-      if (this.currentUser.type === 'Hacker') {
-        this.projectTeam.assignedValidator = fullTeam.validators[0];
-      }
-      console.log('Project Team', this.projectTeam);
+  async loadCurrentUser(): Promise<void> {
+    try{
+        this.currentUser = await CACHE_STORE.getUser().get();
     } catch (error) {
-      console.error('Failed to load project data', error);
+        console.error('Failed to load current user:', error);
+    }
+  }
+
+  async loadAssignedUser(role: string): Promise<void> {
+    try {
+      const assignedUser = await this.assignedUserCache.load(role, this.project.projectId.toString(), this.currentUser.id);
+      this.assignedUserId = assignedUser.id?.toString() ?? '';
+    }catch (error) {
+      console.error('Failed to load assigned user:', error);
     }
   }
 
   async render(q: Quark): Promise<void> {
+      console.log(this.project.projectId, this.project.state);
+
     const loading = new LoadingScreen(q);
     loading.show();
-
-    await this.loadData();
+    await this.loadCurrentUser()
     loading.hide();
 
-    $(q, 'div', '', { id: 'basic-info' }, (q) => {
-      $(q, 'div', 'section-content', {}, (q) => {
+    $(q, 'div', '', { id: 'basic-info' }, async (q) => {
+      $(q, 'div', 'section-content', {}, async (q) => {
         $(q, 'div', '', {}, (q) => {
           $(q, 'span', '', {}, (q) => {
             $(q, 'p', 'key', {}, 'Client');
-            $(q, 'p', 'value', {}, this.client);
+            $(q, 'p', 'value', {}, this.project.clientId);
           });
           $(q, 'span', '', {}, (q) => {
             $(q, 'p', 'key', {}, 'Access Link');
@@ -51,38 +57,38 @@ export default class BasicInfoComponent {
             });
           });
         });
-        $(q, 'div', '', {}, (q) => {
+        $(q, 'div', '', {}, async (q) => {
           if (this.currentUser.type !== 'ProjectLead') {
-            new Card({
-              title: 'Project Lead',
-              content: $(q, 'div', 'description', {}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                  $(q, 'p', 'value', {}, this.projectTeam.projectLead.name);
-                });
-                $(q, 'p', 'value link', {}, this.projectTeam.projectLead.email);
-              }),
-            }).render(q);
+            await new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead',
+                {
+                  highLightKeys: ['email'],
+                  highlightClassName: 'text-light-green',
+                  showKeys: ['name', 'email'],
+                  callback: () => {
+                    router.navigateTo('/user-info/' + this.project.leadId);
+                  }
+                }).render(q);
           }
-          if (this.currentUser.type === 'Hacker') {
-            new Card({
-              title: 'Assigned Validator',
-              content: $(q, 'div', 'description', {}, (q) => {
-                $(q, 'span', '', {}, (q) => {
-                  $(q, 'p', 'value', {}, this.projectTeam.assignedValidator.name);
-                });
-                $(q, 'p', 'value link', {}, this.projectTeam.assignedValidator.email);
-              }),
-            }).render(q);
+          if ((this.currentUser.type === 'Hacker') || this.currentUser.type === 'Validator'){
+            loading.show();
+            await this.loadAssignedUser(this.currentUser.type === 'Hacker' ? 'validator' : 'hacker');
+            loading.hide();
+            this.assignedUserId != '' &&
+            await new UserCard(
+                this.assignedUserId,
+                this.currentUser.type === 'Hacker' ? 'validator' : 'hacker', 'card',
+                this.currentUser.type === 'Hacker' ? 'Validator' : 'Hacker',
+                {
+                  highLightKeys: ['email'],
+                  highlightClassName: 'text-light-green',
+                  showKeys: ['name', 'email'],
+                  callback: () => {
+                    router.navigateTo('/user-info/' + this.assignedUserId);
+                  }
+                }).render(q);
           }
         });
       });
     });
   }
-}
-
-function convertToTitleCase(input: string): string {
-  const words = input.replace(/([A-Z])/g, ' $1').trim();
-  return words.replace(/\w\S*/g, (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
 }
