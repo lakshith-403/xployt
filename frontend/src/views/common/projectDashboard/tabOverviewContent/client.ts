@@ -108,7 +108,7 @@ export default class Hacker {
               icon: 'fa fa-plus',
               label: 'Invite-Hackers',
               onClick: () => {
-                const url = '/invite-hackers';
+                const url = `/client/invite-hackers/${this.projectId}`;
                 router.navigateTo(url);
               },
             }).render(q);
