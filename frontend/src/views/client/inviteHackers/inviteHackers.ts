@@ -7,6 +7,9 @@ import {ProjectInfo, ProjectInfoCacheMock} from "@data/validator/cache/projectIn
 import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
 import './inviteHackers.scss'
 import {InvitationsCache} from "@data/common/cache/invitations.cache";
+import {Project, ProjectCache} from "@data/common/cache/project.cache";
+import {router} from "@ui_lib/router";
+import {extractPathParams, extractQueryParams} from "@ui_lib/utils";
 
 interface Hacker {
     id: number,
@@ -18,9 +21,9 @@ interface Hacker {
 
 export class InviteHackers extends View {
     projectId: string = "1";
-    projectInfo = {} as ProjectInfo;
+    project = {} as Project;
     projectTeam = {} as ProjectTeam;
-    private readonly projectInfoCache: ProjectInfoCacheMock;
+    private readonly projectCache: ProjectCache;
     private readonly projectTeamCache: ProjectTeamCache;
     private invitationsCache: InvitationsCache = new InvitationsCache(this.projectId);
     private availableHackers = [
@@ -56,18 +59,17 @@ export class InviteHackers extends View {
     private invitedHackers: Hacker[] = [];
 
 
-    constructor(params: { projectId: string }) {
+    constructor(params: {projectId: string}) {
         super();
-        // this.projectId = params.projectId;
-        console.log(this.projectId)
-        this.projectInfoCache = CACHE_STORE.getProjectInfo(this.projectId);
+        this.projectId = params.projectId;
+        this.projectCache = CACHE_STORE.getProject(this.projectId);
         this.projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId);
     }
 
     async loadData(): Promise<void> {
         try {
-            this.projectInfo = await this.projectInfoCache.get(false, this.projectId) as ProjectInfo;
-            console.log(this.projectInfo)
+            this.project = await this.projectCache.get(false, this.projectId) as Project;
+            console.log(this.project)
             this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
         } catch (error) {
             console.error('Failed to load project data:', error);
@@ -156,9 +158,9 @@ export class InviteHackers extends View {
         $(parent, 'div', 'client-invitations', {}, (q) => {
             $(q, 'div', 'section-header', {}, (q) => {
                 $(q, 'h1', 'section-title', {}, (q) => {
-                    q.innerHTML = "Invite Hackers | " + `${(this.projectInfo.title)} - #${this.projectInfo.id}`;
+                    q.innerHTML = "Invite Hackers | " + `${(this.project.title)} - #${this.project.projectId}`;
                 });
-                $(q, 'p', '', {}, this.projectInfo.description)
+                $(q, 'p', '', {}, this.project.description)
             });
             $(q, 'div', 'sections', {}, (q) => {
                 $(q, 'div', 'section-content project-brief', {}, (q) => {
@@ -212,5 +214,5 @@ export class InviteHackers extends View {
     }
 }
 
-export const clientHackerInvitationsViewHandler = new ViewHandler('/invite-hackers', InviteHackers);
+export const clientHackerInvitationsViewHandler = new ViewHandler(`/invite-hackers/{projectId}`, InviteHackers);
 
