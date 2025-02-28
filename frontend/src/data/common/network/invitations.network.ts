@@ -36,4 +36,11 @@ export class InvitationEndpoints {
             }
         )
     }
+
+    static async filterHackers(projectId: string){
+        return NETWORK.sendHttpRequest(
+            'GET',
+            `/api/invitations/filter/${projectId}`
+        )
+    }
 }
