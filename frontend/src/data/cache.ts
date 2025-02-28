@@ -9,7 +9,7 @@ import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLea
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
-import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
+import { ProjectTeamCache} from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
 
 import { UserProfileCache } from './user/cache/userProfile';
