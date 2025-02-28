@@ -36,6 +36,9 @@ export class TagInput {
       },
       name: options.name,
       onKeyDown: (e: KeyboardEvent) => this.handleKeyDown(e),
+      onFocus: (e: Event) => {
+        this.renderAutocomplete();
+      },
     });
     this.updateTags = options!.onChange;
   }
@@ -103,6 +106,18 @@ export class TagInput {
           $(q, 'div', `autocomplete-container autocomplete-container-${this.name}`, {});
         });
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if ((target && target.classList.contains('autocomplete-item')) || (target && target.classList.contains('tag-input'))) {
+        return;
+      } else {
+        const autocompleteContainer = document.querySelector(`.autocomplete-container-${this.name}`);
+        if (autocompleteContainer) {
+          autocompleteContainer.innerHTML = '';
+        }
+      }
     });
   }
 }
