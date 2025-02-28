@@ -23,7 +23,7 @@ export class Autocomplete {
   render(q: Quark) {
     const filteredSuggestions = this.suggestions.filter((suggestion) => suggestion.toLowerCase().startsWith(this.inputValue.toLowerCase()) && !this.selectedTags.includes(suggestion));
 
-    if (!this.inputValue || filteredSuggestions.length === 0) {
+    if (filteredSuggestions.length === 0) {
       return;
     }
 
