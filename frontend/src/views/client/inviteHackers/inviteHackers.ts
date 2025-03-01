@@ -3,21 +3,10 @@ import {CACHE_STORE} from '@data/cache';
 import {View, ViewHandler} from "@ui_lib/view";
 import {Card} from "@components/card/card.base";
 import {Button} from "@components/button/base";
-import {ProjectInfo, ProjectInfoCacheMock} from "@data/validator/cache/projectInfo";
 import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
 import './inviteHackers.scss'
-import {InvitationsCache} from "@data/common/cache/invitations.cache";
+import {InvitationsCache, Hacker} from "@data/common/cache/invitations.cache";
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
-import {router} from "@ui_lib/router";
-import {extractPathParams, extractQueryParams} from "@ui_lib/utils";
-
-interface Hacker {
-    id: number,
-    name: string,
-    email: string,
-    blastPoints: number,
-    areaOfExpertise: string
-}
 
 export class InviteHackers extends View {
     projectId: string = "1";
@@ -26,36 +15,37 @@ export class InviteHackers extends View {
     private readonly projectCache: ProjectCache;
     private readonly projectTeamCache: ProjectTeamCache;
     private invitationsCache: InvitationsCache = new InvitationsCache(this.projectId);
-    private availableHackers = [
-        {
-            id: 104,
-            name: "David Brown",
-            email: "david.brown@example.com",
-            blastPoints: 85,
-            areaOfExpertise: "Web Application Penetration Testing",
-        },
-        {
-            id: 105,
-            name: "Emma Johnson",
-            email: "emma.johnson@example.com",
-            blastPoints: 92,
-            areaOfExpertise: "Network Security Analysis",
-        },
-        {
-            id: 108,
-            name: "Hannah Lopez",
-            email: "hannah.lopez@example.com",
-            blastPoints: 90,
-            areaOfExpertise: "Social Engineering and Phishing Attacks",
-        },
-        {
-            id: 109,
-            name: "Ian Martinez",
-            email: "ian.martinez@example.com",
-            blastPoints: 89,
-            areaOfExpertise: "Cloud Security Penetration Testing",
-        },
-    ];
+    private availableHackers: Hacker[] = [];
+    // private availableHackers = [
+    //     {
+    //         id: 104,
+    //         name: "David Brown",
+    //         email: "david.brown@example.com",
+    //         blastPoints: 85,
+    //         areaOfExpertise: "Web Application Penetration Testing",
+    //     },
+    //     {
+    //         id: 105,
+    //         name: "Emma Johnson",
+    //         email: "emma.johnson@example.com",
+    //         blastPoints: 92,
+    //         areaOfExpertise: "Network Security Analysis",
+    //     },
+    //     {
+    //         id: 108,
+    //         name: "Hannah Lopez",
+    //         email: "hannah.lopez@example.com",
+    //         blastPoints: 90,
+    //         areaOfExpertise: "Social Engineering and Phishing Attacks",
+    //     },
+    //     {
+    //         id: 109,
+    //         name: "Ian Martinez",
+    //         email: "ian.martinez@example.com",
+    //         blastPoints: 89,
+    //         areaOfExpertise: "Cloud Security Penetration Testing",
+    //     },
+    // ];
     private invitedHackers: Hacker[] = [];
 
 
@@ -71,6 +61,7 @@ export class InviteHackers extends View {
             this.project = await this.projectCache.get(false, this.projectId) as Project;
             console.log(this.project)
             this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
+            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
         } catch (error) {
             console.error('Failed to load project data:', error);
         }
@@ -110,7 +101,7 @@ export class InviteHackers extends View {
                             $(q, 'div', 'description', {}, (q) => {
                                 $(q, 'span', '', {}, (q) => {
                                     $(q, 'p', 'key', {}, 'Area of Expertise');
-                                    $(q, 'p', 'value', {}, hacker.areaOfExpertise);
+                                    // $(q, 'p', 'value', {}, hacker.areaOfExpertise);
                                 });
                                 $(q, 'p', 'value link', {}, hacker.email);
                             });
@@ -126,7 +117,7 @@ export class InviteHackers extends View {
                                 $(q, 'span', 'key', {}, (q) => {
                                     $(q, 'i', 'fa-solid fa-bomb', {});
                                 });
-                                $(q, 'sapn', 'value', {}, hacker.blastPoints.toString());
+                                $(q, 'sapn', 'value', {}, hacker.points.toString());
                             });
                         });
                     }),

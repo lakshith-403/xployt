@@ -15,6 +15,20 @@ interface InvitationInfo {
     timestamp: string;
 }
 
+export interface Hacker {
+    id: number,
+    name: string,
+    email: string,
+    points: number,
+}
+
+interface FilteredHackersResponse {
+    data: Hacker[],
+    is_successful: false,
+    error?: string,
+    trace?: string,
+}
+
 export class Invitation {
     hackerId: number;
     projectId: number;
@@ -116,5 +130,25 @@ export class InvitationsCache extends CacheObject<Invitation[]> {
             .map((invitationInfo: InvitationInfo) => {
                 return new Invitation({...invitationInfo});
             });
+    }
+
+    async filterHackers(projectId: string): Promise<Hacker[]>{
+        console.log("Filtering available Hackers for project ", projectId)
+        let res : FilteredHackersResponse
+
+        try{
+            res = await InvitationEndpoints.filterHackers(projectId) as FilteredHackersResponse
+            console.log("Filtered hackers:", res);
+        }catch (error){
+            console.error("Failed to filter hackers:", error);
+            throw new DataFailure('filter hackers', 'Network error');
+        }
+
+        if(!res.is_successful){
+            console.error('Failed to filter hackers:', res.error);
+            throw new DataFailure('filter hackers', res.error ?? '');
+        }
+
+        return res.data;
     }
 }
