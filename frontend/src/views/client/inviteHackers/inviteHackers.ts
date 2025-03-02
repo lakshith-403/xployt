@@ -3,86 +3,81 @@ import {CACHE_STORE} from '@data/cache';
 import {View, ViewHandler} from "@ui_lib/view";
 import {Card} from "@components/card/card.base";
 import {Button} from "@components/button/base";
-import {ProjectInfo, ProjectInfoCacheMock} from "@data/validator/cache/projectInfo";
 import {ProjectTeamCache, ProjectTeam} from "@data/common/cache/projectTeam.cache";
 import './inviteHackers.scss'
-import {InvitationsCache} from "@data/common/cache/invitations.cache";
+import {InvitationsCache, Hacker} from "@data/common/cache/invitations.cache";
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
-import {router} from "@ui_lib/router";
-import {extractPathParams, extractQueryParams} from "@ui_lib/utils";
-
-interface Hacker {
-    id: number,
-    name: string,
-    email: string,
-    blastPoints: number,
-    areaOfExpertise: string
-}
+import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
+import LoadingScreen from "@components/loadingScreen/loadingScreen";
 
 export class InviteHackers extends View {
-    projectId: string = "1";
+    private projectId: string;
     project = {} as Project;
     projectTeam = {} as ProjectTeam;
     private readonly projectCache: ProjectCache;
     private readonly projectTeamCache: ProjectTeamCache;
-    private invitationsCache: InvitationsCache = new InvitationsCache(this.projectId);
-    private availableHackers = [
-        {
-            id: 104,
-            name: "David Brown",
-            email: "david.brown@example.com",
-            blastPoints: 85,
-            areaOfExpertise: "Web Application Penetration Testing",
-        },
-        {
-            id: 105,
-            name: "Emma Johnson",
-            email: "emma.johnson@example.com",
-            blastPoints: 92,
-            areaOfExpertise: "Network Security Analysis",
-        },
-        {
-            id: 108,
-            name: "Hannah Lopez",
-            email: "hannah.lopez@example.com",
-            blastPoints: 90,
-            areaOfExpertise: "Social Engineering and Phishing Attacks",
-        },
-        {
-            id: 109,
-            name: "Ian Martinez",
-            email: "ian.martinez@example.com",
-            blastPoints: 89,
-            areaOfExpertise: "Cloud Security Penetration Testing",
-        },
-    ];
+    private invitationsCache: InvitationsCache;
+    private clientInvitationsCache: ClientInvitationsCache;
+    private availableHackers: Hacker[] = [];
     private invitedHackers: Hacker[] = [];
+    // private availableHackers = [
+    //     {
+    //         id: 104,
+    //         name: "David Brown",
+    //         email: "david.brown@example.com",
+    //         blastPoints: 85,
+    //         areaOfExpertise: "Web Application Penetration Testing",
+    //     },
+    //     {
+    //         id: 105,
+    //         name: "Emma Johnson",
+    //         email: "emma.johnson@example.com",
+    //         blastPoints: 92,
+    //         areaOfExpertise: "Network Security Analysis",
+    //     },
+    //     {
+    //         id: 108,
+    //         name: "Hannah Lopez",
+    //         email: "hannah.lopez@example.com",
+    //         blastPoints: 90,
+    //         areaOfExpertise: "Social Engineering and Phishing Attacks",
+    //     },
+    //     {
+    //         id: 109,
+    //         name: "Ian Martinez",
+    //         email: "ian.martinez@example.com",
+    //         blastPoints: 89,
+    //         areaOfExpertise: "Cloud Security Penetration Testing",
+    //     },
+    // ];
 
-
-    constructor(params: {projectId: string}) {
+    constructor(params: { projectId: string }) {
         super();
         this.projectId = params.projectId;
         this.projectCache = CACHE_STORE.getProject(this.projectId);
         this.projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId);
+        this.invitationsCache = new InvitationsCache(this.projectId);
+        this.clientInvitationsCache = CACHE_STORE.getInvitedHackers(this.projectId);
     }
 
     async loadData(): Promise<void> {
         try {
             this.project = await this.projectCache.get(false, this.projectId) as Project;
-            console.log(this.project)
             this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
+            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
+            this.invitedHackers = await this.clientInvitationsCache.get(false, this.projectId);
         } catch (error) {
             console.error('Failed to load project data:', error);
         }
     }
 
-    async sendInvitation(hackerId: string, parent:Quark): Promise<void> {
+    async sendInvitation(hackerId: string, parent: Quark): Promise<void> {
         try {
             // Send the invitation
             await this.invitationsCache.create(this.projectId, hackerId);
 
             // Update the lists
-            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.id === parseInt(hackerId));
+            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.userId === parseInt(hackerId));
             if (hackerIndex !== -1) {
                 const [invitedHacker] = this.availableHackers.splice(hackerIndex, 1);
                 this.invitedHackers.push(invitedHacker);
@@ -98,7 +93,7 @@ export class InviteHackers extends View {
         }
     }
 
-    private renderHackerList(q: Quark,  hackers: Hacker[], parent: Quark) {
+    private renderHackerList(q: Quark, hackers: Hacker[], parent: Quark) {
         q.innerHTML = '';
         hackers.forEach((hacker) => {
             new Card({
@@ -110,7 +105,10 @@ export class InviteHackers extends View {
                             $(q, 'div', 'description', {}, (q) => {
                                 $(q, 'span', '', {}, (q) => {
                                     $(q, 'p', 'key', {}, 'Area of Expertise');
-                                    $(q, 'p', 'value', {}, hacker.areaOfExpertise);
+                                    // hacker.skills.forEach((skill) => {
+                                    //     $(q, 'p', 'value', {}, skill);
+                                    // });
+                                    $(q, 'p', 'value', {},);
                                 });
                                 $(q, 'p', 'value link', {}, hacker.email);
                             });
@@ -118,15 +116,15 @@ export class InviteHackers extends View {
                         $(q, 'div', 'points', {}, (q) => {
                             new Button({
                                 label: 'Invite',
-                                onClick: () => {
-                                    this.sendInvitation(hacker.id.toString(), parent);
+                                onClick: async () => {
+                                    await this.sendInvitation(hacker.userId.toString(), parent);
                                 }
                             }).render(q)
                             $(q, 'span', 'data-field', {}, (q) => {
                                 $(q, 'span', 'key', {}, (q) => {
                                     $(q, 'i', 'fa-solid fa-bomb', {});
                                 });
-                                $(q, 'sapn', 'value', {}, hacker.blastPoints.toString());
+                                $(q, 'sapn', 'value', {}, hacker.points.toString());
                             });
                         });
                     }),
@@ -140,9 +138,28 @@ export class InviteHackers extends View {
             hackers.forEach(hacker => {
                 new Card({
                     title: hacker.name,
-                    content: $(q, 'div', 'description', {}, (q) => {
-                        $(q, 'p', 'value', {}, hacker.name);
-                        $(q, 'p', 'value link', {}, hacker.email);
+                    content: $(q, 'div', 'card-content', {}, (q) => {
+                        $(q, 'div', 'details', {}, (q) => {
+                            $(q, 'span', 'card-title', {}, `${hacker.name}`)
+                            $(q, 'div', 'description', {}, (q) => {
+                                $(q, 'span', '', {}, (q) => {
+                                    $(q, 'p', 'key', {}, 'Area of Expertise');
+                                    // hacker.skills.forEach((skill) => {
+                                    //     $(q, 'p', 'value', {}, skill);
+                                    // });
+                                    $(q, 'p', 'value', {},);
+                                });
+                                $(q, 'p', 'value link', {}, hacker.email);
+                            });
+                        })
+                        $(q, 'div', 'points', {}, (q) => {
+                            $(q, 'span', 'data-field', {}, (q) => {
+                                $(q, 'span', 'key', {}, (q) => {
+                                    $(q, 'i', 'fa-solid fa-bomb', {});
+                                });
+                                $(q, 'sapn', 'value', {}, hacker.points.toString());
+                            });
+                        });
                     }),
                 }).render(q);
             });
@@ -154,7 +171,13 @@ export class InviteHackers extends View {
     async render(container: Quark): Promise<void> {
         const parent: Quark = container;
         parent.innerHTML = '';
+
+        const loading = new LoadingScreen(container);
+
+        loading.show();
         await this.loadData();
+        loading.hide();
+
         $(parent, 'div', 'client-invitations', {}, (q) => {
             $(q, 'div', 'section-header', {}, (q) => {
                 $(q, 'h1', 'section-title', {}, (q) => {

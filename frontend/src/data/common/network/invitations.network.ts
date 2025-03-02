@@ -1,34 +1,42 @@
 import NETWORK, {Response} from "@data/network/network";
 
 export class InvitationEndpoints {
+    private static readonly BASE_URL = `/api/invitations`;
     static async getHackerInvitations(userId: string): Promise<Response> {
         return NETWORK.sendHttpRequest(
             'GET',
-            `/api/invitations/hacker/${userId}`
+            `${this.BASE_URL}/hacker/${userId}`
         );
     }
 
     static async getProjectInvitations(projectId: string): Promise<Response>{
         return NETWORK.sendHttpRequest(
             'GET',
-            `/api/invitations/project/${projectId}`
+            `${this.BASE_URL}/project/${projectId}`
         )
     }
 
     static async createInvitation(projectId: string, hackerId: string){
         return NETWORK.sendHttpRequest(
             'POST',
-            '/api/invitations/hacker',
+            `${this.BASE_URL}/client`,
             {
                 projectId: projectId,
                 hackerId: hackerId
             }
         )
     }
+
+    static async getInvitedHackers(projectId: string){
+        return NETWORK.sendHttpRequest(
+            'GET',
+            `${this.BASE_URL}/client/${projectId}`
+        )
+    }
     static async acceptInvitation(projectId: string, hackerId: string, accept: boolean){
         return NETWORK.sendHttpRequest(
             'PUT',
-            `/api/invitations/hacker/`,
+            `${this.BASE_URL}/hacker/`,
             {
                 projectId: projectId,
                 hackerId: hackerId,
@@ -40,7 +48,7 @@ export class InvitationEndpoints {
     static async filterHackers(projectId: string){
         return NETWORK.sendHttpRequest(
             'GET',
-            `/api/invitations/filter/${projectId}`
+            `${this.BASE_URL}/filter/${projectId}`
         )
     }
 }

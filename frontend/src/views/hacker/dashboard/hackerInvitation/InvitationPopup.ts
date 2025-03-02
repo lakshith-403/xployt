@@ -1,21 +1,20 @@
 import {QuarkFunction as $} from '@ui_lib/quark';
-import {CACHE_STORE} from '@data/cache';
 import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
 import './InvitationPopup.scss'
 import {IconButton} from "@components/button/icon.button";
 import {ButtonType} from "@components/button/base";
-import {InvitationsCache} from "@data/common/cache/invitations.cache";
 import {Project} from "@data/common/cache/project.cache";
+import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
 
 export class InvitationPopup {
     private projectInfo: Project;
     private hackerId: string;
-    private invitationsCache: InvitationsCache;
+    private invitationsCache: HackerInvitationsCache;
 
     constructor(params: { projectInfo: Project, hackerId: string }) {
         this.projectInfo = params.projectInfo;
         this.hackerId = params.hackerId;
-        this.invitationsCache = CACHE_STORE.getHackerInvitations(this.hackerId) as InvitationsCache;
+        this.invitationsCache = new HackerInvitationsCache(this.hackerId);
     }
 
     private async acceptInvitation(): Promise<void> {

@@ -1,18 +1,33 @@
 import {CacheObject, DataFailure} from '../../cacheBase';
 import {InvitationEndpoints} from "@data/common/network/invitations.network";
 
-interface InvitationsResponse {
+export interface InvitationsResponse {
     data: InvitationInfo[];
     is_successful: boolean;
     error?: string;
     trace?: string;
 }
 
-interface InvitationInfo {
+export interface InvitationInfo {
     hackerId: number;
     projectId: number;
     status: string;
     timestamp: string;
+}
+
+export interface Hacker {
+    userId: number,
+    name: string,
+    email: string,
+    points: number,
+    skills: string[]
+}
+
+export interface HackersResponse {
+    data: Hacker[],
+    is_successful: false,
+    error?: string,
+    trace?: string,
 }
 
 export class Invitation {
@@ -30,17 +45,17 @@ export class Invitation {
 }
 
 export class InvitationsCache extends CacheObject<Invitation[]> {
-    private hackerId;
-    constructor(hackerId: string) {
+    private projectId;
+    constructor(projectId: string) {
         super();
-        this.hackerId = hackerId;
+        this.projectId = projectId;
     }
     async load(projectId: string): Promise<Invitation[]> {
         console.log(`Loading invitations of project ${projectId}`);
         let res: InvitationsResponse;
 
         try {
-            res = (await InvitationEndpoints.getHackerInvitations(this.hackerId)) as InvitationsResponse;
+            res = (await InvitationEndpoints.getProjectInvitations(this.projectId)) as InvitationsResponse;
             console.log("Cache: inv.data", res.data);
         } catch (error) {
             console.log('Network error while fetching invitations', error);
@@ -91,30 +106,23 @@ export class InvitationsCache extends CacheObject<Invitation[]> {
             });
     }
 
-    async accept(projectId: string, hackerId: string, accept: boolean): Promise<Invitation[]> {
-        console.log(`Accepting invitation for project ${projectId} and hacker ${hackerId}`);
-        let res: InvitationsResponse;
-        try {
-            res = await InvitationEndpoints.acceptInvitation(projectId, hackerId, accept);
-            console.log(res)
-        } catch (error) {
-            console.error('Failed to accept invitation:', error);
-            throw new DataFailure('accept invitation', 'Network error');
-        }
-        if (!res.is_successful) {
-            console.error('Failed to load invitations:', res.error);
-            throw new DataFailure('load invitation', res.error ?? '');
+    async filterHackers(projectId: string): Promise<Hacker[]>{
+        console.log("Filtering available Hackers for project ", projectId)
+        let res : HackersResponse
+
+        try{
+            res = await InvitationEndpoints.filterHackers(projectId) as HackersResponse
+            console.log("Filtered hackers:", res);
+        }catch (error){
+            console.error("Failed to filter hackers:", error);
+            throw new DataFailure('filter hackers', 'Network error');
         }
 
-        // if (!Array.isArray(res.data)) {
-        //     console.error('Unexpected data format:', res.data);
-        //     throw new Error('Invalid API response: Expected an array');
-        // }
+        if(!res.is_successful){
+            console.error('Failed to filter hackers:', res.error);
+            throw new DataFailure('filter hackers', res.error ?? '');
+        }
 
-        return [res.data]
-            .flat()
-            .map((invitationInfo: InvitationInfo) => {
-                return new Invitation({...invitationInfo});
-            });
+        return res.data;
     }
 }
