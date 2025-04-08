@@ -20,11 +20,11 @@ export class PopupTable extends ClickableTable {
         $(q, 'div', 'table-row', {}, (q) => {
           Object.values(item).forEach((element, index) => {
             if (typeof element === 'string' || typeof element === 'number') {
-              console.log('string', element);
+              // console.log('string', element);
               $(q, 'span', 'table-cell', {}, element.toString());
             } else if (typeof element.render === 'function') {
               $(q, 'span', 'table-cell', {}, (q) => {
-                console.log('encountered element', element);
+                // console.log('encountered element', element);
                 element.render(q);
               });
             }

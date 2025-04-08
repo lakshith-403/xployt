@@ -1,19 +1,20 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import './dashboard.scss'
-import {Invitation, InvitationsCache} from "@data/common/cache/invitations.cache";
+import {Invitation} from "@data/common/cache/invitations.cache";
 import {CACHE_STORE} from "@data/cache";
 import {dashHackerSummary} from "./dashboardComponents/dashHackerSummary";
 import {dashHackerInvitations} from "@views/hacker/dashboard/dashboardComponents/dashHackerInvitations";
 import {ProjectBrief, UserProjectsCache} from "@data/common/cache/projects.cache";
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
 import {dashHackerProjects} from "@views/hacker/dashboard/dashboardComponents/dashHackerProjects";
+import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
 
 export class HackerDashboard extends View {
     private userId: string
     private invitations: Invitation[] = [];
     private projects: ProjectBrief[] = [];
-    private readonly invitationCache: InvitationsCache;
+    private readonly invitationCache: HackerInvitationsCache;
     private projectsCache = new UserProjectsCache();
 
     constructor(params: {userId: string}) {

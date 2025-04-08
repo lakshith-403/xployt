@@ -10,6 +10,7 @@ export class OverviewReports {
   private params: { reportId: string };
   private reportsCache: ReportsCache;
   private userCache: UserCache;
+  // todo: retrieve from backend
   private reports: { id: number; status: string; title: string; date: string }[] = [
     {
       id: 1,

@@ -16,6 +16,8 @@ import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
 import {ProjectCache} from "@data/common/cache/project.cache";
+import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
+import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
 
 class CacheStore {
   private readonly user: UserCache;
@@ -26,7 +28,9 @@ class CacheStore {
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   // private readonly clientMap: Map<string, ClientCache>; // No longer needed
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
-  private readonly invitationsMap: Map<string, InvitationsCache>;
+  private readonly HackerInvitationsMap: Map<string, HackerInvitationsCache>;
+  private readonly ProjectInvitationsMap: Map<string, InvitationsCache>;
+  private readonly InvitedHackersMap: Map<string, ClientInvitationsCache>;
   private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
@@ -44,7 +48,9 @@ class CacheStore {
     this.projectConfigInfoMap = new Map();
     // this.clientMap = new Map();
     this.notificationsListMap = new Map();
-    this.invitationsMap = new Map();
+    this.HackerInvitationsMap = new Map();
+    this.ProjectInvitationsMap = new Map();
+    this.InvitedHackersMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
@@ -143,17 +149,24 @@ class CacheStore {
   }
 
   public getProjectInvitations(projectId: string): InvitationsCache {
-    if (!this.invitationsMap.has(projectId)) {
-      this.invitationsMap.set(projectId, new InvitationsCache(projectId));
+    if (!this.ProjectInvitationsMap.has(projectId)) {
+      this.ProjectInvitationsMap.set(projectId, new InvitationsCache(projectId));
     }
-    return this.invitationsMap.get(projectId)!;
+    return this.ProjectInvitationsMap.get(projectId)!;
   }
 
-  public getHackerInvitations(hackerId: string): InvitationsCache {
-    if (!this.invitationsMap.has(hackerId)) {
-      this.invitationsMap.set(hackerId, new InvitationsCache(hackerId));
+  public getInvitedHackers(projectId: string): ClientInvitationsCache {
+    if(!this.InvitedHackersMap.has(projectId)){
+      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId))
     }
-    return this.invitationsMap.get(hackerId)!;
+    return this.InvitedHackersMap.get(projectId)!;
+  }
+
+  public getHackerInvitations(hackerId: string): HackerInvitationsCache {
+    if (!this.HackerInvitationsMap.has(hackerId)) {
+      this.HackerInvitationsMap.set(hackerId, new HackerInvitationsCache(hackerId));
+    }
+    return this.HackerInvitationsMap.get(hackerId)!;
   }
 
   public getDiscussion(discussionId: string): DiscussionCache {

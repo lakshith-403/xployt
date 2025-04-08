@@ -1,4 +1,4 @@
-import { QuarkFunction as $ } from '@ui_lib/quark';
+import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { IconButton } from '@components/button/icon.button';
 import { ButtonType } from '@components/button/base';
@@ -10,26 +10,19 @@ import { router } from '@/ui_lib/router';
 export class ApplicationPopup {
   private readonly userId: string;
   private application: any;
-
-  constructor(params: { userId: string }) {
+  private renderFunction: (q: Quark) => Promise<void>;
+  constructor(params: { userId: string; renderFunction: (q: Quark) => Promise<void> }) {
     this.userId = params.userId;
+    this.renderFunction = params.renderFunction;
   }
 
   async loadData(): Promise<void> {
     try {
-      const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`, { showLoading: true });
+      const response = await NETWORK.get(`/api/admin/applicationData/${this.userId}`);
       this.application = response.data.applicationData[0];
       console.log('application data: ', this.application);
     } catch (error: any) {
       console.error('Failed to load project data', error);
-      setContent(modalAlertForErrors, {
-        '.modal-title': 'Error',
-        '.modal-message': `Failed to load project data: ${error.message ?? 'N/A'} `,
-        '.modal-data': error.data ?? 'Data not available',
-        '.modal-servletClass': error.servlet ?? 'Servlet not available',
-        '.modal-url': error.url ?? 'URL not available',
-      });
-      ModalManager.show('alertForErrors', modalAlertForErrors);
       throw error;
     }
   }
@@ -46,8 +39,8 @@ export class ApplicationPopup {
     }
     // loading.hide();
 
-    $(parent, 'div', 'hacker-application', {}, (q) => {
-      $(q, 'div', 'content', {}, (q) => {
+    const overlay = $(parent, 'div', 'hacker-application position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center', {}, (q) => {
+      $(q, 'div', 'position-relative mx-auto container-md bg-secondary px-3 py-2 rounded-3', {}, (q) => {
         $(q, 'div', 'heading', {}, (q) => {
           $(q, 'h3', '', {}, 'Applicant Details');
         });
@@ -64,7 +57,7 @@ export class ApplicationPopup {
         });
 
         $(q, 'ul', '', {}, (q) => {});
-        $(q, 'div', 'buttons', {}, (q) => {
+        $(q, 'div', 'buttons d-flex flex-row gap-2', {}, (q) => {
           new IconButton({
             type: ButtonType.PRIMARY,
             icon: 'fa-solid fa-check',
@@ -77,17 +70,16 @@ export class ApplicationPopup {
                   '.modal-title': 'Success',
                   '.modal-message': 'Application accepted successfully',
                 });
-                ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(async () => {
+                  NETWORK.invalidateCache('/api/admin/validatorApplications');
+                  this.closePopup(overlay);
+                  this.renderFunction(q);
+                });
               } catch (error: any) {
                 console.error('Failed to accept application', error);
-                setContent(modalAlertForErrors, {
-                  '.modal-title': 'Error',
-                  '.modal-message': `Failed to accept application: ${error.message ?? 'N/A'} `,
-                  '.modal-data': error.data ?? 'Data not available',
-                  '.modal-servletClass': error.servlet ?? 'Servlet not available',
-                  '.modal-url': error.url ?? 'URL not available',
-                });
-                ModalManager.show('alertForErrors', modalAlertForErrors);
+                NETWORK.invalidateCache('/api/admin/validatorApplications');
+                this.closePopup(overlay);
+                this.renderFunction(q);
               }
             },
           }).render(q);
@@ -98,32 +90,33 @@ export class ApplicationPopup {
             onClick: async () => {
               console.log('Reject Application');
               try {
-                await NETWORK.post(`/api/admin/validatorApplications`, { userId: this.userId, status: 'rejected' }, { showLoading: true });
+                await NETWORK.post(`/api/admin/validatorApplications`, { userId: this.userId, status: 'rejected' });
                 setContent(modalAlertOnlyOK, {
                   '.modal-title': 'Success',
                   '.modal-message': 'Application rejected successfully',
                 });
-                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
-                  router.navigateTo('/admin/validatorApplications');
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(async () => {
+                  NETWORK.invalidateCache('/api/admin/validatorApplications');
+                  this.closePopup(overlay);
+                  this.renderFunction(q);
                 });
               } catch (error: any) {
                 console.error('Failed to reject application', error);
-                setContent(modalAlertForErrors, {
-                  '.modal-title': 'Error',
-                  '.modal-message': `Failed to reject application: ${error.message ?? 'N/A'} `,
-                  '.modal-data': error.data ?? 'Data not available',
-                  '.modal-servletClass': error.servlet ?? 'Servlet not available',
-                  '.modal-url': error.url ?? 'URL not available',
-                });
-                ModalManager.show('alertForErrors', modalAlertForErrors, true).then(async () => {
-                  const response = await NETWORK.get('/api/admin/validatorApplications', { showLoading: true, handleError: true });
-                  console.log('response: ', response);
-                });
+                NETWORK.invalidateCache('/api/admin/validatorApplications');
+                this.closePopup(overlay);
+                this.renderFunction(q);
               }
             },
           }).render(q);
         });
       });
+    });
+
+    overlay.addEventListener('click', (event) => {
+      console.log('clicked on event: ', event.target);
+      if (event.target === overlay) {
+        this.closePopup(overlay);
+      }
     });
   }
 
