@@ -10,6 +10,8 @@ import PieChart from '@/components/charts/pieChart';
 import { CustomTable } from '@/components/table/customTable';
 import * as utils from '@/ui_lib/utils';
 import { CACHE_STORE } from '@/data/cache';
+import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
+import { router } from '@/ui_lib/router';
 export class ProjectLeadDashboard extends View {
   private applicationsTableContent: ContentItem[] = [];
   private applicationsTableContainer!: HTMLElement;
@@ -99,6 +101,11 @@ export class ProjectLeadDashboard extends View {
         className: 'table-users py-1 mb-4',
         options: {
           noDataMessage: 'No projects to show',
+          callback: (project) => {
+            BREADCRUMBS.addBreadcrumb({ label: 'Projects', link: '/projects' });
+            BREADCRUMBS.addBreadcrumb({ label: project.projectId.toString(), link: `/projects/${project.projectId}` });
+            router.navigateTo(`/projects/${project.projectId}`);
+          },
         },
       });
       table.render(this.recentProjectsContainer);

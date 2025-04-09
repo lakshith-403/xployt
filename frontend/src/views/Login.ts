@@ -110,9 +110,11 @@ export class LoginView extends View {
         console.log('User logged in:', user);
 
         // Method 1: Using a promise
-        ModalManager.show('loginAlert', modalElement, true).then(() => {
-          console.log('ModalManager.show resolved');
-        });
+        // ModalManager.show('loginAlert', modalElement, true).then(() => {
+        //   console.log('ModalManager.show resolved');
+        // });
+        router.navigateTo('/dashboard');
+
         // Method 2 : Basic modal
         // ModalManager.show('loginAlert', modalElement);
       })
