@@ -46,6 +46,7 @@ class ProjectConfigForm extends View {
     medium: [],
     low: [],
     informative: [],
+    totalFunding: null,
     // visibility: '',
     attachments: null as File | null,
     initialFunding: null,
@@ -61,6 +62,7 @@ class ProjectConfigForm extends View {
     outOfScope: 'string|comma',
     objectives: 'string|comma',
     securityRequirements: 'string|comma',
+    totalFunding: 'number|null',
     critical: 'object|string',
     high: 'object|string',
     medium: 'object|string',
@@ -113,6 +115,20 @@ class ProjectConfigForm extends View {
         UIManager.showErrorModalBrief('At least one severity and funding pair must be fully filled.');
         return;
       }
+
+      // Check if total funding is greater than the highest individual severity funding
+      const highestFunding = Math.max(
+        Number(formState.criticalFunding) || 0,
+        Number(formState.highFunding) || 0,
+        Number(formState.mediumFunding) || 0,
+        Number(formState.lowFunding) || 0,
+        Number(formState.informativeFunding) || 0
+      );
+
+      if (Number(formState.totalFunding) < highestFunding) {
+        UIManager.showErrorModalBrief('Total funding must be greater than the highest severity funding.');
+        return;
+      }
       await submitProjectConfig(this.params.projectId, formState, this.configured);
     } catch (error) {
       console.error('Error during form submission:', error);
@@ -126,9 +142,10 @@ class ProjectConfigForm extends View {
         step: new TestingSecurity(),
         stateUsed: {
           testingScope: 'required',
-          outOfScope: 'required',
-          objectives: 'required',
-          securityRequirements: 'required',
+          outOfScope: 'optional',
+          objectives: 'optional',
+          securityRequirements: 'optional',
+          totalFunding: 'required',
         },
       },
       {

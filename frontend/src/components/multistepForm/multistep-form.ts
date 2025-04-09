@@ -241,10 +241,8 @@ class MultistepForm {
   private checkIfRequiredFieldsAreFilled(): boolean {
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
-        // console.log(key, this.formState[key]);
-        // console.log(key, this.formState[key], this.formState);
         const fieldValue = this.formState[key];
-        if (fieldValue === undefined || fieldValue === '') {
+        if (fieldValue === undefined || fieldValue === '' || fieldValue === null) {
           //console.log(`Field "${key}" is required but is empty`);
           return false;
         }
