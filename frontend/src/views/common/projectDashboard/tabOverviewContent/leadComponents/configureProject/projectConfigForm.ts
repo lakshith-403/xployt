@@ -41,12 +41,12 @@ class ProjectConfigForm extends View {
     outOfScope: '',
     objectives: '',
     securityRequirements: '',
+    noOfHackers: null,
     critical: [],
     high: [],
     medium: [],
     low: [],
     informative: [],
-    totalFunding: null,
     // visibility: '',
     attachments: null as File | null,
     initialFunding: null,
@@ -62,7 +62,8 @@ class ProjectConfigForm extends View {
     outOfScope: 'string|comma',
     objectives: 'string|comma',
     securityRequirements: 'string|comma',
-    totalFunding: 'number|null',
+    initialFunding: 'number|null',
+    noOfHackers: 'number|null',
     critical: 'object|string',
     high: 'object|string',
     medium: 'object|string',
@@ -125,8 +126,8 @@ class ProjectConfigForm extends View {
         Number(formState.informativeFunding) || 0
       );
 
-      if (Number(formState.totalFunding) < highestFunding) {
-        UIManager.showErrorModalBrief('Total funding must be greater than the highest severity funding.');
+      if (Number(formState.initialFunding) < highestFunding) {
+        UIManager.showErrorModalBrief('Initial funding must be greater than the highest severity funding.');
         return;
       }
       await submitProjectConfig(this.params.projectId, formState, this.configured);
@@ -145,7 +146,8 @@ class ProjectConfigForm extends View {
           outOfScope: 'optional',
           objectives: 'optional',
           securityRequirements: 'optional',
-          totalFunding: 'required',
+          initialFunding: 'required',
+          noOfHackers: 'required',
         },
       },
       {
