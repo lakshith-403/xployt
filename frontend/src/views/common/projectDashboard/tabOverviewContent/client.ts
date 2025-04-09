@@ -7,7 +7,7 @@ import NETWORK from '@data/network/network';
 import { Button } from '@/components/button/base';
 import { UIManager } from '@ui_lib/UIManager';
 import UserCard from '@components/UserCard';
-import GenericCard from '@components/GenericCard';
+// import GenericCard from '@components/GenericCard';
 // import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
 // import { OverviewBasicInfo } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/basicInfo';
 // import { ProjectInfoCacheMock, ProjectInfo } from '@data/validator/cache/projectInfo';
@@ -25,7 +25,7 @@ export default class Hacker {
   async loadData(): Promise<void> {
     try {
       // this.projectInfo = await this.projectInfoCache.get(false, this.projectId);
-      const response = await NETWORK.get(`/api/single-project/${this.projectId}?role=client`);
+      const response = await NETWORK.get(`/api/single-project/${this.projectId}?role=Client`);
       this.projectInfo = response.data.project;
       console.log('Project Info', this.projectInfo);
     } catch (error) {

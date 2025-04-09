@@ -15,7 +15,7 @@ export default class Lead {
   constructor(private projectId: string) {}
   private async loadData(): Promise<void> {
     try {
-      const response = await NETWORK.get(`/api/single-project/${this.projectId}?role=lead`);
+      const response = await NETWORK.get(`/api/single-project/${this.projectId}?role=ProjectLead`);
       this.projectInfo = response.data.project;
       console.log('this.projectInfo', this.projectInfo);
     } catch (error) {
@@ -40,7 +40,7 @@ export default class Lead {
 
       $(q, 'div', '', {}, (q) => {
         $(q, 'h2', 'sub-heading-2', {}, 'Project Info');
-        UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'visibility', 'technicalStack', 'startDate', 'state'], { className: 'd-flex flex-column gap-1' });
+        UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'technicalStack', 'startDate', 'state', 'initialFunding'], { className: 'd-flex flex-column gap-1' });
       });
 
       $(q, 'div', 'd-flex py-1 flex-column gap-2 w-100', {}, (q) => {
@@ -65,6 +65,19 @@ export default class Lead {
             $(q, 'span', '', {}, 'Client yet to configure project');
           });
         } else if (['Configured'].includes(this.projectInfo.state)) {
+          const outOfScope = this.projectInfo.outOfScope || '';
+          const outOfScopeArray = outOfScope.trim() ? outOfScope.split(',').filter((item: string) => item.trim()) : ['Not specified'];
+          UIManager.listArrayValues(q, 'Out of Scope', outOfScopeArray, { className: 'd-flex flex-column gap-1' });
+
+          const securityRequirements = this.projectInfo.securityRequirements || '';
+          const securityRequirementsArray = securityRequirements.trim() ? securityRequirements.split(',').filter((item: string) => item.trim()) : ['Not specified'];
+          UIManager.listArrayValues(q, 'Security Requirements', securityRequirementsArray, { className: 'd-flex flex-column gap-1' });
+
+          $(q, 'div', '', {}, (q) => {
+            $(q, 'h2', 'sub-heading-2', {}, 'Team Allocation');
+            UIManager.listObjectGivenKeys(q, this.projectInfo, ['noOfValidators', 'noOfHackers'], { className: 'd-flex flex-column gap-1' });
+          });
+
           $(q, 'div', 'd-flex flex-column gap-2 align-items-center', {}, (q) => {
             this.detailedProjectInfoContainer = $(q, 'div', 'd-flex flex-column align-items-start gap-2 w-100', {}, '');
             $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center gap-3 justify-content-center', {}, (q) => {

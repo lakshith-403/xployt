@@ -5,6 +5,7 @@ import ModalManager, { setContent } from '@/components/ModalManager/ModalManager
 
 export class UIManager {
   private static instance: UIManager;
+  private static loadingScreenCounter: number = 0;
 
   private constructor() {}
 
@@ -40,13 +41,17 @@ export class UIManager {
    * @param q - The Quark element to append the list items to.
    * @param object - The object to list the properties of.
    * @param showKeys - An array of keys to show from the object.
+   * @param options - An object containing the following properties:
+   * - className: A string representing the class name to apply to the list items.
+   * - preserveCasing: A boolean indicating whether to preserve the original casing of the keys.
    */
-  public static listObjectGivenKeys(q: Quark, object: any, showKeys: string[] = [], options: { className: string } = { className: '' }): void {
+  public static listObjectGivenKeys(q: Quark, object: any, showKeys: string[] = [], options: { className: string; preserveCasing?: boolean } = { className: '' }): void {
     $(q, 'ul', options.className, {}, (q) => {
       Object.keys(object).forEach((key) => {
         if (!showKeys.includes(key)) return;
         $(q, 'li', '', {}, (q) => {
-          $(q, 'span', '', {}, key);
+          const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+          $(q, 'span', '', {}, displayKey);
           $(q, 'span', '', {}, ' : ');
           $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
         });
@@ -89,11 +94,17 @@ export class UIManager {
   }
 
   static showLoadingScreen(): void {
-    LoadingScreen.show();
+    this.loadingScreenCounter++;
+    if (this.loadingScreenCounter === 1) {
+      LoadingScreen.show();
+    }
   }
 
   static hideLoadingScreen(): void {
-    LoadingScreen.hide();
+    this.loadingScreenCounter = Math.max(0, this.loadingScreenCounter - 1);
+    if (this.loadingScreenCounter === 0) {
+      LoadingScreen.hide();
+    }
   }
 
   static showErrorModal(method: string, url: string, error: any): void {
@@ -157,6 +168,21 @@ export class UIManager {
     return newObject;
   }
 
+  // Example data
+  // const people = [
+  //   { name: "John Doe", age: 30, city: "New York", role: "Developer" },
+  //   { name: "Jane Smith", age: 25, city: "London", role: "Designer" },
+  //   { name: "Bob Johnson", age: 35, city: "Paris", role: "Manager" }
+  // ];
+
+  // // Using the method
+  // UIManager.listArrayObjectValues(
+  //   quarkedElement,  // Your Quark element
+  //   "Team Members",  // Title
+  //   people,          // Array of objects
+  //   ["name", "role", "city"],  // Keys to display
+  //   { className: "team-list" } // Optional CSS class
+  // );
   public static listArrayObjectValues(q: Quark, title: string, objects: any[], keys: string[], options: { className?: string } = {}): void {
     $(q, 'div', 'd-flex flex-column', {}, (q) => {
       $(q, 'h2', 'sub-heading-2', {}, title);
@@ -174,62 +200,35 @@ export class UIManager {
     });
   }
 
-  // public static advancedListObject(q: Quark, object: any, showKeys: string[] = [], options: { className?: string } = {}): void {
-  //   $(q, 'ul', options.className || '', {}, (q) => {
-  //     Object.keys(object).forEach((key) => {
-  //       if (showKeys.length > 0 && !showKeys.includes(key)) return;
-  //       $(q, 'li', '', {}, (q) => {
-  //         // Render the key
-  //         $(q, 'span', '', { style: 'font-weight: bold;' }, key);
-  //         $(q, 'span', '', {}, ' : ');
-
-  //         const value = object[key];
-
-  //         // If value is an object (or array), render recursively with a toggle button
-  //         if (typeof value === 'object' && value !== null) {
-  //           // Create a toggle button to collapse/expand nested content
-  //           $(
-  //             q,
-  //             'button',
-  //             'toggle-button',
-  //             {
-  //               onclick: (event: Event) => {
-  //                 const target = (event.currentTarget as HTMLElement).nextElementSibling;
-  //                 if (target) {
-  //                   (target as HTMLElement).style.display = (target as HTMLElement).style.display === 'none' ? 'block' : 'none';
-  //                 }
-  //               },
-  //             },
-  //             'Toggle'
-  //           );
-
-  //           // Container for nested object/array
-  //           $(q, 'div', 'nested-list', { style: 'display: block; margin-left: 20px;' }, (nestedQ) => {
-  //             if (Array.isArray(value)) {
-  //               // Render array values with indices
-  //               $(nestedQ, 'ul', 'array-list', {}, (arrayQ) => {
-  //                 value.forEach((item, index) => {
-  //                   $(arrayQ, 'li', 'array-item', {}, (itemQ) => {
-  //                     $(itemQ, 'span', 'array-index', { style: 'font-style: italic;' }, `${index}: `);
-  //                     if (typeof item === 'object' && item !== null) {
-  //                       UIManager.advancedListObject(itemQ, item, showKeys, options);
-  //                     } else {
-  //                       $(itemQ, 'span', 'array-value', {}, item.toString());
-  //                     }
-  //                   });
-  //                 });
-  //               });
-  //             } else {
-  //               // Recursively render nested object
-  //               UIManager.advancedListObject(nestedQ, value, showKeys, options);
-  //             }
-  //           });
-  //         } else {
-  //           // Render primitive values directly
-  //           $(q, 'span', 'advanced-value', {}, value.toString());
-  //         }
-  //       });
-  //     });
-  //   });
-  // }
+  /**
+   * Displays an array of elements as a list
+   *
+   * @param q - The Quark element to render the list in
+   * @param title - The title of the list
+   * @param items - Array of items to display
+   * @param options - Optional configuration: className for custom styling
+   *
+   * Example usage:
+   *
+   * const technologies = ["React", "TypeScript", "Node.js", "Express"];
+   *
+   * UIManager.listArrayValues(
+   *   quarkedElement,  // Your Quark element
+   *   "Technologies",  // Title
+   *   technologies,    // Array of items
+   *   { className: "tech-list" } // Optional CSS class
+   * );
+   */
+  public static listArrayValues(q: Quark, title: string, items: any[], options: { className?: string } = {}): void {
+    $(q, 'div', 'd-flex flex-column', {}, (q) => {
+      $(q, 'h2', 'sub-heading-2', {}, title);
+      $(q, 'ul', options.className || '', {}, (q) => {
+        items.forEach((item) => {
+          $(q, 'li', 'list-item', {}, (q) => {
+            $(q, 'span', 'list-item-text', {}, String(item));
+          });
+        });
+      });
+    });
+  }
 }
