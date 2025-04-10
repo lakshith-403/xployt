@@ -76,6 +76,7 @@ ModalManager.includeModal('alertForErrors', {
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
   buttonContainer!: Quark;
+  userType!: Quark;
 
   willUpdate: () => void = () => {};
 
@@ -85,53 +86,15 @@ class TopNavigationView implements NavigationView {
     const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
+      this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
       const notificationList = new NotificationList(false, { userId: '1' });
       const notificationButton = new NotificationButton(notificationList, q);
       notificationButton.render();
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/');
-          },
-        },
-        'Home'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/hacker');
-          },
-        },
-        'Hackers'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/validator/application');
-          },
-        },
-        'Validators'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/client');
-          },
-        },
-        'Organizations'
-      );
+
+      $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/hacker') }, 'Hackers');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/validator/application') }, 'Validators');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -142,6 +105,7 @@ class TopNavigationView implements NavigationView {
     CACHE_STORE.getUser()
       .get()
       .then((user) => {
+        this.userType.innerHTML = user.type ?? '';
         // console.log(user);
         // @ts-ignore
         this.buttonContainer.innerHTML = '';

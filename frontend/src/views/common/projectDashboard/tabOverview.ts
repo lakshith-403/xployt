@@ -4,9 +4,10 @@ import { User, UserCache } from '@data/user';
 import { UserType } from '@data/user';
 import { CACHE_STORE } from '@data/cache';
 // import { ProjectsCache } from '@data/validator/cache/projects.cache';
-import Lead from './tabOverviewContent/lead';
-import Client from './tabOverviewContent/client';
+
 import Hacker from './tabOverviewContent/hacker';
+import CommonOverview from './tabOverviewContent/commonOverview';
+
 import './tabOverview.scss';
 
 export default class Overview {
@@ -35,19 +36,15 @@ export default class Overview {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    switch (this.role) {
-      case 'ProjectLead':
-        const lead = new Lead(this.projectId);
-        lead.render(q);
-        break;
 
-      case 'Client':
-        const client = new Client(this.projectId);
-        client.render(q);
-        break;
+    switch (this.role) {
       case 'Hacker':
         const hacker = new Hacker(this.projectId);
         hacker.render(q);
+        break;
+      default:
+        const defaultOverview = new CommonOverview(this.projectId, this.role);
+        await defaultOverview.render(q);
         break;
     }
   }
