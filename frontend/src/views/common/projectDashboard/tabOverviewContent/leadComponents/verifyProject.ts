@@ -78,8 +78,7 @@ class VerifyProject extends View {
           label: 'Reject',
           type: ButtonType.SECONDARY,
           onClick: async () => {
-            console.log('Reject');
-            const response = await NETWORK.post(`/api/lead/initiate/project/reject/${this.params.projectId}`, {}, { showLoading: true, handleError: true });
+            const response = await NETWORK.post(`/api/lead/initiate/project/reject/${this.params.projectId}`, { projectLeadId: this.projectConfigInfo.leadId });
             setContent(modalAlertOnlyOK, {
               '.modal-title': 'Success',
               '.modal-message': 'Project rejected successfully.',
@@ -96,8 +95,7 @@ class VerifyProject extends View {
           label: 'Accept',
           type: ButtonType.PRIMARY,
           onClick: async () => {
-            console.log('Accept');
-            const response = await NETWORK.post(`/api/lead/initiate/project/accept/${this.params.projectId}`, {}, { showLoading: true, handleError: true });
+            const response = await NETWORK.post(`/api/lead/initiate/project/accept/${this.params.projectId}`, { projectLeadId: this.projectConfigInfo.leadId });
             setContent(modalAlertOnlyOK, {
               '.modal-title': 'Success',
               '.modal-message': 'Project verifed and accepted successfully.',
