@@ -3,7 +3,6 @@ import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 import {formObject} from "@views/hacker/VulnerabilityReport/VulnerabilityReportForm";
 import {ReportElement} from "@views/common/ReportReview/components/ReportElement";
 import UserCard from "@components/UserCard";
-import {ProjectElement} from "@views/common/ReportReview/components/ProjectElement";
 import {ReportStepElement} from "@views/common/ReportReview/components/step";
 
 export class ReportReview extends View {

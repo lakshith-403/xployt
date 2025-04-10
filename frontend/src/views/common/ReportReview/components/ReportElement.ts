@@ -1,6 +1,5 @@
 import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 import '../ReportReview.scss'
-import {handleInputChange} from "@views/hacker/VulnerabilityReport/VulnerabilityReportForm";
 
 export class ReportElement {
     private label: string;
