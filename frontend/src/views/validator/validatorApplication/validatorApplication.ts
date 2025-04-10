@@ -45,7 +45,7 @@ class ValidatorApplication extends View {
       year: '1990',
     },
     skills: '',
-    certificates: '',
+    // certificates: '',
     cv: null as File | null,
     references: '',
     relevantExperience: '',
@@ -64,7 +64,7 @@ class ValidatorApplication extends View {
       const response = await NETWORK.post('/api/validator/manage', this.formState, { showLoading: true });
       ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
         console.log('response', response);
-        router.navigateTo('/');
+        // router.navigateTo('/');
       });
     } catch (error: any) {
       console.error('Error submitting application:', error);
@@ -80,7 +80,7 @@ class ValidatorApplication extends View {
       });
     }
 
-    // router.navigateTo('/dashboard');
+    router.navigateTo('/dashboard');
   };
 
   render(q: Quark): void {
@@ -104,7 +104,7 @@ class ValidatorApplication extends View {
           relevantExperience: 'optional',
           areaOfExpertise: 'optional',
           skills: 'optional',
-          certificate: 'optional',
+          // certificate: 'optional',
           cv: 'optional',
           references: 'optional',
         },
@@ -127,7 +127,7 @@ class ValidatorApplication extends View {
       linkedin: 'url',
       dateOfBirth: 'date',
       skills: 'string|comma',
-      certificates: 'string|comma',
+      // certificates: 'string|comma',
       cv: 'string',
       references: 'string|comma',
       relevantExperience: 'string|comma',
