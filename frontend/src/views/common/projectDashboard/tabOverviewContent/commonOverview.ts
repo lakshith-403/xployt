@@ -85,6 +85,12 @@ export default class CommonOverview {
         });
       }
 
+      if (this.projectInfo.state === 'Unconfigured' && this.userRole === 'ProjectLead') {
+        $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+          $(q, 'span', '', {}, 'Client yet to configure project');
+        });
+      }
+
       // Project Confirmation Section - for Configured state and ProjectLead role
       if (this.projectInfo.state === 'Configured' && this.userRole === 'ProjectLead') {
         $(q, 'div', 'd-flex align-items-center justify-content-center', {}, (q) => {
@@ -94,7 +100,7 @@ export default class CommonOverview {
             onClick: async () => {
               await NETWORK.post(
                 `/api/lead/initiate/project/proceed/${this.projectId}`,
-                {},
+                { projectLeadId: this.projectInfo.leadId },
                 {
                   showSuccess: true,
                   successCallback: () => {
@@ -115,7 +121,7 @@ export default class CommonOverview {
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles
-      if (['Configured', 'Active'].includes(this.projectInfo.state) && ['ProjectLead', 'Client'].includes(this.userRole)) {
+      if (['Configured', 'Active'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
         (async () => {
           UIManager.listArrayObjectValues(q, 'Scopes', this.detailedProjectInfoContainer.scopes, ['scopeName'], { className: 'd-flex flex-column gap-1' });
 
