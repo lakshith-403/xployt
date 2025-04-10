@@ -56,6 +56,7 @@ import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
+import {vulnReportReviewViewHandler} from "@views/common/ReportReview/ReportReview";
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -224,6 +225,8 @@ const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
+const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHandler], undefined, false, false, false, true);
+
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
@@ -248,3 +251,4 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
+router.addRouteHandler(ReportRouteHandler)

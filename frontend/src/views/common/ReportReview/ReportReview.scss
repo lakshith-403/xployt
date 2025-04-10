@@ -1,0 +1,104 @@
+.report-review {
+  max-width: 60rem;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+
+  .report-review-header {
+    display: flex;
+    width: 100%;
+    padding-block: 2rem;
+    gap: 2rem;
+
+    .project-element {
+      display: flex;
+      padding: 1rem;
+
+      .label {
+        color: var(--color-primary);
+        font-size: 0.9rem;
+        font-style: normal;
+        min-width: 10rem;
+        font-weight: bold;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+  .hacker {
+    background-color: var(--background-secondary);
+    width: fit-content;
+  }
+
+  .highlight {
+    color: var(--light-green);
+  }
+
+  .report-element {
+    display: flex;
+    width: inherit;
+    gap: 0.5rem;
+    margin-block: 1rem;
+    justify-content: center;
+    align-items: center;
+
+    .label {
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      font-style: normal;
+      min-width: 10rem;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    .input {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      width: 100%;
+      font-size: 0.9rem;
+      background-color: var(--background-secondary);
+      color: var(--color-primary)
+    }
+
+    .description {
+      height: 5rem;
+    }
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 2rem;
+
+    .report-element{
+      margin: 0;
+    }
+
+    .step-number {
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      font-style: normal;
+      font-weight: 700;
+      text-wrap: nowrap;
+      width: 10rem;
+    }
+
+    .step-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      display: none; /* Hide the actual file input */
+    }
+  }
+
+}
