@@ -1,8 +1,14 @@
-import { CacheObject, DataFailure } from '../../cacheBase';
-import { projectEndpoints } from './../network/project.network';
+import {CacheObject, DataFailure} from '../../cacheBase';
+import {projectEndpoints} from '../../client/network/project.network';
+
+interface ProjectList{
+    activeProjects: ProjectBrief[];
+    requestedProjects: ProjectBrief[];
+    inactiveProjects: ProjectBrief[];
+}
 
 interface ProjectResponse {
-  data: [ProjectDetails[], ProjectDetails[]];
+  data: ProjectList;
   is_successful: boolean;
   error?: string;
   trace?: string;
@@ -10,31 +16,41 @@ interface ProjectResponse {
 
 interface ProjectDetails {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
+  state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
+  clientId: string;
+  startDate: string;
+  endDate: string;
   pendingReports: number;
 }
 
-export class Project {
+export class ProjectBrief {
   id: number;
-  status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
+  state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Cancelled' | 'Active' | 'Rejected';
   title: string;
   leadId: string;
+  clientId: string;
+  startDate: string;
+  endDate: string;
   pendingReports: number;
   // severity: "critical" | "minor" | "informational"
 
   constructor(data: ProjectDetails) {
     this.id = data['id'];
-    this.status = data['status'];
+    this.state = data['state'];
     this.title = data['title'];
     this.leadId = data['leadId'];
+    this.clientId = data['clientId'];
+    this.startDate = data['startDate'];
+    this.endDate = data['endDate'];
     this.pendingReports = data['pendingReports'];
   }
 }
 
-export class ProjectsClientCache extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
+export class ProjectsClientCache extends CacheObject<ProjectList> {
+
+  async load(userId: string): Promise<ProjectList> {
     console.log(`Loading projects for user: ${userId}`);
     let response: ProjectResponse;
 
@@ -52,51 +68,57 @@ export class ProjectsClientCache extends CacheObject<Project[][]> {
 
     console.log('Projects loaded successfully:', response.data);
 
-    return [
-      response['data'][0].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-      response['data'][1].map((projectDetails: ProjectDetails) => {
-        return new Project({ ...projectDetails });
-      }),
-    ];
+    return {
+      activeProjects:
+          response.data.activeProjects.length > 0
+              ? response.data.activeProjects.map(project => new ProjectBrief(project))
+              : [],
+      requestedProjects: response.data.requestedProjects.length > 0
+          ? response.data.requestedProjects.map(project => new ProjectBrief(project))
+          : [],
+      inactiveProjects: response.data.inactiveProjects.length > 0
+          ? response.data.inactiveProjects.map(project => new ProjectBrief(project))
+          : [],
+    };
   }
-  public updateProject(projectId: number, status: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
-    console.log('Updating project:', projectId, status);
-    console.log('Current projects:', this.data![0]);
-    this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, status } : p));
-    console.log('Updated project:', this.data![0]);
-  }
+
+//   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
+//     console.log('Updating project:', projectId, state);
+//     console.log('Current projects:', this.data![0]);
+//     this.data![0] = this.data![0].map((p) => (p.id === projectId ? { ...p, state } : p));
+//     console.log('Updated project:', this.data![0]);
+//   }
 }
 
-export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
-  async load(userId: string): Promise<Project[][]> {
-    return [
-      [
-        new Project({
-          id: 1,
-          status: 'Unconfigured',
-          title: 'Project GT-175',
-          leadId: 'Lead 1',
-          pendingReports: 3,
-        }),
-        new Project({
-          id: 2,
-          status: 'Pending',
-          title: 'Project WV-102',
-          leadId: 'Lead 2',
-          pendingReports: 0,
-        }),
-      ],
-      [
-        new Project({
-          id: 3,
-          status: 'In progress',
-          title: 'Project 3',
-          leadId: 'Lead 3',
-          pendingReports: 1,
-        }),
-      ],
-    ];
-  }
-}
+// export class ProjectsClientCacheMock extends CacheObject<Project[][]> {
+//   async load(userId: string): Promise<Project[][]> {
+//     return [
+//       [
+//         new Project({
+//           id: 1,
+//           state: 'Unconfigured',
+//           title: 'Project GT-175',
+//           leadId: 'Lead 1',
+//
+//           pendingReports: 3,
+//         }),
+//         new Project({
+//           id: 2,
+//           state: 'Pending',
+//           title: 'Project WV-102',
+//           leadId: 'Lead 2',
+//           pendingReports: 0,
+//         }),
+//       ],
+//       [
+//         new Project({
+//           id: 3,
+//           state: 'In progress',
+//           title: 'Project 3',
+//           leadId: 'Lead 3',
+//           pendingReports: 1,
+//         }),
+//       ],
+//     ];
+//   }
+// }

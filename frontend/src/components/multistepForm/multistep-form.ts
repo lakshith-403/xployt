@@ -1,8 +1,8 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ButtonType } from '../button/base';
 import { FormButton } from '../button/form.button';
-// import { validateField, validateFormState } from './validationUtils';
-import { validateField } from './validationUtils';
+import { validateField, validateFormState } from './validationUtils';
+// import { validateField } from './validationUtils';
 import './multistep-form.scss';
 import ModalManager, { setContent } from '../ModalManager/ModalManager';
 import { modalAlertOnlyOK } from '@/main';
@@ -11,7 +11,7 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 export interface ValidationSchema {
-  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email';
+  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email' | 'string|2' | 'number|null' | 'string|comma';
 }
 
 export interface Steps {
@@ -36,12 +36,12 @@ class MultistepForm {
   private submitButton: FormButton | null = null;
   private tabValidityStates: boolean[] = [];
   private formState: any = {};
-  private lastAction: 'Submit' | 'Apply' = 'Submit';
+  private lastAction: 'Submit' | 'Apply' | 'Update' = 'Submit';
   private onSubmit: (formState: any) => void;
   private config: { [key: string]: any } = {};
   private validationSchema: ValidationSchema;
 
-  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
+  constructor(steps: Steps[], formState: any, lastAction: 'Submit' | 'Apply' | 'Update', config: Config = {}, onSubmit: (formState: any) => void, validationSchema: ValidationSchema) {
     this.validationSchema = validationSchema;
     this.steps = steps;
     this.activeTabIndex = 0;
@@ -124,7 +124,7 @@ class MultistepForm {
           this.nextButton.hide();
 
           this.submitButton = new FormButton({
-            label: this.lastAction === 'Submit' ? 'Submit' : 'Apply',
+            label: this.lastAction === 'Submit' ? 'Submit' : this.lastAction === 'Apply' ? 'Apply' : 'Update',
             onClick: () => this.checkBeforeSubmit(),
             type: ButtonType.PRIMARY,
           });
@@ -145,6 +145,9 @@ class MultistepForm {
   checkBeforeSubmit(): boolean {
     console.log('checkBeforeSubmit', this.formState, this.validationSchema);
     // if (validateFormState(this.formState, this.validationSchema)) {
+    if (!validateFormState(this.formState, this.validationSchema)) {
+      return false;
+    }
     if (this.isCurrentTabValid()) {
       console.log('checkBeforeSubmit passed');
       this.onSubmit(this.formState);
@@ -238,10 +241,8 @@ class MultistepForm {
   private checkIfRequiredFieldsAreFilled(): boolean {
     return Object.entries(this.steps[this.activeTabIndex].stateUsed).every(([key, value]) => {
       if (value === 'required') {
-        // console.log(key, this.formState[key]);
-        // console.log(key, this.formState[key], this.formState);
         const fieldValue = this.formState[key];
-        if (fieldValue === undefined || fieldValue === '') {
+        if (fieldValue === undefined || fieldValue === '' || fieldValue === null) {
           //console.log(`Field "${key}" is required but is empty`);
           return false;
         }

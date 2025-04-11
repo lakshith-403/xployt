@@ -6,7 +6,7 @@ import NETWORK, { Response } from '../../network/network';
  * @returns {Promise<void>} A promise that resolves when the request is complete.
  */
 export async function getProjectConfigInfo(projectId: string): Promise<Response> {
-  return NETWORK.sendHttpRequest('GET', `/api/lead/project/${projectId}`);
+  return NETWORK.sendHttpRequest('GET', `/api/lead/project/${projectId}`); // Depracated
 }
 
 export async function rejectProject(projectId: string): Promise<void> {
@@ -47,31 +47,4 @@ export async function acceptProject(projectId: string): Promise<void> {
     console.error('Network error while accepting project:', error);
     alert(`Network error while accepting project: ${error}`);
   }
-}
-export async function submitProjectConfig(projectId: string, formData: any): Promise<void> {
-  // Convert files to Base64 strings
-  const attachmentsAsBase64 = await fileToBase64(formData.attachment);
-
-  const response = await NETWORK.sendHttpRequest('POST', `/api/lead/project/config`, {
-    ...formData,
-    projectId: projectId,
-    attachments: attachmentsAsBase64,
-    low: Object.values(formData.low).join(','),
-    medium: Object.values(formData.medium).join(','),
-    high: Object.values(formData.high).join(','),
-    critical: Object.values(formData.critical).join(','),
-    informative: Object.values(formData.informative).join(','),
-  });
-}
-
-function fileToBase64(file: File): Promise<string> {
-  if (!file) {
-    return Promise.resolve('');
-  }
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-    reader.readAsDataURL(file);
-  });
 }

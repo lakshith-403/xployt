@@ -1,7 +1,7 @@
 import { CacheObject, DataFailure } from '../../cacheBase';
 import { hackerProjectInfoEndpoints }  from "../network/hacker.projectInfo.network";
 
-export class HackerProjectInfo {
+export class HackerProjects {
     id: number;
     title: string;
     client: string;
@@ -21,21 +21,21 @@ export class HackerProjectInfo {
     }
 }
 
-export class HackerProjectInfoCache extends CacheObject<HackerProjectInfo> {
-    async load(arg: string[]): Promise<HackerProjectInfo> {
+export class HackerProjectsCache extends CacheObject<HackerProjects> {
+    async load(arg: string[]): Promise<HackerProjects> {
         const response = await hackerProjectInfoEndpoints.getHackerProjectInfo(arg[0]);
 
         if (!response.is_successful)
             throw new DataFailure('load project', response.error ?? '');
 
-        return new HackerProjectInfo(response.data);
+        return new HackerProjects(response.data);
     }
 }
 
-export class HackerProjectInfoCacheMock extends CacheObject<HackerProjectInfo>{
-    async load(arg: string[]): Promise<HackerProjectInfo> {
+export class HackerProjectInfoCacheMock extends CacheObject<HackerProjects>{
+    async load(arg: string[]): Promise<HackerProjects> {
         if (arg[0] === '1') {
-            return new HackerProjectInfo({
+            return new HackerProjects({
                 id: 1,
                 title: 'Project GT-2002',
                 client: 'Client 1',
@@ -45,7 +45,7 @@ export class HackerProjectInfoCacheMock extends CacheObject<HackerProjectInfo>{
                 scope: 'Scope of project 1',
             });
         }
-        return new HackerProjectInfo({
+        return new HackerProjects({
             id: 2,
             title: 'Project WV-102',
             client: 'Client 2',

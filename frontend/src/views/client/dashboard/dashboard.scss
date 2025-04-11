@@ -1,15 +1,37 @@
-.hacker-dashboard{
+.client-dashboard{
   padding: 2rem;
   max-width: 75rem;
   margin: auto;
+
+  .section {
+    padding: 2rem;
+  }
+
   .summary{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 1rem
+    gap: 1rem;
+
+    .req-btn{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      button {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+      }
+    }
+
   }
 
   .card {
     gap: 0npm run start;
+
+    .card-content{
+      height: 100%;
+    }
   }
 }

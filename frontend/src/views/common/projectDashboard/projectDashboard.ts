@@ -5,43 +5,18 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import { CACHE_STORE } from '@data/cache';
-import { Project, ProjectsCache } from '@data/validator/cache/projects.cache';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
-
+import PaymentsTab from './payments';
+import NETWORK from '@/data/network/network';
+import { CACHE_STORE } from '@/data/cache';
 class projectDashboardView extends View {
   params: { projectId: string };
-  private projectsCache: ProjectsCache;
   private projectTitle!: string;
-
+  private userId!: string;
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
     this.params = params;
-    this.projectsCache = CACHE_STORE.getProjects();
-  }
-  async loadProject(): Promise<void> {
-    try {
-      console.log('loadProject executed');
-      console.log('project id is ', this.params.projectId);
-      const projects: Project[][] = await this.projectsCache.get(false, this.params.projectId);
-
-      // Flatten the array and find the project
-      const flatProjects = projects.flatMap((projectArray) => projectArray);
-      const project = flatProjects.find((project) => String(project.id) === String(this.params.projectId));
-
-      if (!project) {
-        console.error('Project not found');
-        this.projectTitle = 'Project ';
-        return;
-      }
-
-      this.projectTitle = project.title;
-      console.log('Project title set to:', this.projectTitle);
-    } catch (error) {
-      console.error('Failed to load project data:', error);
-      this.projectTitle = 'Error Loading Project';
-    }
+    this.userId = '';
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -63,17 +38,23 @@ class projectDashboardView extends View {
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
     console.log('projectDashboardView render executed');
-    const loading = new LoadingScreen(q);
-    loading.show();
-
-    // await this.loadProject();
+    try {
+      const currentUser = await CACHE_STORE.getUser().get();
+      const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
+      console.log('response: ', response.data);
+      this.projectTitle = response.data.project.title;
+    } catch (error) {
+      console.error('Failed to load project data:', error);
+      this.projectTitle = 'Error Loading Project';
+    }
     q.innerHTML = '';
-    loading.hide();
 
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
 
+    const currentUser = await CACHE_STORE.getUser().get();
+    this.userId = currentUser.id;
     const tabs = [
       {
         title: 'Overview',
@@ -94,7 +75,16 @@ class projectDashboardView extends View {
         },
       },
     ];
-
+    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
+    if (usersWithPaymentsTab.includes(currentUser.type)) {
+      const paymentsTab = new PaymentsTab(this.params.projectId);
+      tabs.push({
+        title: 'Payments',
+        render: (q: Quark) => {
+          paymentsTab.render(q);
+        },
+      });
+    }
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
       $(q, 'span', 'project-title', {}, this.projectTitle);

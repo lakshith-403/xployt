@@ -32,16 +32,11 @@ class ProjectRequestForm extends View {
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
-    const loading = new LoadingScreen(document.body);
-    loading.show();
-
-    // try {
     await requestProject({
       ...formState,
       startDate: formState.startDate.year + '-' + formState.startDate.month + '-' + formState.startDate.day,
       endDate: formState.endDate.year + '-' + formState.endDate.month + '-' + formState.endDate.day,
     });
-    loading.hide();
   };
 
   render(q: Quark): void {
@@ -66,12 +61,12 @@ class ProjectRequestForm extends View {
       endDate: 'date',
       description: 'string-strict',
       url: 'url',
-      technicalStack: 'string-strict',
+      technicalStack: 'string|comma',
     };
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Submit', { progressBarLocation: 'progress-bar-hide' }, this.onSubmit, validationSchema);
     $(q, 'div', 'project-config-form', {}, (q) => {
-      $(q, 'h1', 'title', {}, 'Project Configuration Form');
+      $(q, 'h1', 'title text-center heading-1 mb-2', {}, 'Project Configuration Form');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);
       });

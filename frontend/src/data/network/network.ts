@@ -1,10 +1,14 @@
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { UIManager } from '@/ui_lib/UIManager';
 
 /**
  * Class representing a network service for making HTTP requests.
  */
 class Network {
   baseURL: string;
+  private cache: Map<string, { valid: boolean; response: any }> = new Map();
 
   /**
    * Creates an instance of Network.
@@ -23,7 +27,7 @@ class Network {
    * @param {object} [data={}] - The data to be sent with the request.
    * @returns {Promise<any>} A promise that resolves with the response data.
    */
-  public sendHttpRequest = (method: string, url: string, data: any = {}, type: string = 'application/json'): Promise<any> => {
+  public sendHttpRequest(method: string, url: string, data: any = {}, type: string = 'application/json'): Promise<any> {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
@@ -45,14 +49,17 @@ class Network {
 
       xhr.onload = () => {
         console.log(`Request to ${url} completed with status: ${xhr.status}`);
-        console.log(xhr.response);
+        // console.log(xhr.response);
         if (xhr.status >= 400) {
-          console.log('> 400');
+          // console.log('> 400');
           reject(new NetworkError(xhr.status, url, xhr.response));
         } else {
           try {
             const response = xhr.response ? JSON.parse(xhr.response) : null;
-            console.log('response', response);
+            // console.log('response', response);
+            if (method === 'GET') {
+              this.cache.set(url, { valid: true, response });
+            }
             resolve(response);
           } catch (e) {
             reject(new NetworkError(xhr.status, url, null, 'Failed to parse JSON response'));
@@ -71,40 +78,97 @@ class Network {
         xhr.send(data);
       }
     });
-  };
-
-  public get(url: string): Promise<any> {
-    return this.sendHttpRequest('GET', url, {}, 'application/json');
   }
 
-  public async post(url: string, data: any, options: { showLoading: boolean } = { showLoading: false }): Promise<any> {
-    if (options.showLoading) {
-      console.log('Showing loading screen');
-      LoadingScreen.show();
-    }
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback']; // Define recognized options
+
+  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean; showSuccess: boolean; successCallback: () => void } {
+    const defaultOptions = { showLoading: true, handleError: true, throwError: true, showSuccess: false, successCallback: () => {} };
+
+    // Check if any unrecognized option is set
+    Object.keys(options).forEach((key) => {
+      if (!this.recognizedOptions.includes(key)) {
+        console.error(`Unrecognized option in network options`);
+        throw new Error(`Unrecognized option`);
+      }
+      // console.log('key was good:', key);
+    });
+
+    return { ...defaultOptions, ...options }; // Merge with defaults
+  }
+
+  private async handleRequest(method: string, url: string, data: any = {}, options: any = {}): Promise<any> {
+    let normalizedOptions: any;
     try {
-      const response = await this.sendHttpRequest('POST', url, data, 'application/json');
-      if (options.showLoading) {
-        console.log('Hiding loading screen');
-        LoadingScreen.hide();
-      }
-      return response;
-    } catch (error) {
-      console.error('Error:', error);
-      if (options.showLoading) {
-        console.log('Hiding loading screen');
-        LoadingScreen.hide();
-      }
+      normalizedOptions = this.normalizeOptions(options);
+      // console.log('normalizedOptions', normalizedOptions);
+    } catch (error: any) {
+      console.error(`Error catched in handleRequest: ${method}:`, error);
       throw error;
     }
+
+    if (method === 'GET' && this.cache.has(url) && this.cache.get(url)?.valid) {
+      return this.cache.get(url)?.response;
+    }
+
+    if (['POST', 'PUT', 'DELETE'].includes(method)) {
+      this.cache.delete(url);
+    }
+
+    if (normalizedOptions.showLoading) {
+      UIManager.showLoadingScreen();
+    }
+
+    try {
+      const response = await this.sendHttpRequest(method, url, data, 'application/json');
+      if (normalizedOptions.showSuccess) {
+        UIManager.showSuccessModal(response.title, response.message, normalizedOptions.successCallback);
+      }
+      return response;
+    } catch (error: any) {
+      console.error(`Error catched in handleRequest: ${method}:`, error);
+      if (normalizedOptions.handleError) {
+        UIManager.showErrorModal(method, url, error);
+        if (normalizedOptions.throwError) {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    } finally {
+      if (normalizedOptions.showLoading) {
+        UIManager.hideLoadingScreen();
+      }
+    }
   }
 
-  public put(url: string, data: any): Promise<any> {
-    return this.sendHttpRequest('PUT', url, data, 'application/json');
+  public async get(url: string, options: any = {}): Promise<any> {
+    return this.handleRequest('GET', url, {}, options);
   }
 
-  public delete(url: string): Promise<any> {
-    return this.sendHttpRequest('DELETE', url, {}, 'application/json');
+  public async post(url: string, data: any, options: any = {}): Promise<any> {
+    return this.handleRequest('POST', url, data, options);
+  }
+
+  public async put(url: string, data: any, options: any = {}): Promise<any> {
+    return this.handleRequest('PUT', url, data, options);
+  }
+
+  public async delete(url: string, options: any = {}): Promise<any> {
+    return this.handleRequest('DELETE', url, {}, options);
+  }
+
+  invalidateCache(url: string): void {
+    console.log('invalidating cache for', url);
+    try {
+      const regex = new RegExp(url);
+      console.log('regex', regex);
+      const keysToInvalidate = Array.from(this.cache.keys()).filter((cacheUrl) => regex.test(cacheUrl));
+      console.log('keysToInvalidate', keysToInvalidate);
+      keysToInvalidate.forEach((key) => this.cache.delete(key));
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
+    }
   }
 }
 
@@ -145,11 +209,11 @@ export class NetworkError {
     this.statusCode = statusCode;
     this.url = url;
     this.message = message;
-    console.log('data', data);
+    // console.log('data', data);
     if (data) {
       try {
         if (typeof data === 'string') {
-          console.log('Data is a string. Attempting to parse as JSON...');
+          // console.log('Data is a string. Attempting to parse as JSON...');
           data = JSON.parse(data); // Parse the JSON string into an object
         }
 

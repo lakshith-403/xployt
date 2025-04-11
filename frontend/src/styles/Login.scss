@@ -8,6 +8,10 @@
   background-color: var(--dark-gray);
   gap: 30px;
 
+  .login-icon-image {
+    cursor: pointer;
+  }
+
   .login-left {
     width: min(300px, 40%);
     display: flex;

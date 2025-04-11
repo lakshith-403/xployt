@@ -1,0 +1,80 @@
+// ------------ Color Classes -----------
+.bg-primary {
+  // Root background color
+  background-color: var(--background-primary) !important;
+}
+
+.bg-secondary {
+  // Footer, TextArea, Input
+  background-color: var(--background-secondary) !important;
+}
+
+.bg-tertiary {
+  // Navbat, Header
+  background-color: var(--background-tertiery) !important;
+}
+
+.text-primary {
+  // Most text
+  color: var(--color-primary) !important;
+}
+
+.text-secondary {
+  // Highlighted text
+  color: var(--color-secondary) !important;
+}
+
+.text-light-green {
+  color: var(--light-green) !important;
+}
+
+.text-grey-green {
+  // Footer-hr
+  color: var(--grey-green) !important;
+}
+
+.text-dark-green {
+  color: var(--dark-green) !important;
+}
+
+.text-light-grey {
+  // input-tags
+  color: var(--light-grey) !important;
+}
+
+// -------- border colors --------
+@mixin border-color($color) {
+  border-color: $color !important;
+}
+
+.border-primary-thin {
+  border: 3px solid var(--background-primary) !important;
+}
+.border-primary-thick {
+  border: 6px solid var(--background-primary) !important;
+}
+.border-secondary-thin {
+  border: 3px solid var(--background-secondary) !important;
+}
+.border-secondary-thick {
+  border: 6px solid var(--background-secondary) !important;
+}
+.border-tertiary-thin {
+  border: 3px solid var(--background-tertiery) !important;
+}
+.border-tertiary-thick {
+  border: 6px solid var(--background-tertiery) !important;
+}
+
+// -------- opacity --------
+.bg-opacity-25 {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.bg-opacity-75 {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}

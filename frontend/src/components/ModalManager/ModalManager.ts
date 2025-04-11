@@ -7,11 +7,12 @@ type ModalData = {
 };
 
 type ModalConfig = {
-  [key: string]: () => void;
+  [key: string]: (data: any) => void;
 };
 
 export default class modalManager {
   private static modalList: ModalData[] = [];
+  private static data: { [key: string]: any } = {};
 
   static includeModal(name: string, buttonConfig: ModalConfig = {}): void {
     const exists = this.modalList.some((modal) => modal.name === name);
@@ -56,7 +57,9 @@ export default class modalManager {
     }
   }
 
-  static show(name: string, content: HTMLElement | string, enableAsynchronous: boolean = false): Promise<void> {
+  static show(name: string, content: HTMLElement | string, enableAsynchronous: boolean = false, data: any = null): Promise<void> {
+    this.data[name] = data;
+
     const modal = this.modalList.find((modal) => modal.name === name);
     if (!modal) {
       return Promise.reject(new Error(`Modal with name "${name}" not found`));
@@ -123,6 +126,10 @@ export default class modalManager {
         this.show(name, '');
       });
     });
+  }
+
+  static getData(name: string): any {
+    return this.data[name];
   }
 }
 

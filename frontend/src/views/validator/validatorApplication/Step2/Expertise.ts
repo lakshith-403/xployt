@@ -2,7 +2,7 @@ import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { FileInputBase } from './../../../../components/input_file/input.file';
 import { TextAreaBase } from './../../../../components/test_area/textArea.base';
 import { TagInput } from '@components/text_field/tagInput/tagInput';
-import { expertiseTags, platformSpecializationTags } from './data';
+import { expertiseTags } from './data';
 import './Expertise.scss';
 
 import { Step } from './../../../../components/multistepForm/multistep-form';
@@ -31,10 +31,10 @@ class Expertise implements Step {
           this.fields.skills.render(q);
           this.fields.skills.setValue(state.skills);
         });
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.fields.certificates.render(q);
-          this.fields.certificates.setValue(state.certificates);
-        });
+        // $(q, 'div', 'form-field', {}, (q) => {
+        //   this.fields.certificates.render(q);
+        //   this.fields.certificates.setValue(state.certificates);
+        // });
         $(q, 'div', 'form-field', {}, (q) => {
           this.fields.references.render(q);
           this.fields.references.setValue(state.references);
@@ -51,17 +51,17 @@ class Expertise implements Step {
   private fields: { [key: string]: any } = {
     skills: new TextAreaBase({
       label: 'Skills and Proficiencies',
-      placeholder: 'Enter your skills and proficiencies',
+      placeholder: 'Enter your skills and proficiencies as a comma separated list',
       name: 'skills',
     }),
-    certificates: new TextAreaBase({
-      label: 'Certificate',
-      placeholder: 'Enter your certificate',
-      name: 'certificates',
-    }),
+    // certificates: new TextAreaBase({
+    //   label: 'Certificates',
+    //   placeholder: 'Enter your certificates as a comma separated list',
+    //   name: 'certificates',
+    // }),
     references: new TextAreaBase({
-      label: 'Reference',
-      placeholder: 'Enter your reference',
+      label: 'References',
+      placeholder: 'Enter your references as a comma separated list',
       name: 'references',
     }),
     file: new FileInputBase({
@@ -70,13 +70,13 @@ class Expertise implements Step {
     }),
     relevantExperience: new TextAreaBase({
       label: 'Relevant Experience',
-      placeholder: 'E.g., experience in reviewing reports, conducting audits, security assessments...',
+      placeholder: 'Enter your relevant experience as a comma separated list (eg: "Experience 1, Experience 2, Experience 3")',
       name: 'relevantExperience',
     }),
     areaOfExpertise: new TagInput({
       suggestions: expertiseTags,
       label: 'Areas of Expertise',
-      placeholder: 'Add an area of expertise',
+      placeholder: 'Select areas of expertise from those given',
       name: 'areaOfExpertise',
     }),
   };

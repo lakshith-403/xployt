@@ -1,0 +1,79 @@
+// -------- Text Alignment ---------
+.text-center {
+  text-align: center !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+.text-nowrap {
+  white-space: nowrap !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.text-lowercase {
+  text-transform: lowercase !important;
+}
+
+// -------- text styles --------
+.heading-1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+.heading-2 {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.sub-heading-1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.sub-heading-2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.sub-heading-3 {
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.paragraph {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+.text-default {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+// -------- font styles --------
+.font-bold {
+  font-weight: 700;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-light {
+  font-weight: 200;
+}

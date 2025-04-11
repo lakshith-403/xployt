@@ -29,12 +29,16 @@ export class TagInput {
     this.textField = new FormTextField({
       label: '',
       class: 'tag-input',
+      parentClass: 'w-100',
       placeholder: options.placeholder || 'Add an area of expertise',
       onChange: (value: string) => {
         this.handleInputChange(value);
       },
       name: options.name,
       onKeyDown: (e: KeyboardEvent) => this.handleKeyDown(e),
+      onFocus: (e: Event) => {
+        this.renderAutocomplete();
+      },
     });
     this.updateTags = options!.onChange;
   }
@@ -68,13 +72,15 @@ export class TagInput {
 
   private handleKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter' && this.inputValue.trim()) {
-      this.addTag(this.inputValue.trim());
+      if (this.inputValue.trim() in this.suggestions) {
+        this.addTag(this.inputValue.trim());
+      }
       e.preventDefault();
     }
   }
 
   private renderAutocomplete() {
-    const autocompleteContainer = document.querySelector('.autocomplete-container');
+    const autocompleteContainer = document.querySelector(`.autocomplete-container-${this.name}`);
     if (autocompleteContainer) {
       autocompleteContainer.innerHTML = '';
       new Autocomplete({
@@ -95,11 +101,23 @@ export class TagInput {
         this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag), update: this.updateTags! });
         this.tagList.render(q);
 
-        $(q, 'div', 'tag-input-wrapper', {}, (q: Quark) => {
+        $(q, 'div', 'tag-input-wrapper w-100', {}, (q: Quark) => {
           this.textField?.render(q);
-          $(q, 'div', 'autocomplete-container', {});
+          $(q, 'div', `autocomplete-container autocomplete-container-${this.name}`, {});
         });
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if ((target && target.classList.contains('autocomplete-item')) || (target && target.classList.contains('tag-input'))) {
+        return;
+      } else {
+        const autocompleteContainer = document.querySelector(`.autocomplete-container-${this.name}`);
+        if (autocompleteContainer) {
+          autocompleteContainer.innerHTML = '';
+        }
+      }
     });
   }
 }

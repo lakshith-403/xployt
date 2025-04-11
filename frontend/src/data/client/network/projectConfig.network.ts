@@ -26,10 +26,14 @@ export async function requestProject(formData: any): Promise<void> {
   // const clientCache = await CACHE_STORE.getClient(userCache.id).get();
   // console.log('client cache is', clientCache);
   try {
-    const response = await NETWORK.sendHttpRequest('POST', '/api/client/project/request', {
-      ...formData,
-      clientId: currentUser.id,
-    });
+    const response = await NETWORK.post(
+      '/api/client/project/request',
+      {
+        ...formData,
+        clientId: currentUser.id,
+      },
+      { showLoading: true }
+    );
     if (response.code === 200) {
       console.log('Project configuration submitted successfully.');
 
@@ -45,9 +49,7 @@ export async function requestProject(formData: any): Promise<void> {
         '.modal-message': `Project configuration submitted successfully. Project id: ${response.data.projectId} and ProjectLead id: ${response.data.leadId}`,
       });
       ModalManager.show('projectRequestFormConfirm', modalAlertConfirm);
-      if (currentUser.type === 'Client') {
-        CACHE_STORE.getClientProjects(currentUser.id).invalidate_cache();
-      }
+      NETWORK.invalidateCache('/api/new-project/\\w+/?(/\\d+)?');
     }
   } catch (response: any) {
     console.error('Failed to submit project configuration:', response.error);
@@ -56,7 +58,7 @@ export async function requestProject(formData: any): Promise<void> {
       '.modal-message': `Failed to submit project configuration: ${response.message}`,
       '.modal-data': response.body.error,
       '.modal-servletClass': response.servlet,
-      '.modal-uri': response.uri,
+      '.modal-url': response.uri,
     });
     ModalManager.show('alertForErrors', modalAlertForErrors);
   }

@@ -4,45 +4,53 @@ import { ReportInfoCacheMock, ReportInfoCache } from './projectLead/cache/report
 import { ProjectsCacheMock, ProjectsCache, Project } from './validator/cache/projects.cache';
 import { ReportsCacheMock, ReportsCache } from './projectLead/cache/reports.cache';
 import { ProjectTeamCacheMock } from './validator/cache/project.team';
-import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projectInfo';
+// import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projects';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
-import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
+import { ProjectTeamCache} from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
 
 import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
+import {ProjectCache} from "@data/common/cache/project.cache";
+import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
+import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
 
 class CacheStore {
   private readonly user: UserCache;
   private readonly projectInfoMap: Map<string, ProjectInfoCacheMock>;
   private readonly reportInfoMap: Map<string, ReportInfoCacheMock>;
   private readonly projectTeamsMap: Map<string, ProjectTeamCache>;
-  private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
+  // private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   // private readonly clientMap: Map<string, ClientCache>; // No longer needed
   private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
-  private readonly invitationsMap: Map<string, InvitationsCache>;
+  private readonly HackerInvitationsMap: Map<string, HackerInvitationsCache>;
+  private readonly ProjectInvitationsMap: Map<string, InvitationsCache>;
+  private readonly InvitedHackersMap: Map<string, ClientInvitationsCache>;
   private readonly discussionMap: Map<string, DiscussionCache>;
   private projects: ProjectsCache;
   private reports: ReportsCache;
   private readonly userProfileMap: Map<string, UserProfileCache>;
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
+  private projectsMap: Map<string, ProjectCache>;
 
   constructor() {
     this.user = new UserCache();
     this.projectInfoMap = new Map();
     this.projects = new ProjectsCache();
     this.projectTeamsMap = new Map();
-    this.hackerProjectInfoMap = new Map();
+    // this.hackerProjectInfoMap = new Map();
     this.projectConfigInfoMap = new Map();
     // this.clientMap = new Map();
     this.notificationsListMap = new Map();
-    this.invitationsMap = new Map();
+    this.HackerInvitationsMap = new Map();
+    this.ProjectInvitationsMap = new Map();
+    this.InvitedHackersMap = new Map();
     // this.projects = [];
     this.reportInfoMap = new Map();
     this.reports = new ReportsCacheMock();
@@ -50,6 +58,7 @@ class CacheStore {
     this.discussionMap = new Map();
     this.clientProjectsMap = new Map();
     this.leadProjectsMap = new Map();
+    this.projectsMap = new Map()
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -107,13 +116,7 @@ class CacheStore {
     }
     return this.projectTeamsMap.get(projectId)!;
   }
-  public getHackerProjectInfo(projectId: string): HackerProjectInfoCache {
-    if (!this.hackerProjectInfoMap.has(projectId)) {
-      this.hackerProjectInfoMap.set(projectId, new HackerProjectInfoCacheMock());
-    }
 
-    return this.hackerProjectInfoMap.get(projectId)!;
-  }
   public getLeadProjectConfigInfo(projectId: string): ProjectConfigInfoCache {
     console.log('at cache.ts getLeadProjectConfigInfo');
     console.log('projectId', projectId);
@@ -132,9 +135,9 @@ class CacheStore {
     return this.userProfileMap.get(userId)!;
   }
 
-  public async updateLeadProjectConfigInfo(projectId: string, newStatus: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
+  public async updateLeadProjectConfigInfo(projectId: string, newState: 'Pending' | 'Active' | 'Completed' | 'Rejected' | 'Unconfigured' | 'Closed'): Promise<void> {
     const projectConfig = await this.getLeadProjectConfigInfo(projectId).get(false, projectId);
-    projectConfig.updateStatus(newStatus);
+    projectConfig.updatestate(newState);
     await this.getLeadProjectConfigInfo(projectId).set(projectConfig);
   }
 
@@ -146,17 +149,24 @@ class CacheStore {
   }
 
   public getProjectInvitations(projectId: string): InvitationsCache {
-    if (!this.invitationsMap.has(projectId)) {
-      this.invitationsMap.set(projectId, new InvitationsCache());
+    if (!this.ProjectInvitationsMap.has(projectId)) {
+      this.ProjectInvitationsMap.set(projectId, new InvitationsCache(projectId));
     }
-    return this.invitationsMap.get(projectId)!;
+    return this.ProjectInvitationsMap.get(projectId)!;
   }
 
-  public getHackerInvitations(hackerId: string): InvitationsCache {
-    if (!this.invitationsMap.has(hackerId)) {
-      this.invitationsMap.set(hackerId, new InvitationsCache());
+  public getInvitedHackers(projectId: string): ClientInvitationsCache {
+    if(!this.InvitedHackersMap.has(projectId)){
+      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId))
     }
-    return this.invitationsMap.get(hackerId)!;
+    return this.InvitedHackersMap.get(projectId)!;
+  }
+
+  public getHackerInvitations(hackerId: string): HackerInvitationsCache {
+    if (!this.HackerInvitationsMap.has(hackerId)) {
+      this.HackerInvitationsMap.set(hackerId, new HackerInvitationsCache(hackerId));
+    }
+    return this.HackerInvitationsMap.get(hackerId)!;
   }
 
   public getDiscussion(discussionId: string): DiscussionCache {
@@ -164,6 +174,13 @@ class CacheStore {
       this.discussionMap.set(discussionId, new DiscussionCache(discussionId));
     }
     return this.discussionMap.get(discussionId)!;
+  }
+
+  public getProject(projectId: string): ProjectCache {
+    if (!this.projectsMap.has(projectId)) {
+      this.projectsMap.set(projectId, new ProjectCache(projectId));
+    }
+    return this.projectsMap.get(projectId)!;
   }
 }
 

@@ -1,3 +1,14 @@
+.show-popup{
+  button{
+    width: 6rem;
+  }
+    .disabled{
+        background-color: var(--background-secondary) !important;
+      color: white !important;
+      cursor: default;
+  }
+}
+
 .popup-overlay {
   position: fixed;
   top: 0;

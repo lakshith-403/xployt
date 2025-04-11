@@ -34,27 +34,28 @@ interface Step {
 
 class ValidatorApplication extends View {
   private formState: any = {
-    name: '',
-    email: '',
-    mobile: '',
-    country: '',
-    linkedin: '',
+    name: 'Geetha Savith',
+    email: 'geetha@gmail.com',
+    mobile: '9876543210',
+    country: 'India',
+    linkedin: 'https://www.linkedin.com/in/geetha/',
     dateOfBirth: {
-      day: '',
-      month: '',
-      year: '',
+      day: '1',
+      month: '1',
+      year: '1990',
     },
     skills: '',
-    certificates: '',
+    // certificates: '',
     cv: null as File | null,
     references: '',
     relevantExperience: '',
-    areaOfExpertise: [],
+    areaOfExpertise: ['Data Science', 'Machine Learning'],
     termsAndConditions: {
-      0: false,
-      1: false,
-      2: false,
+      0: true,
+      1: true,
+      2: true,
     },
+
     comments: '',
   };
 
@@ -63,7 +64,7 @@ class ValidatorApplication extends View {
       const response = await NETWORK.post('/api/validator/manage', this.formState, { showLoading: true });
       ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
         console.log('response', response);
-        router.navigateTo('/dashboard');
+        // router.navigateTo('/');
       });
     } catch (error: any) {
       console.error('Error submitting application:', error);
@@ -72,14 +73,14 @@ class ValidatorApplication extends View {
         '.modal-message': `Failed to submit application: ${error.message}`,
         '.modal-data': error.data,
         '.modal-servletClass': error.servlet,
-        '.modal-uri': error.uri,
+        '.modal-url': error.uri,
       });
       ModalManager.show('alertForErrors', modalAlertForErrors, true).then(() => {
         ModalManager.hide('alertForErrors');
       });
     }
 
-    // router.navigateTo('/dashboard');
+    router.navigateTo('/dashboard');
   };
 
   render(q: Quark): void {
@@ -103,7 +104,7 @@ class ValidatorApplication extends View {
           relevantExperience: 'optional',
           areaOfExpertise: 'optional',
           skills: 'optional',
-          certificate: 'optional',
+          // certificate: 'optional',
           cv: 'optional',
           references: 'optional',
         },
@@ -119,23 +120,23 @@ class ValidatorApplication extends View {
     ];
 
     const validationSchema: ValidationSchema = {
-      name: 'string',
+      name: 'string|2',
       email: 'email',
       mobile: 'string',
       country: 'string',
-      linkedin: 'string',
+      linkedin: 'url',
       dateOfBirth: 'date',
-      skills: 'string',
-      certificates: 'string',
+      skills: 'string|comma',
+      // certificates: 'string|comma',
       cv: 'string',
-      references: 'string',
-      relevantExperience: 'string',
+      references: 'string|comma',
+      relevantExperience: 'string|comma',
       areaOfExpertise: 'object|string',
       comments: 'string',
     };
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'progress-bar-bottom' }, this.onSubmit, validationSchema);
-    $(q, 'div', 'validator-application', {}, (q) => {
+    $(q, 'div', 'validator-application container text-center', {}, (q) => {
       $(q, 'h1', 'title', {}, 'Validator Application');
       $(q, 'div', 'container', {}, (q) => {
         multistepForm.render(q);

@@ -50,6 +50,42 @@ $container-padding: 15px;
   padding-right: $container-padding;
 }
 
+.flex-container-lg {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 1140px) {
+    // lg breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-md {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 940px) {
+    // md breakpoint
+    flex-direction: column;
+  }
+}
+
+.flex-container-sm {
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 540px) {
+    // sm breakpoint
+    flex-direction: column;
+  }
+}
+// rounded corners
+@for $i from 1 through 3 {
+  .rounded-#{$i} {
+    border-radius: 0.5rem * $i;
+  }
+}
+
 // Width and Height Variables
 $widths: (
   'auto': auto,
@@ -75,7 +111,15 @@ $widths: (
 $heights: (
   'auto': auto,
   '25': 25vh,
+  '30': 30vh,
+  '35': 35vh,
+  '40': 40vh,
+  '45': 45vh,
   '50': 50vh,
+  '55': 55vh,
+  '60': 60vh,
+  '65': 65vh,
+  '70': 70vh,
   '75': 75vh,
   '100': 100vh,
 );
@@ -125,13 +169,17 @@ $heights: (
 .justify-content-start {
   justify-content: flex-start;
 }
-
 .justify-content-center {
   justify-content: center;
 }
-
 .justify-content-end {
   justify-content: flex-end;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-around {
+  justify-content: space-around;
 }
 
 .align-items-start {
@@ -161,18 +209,46 @@ $heights: (
   }
 }
 
+// Position Utilities
+.position-relative {
+  position: relative;
+}
+.position-fixed {
+  position: fixed;
+}
+.position-absolute {
+  position: absolute;
+}
+.top-0 {
+  top: 0;
+}
+.left-0 {
+  left: 0;
+}
+.right-0 {
+  right: 0;
+}
+.bottom-0 {
+  bottom: 0;
+}
+
 // Spacing Utilities
 @for $i from 0 through 10 {
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .m-#{$i} {
-    margin: #{$i}rem;
+    margin: #{$i}rem !important;
   }
 
   .mt-#{$i} {
-    margin-top: #{$i}rem;
+    margin-top: #{$i}rem !important;
   }
 
   .mb-#{$i} {
-    margin-bottom: #{$i}rem;
+    margin-bottom: #{$i}rem !important;
   }
 
   .ml-#{$i} {
@@ -182,17 +258,25 @@ $heights: (
   .mr-#{$i} {
     margin-right: #{$i}rem;
   }
+  .mx-#{$i} {
+    margin-left: #{$i}rem !important;
+    margin-right: #{$i}rem !important;
+  }
+  .my-#{$i} {
+    margin-top: #{$i}rem !important;
+    margin-bottom: #{$i}rem !important;
+  }
 
   .p-#{$i} {
-    padding: #{$i}rem;
+    padding: #{$i}rem !important;
   }
 
   .pt-#{$i} {
-    padding-top: #{$i}rem;
+    padding-top: #{$i}rem !important;
   }
 
   .pb-#{$i} {
-    padding-bottom: #{$i}rem;
+    padding-bottom: #{$i}rem !important;
   }
 
   .pl-#{$i} {
@@ -202,18 +286,12 @@ $heights: (
   .pr-#{$i} {
     padding-right: #{$i}rem;
   }
+  .px-#{$i} {
+    padding-left: #{$i}rem !important;
+    padding-right: #{$i}rem !important;
+  }
+  .py-#{$i} {
+    padding-top: #{$i}rem !important;
+    padding-bottom: #{$i}rem !important;
+  }
 }
-
-// // Typography
-// h1,
-// h2,
-// h3,
-// h4,
-// h5,
-// h6 {
-//   margin: 0;
-// }
-
-// p {
-//   margin: 0;
-// }

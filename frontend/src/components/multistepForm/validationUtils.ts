@@ -18,9 +18,11 @@ ModalManager.includeModal('validateErrorModal', {
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
-const stringRegex = /^[a-zA-Z0-9 ]+$/; // Matches letters and numbers
+const stringRegex = /^[a-zA-Z0-9& ]*$/; // Matches letters and numbers
 
-const stringStrictRegex = /^[a-zA-Z ]+$/; // Matches only letters
+const string2Regex = /^[a-zA-Z0-9]+ [a-zA-Z0-9]+$/; // Matches letters and numbers
+
+const stringStrictRegex = /^[a-zA-Z& ]*$/; // Matches only letters
 
 const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
 const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
@@ -29,6 +31,8 @@ const yearRegex = /^\d{4}$/; // Matches a four-digit year
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
 const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
+
+const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
 
 export function isValidDate(date: any): { result: boolean; message: string } {
   const isDayValid = dayRegex.test(date.day);
@@ -109,7 +113,7 @@ export function validateField(key: string, value: any, expectedType: string): { 
     } else {
       for (const item of Object.values(value)) {
         if (typeof item === 'string' && !stringRegex.test(item)) {
-          return { result: false, message: `${key} must be an array of strings` };
+          return { result: false, message: `${key} must be an object of strings` };
         }
       }
     }
@@ -136,20 +140,66 @@ export function validateField(key: string, value: any, expectedType: string): { 
       return { result: false, message: `${key} must be a number` };
     }
   }
+
+  // Verifying a number or null
+  if (expectedType === 'number|null') {
+    console.log('checking number|null: ', key, value);
+    if (!numberRegex.test(value) && value !== null && value !== '') {
+      return { result: false, message: `${key} must be a number or null` };
+    }
+  }
+
+  // // Verifying a positive number or null
+  // if (expectedType === 'positive-number|null') {
+  //   console.log('checking positive-number|null: ', key, value);
+  //   if (value === null || value === '') {
+  //     return { result: true, message: '' };
+  //   }
+
+  //   const numValue = Number(value);
+  //   if (isNaN(numValue) || numValue <= 0) {
+  //     return { result: false, message: `${key} must be a positive number or null` };
+  //   }
+  // }
+
+  // Verifying a url
+  if (expectedType === 'url') {
+    console.log('checking url: ', key, value);
+    if (!urlRegex.test(value)) {
+      return { result: false, message: `${key} must be a valid URL` };
+    }
+  }
+
+  // Verifying a string(2)
+
+  if (expectedType === 'string|2') {
+    console.log('checking string|2: ', key, value);
+    if (!string2Regex.test(value)) {
+      return { result: false, message: `${key} must be a string with 2 words` };
+    }
+  }
+
+  if (expectedType === 'string|comma') {
+    console.log('checking string|comma: ', key, value);
+    if (!commaWithStringRegex.test(value)) {
+      return { result: false, message: `${key} must be a comma seperated list` };
+    }
+  }
   return { result: true, message: '' };
 }
 
-// export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
-//   for (const key in validationSchema) {
-//     const fieldValidation = validateField(key, formState[key], validationSchema[key]);
-//     if (!fieldValidation.result) {
-//       setContent(modalAlertOnlyOK, {
-//         '.modal-title': 'Validation Error',
-//         '.modal-message': fieldValidation.message,
-//       });
-//       ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
-//       return false;
-//     }
-//   }
-//   return true;
-// }
+export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
+  for (const key in validationSchema) {
+    const fieldValidation = validateField(key, formState[key], validationSchema[key]);
+    if (!fieldValidation.result) {
+      console.error('validation error: ', fieldValidation.message);
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Validation Error',
+        '.modal-message': fieldValidation.message,
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+      return false;
+    }
+  }
+  return true;
+}

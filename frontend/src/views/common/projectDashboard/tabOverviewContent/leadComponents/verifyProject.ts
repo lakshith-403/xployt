@@ -1,23 +1,20 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { FormTextField } from '@components/text_field/form.text_field';
-// import './verifyProject.scss';
 import { router } from '@ui_lib/router';
 import { View, ViewHandler } from '@ui_lib/view';
-// import { Step } from './../../../../components/multistepForm/multistep-form';
-import { CACHE_STORE } from '@data/cache';
 import { FormTextFieldDisabled } from '@components/text_field/form.text_fields.disabled';
 import { ButtonType } from '@components/button/base';
 import { FormButton } from '@components/button/form.button';
-import { rejectProject, acceptProject } from '@data/projectLead/network/projectConfig.network';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import './verifyProject.scss';
-import { ProjectConfigInfo, ProjectConfigInfoCache } from '@data/projectLead/cache/projectConfigInfo';
-// import { CacheObject } from '@/data/cacheBase';
-
+import NETWORK from '@/data/network/network';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK, modalAlertForErrors } from '@/main';
+import { UIManager } from '@ui_lib/UIManager';
 class VerifyProject extends View {
   params: { projectId: string };
-  private projectConfigInfo!: ProjectConfigInfo;
-  private projectConfigInfoCache!: ProjectConfigInfoCache;
+
+  private projectConfigInfo: Record<string, any> = {};
   protected shouldRenderBreadcrumbs(): boolean {
     return true;
   }
@@ -40,10 +37,11 @@ class VerifyProject extends View {
   constructor(params: { projectId: string }) {
     super(params);
     this.params = params;
-    this.projectConfigInfoCache = CACHE_STORE.getLeadProjectConfigInfo(this.params.projectId) as ProjectConfigInfoCache;
   }
   private async loadData(): Promise<void> {
-    this.projectConfigInfo = await this.projectConfigInfoCache.get(false, this.params.projectId);
+    this.projectConfigInfo = (await NETWORK.get(`/api/lead/project/${this.params.projectId}`, { showLoading: true })).data;
+    this.projectConfigInfo = UIManager.convertDateFields(this.projectConfigInfo, ['startDate', 'endDate']);
+    // console.log('projectConfigInfo: ', this.projectConfigInfo);
   }
   async render(q: Quark): Promise<void> {
     await this.loadData();
@@ -56,22 +54,22 @@ class VerifyProject extends View {
         $(q, 'div', 'start-date date', {}, (q) => {
           $(q, 'span', '', {}, 'Start Date ');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.startDateDay, this.projectConfigInfo.startDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateMonth, this.projectConfigInfo.startDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.startDateYear, this.projectConfigInfo.startDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateDay, this.projectConfigInfo.startDate_day, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateMonth, this.projectConfigInfo.startDate_month, 1 / 3);
+            this.renderCustomField(q, this.fields.startDateYear, this.projectConfigInfo.startDate_year, 1 / 3);
           });
         });
         $(q, 'div', 'end-date date', {}, (q) => {
           $(q, 'span', '', {}, 'End Date ');
           $(q, 'div', 'date-fields', {}, (q) => {
-            this.renderCustomField(q, this.fields.endDateDay, this.projectConfigInfo.endDateDay, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateMonth, this.projectConfigInfo.endDateMonth, 1 / 3);
-            this.renderCustomField(q, this.fields.endDateYear, this.projectConfigInfo.endDateYear, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateDay, this.projectConfigInfo.endDate_day, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateMonth, this.projectConfigInfo.endDate_month, 1 / 3);
+            this.renderCustomField(q, this.fields.endDateYear, this.projectConfigInfo.endDate_year, 1 / 3);
           });
         });
       });
       this.renderFieldFullWidth(q, this.fields.description, this.projectConfigInfo.description);
-      this.renderFieldFullWidth(q, this.fields.url, this.projectConfigInfo.accessLink);
+      this.renderFieldFullWidth(q, this.fields.url, this.projectConfigInfo.url);
       this.renderFieldFullWidth(q, this.fields.technicalStack, this.projectConfigInfo.technicalStack);
 
       $(q, 'div', 'button-container', {}, (q) => {
@@ -80,14 +78,15 @@ class VerifyProject extends View {
           label: 'Reject',
           type: ButtonType.SECONDARY,
           onClick: async () => {
-            loading.show();
-            console.log('Reject');
-            await rejectProject(this.params.projectId);
-            await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Rejected');
-            CACHE_STORE.getProjects().updateProject(parseInt(this.params.projectId), 'Rejected');
-            router.navigateTo(`/projects/${this.params.projectId}`);
-            window.location.reload();
-            loading.hide();
+            const response = await NETWORK.post(`/api/lead/initiate/project/reject/${this.params.projectId}`, { projectLeadId: this.projectConfigInfo.leadId });
+            setContent(modalAlertOnlyOK, {
+              '.modal-title': 'Success',
+              '.modal-message': 'Project rejected successfully.',
+            });
+            ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+              router.navigateTo(`/projects/${this.params.projectId}`);
+              window.location.reload();
+            });
           },
         });
         rejectButton.render(q);
@@ -96,14 +95,15 @@ class VerifyProject extends View {
           label: 'Accept',
           type: ButtonType.PRIMARY,
           onClick: async () => {
-            loading.show();
-            console.log('Accept');
-            await acceptProject(this.params.projectId);
-            await CACHE_STORE.updateLeadProjectConfigInfo(this.params.projectId, 'Unconfigured');
-            CACHE_STORE.getLeadProjects((await CACHE_STORE.getUser().get()).id).updateProject(parseInt(this.params.projectId), 'Unconfigured');
-            $(q, 'a', 'button', { href: `/projects/${this.params.projectId}` }, 'Go to Project').click();
-            // router.navigateTo(`/projects/${this.params.projectId}`);
-            loading.hide();
+            const response = await NETWORK.post(`/api/lead/initiate/project/accept/${this.params.projectId}`, { projectLeadId: this.projectConfigInfo.leadId });
+            setContent(modalAlertOnlyOK, {
+              '.modal-title': 'Success',
+              '.modal-message': 'Project verifed and accepted successfully.',
+            });
+            ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+              router.navigateTo(`/projects/${this.params.projectId}`);
+              window.location.reload();
+            });
           },
         });
         acceptButton.render(q);

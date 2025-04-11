@@ -1,0 +1,148 @@
+import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+
+interface ContentItem {
+  // id: number; // or string, depending on your requirements
+  [key: string]: any; // Allow other fields
+  render?: (q: Quark) => void;
+}
+
+interface CustomTableParams {
+  content: ContentItem[];
+  headers: string[];
+  className: string;
+  options: Options;
+}
+
+interface Options {
+  callback?: (args: any) => void;
+  filteredField?: string; // Made optional
+  falseKeys?: string[]; // Made optional
+  noDataMessage?: string;
+  orderKeys?: string[]; // New option for specifying order
+}
+
+export class CustomTable {
+  content: ContentItem[];
+  headers: string[];
+  className: string;
+  options: Options;
+  rows?: HTMLElement;
+
+  constructor(params: CustomTableParams) {
+    this.content = params.content;
+    this.headers = params.headers;
+    this.className = params.className;
+    this.options = params.options;
+
+    // Set filteredField and falseKeys if options are provided
+    if (this.options.filteredField && !this.options.falseKeys) {
+      console.error('filteredField and falseKeys are required');
+    }
+    if (this.options.orderKeys && this.options.orderKeys.length !== this.headers.length) {
+      console.error('orderKeys length must match headers length');
+    }
+  }
+
+  public render(q: Quark): void {
+    $(q, 'div', `table ${this.className}`, {}, (q) => {
+      if (this.headers && this.headers.length > 0) {
+        $(q, 'div', 'table-header', {}, (q) => {
+          this.headers!.forEach((header) => {
+            $(q, 'span', 'table-header-cell', {}, header);
+          });
+        });
+      }
+
+      this.rows = $(q, 'div', 'table-rows', {}, (q) => {
+        if (!this.content || this.content.length === 0) {
+          this.displayNoDataMessage(q);
+          return;
+        }
+        console.log('content', this.content);
+        this.content.forEach((item) => {
+          // console.log('item', item);
+
+          $(q, 'a', 'table-row-link', {}, (q) => {
+            const row = $(q, 'div', 'table-row', {}, (q) => {
+              this.displayItems(item, q);
+            });
+            if (this.options.callback) {
+              row.addEventListener('click', () => {
+                this.options.callback!(item);
+              });
+            }
+          });
+        });
+      });
+    });
+  }
+
+  public updateRows(checkboxState: { [key: string]: boolean }): void {
+    console.log('Updating rows');
+    console.log('checkboxState', checkboxState);
+    this.rows!.innerHTML = '';
+    if (!this.content || this.content.length === 0) {
+      this.displayNoDataMessage(this.rows!);
+      return;
+    }
+    this.content.forEach((item) => {
+      const falseKeys = this.getFalseKeys(checkboxState);
+      console.log('falseKeys', falseKeys);
+      if (falseKeys.includes(item[this.options.filteredField!])) return;
+
+      $(this.rows!, 'a', 'table-row-link', {}, (q) => {
+        const row = $(q, 'div', 'table-row', {}, (q) => {
+          this.displayItems(item, q);
+        });
+        if (this.options.callback) {
+          row.addEventListener('click', () => {
+            this.options.callback!(item);
+          });
+        }
+      });
+    });
+    if (!this.rows || this.rows.innerHTML === '') {
+      if (this.options.noDataMessage) {
+        this.displayNoDataMessage(this.rows!);
+      }
+      return;
+    }
+  }
+
+  protected getFalseKeys(obj: { [key: string]: boolean }): string[] {
+    const keys = Object.keys(obj).filter((key) => !obj[key]);
+    console.log('keys', keys);
+    return keys;
+  }
+
+  private displayItems(object: Record<string, any>, q: Quark) {
+    const keys = Object.keys(object);
+    // console.log('keys', keys);
+    // If orderKeys is provided, reorder keys based on it
+    const orderedKeys = this.options.orderKeys ? this.options.orderKeys.filter((key) => keys.includes(key)) : keys;
+    // console.log('orderedKeys', orderedKeys);
+    orderedKeys.forEach((key: string) => {
+      const element = object[key];
+      switch (typeof element) {
+        case 'string':
+          $(q, 'span', 'table-cell', {}, element == 'null' ? '-' : element);
+          break;
+        case 'object':
+          $(q, 'span', 'table-cell', {}, (q) => {
+            if (element !== null && typeof element.render === 'function') {
+              element.render(q);
+            }
+          });
+          break;
+        default:
+          $(q, 'span', 'table-cell', {}, String(element) ?? '-');
+      }
+    });
+  }
+
+  private displayNoDataMessage(q: Quark) {
+    $(q, 'div', 'table-row', {}, (q) => {
+      $(q, 'span', 'table-cell last-cell text-center', {}, this.options.noDataMessage);
+    });
+  }
+}
