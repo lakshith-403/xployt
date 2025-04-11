@@ -10,6 +10,7 @@
     "detail": "webpack --stats detailed && webpack serve --open"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "dotenv": "^16.4.5",
@@ -24,5 +25,8 @@
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
+  },
+  "dependencies": {
+    "axios": "^1.8.4"
   }
 }

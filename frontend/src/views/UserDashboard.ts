@@ -3,7 +3,7 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import { HackerDashboard } from './hacker/dashboard/dashboard';
 import { ClientDashboard } from '@views/client/dashboard/dashboard';
-import { ProjectLeadDashboard } from '@views/projectLead/dashboard/dashboard';
+import { ProjectLeadDashboard } from '@views/projectLead/Dashboard/dashboard';
 import { User, UserCache } from '@/data/user';
 import { CACHE_STORE } from '@data/cache';
 import { ValidatorDashboard } from '@views/validator/dashboard/dashboard';
