@@ -35,7 +35,7 @@ import { projectDashboardViewHandler } from '@views/common/projectDashboard/proj
 import { reportsViewHandler } from '@views/projectLead/Reports/Report';
 import { verifyProjectHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/verifyProject';
 import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tabOverviewContent/leadComponents/configureProject/projectConfigForm';
-import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReport';
+import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
 // import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
@@ -56,6 +56,7 @@ import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
+import {vulnReportReviewViewHandler} from "@views/common/ReportReview/ReportReview";
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -188,6 +189,8 @@ const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new
 
 const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
 
+const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHandler], undefined, false, false, false, true);
+
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
@@ -212,3 +215,4 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
+router.addRouteHandler(ReportRouteHandler)

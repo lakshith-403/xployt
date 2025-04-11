@@ -19,7 +19,7 @@ export class InvitationEndpoints {
     static async createInvitation(projectId: string, hackerId: string){
         return NETWORK.sendHttpRequest(
             'POST',
-            `${this.BASE_URL}/client`,
+            `${this.BASE_URL}/project`,
             {
                 projectId: projectId,
                 hackerId: hackerId

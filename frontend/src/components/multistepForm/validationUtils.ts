@@ -52,6 +52,16 @@ export function isValidDate(date: any): { result: boolean; message: string } {
   return { result: true, message: '' };
 }
 
+const allowedExtensions = [
+  'txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat',
+  'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'
+];
+
+export const isValidFileType = (filename: string): boolean => {
+  const extension = filename.split('.').pop()?.toLowerCase();
+  return allowedExtensions.includes(extension || '');
+};
+
 export function validateField(key: string, value: any, expectedType: string): { result: boolean; message: string } {
   // Verifying a string
   if (expectedType === 'string') {
@@ -185,6 +195,14 @@ export function validateField(key: string, value: any, expectedType: string): { 
       return { result: false, message: `${key} must be a comma seperated list` };
     }
   }
+
+  if (expectedType === 'file') {
+    console.log('checking file type: ', key, value);
+    if (!isValidFileType(value)) {
+      return { result: false, message: `${key} must be a valid file type` };
+    }
+  }
+
   return { result: true, message: '' };
 }
 
