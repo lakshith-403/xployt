@@ -1,4 +1,4 @@
-import { Quark } from '@ui_lib/quark';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 // import { Project } from '@data/validator/cache/projects.cache';
 import { User, UserCache } from '@data/user';
 import { UserType } from '@data/user';
@@ -8,6 +8,9 @@ import Lead from './tabOverviewContent/lead';
 import Client from './tabOverviewContent/client';
 import Hacker from './tabOverviewContent/hacker';
 import './tabOverview.scss';
+import { ButtonType } from '@/components/button/base';
+import { FormButton } from '@/components/button/form.button';
+import { router } from '@/ui_lib/router';
 
 export default class Overview {
   // private project!: Project;
@@ -38,17 +41,25 @@ export default class Overview {
     switch (this.role) {
       case 'ProjectLead':
         const lead = new Lead(this.projectId);
-        lead.render(q);
+        await lead.render(q);
         break;
 
       case 'Client':
         const client = new Client(this.projectId);
-        client.render(q);
+        await client.render(q);
         break;
       case 'Hacker':
         const hacker = new Hacker(this.projectId);
-        hacker.render(q);
+        await hacker.render(q);
         break;
     }
+    $(q, 'div', 'ms-auto', {}, (q) => {
+      const submitComplaintButton = new FormButton({
+        label: 'Submit Complaint',
+        onClick: () => router.navigateTo(`/projects/${this.projectId}/complaint`),
+        type: ButtonType.SECONDARY,
+      });
+      submitComplaintButton.render(q);
+    });
   }
 }
