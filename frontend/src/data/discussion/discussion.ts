@@ -36,6 +36,7 @@ export interface Discussion {
   createdAt: Date;
   projectId: string;
   messages: Message[];
+  isResolved?: boolean;
 }
 
 export function getAttachmentsUtil(discussion: Discussion): Attachment[] {

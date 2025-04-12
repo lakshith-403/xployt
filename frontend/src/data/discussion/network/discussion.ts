@@ -38,6 +38,10 @@ export class DiscussionEndpoints {
   static async deleteMessage(message: any): Promise<Response> {
     return NETWORK.sendHttpRequest('DELETE', `/api/messages/${message.id}`);
   }
+
+  static async deleteDiscussion(discussionId: string): Promise<Response> {
+    return NETWORK.sendHttpRequest('DELETE', `${this.BASE_URL}/${discussionId}`);
+  }
 }
 
 export class MockDiscussionEndpoints {

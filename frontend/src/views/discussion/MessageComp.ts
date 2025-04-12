@@ -11,6 +11,7 @@ export class MessageComponent {
   private messageContainer!: Quark;
   private readonly onSaveCallback: (message: Message) => void;
   private readonly onDeleteCallback: (message: Message) => void;
+  private readonly isReadOnly: boolean;
 
   private tempMessage: Message | null = null;
 
@@ -19,6 +20,8 @@ export class MessageComponent {
     this.isEditing = false;
     this.onSaveCallback = onSaveCallback;
     this.onDeleteCallback = onDeleteCallback;
+    // If callbacks are empty functions, consider the component read-only
+    this.isReadOnly = onSaveCallback.toString() === (() => {}).toString() && onDeleteCallback.toString() === (() => {}).toString();
   }
 
   render(q: Quark): void {
@@ -46,27 +49,31 @@ export class MessageComponent {
           }
           $(q, 'span', 'options', {}, (q) => {
             $(q, 'span', 'timestamp', {}, this.getTimeAgo(this.message.timestamp));
-            let elem = $(q, 'i', 'fa-solid fa-ellipsis-v', {}, (q) => {
-              this.optionMenu = $(q, 'div', 'options-menu', {}, (q) => {
-                let editButton = $(q, 'button', 'edit', {}, (q) => {
-                  $(q, 'i', 'fa-solid fa-pen', {});
-                });
-                editButton.addEventListener('click', () => {
-                  this.onEdit();
-                });
-                let deleteButton = $(q, 'button', 'delete', {}, (q) => {
-                  $(q, 'i', 'fa-solid fa-trash', {});
-                });
-                deleteButton.addEventListener('click', () => {
-                  this.onDelete();
-                });
-              });
 
-              this.optionMenu.style.display = 'none';
-            });
-            elem.addEventListener('click', () => {
-              this.toggleOptions();
-            });
+            // Only show options menu for editable messages
+            if (!this.isReadOnly) {
+              let elem = $(q, 'i', 'fa-solid fa-ellipsis-v', {}, (q) => {
+                this.optionMenu = $(q, 'div', 'options-menu', {}, (q) => {
+                  let editButton = $(q, 'button', 'edit', {}, (q) => {
+                    $(q, 'i', 'fa-solid fa-pen', {});
+                  });
+                  editButton.addEventListener('click', () => {
+                    this.onEdit();
+                  });
+                  let deleteButton = $(q, 'button', 'delete', {}, (q) => {
+                    $(q, 'i', 'fa-solid fa-trash', {});
+                  });
+                  deleteButton.addEventListener('click', () => {
+                    this.onDelete();
+                  });
+                });
+
+                this.optionMenu.style.display = 'none';
+              });
+              elem.addEventListener('click', () => {
+                this.toggleOptions();
+              });
+            }
           });
         });
 
