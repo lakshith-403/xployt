@@ -1,0 +1,24 @@
+.user-profile-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2196f3;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+  }
+
+  .user-name {
+    font-weight: 500;
+  }
+}

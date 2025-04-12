@@ -53,10 +53,11 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
+import { userProfileViewHandler } from '@views/UserProfile';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
-import {vulnReportReviewViewHandler} from "@views/common/ReportReview/ReportReview";
+import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -193,6 +194,8 @@ const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHan
 
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
+const UserProfileViewHandler = new RouteHandler('/users', [userProfileViewHandler], undefined, false, false, false, false);
+
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
 router.setTopNavigationView(new TopNavigationView());
@@ -215,4 +218,5 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
-router.addRouteHandler(ReportRouteHandler)
+router.addRouteHandler(UserProfileViewHandler);
+router.addRouteHandler(ReportRouteHandler);
