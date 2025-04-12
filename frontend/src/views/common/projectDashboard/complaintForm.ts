@@ -22,6 +22,8 @@ class ComplaintForm extends View {
   private teamCheckboxes: { [key: string]: Checkbox } = {};
 
   constructor(params: any) {
+    // ---------- UNCOMMENT THESE AFTER FIXING ERRORS IF ANY -----------------
+    // super(params);
     super();
     this.projectId = params.projectId;
     this.projectTeamCache = CACHE_STORE.getProjectTeam(this.projectId) as ProjectTeamCache;
@@ -39,6 +41,27 @@ class ComplaintForm extends View {
       type: 'textarea',
     });
   }
+  // ---------- UNCOMMENT THESE AFTER FIXING ERRORS IF ANY -----------------
+
+  // protected shouldRenderBreadcrumbs(): boolean {
+  //   return true;
+  // }
+
+  // protected setupBreadcrumbs(params: { projectId: string }): void {
+  //   this.breadcrumbs?.clearBreadcrumbs();
+  //   this.breadcrumbs?.addBreadcrumb({
+  //     label: `Projects`,
+  //     link: `/projects`,
+  //   });
+  //   this.breadcrumbs?.addBreadcrumb({
+  //     label: `Project #${params.projectId}`,
+  //     link: `/projects/${params.projectId}`,
+  //   });
+  //   this.breadcrumbs?.addBreadcrumb({
+  //     label: `Complaint`,
+  //     link: `projects/${params.projectId}/complaint`,
+  //   });
+  // }
 
   private async loadData(): Promise<void> {
     try {
