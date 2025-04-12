@@ -144,7 +144,7 @@ export default class ReportsTab {
                   BREADCRUMBS.addBreadcrumb({ label: 'Projects', link: '/projects' });
                   BREADCRUMBS.addBreadcrumb({ label: this.projectId, link: `/projects/${this.projectId}` });
                   BREADCRUMBS.addBreadcrumb({ label: 'Reports', link: `/projects/${this.projectId}/reports/${report.reportId}` });
-                  router.navigateTo(`/projects/${this.projectId}/reports/${report.reportId}`);
+                  router.navigateTo(`/reports/vulnerability/${this.projectId}/${report.reportId}`);
                 },
                 orderKeys: ['reportId', 'severity', 'vulnerabilityType', 'title', 'createdAt'],
               },
