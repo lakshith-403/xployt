@@ -53,6 +53,7 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
+import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
@@ -222,7 +223,15 @@ const AdminRouteHandlers = new RouteHandler(
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
+const ProjectRouteHandler = new RouteHandler(
+  '/projects',
+  [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler, complaintFormViewHandler],
+  undefined,
+  false,
+  false,
+  false,
+  true
+);
 
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
