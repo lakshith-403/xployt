@@ -41,15 +41,6 @@ export default class Overview {
     await this.loadData();
 
     switch (this.role) {
-      case 'ProjectLead':
-        const lead = new Lead(this.projectId);
-        await lead.render(q);
-        break;
-
-      case 'Client':
-        const client = new Client(this.projectId);
-        await client.render(q);
-        break;
       case 'Hacker':
         const hacker = new Hacker(this.projectId);
         await hacker.render(q);
