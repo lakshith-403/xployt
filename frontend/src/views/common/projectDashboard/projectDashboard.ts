@@ -8,6 +8,8 @@ import TeamTab from './tabTeam';
 import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
+import ReportsTab from './tabReports';
+
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
@@ -52,6 +54,7 @@ class projectDashboardView extends View {
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
+    const reportsTab = new ReportsTab(this.params.projectId);
 
     const currentUser = await CACHE_STORE.getUser().get();
     this.userId = currentUser.id;
@@ -72,6 +75,12 @@ class projectDashboardView extends View {
         title: 'Discussion',
         render: (q: Quark) => {
           discussionTab.render(q);
+        },
+      },
+      {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
         },
       },
     ];
