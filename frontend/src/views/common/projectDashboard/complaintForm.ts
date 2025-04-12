@@ -107,8 +107,8 @@ class ComplaintForm extends View {
         $(q, 'div', 'team-selection', {}, (q) => {
           $(q, 'h3', 'team-title', {}, 'Select Team Members to Notify');
 
-          const hackers = this.projectTeam.getHackersWithoutId();
-          const validators = this.projectTeam.getValidatorsWithoutId();
+          const hackers = this.projectTeam.hackers;
+          const validators = this.projectTeam.validators;
 
           if (hackers.length > 0) {
             $(q, 'div', 'team-section', {}, (q) => {
