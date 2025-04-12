@@ -47,23 +47,43 @@
   border-color: $color !important;
 }
 
-.border-primary-thin {
-  border: 3px solid var(--background-primary) !important;
+// Background color borders
+$border-types: (
+  'primary': var(--background-primary),
+  'secondary': var(--background-secondary),
+  'tertiary': var(--background-tertiery),
+);
+
+$border-sizes: (
+  'extra-thin': 1px,
+  'thin': 3px,
+  'thick': 6px,
+);
+
+@each $type, $color in $border-types {
+  @each $size-name, $size in $border-sizes {
+    .border-#{$type}-#{$size-name} {
+      border: $size solid $color !important;
+    }
+  }
 }
-.border-primary-thick {
-  border: 6px solid var(--background-primary) !important;
+
+// Text color borders
+$text-border-types: (
+  'text-primary': var(--color-primary),
+  'text-secondary': var(--color-secondary),
+);
+
+@each $type, $color in $text-border-types {
+  @each $size-name, $size in $border-sizes {
+    .border-#{$type}-#{$size-name} {
+      border: $size solid $color !important;
+    }
+  }
 }
-.border-secondary-thin {
-  border: 3px solid var(--background-secondary) !important;
-}
-.border-secondary-thick {
-  border: 6px solid var(--background-secondary) !important;
-}
-.border-tertiary-thin {
-  border: 3px solid var(--background-tertiery) !important;
-}
-.border-tertiary-thick {
-  border: 6px solid var(--background-tertiery) !important;
+
+.no-border {
+  border: none !important;
 }
 
 // -------- opacity --------
@@ -77,4 +97,45 @@
 
 .bg-opacity-75 {
   background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+// -------- hover effects --------
+.hover-bg-primary:hover {
+  background-color: var(--background-primary) !important;
+  transition: background-color 0.3s ease;
+}
+
+.hover-bg-secondary:hover {
+  background-color: var(--background-secondary) !important;
+  transition: background-color 0.3s ease;
+}
+
+.hover-bg-tertiary:hover {
+  background-color: var(--background-tertiery) !important;
+  transition: background-color 0.3s ease;
+}
+
+.hover-text-primary:hover {
+  color: var(--color-primary) !important;
+  transition: color 0.3s ease;
+}
+
+.hover-text-secondary:hover {
+  color: var(--color-secondary) !important;
+  transition: color 0.3s ease;
+}
+
+.hover-border-primary:hover {
+  border-color: var(--background-primary) !important;
+  transition: border-color 0.3s ease;
+}
+
+.hover-border-secondary:hover {
+  border-color: var(--background-secondary) !important;
+  transition: border-color 0.3s ease;
+}
+
+.hover-border-tertiary:hover {
+  border-color: var(--background-tertiery) !important;
+  transition: border-color 0.3s ease;
 }

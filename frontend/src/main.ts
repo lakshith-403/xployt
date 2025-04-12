@@ -3,6 +3,7 @@ import './styles/styles.scss';
 import './styles/X-bootstrap.scss';
 import './styles/X-typography.scss';
 import './styles/X-colors.scss';
+import './styles/X-utils.scss';
 //utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from '@ui_lib/route';
@@ -57,7 +58,7 @@ import { complaintFormViewHandler } from '@views/common/projectDashboard/complai
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
-import {vulnReportReviewViewHandler} from "@views/common/ReportReview/ReportReview";
+import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -224,4 +225,4 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
-router.addRouteHandler(ReportRouteHandler)
+router.addRouteHandler(ReportRouteHandler);

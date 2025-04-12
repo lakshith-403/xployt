@@ -60,6 +60,12 @@ class projectDashboardView extends View {
     this.userId = currentUser.id;
     const tabs = [
       {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
+        },
+      },
+      {
         title: 'Overview',
         render: (q: Quark) => {
           overviewTab.render(q);
@@ -75,12 +81,6 @@ class projectDashboardView extends View {
         title: 'Discussion',
         render: (q: Quark) => {
           discussionTab.render(q);
-        },
-      },
-      {
-        title: 'Reports',
-        render: (q: Quark) => {
-          reportsTab.render(q);
         },
       },
     ];
