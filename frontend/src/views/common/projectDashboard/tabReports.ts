@@ -141,9 +141,6 @@ export default class ReportsTab {
                 noDataMessage: 'No reports to show',
                 lastLine: false,
                 callback: (report) => {
-                  BREADCRUMBS.addBreadcrumb({ label: 'Projects', link: '/projects' });
-                  BREADCRUMBS.addBreadcrumb({ label: this.projectId, link: `/projects/${this.projectId}` });
-                  BREADCRUMBS.addBreadcrumb({ label: 'Reports', link: `/projects/${this.projectId}/reports/${report.reportId}` });
                   router.navigateTo(`/reports/vulnerability/${this.projectId}/${report.reportId}`);
                 },
                 orderKeys: ['reportId', 'severity', 'vulnerabilityType', 'title', 'createdAt'],

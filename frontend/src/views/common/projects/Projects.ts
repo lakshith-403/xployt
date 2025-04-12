@@ -55,8 +55,6 @@ export default class ProjectsView extends View {
         falseKeys: [],
         noDataMessage: 'No projects to show',
         callback: (project) => {
-          BREADCRUMBS.addBreadcrumb({ label: 'Projects', link: '/projects' });
-          BREADCRUMBS.addBreadcrumb({ label: project.projectId.toString(), link: `/projects/${project.projectId}` });
           router.navigateTo(`/projects/${project.projectId}`);
         },
         orderKeys: ['projectId', 'state', 'title', this.user.type === 'Client' ? 'leadId' : 'clientId', 'pendingReports'],
