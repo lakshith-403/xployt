@@ -7,6 +7,36 @@
     margin-left: 20px;
   }
 
+  .resolve-conflict-container {
+    margin-left: 20px;
+    margin-bottom: 15px;
+
+    button {
+      background-color: #d84315;
+      color: white;
+      font-weight: 600;
+
+      &:hover {
+        background-color: #bf360c;
+      }
+    }
+  }
+
+  .resolution-notice {
+    margin-left: 20px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #1b5e20;
+    border-radius: 4px;
+    width: fit-content;
+
+    p {
+      margin: 0;
+      color: white;
+      font-weight: 500;
+    }
+  }
+
   .main-pain {
     display: flex;
     flex-direction: row;

@@ -9,6 +9,8 @@ import { Loader } from './Loader';
 import { UserTag } from './UserTag';
 import { AttachmentTag } from './AttachmentTag';
 import { MessageComponent } from './MessageComp';
+import { router } from '@/ui_lib/router';
+import NETWORK from '@/data/network/network';
 
 export class DiscussionView extends View {
   private readonly discussionId: string;
@@ -21,6 +23,8 @@ export class DiscussionView extends View {
   private loader: Loader;
   private selectedFiles: File[] = [];
   private attachedFileContainer!: Quark;
+  private isResolved: boolean = false;
+  private resolveButtonContainer: Quark | null = null;
 
   constructor({ discussionId }: { discussionId: string }) {
     super();
@@ -35,7 +39,7 @@ export class DiscussionView extends View {
     this.loader = new Loader();
   }
 
-  render(q: Quark): void {
+  async render(q: Quark): Promise<void> {
     $(q, 'div', 'discussion-view', {}, (q) => {
       this.titleElem = $(q, 'h1', '', {}, '');
       $(q, 'div', 'main-pain', {}, (q) => {
@@ -49,22 +53,57 @@ export class DiscussionView extends View {
 
     this.loader.show(q);
 
-    this.discussionCache
-      .get()
-      .then((discussion) => {
-        this.discussion = discussion;
-        this.loader.hide();
+    try {
+      // Load the discussion data
+      this.discussion = await this.discussionCache.get();
+      this.titleElem.innerText = `${this.discussion?.title} #${this.discussion?.projectId}`;
 
-        this.titleElem.innerText = `${this.discussion?.title} #${this.discussion?.projectId}`;
+      // Check if this is a complaint discussion
+      if (this.discussion?.title.toLowerCase().startsWith('complaint:')) {
+        // Fetch complaint status
+        await this.checkComplaintStatus();
+      }
 
-        this.renderParticipants();
-        this.renderAttachments();
-        this.renderMessages();
-      })
-      .catch(() => {
-        this.loader.hide();
-        console.error('Failed to load discussion');
+      // Render the UI based on status
+      this.renderParticipants();
+      this.renderAttachments();
+      this.renderMessages();
+      await this.checkProjectLead();
+
+      this.loader.hide();
+    } catch (error) {
+      this.loader.hide();
+      console.error('Failed to load discussion:', error);
+    }
+  }
+
+  private async checkComplaintStatus(): Promise<void> {
+    if (!this.discussion) return;
+
+    try {
+      console.log(`Checking complaint status for discussion ${this.discussionId}`);
+
+      const response = await NETWORK.get(`/api/complaints/discussion/${this.discussionId}`, {
+        showLoading: false,
+        handleError: false,
       });
+
+      console.log('Complaint status response:', response);
+
+      if (response.resolved) {
+        this.isResolved = response.resolved;
+        console.log(`Discussion ${this.discussionId} resolved status:`, this.isResolved);
+
+        if (this.isResolved) {
+          // Add the resolution notice to the UI
+          $(this.titleElem.parentElement!, 'div', 'resolution-notice', {}, (q) => {
+            $(q, 'p', '', {}, 'This complaint has been resolved. Further messages are disabled.');
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error checking complaint status:', error);
+    }
   }
 
   private renderParticipants(): void {
@@ -95,51 +134,64 @@ export class DiscussionView extends View {
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
-          new MessageComponent(
-            message,
-            (message) => {
-              this.discussionCache.saveMessage(message);
-              this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
-              this.renderMessages();
-              this.renderAttachments();
-            },
-            (message) => {
-              this.discussionCache.deleteMessage(message);
-              this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
-              this.renderMessages();
-              this.renderAttachments();
-            }
-          ).render(q);
+          if (this.isResolved) {
+            // For resolved discussions, pass empty functions that do nothing
+            new MessageComponent(
+              message,
+              () => {},
+              () => {}
+            ).render(q);
+          } else {
+            // For active discussions, pass regular callbacks
+            new MessageComponent(
+              message,
+              (message) => {
+                this.discussionCache.saveMessage(message);
+                this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
+                this.renderMessages();
+                this.renderAttachments();
+              },
+              (message) => {
+                this.discussionCache.deleteMessage(message);
+                this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
+                this.renderMessages();
+                this.renderAttachments();
+              }
+            ).render(q);
+          }
         });
 
-      const textArea = new TextAreaBase({
-        placeholder: 'Enter your message',
-        name: 'message',
-      });
-      textArea.render(q);
+      // Only render the input field if the discussion is not resolved
+      if (!this.isResolved) {
+        const textArea = new TextAreaBase({
+          placeholder: 'Enter your message',
+          name: 'message',
+        });
+        textArea.render(q);
 
-      $(q, 'div', 'button-row', {}, (q) => {
-        new IconButton({
-          icon: 'fa-solid fa-paperclip',
-          label: 'Attach',
-          onClick: () => {
-            this.handleFileAttach();
-          },
-        }).render(q);
+        $(q, 'div', 'button-row', {}, (q) => {
+          new IconButton({
+            icon: 'fa-solid fa-paperclip',
+            label: 'Attach',
+            onClick: () => {
+              this.handleFileAttach();
+            },
+          }).render(q);
 
-        new IconButton({
-          icon: 'fa-solid fa-paper-plane',
-          label: 'Send',
-          onClick: async () => {
-            await this.sendMessage(textArea.getValue());
-            textArea.setValue('');
-            this.selectedFiles = [];
-            this.renderAttachedFiles();
-          },
-        }).render(q);
-      });
+          new IconButton({
+            icon: 'fa-solid fa-paper-plane',
+            label: 'Send',
+            onClick: async () => {
+              await this.sendMessage(textArea.getValue());
+              textArea.setValue('');
+              this.selectedFiles = [];
+              this.renderAttachedFiles();
+            },
+          }).render(q);
+        });
 
-      this.attachedFileContainer = $(q, 'div', 'attached-files', {}, (q) => {});
+        this.attachedFileContainer = $(q, 'div', 'attached-files', {}, (q) => {});
+      }
     });
   }
 
@@ -235,6 +287,58 @@ export class DiscussionView extends View {
     document.body.appendChild(input);
     input.click();
     document.body.removeChild(input);
+  }
+
+  private async checkProjectLead(): Promise<void> {
+    if (!this.discussion) return;
+
+    // Check if the discussion title has the 'complaint:' prefix
+    if (!this.discussion.title.toLowerCase().startsWith('complaint:')) return;
+
+    try {
+      const currentUser = await CACHE_STORE.getUser().get();
+
+      // If the user is a project lead and the discussion is not resolved, add the resolve button
+      if (currentUser.type === 'ProjectLead' && !this.isResolved) {
+        this.resolveButtonContainer = $(this.titleElem.parentElement!, 'div', 'resolve-conflict-container', {});
+
+        new IconButton({
+          icon: 'fa-solid fa-check-circle',
+          label: 'Resolve Conflict',
+          onClick: async () => {
+            try {
+              this.loader.show(this.messagesPane);
+
+              // Call the complaint resolution endpoint
+              await NETWORK.delete(`/api/complaints/${this.discussionId}`);
+
+              // Update the state and re-render
+              this.isResolved = true;
+              this.loader.hide();
+
+              // Remove the resolve button
+              if (this.resolveButtonContainer) {
+                this.resolveButtonContainer.innerHTML = '';
+                this.resolveButtonContainer.style.display = 'none';
+              }
+
+              // Re-render messages with readonly mode
+              this.renderMessages();
+
+              // Add resolution notice
+              $(this.titleElem.parentElement!, 'div', 'resolution-notice', {}, (q) => {
+                $(q, 'p', '', {}, 'This complaint has been resolved. Further messages are disabled.');
+              });
+            } catch (error) {
+              this.loader.hide();
+              console.error('Failed to resolve conflict:', error);
+            }
+          },
+        }).render(this.resolveButtonContainer);
+      }
+    } catch (error) {
+      console.error('Error checking project lead status:', error);
+    }
   }
 }
 
