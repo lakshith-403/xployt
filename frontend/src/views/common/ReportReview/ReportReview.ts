@@ -16,7 +16,7 @@ export class ReportReview extends View {
     this.projectId = params.projectId;
     this.formData = {
       vulnerabilityType: 'test',
-      severity: 'test',
+      severity: "Low",
       reportTitle: 'test',
       description: 'test',
       steps: [
@@ -26,7 +26,7 @@ export class ReportReview extends View {
         },
       ],
       agreement: false,
-      testDate: 'test',
+      testDate: new Date(),
     };
   }
 
