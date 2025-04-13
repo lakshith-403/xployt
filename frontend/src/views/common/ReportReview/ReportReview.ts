@@ -1,19 +1,19 @@
-import { View, ViewHandler } from '@ui_lib/view';
-import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import { formObject } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
-import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
+import {View, ViewHandler} from '@ui_lib/view';
+import {Quark, QuarkFunction as $} from '@ui_lib/quark';
+import {ReportElement} from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
-import { ReportStepElement } from '@views/common/ReportReview/components/step';
+import {ReportStepElement} from '@views/common/ReportReview/components/step';
 import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
 import {CACHE_STORE} from "@data/cache";
 import {Loader} from "@views/discussion/Loader";
+import './ReportReview.scss'
 
 export class ReportReview extends View {
   private reportId: string;
   private projectId: string;
   private hackerId: string = '';
   private vulnerabilityReportCache: VulnerabilityReportCache;
-  private formData: formObject;
+  private formData: VulnerabilityReport | null = null;
   private loadReport: boolean;
   private loader: Loader
 
@@ -24,24 +24,10 @@ export class ReportReview extends View {
 
     this.vulnerabilityReportCache = CACHE_STORE.getVulnerabilityReport(this.reportId);
 
-    this.formData = formData
-     ? this.mapReportToFormData(formData)
-     : {
-         vulnerabilityType: 'test',
-         severity: 'Low',
-         reportTitle: 'test',
-         description: 'test',
-         steps: [
-           {
-             description: 'test',
-             attachments: ['test'],
-           },
-         ],
-         agreement: false,
-       };
-   this.loadReport = !formData;
+    if (formData) { this.formData = formData; }
+    this.loadReport = !formData;
 
-   this.loader = new Loader();
+    this.loader = new Loader();
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -64,25 +50,9 @@ export class ReportReview extends View {
     });
   }
 
-  private mapReportToFormData(report: VulnerabilityReport): formObject {
-    this.hackerId = report.hackerId
-    return {
-      vulnerabilityType: report.vulnerabilityType,
-      severity: report.severity,
-      reportTitle: report.title,
-      description: report.description,
-      steps: report.steps.map((step) => ({
-        description: step.description,
-        attachments: step.attachments.map((attachment) => attachment.name),
-      })),
-      agreement: false,
-    };
-  }
-
   private async loadData(): Promise<void> {
     if(this.loadReport){
-        const report = await this.vulnerabilityReportCache.load();
-        this.formData = this.mapReportToFormData(report);
+      this.formData = await this.vulnerabilityReportCache.load();
     }
   }
 
@@ -115,17 +85,19 @@ export class ReportReview extends View {
 
       $(q, 'h2', 'section-subtitle', {}, 'Report Details');
       {
-        (Object.keys(this.formData) as Array<keyof formObject>).forEach((key) => {
-          if (key !== 'steps' && key !== 'agreement') {
-            new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key].toString()).render(q);
-          }
-        });
+       (this.formData ? Object.keys(this.formData) as Array<keyof VulnerabilityReport> : []).forEach((key) => {
+         if (key !== 'steps' && this.formData) {
+           new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key]?.toString() || '').render(q);
+         }
+       });
       }
 
       $(q, 'h2', 'section-subtitle', {}, 'Proof of Concept');
-      this.formData.steps.forEach((step, index) => {
-        new ReportStepElement(index + 1, step).render(q);
-      });
+      this.formData
+          ? this.formData.steps.forEach((step, index) => {
+            new ReportStepElement(step).render(q);
+          })
+          : '';
     });
   }
 }
