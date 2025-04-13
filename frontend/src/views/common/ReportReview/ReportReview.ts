@@ -16,16 +16,17 @@ export class ReportReview extends View {
     this.projectId = params.projectId;
     this.formData = {
       vulnerabilityType: 'test',
-      severity: 'test',
+      severity: "Low",
       reportTitle: 'test',
       description: 'test',
       steps: [
         {
           description: 'test',
-          attachments: 'test',
+          attachments: ['test'],
         },
       ],
       agreement: false,
+      testDate: new Date(),
     };
   }
 
@@ -66,7 +67,7 @@ export class ReportReview extends View {
           });
           $(q, 'span', 'project-element align-center', {}, (q) => {
             $(q, 'p', 'label', {}, 'Access Link');
-            $(q, 'a', 'highlight', {}, `https://example.com/${this.projectId}`);
+            $(q, 'a', 'highlight', {}, `example.com/${this.projectId}`);
           });
         });
       });

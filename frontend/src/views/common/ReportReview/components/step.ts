@@ -3,9 +3,9 @@ import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 export class ReportStepElement{
     private stepNumber: number;
     private description: string;
-    private files: string;
+    private files: string[];
 
-    constructor(stepNumber: number, step:{description: string, attachments: string}) {
+    constructor(stepNumber: number, step:{description: string, attachments: string[]}) {
         this.stepNumber = stepNumber;
         this.description = step.description;
         this.files = step.attachments;
@@ -20,7 +20,7 @@ export class ReportStepElement{
                 });
                 $(q, 'span', 'report-element align-center', {}, (q) => {
                     $(q, 'label', 'label', {}, "Attachments");
-                    $(q, 'p', 'input', {}, this.files);
+                    this.files.forEach(file => $(q, 'p', 'input', {}, file));
                 });
             });
     }
