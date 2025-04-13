@@ -4,30 +4,44 @@ import { formObject } from '@views/hacker/VulnerabilityReport/VulnerabilityRepor
 import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
 import { ReportStepElement } from '@views/common/ReportReview/components/step';
+import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
+import {CACHE_STORE} from "@data/cache";
+import {Loader} from "@views/discussion/Loader";
 
 export class ReportReview extends View {
   private reportId: string;
   private projectId: string;
+  private hackerId: string = '';
+  private vulnerabilityReportCache: VulnerabilityReportCache;
   private formData: formObject;
+  private loadReport: boolean;
+  private loader: Loader
 
-  constructor(params: { projectId: string; reportId: string }) {
+  constructor(params: { projectId: string; reportId: string }, formData?: VulnerabilityReport) {
     super(params);
     this.reportId = params.reportId;
     this.projectId = params.projectId;
-    this.formData = {
-      vulnerabilityType: 'test',
-      severity: "Low",
-      reportTitle: 'test',
-      description: 'test',
-      steps: [
-        {
-          description: 'test',
-          attachments: ['test'],
-        },
-      ],
-      agreement: false,
-      testDate: new Date(),
-    };
+
+    this.vulnerabilityReportCache = CACHE_STORE.getVulnerabilityReport(this.reportId);
+
+    this.formData = formData
+     ? this.mapReportToFormData(formData)
+     : {
+         vulnerabilityType: 'test',
+         severity: 'Low',
+         reportTitle: 'test',
+         description: 'test',
+         steps: [
+           {
+             description: 'test',
+             attachments: ['test'],
+           },
+         ],
+         agreement: false,
+       };
+   this.loadReport = !formData;
+
+   this.loader = new Loader();
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -50,11 +64,38 @@ export class ReportReview extends View {
     });
   }
 
+  private mapReportToFormData(report: VulnerabilityReport): formObject {
+    this.hackerId = report.hackerId
+    return {
+      vulnerabilityType: report.vulnerabilityType,
+      severity: report.severity,
+      reportTitle: report.title,
+      description: report.description,
+      steps: report.steps.map((step) => ({
+        description: step.description,
+        attachments: step.attachments.map((attachment) => attachment.name),
+      })),
+      agreement: false,
+    };
+  }
+
+  private async loadData(): Promise<void> {
+    if(this.loadReport){
+        const report = await this.vulnerabilityReportCache.load();
+        this.formData = this.mapReportToFormData(report);
+    }
+  }
+
   async render(q: Quark) {
+
+    this.loader.show(q);
+    await this.loadData();
+    this.loader.hide();
+
     $(q, 'div', 'report-review', {}, async (q) => {
       $(q, 'h1', 'title', {}, `Vulnerability Report | Project #${this.projectId}`);
       $(q, 'div', 'report-review-header', {}, async (q) => {
-        await new UserCard('105', 'hacker', 'hacker flex-1', 'Hacker', {
+        await new UserCard(this.hackerId, 'hacker', 'hacker flex-1', 'Hacker', {
           highLightKeys: ['email'],
           highlightClassName: 'highlight',
           showKeys: ['name', 'email'],
