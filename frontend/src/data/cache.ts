@@ -18,6 +18,7 @@ import { ProjectsClientCache } from './client/cache/projects.cache';
 import {ProjectCache} from "@data/common/cache/project.cache";
 import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
 import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
+import {VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
 
 class CacheStore {
   private readonly user: UserCache;
@@ -38,6 +39,7 @@ class CacheStore {
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
   private projectsMap: Map<string, ProjectCache>;
+  private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>
 
   constructor() {
     this.user = new UserCache();
@@ -58,7 +60,8 @@ class CacheStore {
     this.discussionMap = new Map();
     this.clientProjectsMap = new Map();
     this.leadProjectsMap = new Map();
-    this.projectsMap = new Map()
+    this.projectsMap = new Map();
+    this.vulnerabilityReportsMap = new Map();
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -182,6 +185,13 @@ class CacheStore {
     }
     return this.projectsMap.get(projectId)!;
   }
+
+    public getVulnerabilityReport(reportId: string): VulnerabilityReportCache {
+        if (!this.vulnerabilityReportsMap.has(reportId)) {
+        this.vulnerabilityReportsMap.set(reportId, new VulnerabilityReportCache(reportId));
+        }
+        return this.vulnerabilityReportsMap.get(reportId)!;
+    }
 }
 
 export const CACHE_STORE = new CacheStore();
