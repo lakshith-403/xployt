@@ -69,4 +69,12 @@ export class DiscussionCache extends CacheObject<Discussion> {
 
     return response.data as Message;
   }
+
+  async deleteDiscussion(): Promise<void> {
+    const response = await DiscussionEndpoints.deleteDiscussion(this.discussionId);
+
+    if (!response.is_successful) throw new DataFailure('delete discussion', response.error ?? '');
+
+    this.data = undefined;
+  }
 }

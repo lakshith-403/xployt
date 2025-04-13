@@ -3,6 +3,7 @@ import './styles/styles.scss';
 import './styles/X-bootstrap.scss';
 import './styles/X-typography.scss';
 import './styles/X-colors.scss';
+import './styles/X-utils.scss';
 //utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from '@ui_lib/route';
@@ -53,10 +54,11 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
+import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
-import {vulnReportReviewViewHandler} from "@views/common/ReportReview/ReportReview";
+import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -77,6 +79,7 @@ ModalManager.includeModal('alertForErrors', {
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
   buttonContainer!: Quark;
+  userType!: Quark;
 
   willUpdate: () => void = () => {};
 
@@ -86,53 +89,15 @@ class TopNavigationView implements NavigationView {
     const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
+      this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
       const notificationList = new NotificationList(false, { userId: '1' });
       const notificationButton = new NotificationButton(notificationList, q);
       notificationButton.render();
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/');
-          },
-        },
-        'Home'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/hacker');
-          },
-        },
-        'Hackers'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/validator/application');
-          },
-        },
-        'Validators'
-      );
-      $(
-        q,
-        'button',
-        '',
-        {
-          onclick: () => {
-            router.navigateTo('/client');
-          },
-        },
-        'Organizations'
-      );
+
+      $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/hacker') }, 'Hackers');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/validator/application') }, 'Validators');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -143,6 +108,7 @@ class TopNavigationView implements NavigationView {
     CACHE_STORE.getUser()
       .get()
       .then((user) => {
+        this.userType.innerHTML = user.type ?? '';
         // console.log(user);
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
@@ -223,7 +189,15 @@ const AdminRouteHandlers = new RouteHandler(
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
+const ProjectRouteHandler = new RouteHandler(
+  '/projects',
+  [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler, complaintFormViewHandler],
+  undefined,
+  false,
+  false,
+  false,
+  true
+);
 
 const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHandler], undefined, false, false, false, true);
 
@@ -251,4 +225,4 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
-router.addRouteHandler(ReportRouteHandler)
+router.addRouteHandler(ReportRouteHandler);

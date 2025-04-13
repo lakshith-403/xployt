@@ -14,6 +14,8 @@ class TestingSecurity implements Step {
       this.renderFieldFullWidth(q, this.fields.outOfScope, state.outOfScope);
       this.renderFieldFullWidth(q, this.fields.objectives, state.objectives);
       this.renderFieldFullWidth(q, this.fields.securityRequirements, state.securityRequirements);
+      this.renderFieldFullWidth(q, this.fields.initialFunding, state.initialFunding);
+      this.renderFieldFullWidth(q, this.fields.noOfHackers, state.noOfHackers);
     });
   }
 
@@ -42,9 +44,11 @@ class TestingSecurity implements Step {
 
   private fields: { [key: string]: any } = {
     testingScope: new TagInput({ label: 'Testing Scope *', placeholder: 'Select scope of testing from those given', name: 'testingScope', suggestions: scopeTags }),
-    outOfScope: new FormTextField({ label: 'Out of Scope *', placeholder: 'Areas not covered by testing as a comma seperated list', name: 'outOfScope' }),
-    objectives: new FormTextField({ label: 'Objectives *', placeholder: 'Objectives of testing as a comma seperated list', name: 'objectives' }),
-    securityRequirements: new FormTextField({ label: 'Security Requirements *', placeholder: 'Security requirements as a comma seperated list', name: 'securityRequirements' }),
+    outOfScope: new FormTextField({ label: 'Out of Scope', placeholder: 'Areas not covered by testing as a comma seperated list', name: 'outOfScope' }),
+    objectives: new FormTextField({ label: 'Objectives', placeholder: 'Objectives of testing as a comma seperated list', name: 'objectives' }),
+    securityRequirements: new FormTextField({ label: 'Security Requirements', placeholder: 'Security requirements as a comma seperated list', name: 'securityRequirements' }),
+    initialFunding: new FormTextField({ label: 'Initial Funding *', placeholder: 'Initial funding for the project', name: 'initialFunding' }),
+    noOfHackers: new FormTextField({ label: 'Number of Hackers *', placeholder: 'Number of hackers to be used in the project', name: 'noOfHackers' }),
   };
 
   constructor() {

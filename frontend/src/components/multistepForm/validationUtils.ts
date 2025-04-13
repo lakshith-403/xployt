@@ -158,6 +158,20 @@ export function validateField(key: string, value: any, expectedType: string): { 
       return { result: false, message: `${key} must be a number or null` };
     }
   }
+
+  // // Verifying a positive number or null
+  // if (expectedType === 'positive-number|null') {
+  //   console.log('checking positive-number|null: ', key, value);
+  //   if (value === null || value === '') {
+  //     return { result: true, message: '' };
+  //   }
+
+  //   const numValue = Number(value);
+  //   if (isNaN(numValue) || numValue <= 0) {
+  //     return { result: false, message: `${key} must be a positive number or null` };
+  //   }
+  // }
+
   // Verifying a url
   if (expectedType === 'url') {
     console.log('checking url: ', key, value);

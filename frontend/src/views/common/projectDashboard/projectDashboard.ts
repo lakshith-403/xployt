@@ -8,6 +8,8 @@ import TeamTab from './tabTeam';
 import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
+import ReportsTab from './tabReports';
+
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
@@ -40,7 +42,7 @@ class projectDashboardView extends View {
     console.log('projectDashboardView render executed');
     try {
       const currentUser = await CACHE_STORE.getUser().get();
-      const response = await NETWORK.get(`/api/single-project/${this.params.projectId}/?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
+      const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
       this.projectTitle = response.data.project.title;
     } catch (error) {
@@ -52,10 +54,17 @@ class projectDashboardView extends View {
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
+    const reportsTab = new ReportsTab(this.params.projectId);
 
     const currentUser = await CACHE_STORE.getUser().get();
     this.userId = currentUser.id;
     const tabs = [
+      {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
+        },
+      },
       {
         title: 'Overview',
         render: (q: Quark) => {

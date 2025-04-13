@@ -2,7 +2,7 @@ import { QuarkFunction as $, Quark } from '../../../../ui_lib/quark';
 import { FileInputBase } from './../../../../components/input_file/input.file';
 import { TextAreaBase } from './../../../../components/test_area/textArea.base';
 import { TagInput } from '@components/text_field/tagInput/tagInput';
-import { expertiseTags, platformSpecializationTags } from './data';
+import { expertiseTags } from './data';
 import './Expertise.scss';
 
 import { Step } from './../../../../components/multistepForm/multistep-form';
@@ -31,10 +31,10 @@ class Expertise implements Step {
           this.fields.skills.render(q);
           this.fields.skills.setValue(state.skills);
         });
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.fields.certificates.render(q);
-          this.fields.certificates.setValue(state.certificates);
-        });
+        // $(q, 'div', 'form-field', {}, (q) => {
+        //   this.fields.certificates.render(q);
+        //   this.fields.certificates.setValue(state.certificates);
+        // });
         $(q, 'div', 'form-field', {}, (q) => {
           this.fields.references.render(q);
           this.fields.references.setValue(state.references);
@@ -54,14 +54,14 @@ class Expertise implements Step {
       placeholder: 'Enter your skills and proficiencies as a comma separated list',
       name: 'skills',
     }),
-    certificates: new TextAreaBase({
-      label: 'Certificate',
-      placeholder: 'Enter your certificate as a comma separated list',
-      name: 'certificates',
-    }),
+    // certificates: new TextAreaBase({
+    //   label: 'Certificates',
+    //   placeholder: 'Enter your certificates as a comma separated list',
+    //   name: 'certificates',
+    // }),
     references: new TextAreaBase({
-      label: 'Reference',
-      placeholder: 'Enter your reference as a comma separated list',
+      label: 'References',
+      placeholder: 'Enter your references as a comma separated list',
       name: 'references',
     }),
     file: new FileInputBase({

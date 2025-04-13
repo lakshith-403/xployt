@@ -1,0 +1,57 @@
+.complaint-form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+
+  .title {
+    margin-bottom: 2rem;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+  }
+
+  .team-selection {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+
+    .team-title {
+      margin-bottom: 1rem;
+    }
+
+    .team-section {
+      margin-bottom: 1rem;
+
+      .section-title {
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+      }
+
+      .team-member {
+        margin-left: 1rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+}
