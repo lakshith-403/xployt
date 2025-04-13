@@ -33,6 +33,17 @@
         box-sizing: border-box;
       }
     }
+
+  }
+
+  .attachment-tag{
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .attachment-tag:hover {
+    cursor: pointer;
+    opacity: 0.75;
   }
 
   .hacker {
@@ -49,7 +60,6 @@
     width: inherit;
     gap: 0.5rem;
     margin-block: 1rem;
-    justify-content: center;
     align-items: center;
 
     .label {

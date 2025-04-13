@@ -1,33 +1,33 @@
-import { View, ViewHandler } from '@ui_lib/view';
-import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import { formObject } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
-import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
+import {View, ViewHandler} from '@ui_lib/view';
+import {Quark, QuarkFunction as $} from '@ui_lib/quark';
+import {ReportElement} from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
-import { ReportStepElement } from '@views/common/ReportReview/components/step';
+import {ReportStepElement} from '@views/common/ReportReview/components/step';
+import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
+import {CACHE_STORE} from "@data/cache";
+import {Loader} from "@views/discussion/Loader";
+import './ReportReview.scss'
 
 export class ReportReview extends View {
   private reportId: string;
   private projectId: string;
-  private formData: formObject;
+  private hackerId: string = '';
+  private vulnerabilityReportCache: VulnerabilityReportCache;
+  private formData: VulnerabilityReport | null = null;
+  private loadReport: boolean;
+  private loader: Loader
 
-  constructor(params: { projectId: string; reportId: string }) {
+  constructor(params: { projectId: string; reportId: string }, formData?: VulnerabilityReport) {
     super(params);
     this.reportId = params.reportId;
     this.projectId = params.projectId;
-    this.formData = {
-      vulnerabilityType: 'test',
-      severity: "Low",
-      reportTitle: 'test',
-      description: 'test',
-      steps: [
-        {
-          description: 'test',
-          attachments: ['test'],
-        },
-      ],
-      agreement: false,
-      testDate: new Date(),
-    };
+
+    this.vulnerabilityReportCache = CACHE_STORE.getVulnerabilityReport(this.reportId);
+
+    if (formData) { this.formData = formData; }
+    this.loadReport = !formData;
+
+    this.loader = new Loader();
   }
 
   protected shouldRenderBreadcrumbs(): boolean {
@@ -50,11 +50,22 @@ export class ReportReview extends View {
     });
   }
 
+  private async loadData(): Promise<void> {
+    if(this.loadReport){
+      this.formData = await this.vulnerabilityReportCache.load();
+    }
+  }
+
   async render(q: Quark) {
+
+    this.loader.show(q);
+    await this.loadData();
+    this.loader.hide();
+
     $(q, 'div', 'report-review', {}, async (q) => {
       $(q, 'h1', 'title', {}, `Vulnerability Report | Project #${this.projectId}`);
       $(q, 'div', 'report-review-header', {}, async (q) => {
-        await new UserCard('105', 'hacker', 'hacker flex-1', 'Hacker', {
+        await new UserCard(this.hackerId, 'hacker', 'hacker flex-1', 'Hacker', {
           highLightKeys: ['email'],
           highlightClassName: 'highlight',
           showKeys: ['name', 'email'],
@@ -74,17 +85,19 @@ export class ReportReview extends View {
 
       $(q, 'h2', 'section-subtitle', {}, 'Report Details');
       {
-        (Object.keys(this.formData) as Array<keyof formObject>).forEach((key) => {
-          if (key !== 'steps' && key !== 'agreement') {
-            new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key].toString()).render(q);
-          }
-        });
+       (this.formData ? Object.keys(this.formData) as Array<keyof VulnerabilityReport> : []).forEach((key) => {
+         if (key !== 'steps' && this.formData) {
+           new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key]?.toString() || '').render(q);
+         }
+       });
       }
 
       $(q, 'h2', 'section-subtitle', {}, 'Proof of Concept');
-      this.formData.steps.forEach((step, index) => {
-        new ReportStepElement(index + 1, step).render(q);
-      });
+      this.formData
+          ? this.formData.steps.forEach((step, index) => {
+            new ReportStepElement(step).render(q);
+          })
+          : '';
     });
   }
 }
