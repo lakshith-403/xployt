@@ -22,10 +22,11 @@ export class ReportReview extends View {
       steps: [
         {
           description: 'test',
-          attachments: 'test',
+          attachments: ['test'],
         },
       ],
       agreement: false,
+      testDate: 'test',
     };
   }
 
@@ -66,7 +67,7 @@ export class ReportReview extends View {
           });
           $(q, 'span', 'project-element align-center', {}, (q) => {
             $(q, 'p', 'label', {}, 'Access Link');
-            $(q, 'a', 'highlight', {}, `https://example.com/${this.projectId}`);
+            $(q, 'a', 'highlight', {}, `example.com/${this.projectId}`);
           });
         });
       });
