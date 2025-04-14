@@ -2,32 +2,27 @@ import { View, ViewHandler } from '@ui_lib/view';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
-import { ReportStepElement } from '@views/common/ReportReview/components/step';
-import { VulnerabilityReport, VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
-import { CACHE_STORE } from '@data/cache';
-import { Loader } from '@views/discussion/Loader';
-import './ReportReview.scss';
+import {ReportStepElement} from '@views/common/ReportReview/components/step';
+import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
+import {CACHE_STORE} from "@data/cache";
+import {Loader} from "@views/discussion/Loader";
+import './ReportReview.scss'
+import NotFound from "@components/notFound/notFound";
 
 export class ReportReview extends View {
-  private reportId: string;
-  private projectId: string;
+  private readonly reportId: string;
+  private readonly projectId: string;
   private hackerId: string = '';
   private vulnerabilityReportCache: VulnerabilityReportCache;
   private formData: VulnerabilityReport | null = null;
-  private loadReport: boolean;
-  private loader: Loader;
+  private loader: Loader
 
-  constructor(params: { projectId: string; reportId: string }, formData?: VulnerabilityReport) {
+  constructor(params: { projectId: string; reportId: string }) {
     super(params);
     this.reportId = params.reportId;
     this.projectId = params.projectId;
 
     this.vulnerabilityReportCache = CACHE_STORE.getVulnerabilityReport(this.reportId);
-
-    if (formData) {
-      this.formData = formData;
-    }
-    this.loadReport = !formData;
 
     this.loader = new Loader();
   }
@@ -53,16 +48,18 @@ export class ReportReview extends View {
   }
 
   private async loadData(): Promise<void> {
-    if (this.loadReport) {
       this.formData = await this.vulnerabilityReportCache.load();
-      this.hackerId = this.formData?.hackerId;
-    }
   }
 
   async render(q: Quark) {
     this.loader.show(q);
     await this.loadData();
     this.loader.hide();
+
+    if(!this.formData) {
+        new NotFound().render(q)
+        return
+    }
 
     $(q, 'div', 'report-review', {}, async (q) => {
       $(q, 'h1', 'title', {}, `Vulnerability Report | Project #${this.projectId}`);
@@ -95,11 +92,11 @@ export class ReportReview extends View {
       }
 
       $(q, 'h2', 'section-subtitle', {}, 'Proof of Concept');
-      this.formData
-        ? this.formData.steps.forEach((step, index) => {
+      this.formData && this.formData.steps.length > 0
+          ? this.formData.steps.forEach((step, index) => {
             new ReportStepElement(step).render(q);
           })
-        : '';
+          : $(q, 'div', 'no-steps', {}, "No steps provided for this report.");
     });
   }
 }

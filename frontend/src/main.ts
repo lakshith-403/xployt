@@ -59,6 +59,7 @@ import { complaintFormViewHandler } from '@views/common/projectDashboard/complai
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
+import {editReportViewHandler} from "@views/hacker/VulnerabilityReport/EditReport";
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -171,7 +172,7 @@ const CommonRouteHandlers = new RouteHandler(
 
 const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
