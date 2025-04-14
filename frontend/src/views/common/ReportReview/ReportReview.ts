@@ -2,12 +2,12 @@ import { View, ViewHandler } from '@ui_lib/view';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
-import {ReportStepElement} from '@views/common/ReportReview/components/step';
-import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
-import {CACHE_STORE} from "@data/cache";
-import {Loader} from "@views/discussion/Loader";
-import './ReportReview.scss'
-import NotFound from "@components/notFound/notFound";
+import { ReportStepElement } from '@views/common/ReportReview/components/step';
+import { VulnerabilityReport, VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
+import { CACHE_STORE } from '@data/cache';
+import { Loader } from '@views/discussion/Loader';
+import './ReportReview.scss';
+import NotFound from '@components/notFound/notFound';
 
 export class ReportReview extends View {
   private readonly reportId: string;
@@ -15,7 +15,7 @@ export class ReportReview extends View {
   private hackerId: string = '';
   private vulnerabilityReportCache: VulnerabilityReportCache;
   private formData: VulnerabilityReport | null = null;
-  private loader: Loader
+  private loader: Loader;
 
   constructor(params: { projectId: string; reportId: string }) {
     super(params);
@@ -48,7 +48,8 @@ export class ReportReview extends View {
   }
 
   private async loadData(): Promise<void> {
-      this.formData = await this.vulnerabilityReportCache.load();
+    this.formData = await this.vulnerabilityReportCache.load();
+    this.hackerId = this.formData?.hackerId || '';
   }
 
   async render(q: Quark) {
@@ -56,9 +57,9 @@ export class ReportReview extends View {
     await this.loadData();
     this.loader.hide();
 
-    if(!this.formData) {
-        new NotFound().render(q)
-        return
+    if (!this.formData) {
+      new NotFound().render(q);
+      return;
     }
 
     $(q, 'div', 'report-review', {}, async (q) => {
@@ -93,10 +94,10 @@ export class ReportReview extends View {
 
       $(q, 'h2', 'section-subtitle', {}, 'Proof of Concept');
       this.formData && this.formData.steps.length > 0
-          ? this.formData.steps.forEach((step, index) => {
+        ? this.formData.steps.forEach((step, index) => {
             new ReportStepElement(step).render(q);
           })
-          : $(q, 'div', 'no-steps', {}, "No steps provided for this report.");
+        : $(q, 'div', 'no-steps', {}, 'No steps provided for this report.');
     });
   }
 }
