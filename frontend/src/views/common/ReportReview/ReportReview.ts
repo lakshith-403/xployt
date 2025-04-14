@@ -1,6 +1,6 @@
-import {View, ViewHandler} from '@ui_lib/view';
-import {Quark, QuarkFunction as $} from '@ui_lib/quark';
-import {ReportElement} from '@views/common/ReportReview/components/ReportElement';
+import { View, ViewHandler } from '@ui_lib/view';
+import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
 import {ReportStepElement} from '@views/common/ReportReview/components/step';
 import {VulnerabilityReport, VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
@@ -52,7 +52,6 @@ export class ReportReview extends View {
   }
 
   async render(q: Quark) {
-
     this.loader.show(q);
     await this.loadData();
     this.loader.hide();
@@ -85,11 +84,11 @@ export class ReportReview extends View {
 
       $(q, 'h2', 'section-subtitle', {}, 'Report Details');
       {
-       (this.formData ? Object.keys(this.formData) as Array<keyof VulnerabilityReport> : []).forEach((key) => {
-         if (key !== 'steps' && this.formData) {
-           new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key]?.toString() || '').render(q);
-         }
-       });
+        (this.formData ? (Object.keys(this.formData) as Array<keyof VulnerabilityReport>) : []).forEach((key) => {
+          if (key !== 'steps' && this.formData) {
+            new ReportElement(key.charAt(0).toUpperCase() + key.slice(1), this.formData[key]?.toString() || '').render(q);
+          }
+        });
       }
 
       $(q, 'h2', 'section-subtitle', {}, 'Proof of Concept');

@@ -1,93 +1,9 @@
 import { ViewHandler } from '@/ui_lib/view';
-import { QuarkFunction as $, Quark } from '@ui_lib/quark';
-import { View } from '@ui_lib/view';
-import './dashboard.scss';
-import PieChart from '@/components/charts/pieChart';
-import NETWORK from '@/data/network/network';
-import { CustomTable } from '@/components/table/customTable';
-import * as utils from '@/ui_lib/utils';
-export class AdminDashboard extends View {
-  private pieChartContainer!: HTMLElement;
-  private recentProjectsContainer!: HTMLElement;
+import { MainDashboard } from '@/views/common/mainDashboard/mainDashboard';
 
-  constructor() {
-    super();
-  }
-
-  private async loadProjectStats(): Promise<any> {
-    try {
-      const response = await NETWORK.get('/api/dashboard/project-stats/admin/0', { showLoading: true, handleError: true, throwError: true });
-      console.log(response);
-      const formattedStats = response.data.stats.reduce((acc: any, stat: any) => {
-        acc[stat.state] = stat.count;
-        return acc;
-      }, {});
-      return formattedStats;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  private async loadRecentProjects(): Promise<any> {
-    try {
-      const response = await NETWORK.get('/api/dashboard/recent-projects/admin/0', { showLoading: true, handleError: true, throwError: true });
-      console.log(response);
-      return response.data; // Assuming you want to return the recent projects data
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  async render(q: Quark): Promise<void> {
-    q.innerHTML = '';
-    $(q, 'div', ' py-2 d-flex flex-column align-items-center px-2', {}, (q) => {
-      $(q, 'h1', 'text-center heading-1', {}, 'Admin Dashboard');
-      $(q, 'div', 'container justify-content-between flex-container-lg gap-2', {}, (q) => {
-        this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center', {}, (q) => {
-          $(q, 'p', 'pie-chart-subtitle text-center sub-heading-3', {}, 'Project Statistics');
-        });
-        this.recentProjectsContainer = $(q, 'div', 'recent-projects-container', {}, (q) => {
-          $(q, 'p', 'recent-projects-title text-center sub-heading-3', {}, 'Recent Projects');
-        });
-      });
-    });
-
-    try {
-      const pieChartData = await this.loadProjectStats();
-      const pieChartOptions = {
-        data: {
-          ...pieChartData,
-        },
-        width: 500,
-        height: 500,
-        colorScheme: 'greenTheme' as 'greenTheme',
-        className: 'w-30 d-flex justify-content-center align-items-center text-primary',
-        foregroundColor: 'black',
-      };
-      const pieChart = new PieChart(pieChartOptions);
-      pieChart.render(this.pieChartContainer);
-    } catch (error) {
-      console.error(error);
-    }
-
-    try {
-      const recentProjects = await this.loadRecentProjects();
-      const TABLE_HEADERS = ['projectId', 'state', 'title', 'createdAt'];
-      console.log(utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'createdAt']));
-      const table = new CustomTable({
-        content: utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'createdAt']),
-        headers: TABLE_HEADERS,
-        className: 'table-users py-1 mb-4',
-        options: {
-          noDataMessage: 'No projects to show',
-        },
-      });
-      table.render(this.recentProjectsContainer);
-    } catch (error) {
-      console.error(error);
-    }
+export class AdminDashboard extends MainDashboard {
+  constructor(params: { userId: string }) {
+    super(params);
   }
 }
 

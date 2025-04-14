@@ -128,7 +128,7 @@ export default class ReportsTab {
       if (this.tableContainer) {
         $(this.tableContainer, 'div', 'w-100', {}, async (q) => {
           if (['ProjectLead', 'Client', 'Hacker', 'Validator'].includes(roleName)) {
-            const response = await NETWORK.get(`/api/reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
+            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
             const reports = response.data.reports;
             const TABLE_HEADERS = ['Report Id', 'Severity', 'Vulnerability Type', 'Title', 'Created At'];
             const table = new CustomTable({
