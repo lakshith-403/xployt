@@ -37,7 +37,7 @@ export class confirmPromoteToLead {
     } catch (error: any) {
       return;
     }
-    const overlay = $(parent, 'div', 'confirm-promote-to-lead position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center', {}, (q) => {
+    const overlay = $(parent, 'div', 'confirm-promote-to-lead position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center bg-opacity-50 justify-content-center', {}, (q) => {
       // Content
       $(q, 'div', 'position-relative mx-auto container-md bg-secondary px-3 py-2 rounded-3', {}, (q) => {
         $(q, 'div', 'heading', {}, (q) => {

@@ -10,22 +10,22 @@ import ModalManager, { convertToDom, setContent } from '@/components/ModalManage
 import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 import { modalAlertOnlyOK } from '../main';
 
-// Convert the HTML string to a DOM element
-const modalElement = convertToDom(alertOnlyConfirm);
+// // Convert the HTML string to a DOM element
+// const modalElement = convertToDom(alertOnlyConfirm);
 
-// Set text content of modal elements
-setContent(modalElement, {
-  '.modal-title': 'Login Message',
-  '.modal-message': 'Login successful!',
-});
+// // Set text content of modal elements
+// setContent(modalElement, {
+//   '.modal-title': 'Login Message',
+//   '.modal-message': 'Login successful!',
+// });
 
-// Add event listeners to the modal buttons
-ModalManager.includeModal('loginAlert', {
-  '.button-confirm': () => {
-    ModalManager.hide('loginAlert');
-    router.navigateTo('/dashboard');
-  },
-});
+// // Add event listeners to the modal buttons
+// ModalManager.includeModal('loginAlert', {
+//   '.button-confirm': () => {
+//     ModalManager.hide('loginAlert');
+//     router.navigateTo('/dashboard');
+//   },
+// });
 
 export class LoginView extends View {
   private emailField: TextField;
@@ -93,7 +93,6 @@ export class LoginView extends View {
     const email = this.emailField.getValue();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      // alert('Invalid email format. Please enter a valid email.');
       setContent(modalAlertOnlyOK, {
         '.modal-title': 'Error',
         '.modal-message': 'Invalid email format. Please enter a valid email.',
@@ -125,11 +124,9 @@ export class LoginView extends View {
             '.modal-message': 'Invalid credentials provided. Please try again.',
           });
           ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
-          // alert('Invalid credentials provided. Please try again.');
           return;
         }
         console.error('Error logging in user:', error);
-        // alert('Error logging in user: ' + error);
         setContent(modalAlertOnlyOK, {
           '.modal-title': 'Error',
           '.modal-message': 'Error logging in user: ' + error,
