@@ -7,8 +7,8 @@ import { router } from '@/ui_lib/router';
 import { NetworkError } from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ModalManager, { convertToDom, setContent } from '@/components/ModalManager/ModalManager';
-import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 import { modalAlertOnlyOK } from '../main';
+// import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 
 // // Convert the HTML string to a DOM element
 // const modalElement = convertToDom(alertOnlyConfirm);

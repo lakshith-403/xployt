@@ -3,10 +3,11 @@ import { QuarkFunction as $, Quark } from '@ui_lib/quark';
 import { View } from '@ui_lib/view';
 import { HackerDashboard } from './hacker/dashboard/dashboard';
 import { ClientDashboard } from '@views/client/dashboard/dashboard';
-import { ProjectLeadDashboard } from '@views/projectLead/dashboard/dashboard';
 import { User, UserCache } from '@/data/user';
 import { CACHE_STORE } from '@data/cache';
-import { ValidatorDashboard } from '@views/validator/dashboard/dashboard';
+import { MainDashboard } from '@views/common/mainDashboard/mainDashboard';
+// import { ProjectLeadDashboard } from '@views/projectLead/dashboard/dashboard';
+// import { ValidatorDashboard } from '@views/validator/dashboard/dashboard';
 // import ProjectsView from '@views/common/projects/Projects';
 
 class UserDashboard extends View {
@@ -31,8 +32,9 @@ class UserDashboard extends View {
     console.log(this.user.type);
     switch (this.user.type) {
       case 'ProjectLead':
-        const projectLeadDashboard = new ProjectLeadDashboard({ userId: this.user.id });
-        await projectLeadDashboard.render(q);
+      case 'Validator':
+        const mainDashboard = new MainDashboard({ userId: this.user.id });
+        await mainDashboard.render(q);
         break;
 
       case 'Client':
@@ -42,10 +44,6 @@ class UserDashboard extends View {
       case 'Hacker':
         const hackerDashboard = new HackerDashboard({ userId: this.user.id });
         await hackerDashboard.render(q);
-        break;
-      case 'Validator':
-        const validatorDashboard = new ValidatorDashboard({ userId: this.user.id });
-        await validatorDashboard.render(q);
         break;
     }
     // const hackerDashboard = new HackerDashboard({userId: this.user.id});
