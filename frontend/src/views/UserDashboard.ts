@@ -6,9 +6,6 @@ import { ClientDashboard } from '@views/client/dashboard/dashboard';
 import { User, UserCache } from '@/data/user';
 import { CACHE_STORE } from '@data/cache';
 import { MainDashboard } from '@views/common/mainDashboard/mainDashboard';
-// import { ProjectLeadDashboard } from '@views/projectLead/dashboard/dashboard';
-// import { ValidatorDashboard } from '@views/validator/dashboard/dashboard';
-// import ProjectsView from '@views/common/projects/Projects';
 
 class UserDashboard extends View {
   private user!: User;
@@ -21,7 +18,6 @@ class UserDashboard extends View {
   private async loadData(): Promise<void> {
     try {
       this.user = await this.userCache.get();
-      // console.log(this.user);
     } catch (error) {
       console.error('Failed to load project data:', error);
     }

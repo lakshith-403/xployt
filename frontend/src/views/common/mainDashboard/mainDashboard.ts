@@ -8,11 +8,6 @@ import * as utils from '@/ui_lib/utils';
 import { CACHE_STORE } from '@/data/cache';
 import { router } from '@/ui_lib/router';
 import { UserType } from '@/data/user';
-import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
-import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
-import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
-import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
-import { Button } from '@/components/button/base';
 
 export class MainDashboard extends View {
   private pieChartContainer!: HTMLElement;
