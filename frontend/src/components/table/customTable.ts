@@ -59,7 +59,7 @@ export class CustomTable {
           this.displayNoDataMessage(q);
           return;
         }
-        console.log('content', this.content);
+        // console.log('content', this.content);
         this.content.forEach((item, index) => {
           // console.log('item', item);
           const isLastRow = index === this.content.length - 1 && this.options.lastLine === false;
@@ -80,8 +80,8 @@ export class CustomTable {
   }
 
   public updateRows(checkboxState: { [key: string]: boolean }): void {
-    console.log('Updating rows');
-    console.log('checkboxState', checkboxState);
+    // console.log('Updating rows');
+    // console.log('checkboxState', checkboxState);
     this.rows!.innerHTML = '';
     if (!this.content || this.content.length === 0) {
       this.displayNoDataMessage(this.rows!);
@@ -90,7 +90,7 @@ export class CustomTable {
 
     const filteredContent = this.content.filter((item) => {
       const falseKeys = this.getFalseKeys(checkboxState);
-      console.log('falseKeys', falseKeys);
+      // console.log('falseKeys', falseKeys);
       return !falseKeys.includes(item[this.options.filteredField!]);
     });
 
@@ -119,7 +119,7 @@ export class CustomTable {
 
   protected getFalseKeys(obj: { [key: string]: boolean }): string[] {
     const keys = Object.keys(obj).filter((key) => !obj[key]);
-    console.log('keys', keys);
+    // console.log('keys', keys);
     return keys;
   }
 

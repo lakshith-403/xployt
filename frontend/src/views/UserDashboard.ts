@@ -21,7 +21,7 @@ class UserDashboard extends View {
   private async loadData(): Promise<void> {
     try {
       this.user = await this.userCache.get();
-      console.log(this.user);
+      // console.log(this.user);
     } catch (error) {
       console.error('Failed to load project data:', error);
     }
@@ -29,7 +29,6 @@ class UserDashboard extends View {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    console.log(this.user.type);
     switch (this.user.type) {
       case 'ProjectLead':
       case 'Validator':
@@ -46,8 +45,6 @@ class UserDashboard extends View {
         await hackerDashboard.render(q);
         break;
     }
-    // const hackerDashboard = new HackerDashboard({userId: this.user.id});
-    // await hackerDashboard.render(q);
   }
 }
 

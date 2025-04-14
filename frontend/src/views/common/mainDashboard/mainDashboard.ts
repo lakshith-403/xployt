@@ -35,7 +35,7 @@ export class MainDashboard extends View {
   private async loadProjectStats(): Promise<any> {
     try {
       const endpoint = this.getStatsEndpoint();
-      const response = await NETWORK.get(endpoint, { showLoading: true, handleError: true, throwError: true });
+      const response = await NETWORK.get(endpoint);
       const formattedStats = response.data.stats.reduce((acc: any, stat: any) => {
         acc[stat.state] = stat.count;
         return acc;
@@ -50,7 +50,7 @@ export class MainDashboard extends View {
   private async loadRecentProjects(): Promise<any> {
     try {
       const endpoint = this.getRecentProjectsEndpoint();
-      const response = await NETWORK.get(endpoint, { showLoading: true, handleError: true, throwError: true });
+      const response = await NETWORK.get(endpoint);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -97,24 +97,17 @@ export class MainDashboard extends View {
     }
   }
 
-  private getTableCallback(): ((project: any) => void) | undefined {
-    switch (this.userType) {
-      default:
-        return undefined;
-    }
-  }
-
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
     await this.loadUser();
 
-    $(q, 'div', 'py-2 d-flex flex-column align-items-center', {}, (q) => {
+    $(q, 'div', 'p-4 d-flex flex-column align-items-center justify-content-center', {}, (q) => {
       $(q, 'h1', 'text-center heading-1', {}, this.getDashboardTitle());
-      $(q, 'div', 'container justify-content-between flex-container-lg gap-2', {}, (q) => {
-        this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center', {}, (q) => {
+      $(q, 'div', 'container align-items-center justify-content-center flex-container-lg gap-2', {}, (q) => {
+        this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center col-5', {}, (q) => {
           $(q, 'p', 'pie-chart-subtitle text-center sub-heading-3', {}, 'Project Statistics');
         });
-        this.recentProjectsContainer = $(q, 'div', 'recent-projects-container', {}, (q) => {
+        this.recentProjectsContainer = $(q, 'div', 'recent-projects-container col-7', {}, (q) => {
           $(q, 'p', 'recent-projects-title text-center sub-heading-3', {}, 'Recent Projects');
         });
       });
@@ -147,7 +140,9 @@ export class MainDashboard extends View {
         className: 'table-users py-1 mb-4',
         options: {
           noDataMessage: 'No projects to show',
-          callback: this.getTableCallback(),
+          callback: (project) => {
+            router.navigateTo(`/projects/${project.projectId}`);
+          },
         },
       });
       table.render(this.recentProjectsContainer);
