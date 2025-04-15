@@ -12,6 +12,7 @@ export abstract class View {
    * @param q - An instance of Quark used for rendering the view.
    */
   protected breadcrumbs?: Breadcrumbs;
+  protected currentQuark: Quark | null = null;
 
   constructor(params?: any) {
     if (this.shouldRenderBreadcrumbs()) {
@@ -28,13 +29,35 @@ export abstract class View {
     this.breadcrumbs?.clearBreadcrumbs();
   }
 
-  public abstract render(q: Quark): void;
+  public abstract render(q: Quark): void | Promise<void>;
 
   protected updateBreadcrumbs(breadcrumbInfo: Breadcrumb[]) {
     if (this.breadcrumbs) {
       this.breadcrumbs.clearBreadcrumbs();
       breadcrumbInfo.forEach((info) => this.breadcrumbs!.addBreadcrumb(info));
     }
+  }
+
+  /**
+   * Rerenders the view by clearing the current content and calling render again.
+   * Only works if the view has been rendered at least once.
+   */
+  protected async rerender(): Promise<void> {
+    if (this.currentQuark) {
+      this.currentQuark.innerHTML = '';
+      const result = this.render(this.currentQuark);
+      if (result instanceof Promise) {
+        await result;
+      }
+    }
+  }
+
+  /**
+   * Internal method to store the current Quark instance.
+   * Called automatically by render.
+   */
+  public setCurrentQuark(q: Quark): void {
+    this.currentQuark = q;
   }
 }
 
@@ -79,6 +102,7 @@ export class ViewHandler {
     root.innerHTML = ''; // Clear the existing content
 
     this.view = new this.builder(params); // Create a new view instance
+    this.view!.setCurrentQuark(root);
     this.view!.render(root); // Render the view into the root element
   }
 }
