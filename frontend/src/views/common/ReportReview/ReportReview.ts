@@ -1,13 +1,16 @@
-import { View, ViewHandler } from '@ui_lib/view';
-import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import { ReportElement } from '@views/common/ReportReview/components/ReportElement';
+import {View, ViewHandler} from '@ui_lib/view';
+import {Quark, QuarkFunction as $} from '@ui_lib/quark';
+import {ReportElement} from '@views/common/ReportReview/components/ReportElement';
 import UserCard from '@components/UserCard';
-import { ReportStepElement } from '@views/common/ReportReview/components/step';
-import { VulnerabilityReport, VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
-import { CACHE_STORE } from '@data/cache';
-import { Loader } from '@views/discussion/Loader';
+import {ReportStepElement} from '@views/common/ReportReview/components/step';
+import {VulnerabilityReport, VulnerabilityReportCache} from '@data/common/cache/vulnerabilityReport.cache';
+import {CACHE_STORE} from '@data/cache';
+import {Loader} from '@views/discussion/Loader';
 import './ReportReview.scss';
 import NotFound from '@components/notFound/notFound';
+import {User} from "@data/user";
+import {Button, ButtonType} from "@components/button/base";
+import {router} from "@ui_lib/router";
 
 export class ReportReview extends View {
   private readonly reportId: string;
@@ -16,6 +19,7 @@ export class ReportReview extends View {
   private vulnerabilityReportCache: VulnerabilityReportCache;
   private formData: VulnerabilityReport | null = null;
   private loader: Loader;
+  private user!: User
 
   constructor(params: { projectId: string; reportId: string }) {
     super(params);
@@ -50,6 +54,7 @@ export class ReportReview extends View {
   private async loadData(): Promise<void> {
     this.formData = await this.vulnerabilityReportCache.load();
     this.hackerId = this.formData?.hackerId || '';
+    this.user = await CACHE_STORE.getUser().get();
   }
 
   async render(q: Quark) {
@@ -64,6 +69,24 @@ export class ReportReview extends View {
 
     $(q, 'div', 'report-review', {}, async (q) => {
       $(q, 'h1', 'title', {}, `Vulnerability Report | Project #${this.projectId}`);
+
+      if(this.user.id === this.hackerId){
+        new Button({
+            label: 'Edit Report',
+            type: ButtonType.PRIMARY,
+            onClick: () => {
+                router.navigateTo(`/hacker/edit-report/${this.projectId}/${this.reportId}`);
+            },
+        })
+      }
+
+      if(this.user.id === this.hackerId && this.formData?.status === 'More Info') {
+        $(q, 'div', 'validator-comment', {}, (q) => {
+          $(q, 'h2', 'section-subtitle', {}, 'Validator Comments');
+          $(q, 'p', 'comment-text', {}, 'No comments provided.');
+        })
+      }
+
       $(q, 'div', 'report-review-header', {}, async (q) => {
         await new UserCard(this.hackerId, 'hacker', 'hacker flex-1', 'Hacker', {
           highLightKeys: ['email'],
