@@ -86,7 +86,7 @@ export class ReportReview extends View {
                   onClick: () => {
                       router.navigateTo(`/hacker/edit-report/${this.projectId}/${this.reportId}`);
                   },
-              })
+              }).render(q)
           }
 
           if(this.user.id === this.hackerId && this.formData?.status === 'More Info') {
