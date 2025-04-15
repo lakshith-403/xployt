@@ -86,7 +86,7 @@ export class ReportReview extends View {
                   onClick: () => {
                       router.navigateTo(`/hacker/edit-report/${this.projectId}/${this.reportId}`);
                   },
-              })
+              }).render(q)
           }
 
           if(this.user.id === this.hackerId && this.formData?.status === 'More Info') {
@@ -131,7 +131,7 @@ export class ReportReview extends View {
             })
           : $(q, 'div', 'no-steps', {}, 'No steps provided for this report.');
       });
-      if (this.formData?.status === 'Pending' && (await CACHE_STORE.getUser().get()).type === 'Validator') {
+      if (this.formData?.status === 'Pending' && this.user.type === 'Validator') {
         $(q, 'div', 'report-review-footer container p-2 bg-secondary mb-2', {}, (q) => {
           $(q, 'span', 'd-block text-light-green mb-1', {}, 'Report Actions');
           $(q, 'div', 'buttons d-flex flex-row gap-2', {}, (q) => {
