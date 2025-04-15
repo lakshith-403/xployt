@@ -214,6 +214,10 @@ $heights: (
   align-items: flex-end;
 }
 
+.d-block {
+  display: block;
+}
+
 // Gap Utilities
 @for $i from 0 through 10 {
   .gap-#{$i} {
@@ -337,5 +341,28 @@ $heights: (
 
   .overflow-hidden {
     overflow: hidden !important;
+  }
+
+  .hover-border-thick:hover {
+    border-width: 3px !important;
+  }
+  .hover-border-extra-thick:hover {
+    border-width: 4px !important;
+  }
+
+  .active-border-thick {
+    border-width: 3px !important;
+  }
+  .active-border-extra-thick {
+    border-width: 4px !important;
+  }
+
+  @for $i from 5 through 20 {
+    .filter-brightness-#{$i * 10} {
+      filter: brightness($i * 10%);
+      > * {
+        filter: brightness(100%);
+      }
+    }
   }
 }

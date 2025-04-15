@@ -15,9 +15,25 @@ export class PopupLite {
   constructor(options: PopupLiteOptions = {}) {
     this.options = {
       ...options,
-      overlayClass: options.overlayClass ? `${this.defaultOverlayClass} ${options.overlayClass}` : this.defaultOverlayClass,
-      contentClass: options.contentClass ? `${this.defaultContentClass} ${options.contentClass}` : this.defaultContentClass,
+      overlayClass: options.overlayClass ? this.mergeClasses(this.defaultOverlayClass, options.overlayClass) : this.defaultOverlayClass,
+      contentClass: options.contentClass ? this.mergeClasses(this.defaultContentClass, options.contentClass) : this.defaultContentClass,
     };
+  }
+
+  private mergeClasses(defaultClasses: string, customClasses: string): string {
+    const defaultClassArray = defaultClasses.split(' ');
+    const customClassArray = customClasses.split(' ');
+
+    // Custom classes override defaults if they specify the same property
+    customClassArray.forEach((customClass) => {
+      const [property] = customClass.split('-');
+      const defaultIndex = defaultClassArray.findIndex((defaultClass) => defaultClass.startsWith(property + '-'));
+      if (defaultIndex !== -1) {
+        defaultClassArray.splice(defaultIndex, 1);
+      }
+    });
+
+    return [...defaultClassArray, ...customClassArray].join(' ');
   }
 
   render(parent: HTMLElement, content: (q: Quark) => void): void {
