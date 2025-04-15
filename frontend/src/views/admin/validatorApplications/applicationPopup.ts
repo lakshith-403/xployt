@@ -1,11 +1,9 @@
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
-import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { IconButton } from '@components/button/icon.button';
 import { ButtonType } from '@components/button/base';
 import NETWORK from '@/data/network/network';
 import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
-import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
-import { router } from '@/ui_lib/router';
+import { modalAlertOnlyOK } from '@/main';
 import { PopupLite } from '@components/popup/popup-lite';
 
 export class ApplicationPopup {
