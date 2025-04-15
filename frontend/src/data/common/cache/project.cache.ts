@@ -47,4 +47,15 @@ export class ProjectCache extends CacheObject<Project> {
 
     return response.data;
   }
+
+  async getProjectSeverityLevels(projectId: string): Promise<Array<string[]>> {
+      const response = await ProjectEndpoints.getProjectSeverityLevels(projectId);
+
+      if(!response.is_successful) throw new DataFailure('get project severity levels', response.error ?? '')
+
+      console.log('Project severity levels:', response.data);
+
+      return response.data as Array<string[]>;
+
+  }
 }
