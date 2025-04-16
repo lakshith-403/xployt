@@ -66,9 +66,18 @@ export class ReportAction {
           icon: 'fa-solid fa-check',
           label: 'Submit',
           onClick: async () => {
-            console.log('Accept Report');
             try {
               const updatedStatus = actionType === 'Accept Report' ? 'Validated' : actionType === 'Reject Report' ? 'Rejected' : 'More Info';
+
+              // Check if status is "More Info" and feedback is empty
+              if (updatedStatus === 'More Info' && !this.feedbackTextArea.getValue().trim()) {
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Error',
+                  '.modal-message': 'Please provide feedback when requesting more information.',
+                });
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
+                return;
+              }
               const validatorId = (await CACHE_STORE.getUser().get()).id;
               await NETWORK.post(`/api/validator/reportAction`, {
                 reportId: this.reportId,
