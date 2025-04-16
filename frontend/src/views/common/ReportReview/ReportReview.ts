@@ -8,11 +8,12 @@ import { CACHE_STORE } from '@data/cache';
 import { Loader } from '@views/discussion/Loader';
 import './ReportReview.scss';
 import NotFound from '@components/notFound/notFound';
-import {User} from "@data/user";
-import {Button, ButtonType} from "@components/button/base";
-import {router} from "@ui_lib/router";
+import { User } from '@data/user';
+import { Button, ButtonType } from '@components/button/base';
+import { router } from '@ui_lib/router';
 import { FormButton } from '@/components/button/form.button';
 import { ReportAction } from './reportAction';
+import NETWORK from '@/data/network/network';
 
 export class ReportReview extends View {
   private readonly reportId: string;
@@ -21,7 +22,7 @@ export class ReportReview extends View {
   private vulnerabilityReportCache: VulnerabilityReportCache;
   private formData: VulnerabilityReport | null = null;
   private loader: Loader;
-  private user!: User
+  private user!: User;
   private reportAction: ReportAction;
 
   constructor(params: { projectId: string; reportId: string }) {
@@ -79,22 +80,22 @@ export class ReportReview extends View {
       $(q, 'div', 'report-review pb-2', {}, async (q) => {
         $(q, 'h1', 'title', {}, `Vulnerability Report | Project #${this.projectId}`);
 
-          if(this.user.id === this.hackerId){
-              new Button({
-                  label: 'Edit Report',
-                  type: ButtonType.PRIMARY,
-                  onClick: () => {
-                      router.navigateTo(`/hacker/edit-report/${this.projectId}/${this.reportId}`);
-                  },
-              }).render(q)
-          }
+        if (this.user.id === this.hackerId) {
+          new Button({
+            label: 'Edit Report',
+            type: ButtonType.PRIMARY,
+            onClick: () => {
+              router.navigateTo(`/hacker/edit-report/${this.projectId}/${this.reportId}`);
+            },
+          }).render(q);
+        }
 
-          if(this.user.id === this.hackerId && this.formData?.status === 'More Info') {
-              $(q, 'div', 'validator-comment', {}, (q) => {
-                  $(q, 'h2', 'section-subtitle', {}, 'Validator Comments');
-                  $(q, 'p', 'comment-text', {}, 'No comments provided.');
-              })
-          }
+        if (this.user.id === this.hackerId && this.formData?.status === 'More Info') {
+          $(q, 'div', 'validator-comment', {}, (q) => {
+            $(q, 'h2', 'section-subtitle', {}, 'Validator Comments');
+            $(q, 'p', 'comment-text', {}, 'No comments provided.');
+          });
+        }
 
         $(q, 'div', 'report-review-header', {}, async (q) => {
           await new UserCard(this.hackerId, 'hacker', 'hacker flex-1', 'Hacker', {
@@ -155,6 +156,24 @@ export class ReportReview extends View {
             });
             needMoreInfoButton.render(q);
           });
+        });
+      }
+      if (this.formData?.status !== 'Pending') {
+        $(q, 'div', 'report-review-footer container p-2 bg-secondary mb-2 filter-brightness-120', {}, async (q) => {
+          $(q, 'span', 'd-block text-light-green mb-1', {}, 'Validator Feedback');
+          try {
+            const response = await NETWORK.get(`/api/reports/feedback/${this.reportId}`);
+            const { feedback, updatedAt, assignedValidatorId } = response.data;
+
+            $(q, 'div', 'feedback-container bg-tertiary rounded-1 p-2', {}, (q) => {
+              $(q, 'p', 'mb-1', {}, `Last Updated: ${new Date(updatedAt).toLocaleString()}`);
+              $(q, 'p', 'mb-1', {}, `Validator ID: ${assignedValidatorId}`);
+              $(q, 'p', 'mb-0', {}, `Feedback: ${feedback || 'Feedback not provided'}`);
+            });
+          } catch (error) {
+            console.error('Failed to fetch feedback:', error);
+            $(q, 'p', 'text-error', {}, 'Failed to load feedback');
+          }
         });
       }
     });
