@@ -86,8 +86,10 @@ export default class ProjectsView extends View {
       const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured'].includes(project.state));
       const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
-      this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
-      this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
+      $(q, 'div', 'd-flex flex-column align-items-center', {}, (q) => {
+        this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
+        this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
+      });
     });
   }
 }

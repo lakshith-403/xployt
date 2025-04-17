@@ -48,4 +48,9 @@ export const AdminSidebar: SidebarTab[] = [
     title: 'Projects',
     url: 'admin/projects',
   },
+  {
+    id: 'reports',
+    title: 'Reports',
+    url: 'admin/reports',
+  },
 ];
