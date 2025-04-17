@@ -163,7 +163,7 @@ const ValidatorApplicationRouteHandler = new RouteHandler('/validator/applicatio
 
 const CommonRouteHandlers = new RouteHandler(
   '/',
-  [projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
+  [userProfileViewHandler,projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
   new SidebarView('/', HomeSidebar),
   false,
   false,
@@ -205,7 +205,7 @@ const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHan
 
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
-const UserProfileViewHandler = new RouteHandler('/users', [userProfileViewHandler], undefined, false, false, false, false);
+// const UserProfileViewHandler = new RouteHandler('/users', [], undefined, false, false, false, false);
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
@@ -229,5 +229,5 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
-router.addRouteHandler(UserProfileViewHandler);
+// router.addRouteHandler(UserProfileViewHandler);
 router.addRouteHandler(ReportRouteHandler);
