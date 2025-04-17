@@ -65,19 +65,45 @@ export class UserProfileView extends View {
         });
       });
 
-      // Render collapsibles
-      $(q, 'div', 'collapsibles-container', {}, (q) => {
-        // User Info Section
-        this.userInfoCollapsible.render(q);
-        $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
-          $(q, 'div', 'profile-details', {}, (q) => {
-            Object.entries(this.profile).forEach(([key, value]: [string, any]) => {
-              if (key !== 'profilePicture') { // Skip profile picture as it's shown above
-                $(q, 'div', 'profile-field', {}, (q) => {
-                  $(q, 'div', 'field-container', {}, (q) => {
+      $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
+
+        $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
+          $(q, 'span', 'text-light-green', {}, 'User Info');
+          $(q, 'div', 'py-1 px-2', {}, (q) => {
+            const selectedFields1 = ['username', 'firstName', 'lastName', 'phone'];
+            selectedFields1.forEach((key) => {
+              if (key in this.profile) {
+                  $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
                     $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
-                    $(q, 'span', 'field-value', {}, value === null || value === '' ? 'Data not available' : typeof value === 'number' ? value.toString() : value);
+                    $(q, 'span', 'field-value', {}, this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]);
                   });
+              
+              }
+            });
+          });
+        });
+
+        $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
+          $(q, 'span', 'text-light-green', {}, 'Additional Info');
+          $(q, 'div', 'py-1 px-2', {}, (q) => {
+            let selectedFields2 = [''];
+            
+            // Add role-specific fields
+            switch(this.profile?.role?.toLowerCase()) {
+              case 'validator':
+              case 'projectlead':
+                selectedFields2 = [...selectedFields2, 'skills', 'experience', 'reference'];
+                break;
+              case 'hacker':
+                selectedFields2 = [...selectedFields2, 'skills'];
+                break;
+            }
+
+            selectedFields2.forEach((key) => {
+              if (key in this.profile) {
+                $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
+                  $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
+                  $(q, 'span', 'field-value', {}, this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]);
                 });
               }
             });
