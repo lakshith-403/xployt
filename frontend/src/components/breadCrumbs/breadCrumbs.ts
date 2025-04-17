@@ -1,6 +1,7 @@
 import './breadCrumbs.scss';
 import { QuarkFunction as $ } from '../../ui_lib/quark';
 import { router } from '@ui_lib/router';
+import { CACHE_STORE } from '@/data/cache';
 export interface Breadcrumb {
   label: string;
   link: string;
@@ -20,7 +21,12 @@ export class Breadcrumbs {
     return Breadcrumbs.instance;
   }
 
-  public addBreadcrumb(breadcrumb: Breadcrumb): void {
+  public async addBreadcrumb(breadcrumb: Breadcrumb): Promise<void> {
+    const user = await CACHE_STORE.getUser().get();
+    if (this.breadcrumbs.length === 0 && user.type === 'Admin') {
+      console.log('Breadcrumbs:', this.breadcrumbs.map((b) => b.label).join(' > '));
+      breadcrumb.link = `/admin${breadcrumb.link}`;
+    }
     this.breadcrumbs.push({ ...breadcrumb, clickable: breadcrumb.clickable ?? true });
     this.render();
   }
@@ -30,8 +36,9 @@ export class Breadcrumbs {
     this.render();
   }
 
-  public clearBreadcrumbs(): void {
+  public async clearBreadcrumbs(): Promise<void> {
     this.breadcrumbs = [];
+
     this.render();
   }
 

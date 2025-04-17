@@ -1,9 +1,9 @@
-import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
-import { View, ViewHandler } from '../../../ui_lib/view';
-import { UserCache } from '../../../data/user';
-import { CACHE_STORE } from '../../../data/cache';
-import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
+import { QuarkFunction as $, Quark } from '@/ui_lib/quark';
+import { View, ViewHandler } from '@/ui_lib/view';
+import { UserCache } from '@/data/user';
+import { CACHE_STORE } from '@/data/cache';
+import { CollapsibleBase } from '@/components/Collapsible/collap.base';
+import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
 import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
 import { CustomTable } from '@/components/table/customTable';
@@ -86,4 +86,4 @@ class ReportsView extends View {
   }
 }
 
-export const reportsViewHandler = new ViewHandler('reports', ReportsView);
+export const adminReportsViewHandler = new ViewHandler('/reports', ReportsView);
