@@ -9,6 +9,7 @@ import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';
+import TabSettings from "@views/common/projectDashboard/TabSettings";
 
 class projectDashboardView extends View {
   params: { projectId: string };
@@ -51,13 +52,15 @@ class projectDashboardView extends View {
     }
     q.innerHTML = '';
 
+    const currentUser = await CACHE_STORE.getUser().get();
+    this.userId = currentUser.id;
+
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
+    const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
 
-    const currentUser = await CACHE_STORE.getUser().get();
-    this.userId = currentUser.id;
     const tabs = [
       {
         title: 'Reports',
@@ -84,6 +87,14 @@ class projectDashboardView extends View {
         },
       },
     ];
+    if (currentUser.type === 'Client') {
+      tabs.push({
+        title: 'Settings',
+        render: (q: Quark) => {
+          settingsTab?.render(q);
+        },
+      });
+    }
     const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
     if (usersWithPaymentsTab.includes(currentUser.type)) {
       const paymentsTab = new PaymentsTab(this.params.projectId);
