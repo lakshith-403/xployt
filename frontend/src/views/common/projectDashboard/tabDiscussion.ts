@@ -16,7 +16,8 @@ export default class Discussion {
 
   private async fetchDiscussions() {
     const discussions = new ProjectDiscussionCache(this.projectId);
-    this.discussions = await discussions.get();
+    const allDiscussions = await discussions.get();
+    this.discussions = allDiscussions.filter((discussion) => !discussion.title.toLowerCase().startsWith('complaint:'));
   }
 
   render(q: Quark): void {
