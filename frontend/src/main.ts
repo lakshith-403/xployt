@@ -27,6 +27,9 @@ import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 //cache
 import { CACHE_STORE } from '@data/cache';
 
+// Sidebars
+import { HomeSidebar, AdminSidebar } from '@views/sideBars';
+
 //view handlers
 import { homeViewHandler } from '@views/home';
 import { loginViewHandler } from '@views/Login';
@@ -55,9 +58,6 @@ import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
-
-// Sidebars
-import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import {editReportViewHandler} from "@views/hacker/VulnerabilityReport/EditReport";
 
