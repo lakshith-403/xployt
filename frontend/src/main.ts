@@ -96,9 +96,9 @@ class TopNavigationView implements NavigationView {
       notificationButton.render();
 
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/hacker') }, 'Hackers');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/validator/application') }, 'Validators');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/client') }, 'Organizations');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -156,7 +156,7 @@ const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefin
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
-const LandingRouteHandlers = new RouteHandler('/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false);
+const LandingRouteHandlers = new RouteHandler('/home/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false, false);
 
 const ValidatorApplicationRouteHandler = new RouteHandler('/validator/application', [validatorApplicationViewHandler], undefined, false, false, false, false);
 
