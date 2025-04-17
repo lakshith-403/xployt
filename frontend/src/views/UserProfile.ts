@@ -76,7 +76,7 @@ export class UserProfileView extends View {
                 $(q, 'div', 'profile-field', {}, (q) => {
                   $(q, 'div', 'field-container', {}, (q) => {
                     $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
-                    $(q, 'span', 'field-value', {}, value === null ? 'Data not available' : value);
+                    $(q, 'span', 'field-value', {}, value === null || value === '' ? 'Data not available' : typeof value === 'number' ? value.toString() : value);
                   });
                 });
               }
