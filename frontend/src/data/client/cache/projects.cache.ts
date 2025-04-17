@@ -1,5 +1,6 @@
 import {CacheObject, DataFailure} from '../../cacheBase';
 import {projectEndpoints} from '../../client/network/project.network';
+import {Project} from "@data/common/cache/project.cache";
 
 interface ProjectList{
     activeProjects: ProjectBrief[];
@@ -80,6 +81,18 @@ export class ProjectsClientCache extends CacheObject<ProjectList> {
           ? response.data.inactiveProjects.map(project => new ProjectBrief(project))
           : [],
     };
+  }
+
+  async closeProject(projectId: string): Promise<Project> {
+    console.log('Closing project:', projectId);
+    const response = await projectEndpoints.closeProject(projectId);
+
+    if (!response.is_successful) {
+      console.error('Failed to close project:', response.error);
+      throw new DataFailure('close project', response.error ?? '');
+    }
+
+    return response.data as Project;
   }
 
 //   public updateProject(projectId: number, state: 'Pending' | 'Closed' | 'In progress' | 'Unconfigured' | 'Rejected' | 'Active'): void {
