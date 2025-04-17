@@ -1,47 +1,62 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
-import './Reports.scss';
-import { Report, ReportsCache } from '../../../data/projectLead/cache/reports.cache';
 import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
-import LoadingScreen from '../../../components/loadingScreen/loadingScreen';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
-import { ColoredFilterableTable } from '../../../components/table/colored.filterable.table';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
+import NETWORK from '@/data/network/network';
+import { router } from '@/ui_lib/router';
+import { CustomTable } from '@/components/table/customTable';
 
 class ReportsView extends View {
   private params: { reportId: string };
-  private reportsCache: ReportsCache;
   private userCache: UserCache;
   private reports: Report[][] = [];
   private userId: string | null = null;
+  private userType: string | null = null;
 
-  private static readonly TABLE_HEADERS = ['ID', 'Status', 'Title', 'Client', 'Pending Reports'];
-  private static readonly FILTER_OPTIONS = ['pending', 'closed', 'in progress'];
+  private static readonly TABLE_HEADERS = ['ID', 'Project ID', 'Severity', 'Title', 'Vulnerability Type', 'Created At'];
+  private static readonly FILTER_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
 
   constructor(params: { reportId: string }) {
     super();
     this.params = params;
     this.userCache = CACHE_STORE.getUser();
-    this.reportsCache = CACHE_STORE.getReports();
+    // this.reportsCache = CACHE_STORE.getReports();
   }
 
   private async loadReports(): Promise<void> {
     try {
       const user = await this.userCache.get();
       this.userId = user.id;
-      this.reports = await this.reportsCache.get(false, this.userId);
+      this.userType = user.type;
+
+      this.reports = (await NETWORK.get(`/api/fetch-all-reports/${user.type}/${user.id}`)).data.reports;
+      // this.reports = await this.reportsCache.get(false, this.userId);
     } catch (error) {
       console.error('Failed to load report data:', error);
     }
   }
 
-  private renderReportSection(q: Quark, title: string, reports: Report[]): void {
+  private renderReportSection(q: Quark, title: string, reports: Report[][]): void {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
 
-    const table = new ColoredFilterableTable(reports, ReportsView.TABLE_HEADERS, {}, 'status', '');
-
+    // const table = new ColoredFilterableTable(reports, ReportsView.TABLE_HEADERS, {}, 'status', '');
+    const table = new CustomTable({
+      content: reports,
+      headers: ReportsView.TABLE_HEADERS,
+      className: 'table-reports',
+      options: {
+        filteredField: 'severity',
+        falseKeys: [],
+        noDataMessage: 'No reports to show',
+        callback: (report) => {
+          router.navigateTo(`/reports/vulnerability/${report.projectId}/${report.reportId}`);
+        },
+        orderKeys: ['reportId', 'projectId', 'severity', 'title', 'vulnerabilityType', 'createdAt'],
+      },
+    });
     $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');
       const checkboxManager = new CheckboxManager(ReportsView.FILTER_OPTIONS, (checkboxValues) => {
@@ -53,17 +68,17 @@ class ReportsView extends View {
   }
 
   async render(q: Quark): Promise<void> {
-    const loading = new LoadingScreen(q);
-    loading.show();
     await this.loadReports();
-    loading.hide();
-
-    $(q, 'div', 'projects projectLead', {}, (q) => {
-      const pendingReports = this.reports[0]!;
-      const completedReports = this.reports[1]!;
-
-      this.renderReportSection(q, 'Pending Reports', pendingReports);
-      this.renderReportSection(q, 'Completed Reports', completedReports);
+    q.innerHTML = '';
+    $(q, 'div', 'd-flex flex-column container p-4', {}, (q) => {
+      const pendingReports = this.reports.filter((report: any) => ['Pending'].includes(report.status));
+      console.log(pendingReports);
+      const processedReports = this.reports.filter((report: any) => ['Validated', 'Rejected', 'More Info'].includes(report.status));
+      console.log(processedReports);
+      $(q, 'div', 'projects projectLead', {}, (q) => {
+        this.renderReportSection(q, 'Pending Reports', pendingReports);
+        this.renderReportSection(q, 'Past Reports', processedReports);
+      });
     });
   }
 }

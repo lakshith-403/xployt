@@ -1,6 +1,6 @@
 import { QuarkFunction as $, Quark } from '../../../ui_lib/quark';
 import { View, ViewHandler } from '../../../ui_lib/view';
-import './Projects.scss';
+// import './Projects.scss';
 import { UserCache } from '../../../data/user';
 import { CACHE_STORE } from '../../../data/cache';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
@@ -71,7 +71,7 @@ export default class ProjectsView extends View {
     await this.loadProjects();
 
     q.innerHTML = '';
-    $(q, 'div', 'projects validator d-flex flex-column container p-4', {}, (q) => {
+    $(q, 'div', 'd-flex flex-column container p-4', {}, (q) => {
       if (this.user.type === 'Client') {
         $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
           const button = new FormButton({
