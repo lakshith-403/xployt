@@ -6,17 +6,14 @@ import { CACHE_STORE } from '../../../data/cache';
 import { CollapsibleBase } from '../../../components/Collapsible/collap.base';
 import { CustomTable } from '../../../components/table/customTable';
 import { CheckboxManager } from '../../../components/checkboxManager/checkboxManager';
-import { UserType, User } from '@data/user';
 import { ButtonType } from '@/components/button/base';
 import { FormButton } from '@/components/button/form.button';
 import { router } from '@/ui_lib/router';
-import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 import NETWORK from '@/data/network/network';
 import { excludeFieldsFromObjects } from '@/ui_lib/utils';
 
 export default class ProjectsView extends View {
   private params: { projectId: string };
-  // private projectsCache!: ProjectsCache;
   private userCache: UserCache;
   private user: any;
   private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured', 'Configured'];
@@ -27,14 +24,13 @@ export default class ProjectsView extends View {
     super();
     this.params = params;
     this.userCache = CACHE_STORE.getUser();
-    // this.projectsCache =  CACHE_STORE.getProjects();
   }
 
   private async loadProjects(): Promise<void> {
     try {
       const user = await this.userCache.get();
       this.user = user;
-      const response = await NETWORK.get(`/api/new-project/${user.type}/${user.id}`, { showLoading: true, handleError: true, throwError: true });
+      const response = await NETWORK.get(`/api/new-project/${user.type}/${user.id}`);
       this.projects = user.type === 'Client' ? excludeFieldsFromObjects(response.data.projects, ['clientId']) : excludeFieldsFromObjects(response.data.projects, ['leadId']);
       console.log('projects', this.projects);
     } catch (error) {
@@ -87,17 +83,11 @@ export default class ProjectsView extends View {
         });
       }
 
-      // if (this.projects.length === 0) {
-      //   $(q, 'div', 'table-row', {}, (q) => {
-      //     $(q, 'span', 'table-cell last-cell', {}, 'No data available at the moment');
-      //   });
-      // } else {
       const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured'].includes(project.state));
       const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
       this.renderProjectSection(q, 'Ongoing Projects', pendingProjects, ProjectsView.FILTER_OPTIONS);
       this.renderProjectSection(q, 'Past Projects', completedProjects, ProjectsView.FILTER_OPTIONS_2);
-      // }
     });
   }
 }
