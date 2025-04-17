@@ -34,6 +34,8 @@ export class Checkbox {
         });
       });
     });
+
+    this.setChecked(this.checked);
   }
 
   setChecked(checked: boolean) {

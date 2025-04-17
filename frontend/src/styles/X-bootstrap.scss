@@ -131,10 +131,30 @@ $heights: (
   }
 }
 
+// Column Utilities
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    width: calc($i / 12 * 100%) !important;
+  }
+}
+
 // Height Utilities
 @each $key, $value in $heights {
   .h-#{$key} {
     height: $value !important;
+  }
+}
+// Height Utilities
+@each $key, $value in $widths {
+  .hp-#{$key} {
+    height: $value !important;
+  }
+}
+
+// Minimum Height Utilities
+@for $i from 1 through 10 {
+  .h-min-#{$i} {
+    min-height: #{$i}rem !important;
   }
 }
 
@@ -192,6 +212,10 @@ $heights: (
 
 .align-items-end {
   align-items: flex-end;
+}
+
+.d-block {
+  display: block;
 }
 
 // Gap Utilities
@@ -293,5 +317,52 @@ $heights: (
   .py-#{$i} {
     padding-top: #{$i}rem !important;
     padding-bottom: #{$i}rem !important;
+  }
+
+  .border-top-#{$i} {
+    border-top: #{$i}px solid !important;
+  }
+
+  .border-bottom-#{$i} {
+    border-bottom: #{$i}px solid !important;
+  }
+
+  .border-left-#{$i} {
+    border-left: #{$i}px solid !important;
+  }
+
+  .border-right-#{$i} {
+    border-right: #{$i}px solid !important;
+  }
+
+  .border-#{$i} {
+    border: #{$i}px solid !important;
+  }
+
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+
+  .hover-border-thick:hover {
+    border-width: 3px !important;
+  }
+  .hover-border-extra-thick:hover {
+    border-width: 4px !important;
+  }
+
+  .active-border-thick {
+    border-width: 3px !important;
+  }
+  .active-border-extra-thick {
+    border-width: 4px !important;
+  }
+
+  @for $i from 5 through 20 {
+    .filter-brightness-#{$i * 10} {
+      filter: brightness($i * 10%);
+      > * {
+        filter: brightness(100%);
+      }
+    }
   }
 }

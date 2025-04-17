@@ -4,6 +4,16 @@
   flex-direction: column;
   margin: auto;
 
+  .input {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    width: 100%;
+    font-size: 0.9rem;
+    background-color: var(--background-secondary);
+    color: var(--color-primary)
+  }
+
   .report-review-header {
     display: flex;
     width: 100%;
@@ -23,6 +33,17 @@
         box-sizing: border-box;
       }
     }
+
+  }
+
+  .attachment-tag{
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .attachment-tag:hover {
+    cursor: pointer;
+    opacity: 0.75;
   }
 
   .hacker {
@@ -39,7 +60,6 @@
     width: inherit;
     gap: 0.5rem;
     margin-block: 1rem;
-    justify-content: center;
     align-items: center;
 
     .label {
@@ -51,15 +71,7 @@
       box-sizing: border-box;
     }
 
-    .input {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      border: none;
-      width: 100%;
-      font-size: 0.9rem;
-      background-color: var(--background-secondary);
-      color: var(--color-primary)
-    }
+
 
     .description {
       height: 5rem;

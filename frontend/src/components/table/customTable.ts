@@ -19,6 +19,7 @@ interface Options {
   falseKeys?: string[]; // Made optional
   noDataMessage?: string;
   orderKeys?: string[]; // New option for specifying order
+  lastLine?: boolean;
 }
 
 export class CustomTable {
@@ -58,12 +59,13 @@ export class CustomTable {
           this.displayNoDataMessage(q);
           return;
         }
-        console.log('content', this.content);
-        this.content.forEach((item) => {
+        // console.log('content', this.content);
+        this.content.forEach((item, index) => {
           // console.log('item', item);
+          const isLastRow = index === this.content.length - 1 && this.options.lastLine === false;
 
           $(q, 'a', 'table-row-link', {}, (q) => {
-            const row = $(q, 'div', 'table-row', {}, (q) => {
+            const row = $(q, 'div', `table-row${isLastRow ? ' no-border' : ''}`, {}, (q) => {
               this.displayItems(item, q);
             });
             if (this.options.callback) {
@@ -78,20 +80,25 @@ export class CustomTable {
   }
 
   public updateRows(checkboxState: { [key: string]: boolean }): void {
-    console.log('Updating rows');
-    console.log('checkboxState', checkboxState);
+    // console.log('Updating rows');
+    // console.log('checkboxState', checkboxState);
     this.rows!.innerHTML = '';
     if (!this.content || this.content.length === 0) {
       this.displayNoDataMessage(this.rows!);
       return;
     }
-    this.content.forEach((item) => {
+
+    const filteredContent = this.content.filter((item) => {
       const falseKeys = this.getFalseKeys(checkboxState);
-      console.log('falseKeys', falseKeys);
-      if (falseKeys.includes(item[this.options.filteredField!])) return;
+      // console.log('falseKeys', falseKeys);
+      return !falseKeys.includes(item[this.options.filteredField!]);
+    });
+
+    filteredContent.forEach((item, index) => {
+      const isLastRow = index === filteredContent.length - 1 && this.options.lastLine === false;
 
       $(this.rows!, 'a', 'table-row-link', {}, (q) => {
-        const row = $(q, 'div', 'table-row', {}, (q) => {
+        const row = $(q, 'div', `table-row${isLastRow ? ' no-border' : ''}`, {}, (q) => {
           this.displayItems(item, q);
         });
         if (this.options.callback) {
@@ -101,6 +108,7 @@ export class CustomTable {
         }
       });
     });
+
     if (!this.rows || this.rows.innerHTML === '') {
       if (this.options.noDataMessage) {
         this.displayNoDataMessage(this.rows!);
@@ -111,7 +119,7 @@ export class CustomTable {
 
   protected getFalseKeys(obj: { [key: string]: boolean }): string[] {
     const keys = Object.keys(obj).filter((key) => !obj[key]);
-    console.log('keys', keys);
+    // console.log('keys', keys);
     return keys;
   }
 
@@ -125,17 +133,17 @@ export class CustomTable {
       const element = object[key];
       switch (typeof element) {
         case 'string':
-          $(q, 'span', 'table-cell', {}, element == 'null' ? '-' : element);
+          $(q, 'span', 'table-cell text-center', {}, element == 'null' ? '-' : element);
           break;
         case 'object':
-          $(q, 'span', 'table-cell', {}, (q) => {
+          $(q, 'span', 'table-cell text-center', {}, (q) => {
             if (element !== null && typeof element.render === 'function') {
               element.render(q);
             }
           });
           break;
         default:
-          $(q, 'span', 'table-cell', {}, String(element) ?? '-');
+          $(q, 'span', 'table-cell text-center', {}, String(element) ?? '-');
       }
     });
   }

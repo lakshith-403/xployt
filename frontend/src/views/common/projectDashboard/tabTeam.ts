@@ -63,6 +63,9 @@ export default class Team {
         }
       }
     }
+    if (Object.keys(obj).length === 0) {
+      $(parent, 'div', 'nested-div', {}, 'Not assigned yet');
+    }
   }
 
   convertCacheArrayToObject(dataObject: any[], prefix: String, depth: number): { [key: string]: any } {

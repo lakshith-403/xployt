@@ -12,21 +12,21 @@ import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 import { modalAlertOnlyOK } from '@/main';
 
 // Convert the HTML string to a DOM element
-const modalElement = convertToDom(alertOnlyConfirm);
+// const modalElement = convertToDom(alertOnlyConfirm);
 
-// Set text content of modal elements
-setContent(modalElement, {
-  '.modal-title': 'Admin Login',
-  '.modal-message': 'Login successful!',
-});
+// // Set text content of modal elements
+// setContent(modalElement, {
+//   '.modal-title': 'Admin Login',
+//   '.modal-message': 'Login successful!',
+// });
 
-// Add event listeners to the modal buttons
-ModalManager.includeModal('adminLoginAlert', {
-  '.button-confirm': () => {
-    ModalManager.hide('adminLoginAlert');
-    router.navigateTo('/admin');
-  },
-});
+// // Add event listeners to the modal buttons
+// ModalManager.includeModal('adminLoginAlert', {
+//   '.button-confirm': () => {
+//     ModalManager.hide('adminLoginAlert');
+//     router.navigateTo('/admin');
+//   },
+// });
 
 export class AdminLoginView extends View {
   private emailField: TextField;
@@ -80,7 +80,6 @@ export class AdminLoginView extends View {
     const email = this.emailField.getValue();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      // alert('Invalid email format. Please enter a valid email.');
       setContent(modalAlertOnlyOK, {
         '.modal-title': 'Error',
         '.modal-message': 'Invalid email format. Please enter a valid email.',
@@ -95,11 +94,12 @@ export class AdminLoginView extends View {
       .signIn(email, password)
       .then((user) => {
         console.log('User logged in:', user);
+        router.navigateTo('/admin');
 
         // Method 1: Using a promise
-        ModalManager.show('adminLoginAlert', modalElement, true).then(() => {
-          console.log('ModalManager.show resolved');
-        });
+        // ModalManager.show('adminLoginAlert', modalElement, true).then(() => {
+        //   console.log('ModalManager.show resolved');
+        // });
 
         // Method 2 : Basic modal
         // ModalManager.show('loginAlert', modalElement);
@@ -111,11 +111,9 @@ export class AdminLoginView extends View {
             '.modal-message': 'Invalid credentials provided. Please try again.',
           });
           ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
-          // alert('Invalid credentials provided. Please try again.');
           return;
         }
         console.error('Error logging in user:', error);
-        // alert('Error logging in user: ' + error);
         setContent(modalAlertOnlyOK, {
           '.modal-title': 'Error',
           '.modal-message': 'Error logging in user: ' + error,

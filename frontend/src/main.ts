@@ -3,6 +3,7 @@ import './styles/styles.scss';
 import './styles/X-bootstrap.scss';
 import './styles/X-typography.scss';
 import './styles/X-colors.scss';
+import './styles/X-utils.scss';
 //utils
 import { Quark, QuarkFunction as $ } from './ui_lib/quark';
 import { RouteHandler } from '@ui_lib/route';
@@ -54,10 +55,12 @@ import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { userProfileViewHandler } from '@views/UserProfile';
+import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
 
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
+import {editReportViewHandler} from "@views/hacker/VulnerabilityReport/EditReport";
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -170,7 +173,7 @@ const CommonRouteHandlers = new RouteHandler(
 
 const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
@@ -188,7 +191,15 @@ const AdminRouteHandlers = new RouteHandler(
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectRouteHandler = new RouteHandler('/projects', [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler], undefined, false, false, false, true);
+const ProjectRouteHandler = new RouteHandler(
+  '/projects',
+  [projectDashboardViewHandler, verifyProjectHandler, projectConfigFormViewHandler, complaintFormViewHandler],
+  undefined,
+  false,
+  false,
+  false,
+  true
+);
 
 const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHandler], undefined, false, false, false, true);
 

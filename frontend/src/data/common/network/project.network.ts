@@ -10,4 +10,8 @@ export class ProjectEndpoints {
     static async getAllProjects(userId: string, userStatus: string): Promise<Response> {
         return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}s?userId=${userId}&userStatus=${userStatus}`);
     }
+
+    static async getProjectSeverityLevels(projectId: string): Promise<Response> {
+        return NETWORK.sendHttpRequest('GET', `${this.BASE_URL}/severity-level/${projectId}`);
+    }
 }
