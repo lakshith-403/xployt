@@ -9,12 +9,13 @@ import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';
-import TabSettings from "@views/common/projectDashboard/TabSettings";
+import TabSettings from '@views/common/projectDashboard/TabSettings';
 
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
   private userId!: string;
+  private projectInfo!: any;
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
@@ -45,6 +46,7 @@ class projectDashboardView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
       const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
+      this.projectInfo = response.data;
       this.projectTitle = response.data.project.title;
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -97,7 +99,7 @@ class projectDashboardView extends View {
     }
     const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
     if (usersWithPaymentsTab.includes(currentUser.type)) {
-      const paymentsTab = new PaymentsTab(this.params.projectId);
+      const paymentsTab = new PaymentsTab(this.params.projectId, currentUser, this.projectInfo);
       tabs.push({
         title: 'Payments',
         render: (q: Quark) => {
