@@ -1,16 +1,18 @@
 import { router } from '@ui_lib/router';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/payments';
+import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/payments';
 import { OverviewReports } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/reports';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
 import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
+import {User} from "@data/user";
 
 export default class Hacker {
   project: Project = {} as Project;
   private readonly projectCache = CACHE_STORE.getProject(this.projectId) as ProjectCache;
+  private currentUser!: User;
 
   constructor(private readonly projectId: string) {
     this.projectId = projectId;
@@ -19,6 +21,7 @@ export default class Hacker {
   async loadData(): Promise<void> {
     try {
       this.project = await this.projectCache.get(false, this.projectId);
+      this.currentUser = await CACHE_STORE.getUser().get();
       console.log('Hacker: Project Info', this.project);
     } catch (error) {
       console.error('Failed to load project data', error);
@@ -49,7 +52,7 @@ export default class Hacker {
 
       $(q, 'section', '', { id: 'payments' }, (q) => {
         $(q, 'h2', '', {}, 'Payments');
-        new OverviewPayments(this.projectId).render(q);
+        new OverviewPayments(this.projectId, "Hacker", this.currentUser.id).render(q);
       });
       $(q, 'section', '', { id: 'reports' }, (q) => {
         $(q, 'span', '', {}, (q) => {
