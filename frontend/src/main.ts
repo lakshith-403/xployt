@@ -39,7 +39,6 @@ import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tab
 import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
-// import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from '@views/client/projectRequestForm/projectRequestForm';
 import { discussionViewHandler } from '@views/discussion/Discussion';
 import { userDashboardViewHandler } from '@views/UserDashboard';
@@ -56,7 +55,6 @@ import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
-import { newProfileViewHandler } from '@views/newProfile';
 // Sidebars
 import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
@@ -203,7 +201,7 @@ const ProjectRouteHandler = new RouteHandler(
 
 const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHandler], undefined, false, false, false, true);
 
-const UserViewHandlers = new RouteHandler('/profile', [newProfileViewHandler], undefined, false, false, false, true);
+const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
 // const UserProfileViewHandler = new RouteHandler('/users', [], undefined, false, false, false, false);
 
