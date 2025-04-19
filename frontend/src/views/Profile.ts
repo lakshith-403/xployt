@@ -6,40 +6,37 @@ import { Button, ButtonType } from '../components/button/base';
 import './Profile.scss';
 import { CollapsibleBase } from '../components/Collapsible/collap.base';
 import { CACHE_STORE } from '../data/cache';
-import LoadingScreen from '../components/loadingScreen/loadingScreen';
-import { UserProfile, UserProfileCache } from '@/data/user/cache/userProfile';
-// import { User, UserCacheMock } from '@/data/user';
+import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
 
 export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
   // private userCache: UserCacheMock;
-  private fundsCollapsible: CollapsibleBase;
+  // private fundsCollapsible: CollapsibleBase;
 
-  private profile!: UserProfile;
+  private profile!: any;
   private nameField: TextField;
   private emailField: TextField;
   private phoneField: TextField;
-  private userProfileCache!: UserProfileCache;
-  private loading: LoadingScreen | null = null;
+  // private userProfileCache!: UserProfileCache;
+  // private loading: LoadingScreen | null = null;
 
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
-    this.fundsCollapsible = new CollapsibleBase('Funds', 'funds');
-    // this.userProfileCache = new UserProfileCacheMock();
-    // this.userCache = CACHE_STORE.getUser();
+    // this.fundsCollapsible = new CollapsibleBase('Funds', 'funds');
     this.nameField = new TextField({ label: 'Name' });
     this.emailField = new TextField({ label: 'Email', type: 'email' });
     this.phoneField = new TextField({ label: 'Phone Number', type: 'tel' });
+    
+    // Conditionslly initilaise Inputs
   }
   private async loadProfile() {
     try {
-      //  const userId = '101'; // Get actual user ID from your auth system
-      // const user = await this.userCache.get();
       const user = await CACHE_STORE.getUser().get();
-      this.userProfileCache = CACHE_STORE.getUserProfile(user.id);
-      this.profile = await this.userProfileCache.get(false, user.id);
+      const response = await NETWORK.get(`/api/new-profile/${user.id}`);
+      this.profile = response.data.profile;
+
       console.log('ProfileView: Loaded profile:', this.profile);
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -51,14 +48,13 @@ export class ProfileView extends View {
       console.log('ProfileView: Updating fields with profile:', this.profile);
       console.log('ProfileView: Profile name:', this.profile.name);
       console.log('ProfileView: Profile email:', this.profile.email);
-      console.log('ProfileView: Profile phone number:', this.profile.phoneNumber);
+      console.log('ProfileView: Profile phone number:', this.profile.phone);
       this.nameField.setValue(this.profile.name);
       this.emailField.setValue(this.profile.email);
-      this.phoneField.setValue(this.profile.phoneNumber);
+      this.phoneField.setValue(this.profile.phone);
     }
   }
   private async saveChanges() {
-    if (this.loading) this.loading.show();
     try {
       const user = await CACHE_STORE.getUser().get();
       const userProfileCache = CACHE_STORE.getUserProfile(user.id);
@@ -71,17 +67,13 @@ export class ProfileView extends View {
       await this.loadProfile();
     } catch (error) {
       console.error('Error saving profile:', error);
-    } finally {
-      if (this.loading) this.loading.hide();
-    }
+    } 
   }
   public async render(q: Quark): Promise<void> {
     q.innerHTML = ''; // Clear existing content
-    this.loading = new LoadingScreen(q);
-    this.loading.show();
+;
     await this.loadProfile();
     q.innerHTML = '';
-    if (this.loading) this.loading.hide();
     $(q, 'div', 'profile-view', {}, (q) => {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
@@ -130,32 +122,6 @@ export class ProfileView extends View {
             router.navigateTo('/');
           },
         }).render(q);
-        // Funds Section
-        // this.fundsCollapsible.render(q);
-        // $(this.fundsCollapsible.content!, 'div', 'funds-content', {}, (q) => {
-        //   $(q, 'div', 'funds-details', {}, (q) => {
-        //     $(q, 'div', 'fund-box', {}, (q) => {
-        //       $(q, 'h2', 'title', {}, 'Amount Remaining');
-        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsRemaining || '0'}`);
-        //     });
-        //     $(q, 'div', 'fund-box', {}, (q) => {
-        //       $(q, 'h2', 'title', {}, 'Amount Spent');
-        //       $(q, 'p', 'amount', {}, `$${this.profile?.fundsSpent || '0'}`);
-        //     });
-        //     $(q, 'div', 'fund-box button-container', {}, (q) => {
-        //       new Button({
-        //         label: 'Add Funds',
-        //         type: ButtonType.PRIMARY,
-        //         onClick: () => console.log('Add funds'),
-        //       }).render(q);
-        //       new Button({
-        //         label: 'View Transactions',
-        //         type: ButtonType.SECONDARY,
-        //         onClick: () => console.log('View transactions'),
-        //       }).render(q);
-        //     });
-        //   });
-        // });
       });
     });
   }
