@@ -20,36 +20,8 @@ export class InviteHackers extends View {
     private clientInvitationsCache: ClientInvitationsCache;
     private availableHackers: Hacker[] = [];
     private invitedHackers: Hacker[] = [];
-    // private availableHackers = [
-    //     {
-    //         id: 104,
-    //         name: "David Brown",
-    //         email: "david.brown@example.com",
-    //         blastPoints: 85,
-    //         areaOfExpertise: "Web Application Penetration Testing",
-    //     },
-    //     {
-    //         id: 105,
-    //         name: "Emma Johnson",
-    //         email: "emma.johnson@example.com",
-    //         blastPoints: 92,
-    //         areaOfExpertise: "Network Security Analysis",
-    //     },
-    //     {
-    //         id: 108,
-    //         name: "Hannah Lopez",
-    //         email: "hannah.lopez@example.com",
-    //         blastPoints: 90,
-    //         areaOfExpertise: "Social Engineering and Phishing Attacks",
-    //     },
-    //     {
-    //         id: 109,
-    //         name: "Ian Martinez",
-    //         email: "ian.martinez@example.com",
-    //         blastPoints: 89,
-    //         areaOfExpertise: "Cloud Security Penetration Testing",
-    //     },
-    // ];
+    private HackerListContainer!: Quark
+    private InvitedHackersContainer!: Quark;
 
     constructor(params: { projectId: string }) {
         super();
@@ -71,35 +43,36 @@ export class InviteHackers extends View {
         }
     }
 
-    async sendInvitation(hackerId: string, parent: Quark): Promise<void> {
+    async sendInvitation(hackerId: string): Promise<void> {
         try {
             // Send the invitation
             await this.invitationsCache.create(this.projectId, hackerId);
 
             // Update the lists
-            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.userId === parseInt(hackerId));
+            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.userId.toString() == hackerId);
             if (hackerIndex !== -1) {
                 const [invitedHacker] = this.availableHackers.splice(hackerIndex, 1);
                 this.invitedHackers.push(invitedHacker);
             }
 
             // Re-render the specific sections
-            // this.renderInvitedHackers(invited, this.invitedHackers);
-            // this.renderHackerList(available, this.availableHackers);
+            this.renderInvitedHackers(this.invitedHackers);
+            this.renderHackerList(this.availableHackers);
 
-            await this.render(parent)
+            // await this.render(parent)
         } catch (error) {
             console.error("Failed to send invitation:", error);
         }
     }
 
-    private renderHackerList(q: Quark, hackers: Hacker[], parent: Quark) {
-        q.innerHTML = '';
+    private renderHackerList(hackers: Hacker[]) {
+        console.log("Available: ", hackers)
+        this.HackerListContainer.innerHTML = '';
         hackers.forEach((hacker) => {
             new Card({
                 title: '',
                 content:
-                    $(q, 'div', 'card-content', {}, (q) => {
+                    $(this.HackerListContainer, 'div', 'card-content', {}, (q) => {
                         $(q, 'div', 'details', {}, (q) => {
                             $(q, 'span', 'card-title', {}, `${hacker.name}`)
                             $(q, 'div', 'description', {}, (q) => {
@@ -117,7 +90,7 @@ export class InviteHackers extends View {
                             new Button({
                                 label: 'Invite',
                                 onClick: async () => {
-                                    await this.sendInvitation(hacker.userId.toString(), parent);
+                                    await this.sendInvitation(hacker.userId.toString());
                                 }
                             }).render(q)
                             $(q, 'span', 'data-field', {}, (q) => {
@@ -128,17 +101,18 @@ export class InviteHackers extends View {
                             });
                         });
                     }),
-            }).render(q);
+            }).render(this.HackerListContainer);
         })
     }
 
-    private renderInvitedHackers(q: Quark, hackers: Hacker[]) {
-        q.innerHTML = '';
+    private renderInvitedHackers(hackers: Hacker[]) {
+        console.log("Invited: ", hackers)
+        this.InvitedHackersContainer.innerHTML = '';
         if (hackers.length > 0) {
             hackers.forEach(hacker => {
                 new Card({
                     title: hacker.name,
-                    content: $(q, 'div', 'card-content', {}, (q) => {
+                    content: $(this.InvitedHackersContainer, 'div', 'card-content', {}, (q) => {
                         $(q, 'div', 'details', {}, (q) => {
                             $(q, 'span', 'card-title', {}, `${hacker.name}`)
                             $(q, 'div', 'description', {}, (q) => {
@@ -161,16 +135,15 @@ export class InviteHackers extends View {
                             });
                         });
                     }),
-                }).render(q);
+                }).render(this.InvitedHackersContainer);
             });
         } else {
-            q.innerHTML = '<p>No hackers invited yet.</p>';
+            this.InvitedHackersContainer.innerHTML = '<p>No hackers invited yet.</p>';
         }
     }
 
     async render(container: Quark): Promise<void> {
-        const parent: Quark = container;
-        parent.innerHTML = '';
+        container.innerHTML = '';
 
         const loading = new LoadingScreen(container);
 
@@ -178,7 +151,7 @@ export class InviteHackers extends View {
         await this.loadData();
         loading.hide();
 
-        $(parent, 'div', 'client-invitations', {}, (q) => {
+        $(container, 'div', 'client-invitations', {}, (q) => {
             $(q, 'div', 'section-header', {}, (q) => {
                 $(q, 'h1', 'section-title', {}, (q) => {
                     q.innerHTML = "Invite Hackers | " + `${(this.project.title)} - #${this.project.projectId}`;
@@ -221,15 +194,17 @@ export class InviteHackers extends View {
                         $(q, 'h2', 'section-subtitle', {}, (q) => {
                             q.innerHTML = "Invited Hackers";
                         });
-                        const invitedHackersContainer = $(q, 'div', 'hacker-list', {}, (q) => {
-                            this.renderInvitedHackers(q, this.invitedHackers);
+                        $(q, 'div', 'hacker-list', {}, (q) => {
+                            this.InvitedHackersContainer = q;
+                            this.renderInvitedHackers(this.invitedHackers);
                         });
                     });
                 });
                 $(q, 'div', 'section-content', {}, (q) => {
                     $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
-                    const availableHackersContainer = $(q, 'div', 'hacker-list available', {}, (q) => {
-                        this.renderHackerList(q, this.availableHackers, parent);
+                    $(q, 'div', 'hacker-list available', {}, (q) => {
+                        this.HackerListContainer = q;
+                        this.renderHackerList(this.availableHackers);
                     });
                 });
             });
