@@ -9,6 +9,10 @@ import {InvitationsCache, Hacker} from "@data/common/cache/invitations.cache";
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
 import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
+import {NetworkError} from "@data/network/network";
+import ModalManager, {setContent} from "@components/ModalManager/ModalManager";
+import {modalAlertOnlyOK} from "@main";
+import {IconButton} from "@components/button/icon.button";
 
 export class InviteHackers extends View {
     private projectId: string;
@@ -20,36 +24,8 @@ export class InviteHackers extends View {
     private clientInvitationsCache: ClientInvitationsCache;
     private availableHackers: Hacker[] = [];
     private invitedHackers: Hacker[] = [];
-    // private availableHackers = [
-    //     {
-    //         id: 104,
-    //         name: "David Brown",
-    //         email: "david.brown@example.com",
-    //         blastPoints: 85,
-    //         areaOfExpertise: "Web Application Penetration Testing",
-    //     },
-    //     {
-    //         id: 105,
-    //         name: "Emma Johnson",
-    //         email: "emma.johnson@example.com",
-    //         blastPoints: 92,
-    //         areaOfExpertise: "Network Security Analysis",
-    //     },
-    //     {
-    //         id: 108,
-    //         name: "Hannah Lopez",
-    //         email: "hannah.lopez@example.com",
-    //         blastPoints: 90,
-    //         areaOfExpertise: "Social Engineering and Phishing Attacks",
-    //     },
-    //     {
-    //         id: 109,
-    //         name: "Ian Martinez",
-    //         email: "ian.martinez@example.com",
-    //         blastPoints: 89,
-    //         areaOfExpertise: "Cloud Security Penetration Testing",
-    //     },
-    // ];
+    private HackerListContainer!: Quark
+    private InvitedHackersContainer!: Quark;
 
     constructor(params: { projectId: string }) {
         super();
@@ -64,42 +40,70 @@ export class InviteHackers extends View {
         try {
             this.project = await this.projectCache.get(false, this.projectId) as Project;
             this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
-            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
             this.invitedHackers = await this.clientInvitationsCache.get(false, this.projectId);
         } catch (error) {
+            setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Error',
+                '.modal-message': 'Error loading project data. Refresh the page or try again later.',
+            });
+            await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
             console.error('Failed to load project data:', error);
+            return;
         }
     }
 
-    async sendInvitation(hackerId: string, parent: Quark): Promise<void> {
+    async loadFilteredHackers(): Promise<void> {
+        try{
+            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
+        }catch (error) {
+            setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Error',
+                '.modal-message': 'Error loading hacker data. Refresh the page or try again later.',
+            });
+            await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+            console.error('Failed to load project data:', error);
+            return;
+        }
+    }
+
+    async sendInvitation(hackerId: string): Promise<void> {
         try {
             // Send the invitation
             await this.invitationsCache.create(this.projectId, hackerId);
 
             // Update the lists
-            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.userId === parseInt(hackerId));
+            const hackerIndex = this.availableHackers.findIndex(hacker => hacker.userId.toString() == hackerId);
             if (hackerIndex !== -1) {
                 const [invitedHacker] = this.availableHackers.splice(hackerIndex, 1);
                 this.invitedHackers.push(invitedHacker);
             }
 
             // Re-render the specific sections
-            // this.renderInvitedHackers(invited, this.invitedHackers);
-            // this.renderHackerList(available, this.availableHackers);
+            this.renderInvitedHackers(this.invitedHackers);
+            this.renderHackerList(this.availableHackers);
 
-            await this.render(parent)
+            // await this.render(parent)
         } catch (error) {
+            if (error instanceof NetworkError && error.statusCode === 401) {
+                setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Error',
+                    '.modal-message': 'Error sending Invitation',
+                });
+                await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                return;
+            }
             console.error("Failed to send invitation:", error);
         }
     }
 
-    private renderHackerList(q: Quark, hackers: Hacker[], parent: Quark) {
-        q.innerHTML = '';
+    private renderHackerList(hackers: Hacker[]) {
+        console.log("Available: ", hackers)
+        this.HackerListContainer.innerHTML = '';
         hackers.forEach((hacker) => {
             new Card({
                 title: '',
                 content:
-                    $(q, 'div', 'card-content', {}, (q) => {
+                    $(this.HackerListContainer, 'div', 'card-content', {}, (q) => {
                         $(q, 'div', 'details', {}, (q) => {
                             $(q, 'span', 'card-title', {}, `${hacker.name}`)
                             $(q, 'div', 'description', {}, (q) => {
@@ -117,7 +121,7 @@ export class InviteHackers extends View {
                             new Button({
                                 label: 'Invite',
                                 onClick: async () => {
-                                    await this.sendInvitation(hacker.userId.toString(), parent);
+                                    await this.sendInvitation(hacker.userId.toString());
                                 }
                             }).render(q)
                             $(q, 'span', 'data-field', {}, (q) => {
@@ -128,17 +132,18 @@ export class InviteHackers extends View {
                             });
                         });
                     }),
-            }).render(q);
+            }).render(this.HackerListContainer);
         })
     }
 
-    private renderInvitedHackers(q: Quark, hackers: Hacker[]) {
-        q.innerHTML = '';
+    private renderInvitedHackers(hackers: Hacker[]) {
+        console.log("Invited: ", hackers)
+        this.InvitedHackersContainer.innerHTML = '';
         if (hackers.length > 0) {
             hackers.forEach(hacker => {
                 new Card({
                     title: hacker.name,
-                    content: $(q, 'div', 'card-content', {}, (q) => {
+                    content: $(this.InvitedHackersContainer, 'div', 'card-content', {}, (q) => {
                         $(q, 'div', 'details', {}, (q) => {
                             $(q, 'span', 'card-title', {}, `${hacker.name}`)
                             $(q, 'div', 'description', {}, (q) => {
@@ -161,24 +166,24 @@ export class InviteHackers extends View {
                             });
                         });
                     }),
-                }).render(q);
+                }).render(this.InvitedHackersContainer);
             });
         } else {
-            q.innerHTML = '<p>No hackers invited yet.</p>';
+            this.InvitedHackersContainer.innerHTML = '<p>No hackers invited yet.</p>';
         }
     }
 
     async render(container: Quark): Promise<void> {
-        const parent: Quark = container;
-        parent.innerHTML = '';
+        container.innerHTML = '';
 
         const loading = new LoadingScreen(container);
 
         loading.show();
         await this.loadData();
+        await this.loadFilteredHackers();
         loading.hide();
 
-        $(parent, 'div', 'client-invitations', {}, (q) => {
+        $(container, 'div', 'client-invitations', {}, (q) => {
             $(q, 'div', 'section-header', {}, (q) => {
                 $(q, 'h1', 'section-title', {}, (q) => {
                     q.innerHTML = "Invite Hackers | " + `${(this.project.title)} - #${this.project.projectId}`;
@@ -221,15 +226,30 @@ export class InviteHackers extends View {
                         $(q, 'h2', 'section-subtitle', {}, (q) => {
                             q.innerHTML = "Invited Hackers";
                         });
-                        const invitedHackersContainer = $(q, 'div', 'hacker-list', {}, (q) => {
-                            this.renderInvitedHackers(q, this.invitedHackers);
+                        $(q, 'div', 'hacker-list', {}, (q) => {
+                            this.InvitedHackersContainer = q;
+                            this.renderInvitedHackers(this.invitedHackers);
                         });
                     });
                 });
                 $(q, 'div', 'section-content', {}, (q) => {
-                    $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
-                    const availableHackersContainer = $(q, 'div', 'hacker-list available', {}, (q) => {
-                        this.renderHackerList(q, this.availableHackers, parent);
+                    $(q, 'span', 'spaced-row', {}, (q) => {
+                        $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
+                        new IconButton({
+                            icon: 'fa-solid fa-rotate-right',
+                            label:'',
+                            onClick: async () => {
+                                const loading = new LoadingScreen(this.HackerListContainer);
+                                loading.show();
+                                await this.loadFilteredHackers();
+                                loading.hide();
+                                this.renderHackerList(this.availableHackers);
+                            }
+                        }).render(q)
+                    })
+                    $(q, 'div', 'hacker-list available', {}, (q) => {
+                        this.HackerListContainer = q;
+                        this.renderHackerList(this.availableHackers);
                     });
                 });
             });
