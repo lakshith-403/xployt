@@ -3,7 +3,7 @@ import { UIManager } from '@ui_lib/UIManager';
 import { router } from '@ui_lib/router';
 import { Button, ButtonType } from '@/components/button/base';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from './clientComponents/payments';
+import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
 import PieChart from '@/components/charts/pieChart';
 import UserCard from '@components/UserCard';
 import { UserType } from '@data/user';
