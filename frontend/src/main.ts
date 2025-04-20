@@ -42,7 +42,6 @@ import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tab
 import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
-// import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from '@views/client/projectRequestForm/projectRequestForm';
 import { discussionViewHandler } from '@views/discussion/Discussion';
 import { userDashboardViewHandler } from '@views/UserDashboard';
@@ -57,10 +56,11 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
+import { userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
-import {editReportViewHandler} from "@views/hacker/VulnerabilityReport/EditReport";
-
+import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
+import { adminReportsViewHandler } from '@views/admin/Report';
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
 ModalManager.includeModal('alertOnlyCancel', {
@@ -162,7 +162,7 @@ const ValidatorApplicationRouteHandler = new RouteHandler('/validator/applicatio
 
 const CommonRouteHandlers = new RouteHandler(
   '/',
-  [projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
+  [userProfileViewHandler, projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
   new SidebarView('/', HomeSidebar),
   false,
   false,
@@ -180,7 +180,7 @@ const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandle
 
 const AdminRouteHandlers = new RouteHandler(
   '/admin',
-  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler, listUsersViewHandler, adminProjectsViewHandler],
+  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler, listUsersViewHandler, adminProjectsViewHandler, adminReportsViewHandler],
   new SidebarView('/', AdminSidebar),
   false,
   false,
@@ -204,6 +204,8 @@ const ReportRouteHandler = new RouteHandler('/reports', [vulnReportReviewViewHan
 
 const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], undefined, false, false, false, true);
 
+// const UserProfileViewHandler = new RouteHandler('/users', [], undefined, false, false, false, false);
+
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
 router.setTopNavigationView(new TopNavigationView());
@@ -226,4 +228,5 @@ router.addRouteHandler(AdminRouteHandlers);
 
 router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
+// router.addRouteHandler(UserProfileViewHandler);
 router.addRouteHandler(ReportRouteHandler);

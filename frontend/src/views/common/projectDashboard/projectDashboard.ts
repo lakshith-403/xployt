@@ -9,8 +9,8 @@ import PaymentsTab from './payments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';
-import TabSettings from "@views/common/projectDashboard/TabSettings";
-
+import TabSettings from '@views/common/projectDashboard/TabSettings';
+import ComplaintsTab from './tabComplaints';
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
@@ -60,6 +60,7 @@ class projectDashboardView extends View {
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
     const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
+    const complaintsTab = new ComplaintsTab(this.params.projectId);
 
     const tabs = [
       {
@@ -84,6 +85,12 @@ class projectDashboardView extends View {
         title: 'Discussion',
         render: (q: Quark) => {
           discussionTab.render(q);
+        },
+      },
+      {
+        title: 'Complaints',
+        render: (q: Quark) => {
+          complaintsTab.render(q);
         },
       },
     ];
