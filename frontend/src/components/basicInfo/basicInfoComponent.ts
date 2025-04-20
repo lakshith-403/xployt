@@ -57,6 +57,16 @@ export default class BasicInfoComponent {
             });
           });
         });
+          $(q, 'div', '', {}, (q) => {
+              $(q, 'span', '', {}, (q) => {
+                  $(q, 'p', 'key', {}, 'Start Date');
+                  $(q, 'p', 'value', {}, this.project.startDate);
+              });
+              $(q, 'span', '', {}, (q) => {
+                  $(q, 'p', 'key', {}, 'End Date');
+                  $(q, 'p', 'value', {}, this.project.endDate);
+              });
+          })
         $(q, 'div', '', {}, async (q) => {
           if (this.currentUser.type !== 'ProjectLead') {
             await new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead',

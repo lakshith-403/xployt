@@ -66,15 +66,15 @@ class projectDashboardView extends View {
 
     const tabs = [
       {
-        title: 'Reports',
-        render: (q: Quark) => {
-          reportsTab.render(q);
-        },
-      },
-      {
         title: 'Overview',
         render: (q: Quark) => {
           overviewTab.render(q);
+        },
+      },
+      {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
         },
       },
       {
