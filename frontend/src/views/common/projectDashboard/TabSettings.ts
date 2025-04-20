@@ -5,6 +5,8 @@ import {Popup} from "@components/popup/popup.base";
 import {TypeToConfirm} from "@components/typeToConfirm/typeToConfirm";
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
 import {ProjectsClientCache} from "@data/client/cache/projects.cache";
+import ModalManager, {setContent} from "@components/ModalManager/ModalManager";
+import {modalAlertOnlyOK} from "@main";
 
 export default class TabSettings {
     private user!: User;
@@ -34,6 +36,11 @@ export default class TabSettings {
     private async closeProject(): Promise<void> {
         const project = await this.clientProjectCache.closeProject(this.projectId);
         if (!project) {
+            setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Error',
+                '.modal-message': 'Failed to close project.',
+            });
+            await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
             console.error('Failed to close project');
             return;
         }

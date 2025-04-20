@@ -1,7 +1,7 @@
 import { router } from '@ui_lib/router';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/clientComponents/payments';
+import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
 import { OverviewReports } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/reports';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
@@ -68,7 +68,7 @@ export default class Hacker {
         });
 
         $(q, 'div', 'section-content', {}, (q) => {
-          new OverviewReports({ reportId: '1' }).render(q);
+          new OverviewReports(this.projectId).render(q);
         });
       });
     });
