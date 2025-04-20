@@ -9,6 +9,10 @@ import {InvitationsCache, Hacker} from "@data/common/cache/invitations.cache";
 import {Project, ProjectCache} from "@data/common/cache/project.cache";
 import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
+import {NetworkError} from "@data/network/network";
+import ModalManager, {setContent} from "@components/ModalManager/ModalManager";
+import {modalAlertOnlyOK} from "@main";
+import {IconButton} from "@components/button/icon.button";
 
 export class InviteHackers extends View {
     private projectId: string;
@@ -36,10 +40,29 @@ export class InviteHackers extends View {
         try {
             this.project = await this.projectCache.get(false, this.projectId) as Project;
             this.projectTeam = await this.projectTeamCache.get(false, this.projectId) as ProjectTeam;
-            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
             this.invitedHackers = await this.clientInvitationsCache.get(false, this.projectId);
         } catch (error) {
+            setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Error',
+                '.modal-message': 'Error loading project data. Refresh the page or try again later.',
+            });
+            await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
             console.error('Failed to load project data:', error);
+            return;
+        }
+    }
+
+    async loadFilteredHackers(): Promise<void> {
+        try{
+            this.availableHackers = await this.invitationsCache.filterHackers(this.projectId);
+        }catch (error) {
+            setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Error',
+                '.modal-message': 'Error loading hacker data. Refresh the page or try again later.',
+            });
+            await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+            console.error('Failed to load project data:', error);
+            return;
         }
     }
 
@@ -61,6 +84,14 @@ export class InviteHackers extends View {
 
             // await this.render(parent)
         } catch (error) {
+            if (error instanceof NetworkError && error.statusCode === 401) {
+                setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Error',
+                    '.modal-message': 'Error sending Invitation',
+                });
+                await ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                return;
+            }
             console.error("Failed to send invitation:", error);
         }
     }
@@ -149,6 +180,7 @@ export class InviteHackers extends View {
 
         loading.show();
         await this.loadData();
+        await this.loadFilteredHackers();
         loading.hide();
 
         $(container, 'div', 'client-invitations', {}, (q) => {
@@ -201,7 +233,20 @@ export class InviteHackers extends View {
                     });
                 });
                 $(q, 'div', 'section-content', {}, (q) => {
-                    $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
+                    $(q, 'span', 'spaced-row', {}, (q) => {
+                        $(q, 'h2', 'section-subtitle', {}, "Available Hackers");
+                        new IconButton({
+                            icon: 'fa-solid fa-rotate-right',
+                            label:'',
+                            onClick: async () => {
+                                const loading = new LoadingScreen(this.HackerListContainer);
+                                loading.show();
+                                await this.loadFilteredHackers();
+                                loading.hide();
+                                this.renderHackerList(this.availableHackers);
+                            }
+                        }).render(q)
+                    })
                     $(q, 'div', 'hacker-list available', {}, (q) => {
                         this.HackerListContainer = q;
                         this.renderHackerList(this.availableHackers);
