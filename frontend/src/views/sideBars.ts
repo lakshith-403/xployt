@@ -24,6 +24,7 @@ export const HomeSidebar: SidebarTab[] = [
     id: 'payments',
     title: 'Payments',
     url: 'payments',
+    roles: ['Client', 'Hacker'],
   },
 ];
 
