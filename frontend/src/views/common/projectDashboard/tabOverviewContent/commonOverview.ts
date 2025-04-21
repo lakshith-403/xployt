@@ -3,8 +3,8 @@ import { UIManager } from '@ui_lib/UIManager';
 import { router } from '@ui_lib/router';
 import { Button, ButtonType } from '@/components/button/base';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
-import PieChart from '@/components/charts/pieChart';
+// import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
+// import PieChart from '@/components/charts/pieChart';
 import UserCard from '@components/UserCard';
 import { UserType } from '@data/user';
 import NETWORK from '@/data/network/network';
@@ -42,7 +42,7 @@ export default class CommonOverview {
           highlightClassName: 'text-light-green',
           showKeys: ['name', 'email'],
           callback: () => {
-            router.navigateTo('/user-info/' + cardConfig.userId);
+            router.navigateTo(this.userRole === 'Admin' ? '/admin/user-info/' + cardConfig.userId : '/user-info/' + cardConfig.userId);
           },
         }).render(q);
       });
@@ -117,7 +117,7 @@ export default class CommonOverview {
       // Basic Project Info Section - for all states and roles
       $(q, 'div', '', {}, (q) => {
         $(q, 'h2', 'sub-heading-2', {}, 'Project Info');
-        UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'technicalStack', 'startDate', 'state'], { className: 'd-flex flex-column gap-1' });
+        UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], { className: 'd-flex flex-column gap-1' });
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles

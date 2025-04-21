@@ -68,15 +68,15 @@ class projectDashboardView extends View {
 
     const commonTabs = [
       {
-        title: 'Overview',
-        render: (q: Quark) => {
-          overviewTab.render(q);
-        },
-      },
-      {
         title: 'Reports',
         render: (q: Quark) => {
           reportsTab.render(q);
+        },
+      },
+      {
+        title: 'Overview',
+        render: (q: Quark) => {
+          overviewTab.render(q);
         },
       },
       {
@@ -99,6 +99,8 @@ class projectDashboardView extends View {
       },
     ];
 
+    tabs.push(...commonTabs);
+
     const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker', 'Admin'];
     if (usersWithPaymentsTab.includes(currentUser.type)) {
       const paymentsTab = new PaymentsTab(this.params.projectId, currentUser, this.projectInfo);
@@ -109,8 +111,6 @@ class projectDashboardView extends View {
         },
       });
     }
-
-    tabs.push(...commonTabs);
 
     if (currentUser.type === 'Client') {
       tabs.push({

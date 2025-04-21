@@ -35,7 +35,7 @@ export default class Payments {
           $(q, 'section', '', { id: 'payments' }, (q) => {
             $(q, 'div', '', {}, (q) => {
               $(q, 'h2', '', {}, 'Payments');
-              new OverviewPayments(this.projectId, this.role).render(q);
+              new OverviewPayments(this.projectId, this.role, this.user.id).render(q);
             });
             // CHECK - Fix when data available
             $(q, 'div', '', {}, (q) => {
