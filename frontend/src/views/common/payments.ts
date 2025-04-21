@@ -7,6 +7,8 @@ import { Button, ButtonType } from '@/components/button/base';
 import { financeEndpoints } from '@/data/finance/network/finance.network';
 import { CustomTable } from '@/components/table/customTable';
 import { Response } from '@/data/network/network';
+import modalManager, { convertToDom } from '@/components/ModalManager/ModalManager';
+import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import './payments.scss';
 
 export class PaymentView extends View {
@@ -17,8 +19,21 @@ export class PaymentView extends View {
   private transactionTable: CustomTable | null = null;
   private balanceElement: HTMLElement | null = null;
   private transactionTableContainer: HTMLElement | null = null;
+  private loadingScreen: LoadingScreen | null = null;
+
+  constructor() {
+    super();
+    modalManager.includeModal('payment-notification', {
+      '.modal-button.button-confirm': () => {
+        modalManager.hide('payment-notification');
+      },
+    });
+  }
 
   public async render(q: Quark): Promise<void> {
+    this.loadingScreen = new LoadingScreen(q);
+    this.loadingScreen.show();
+
     try {
       const user = await this.userCache.get();
       this.userId = Number(user.id);
@@ -52,7 +67,12 @@ export class PaymentView extends View {
       });
     } catch (error) {
       console.error('Error rendering payment view:', error);
+      q.innerHTML = '';
       $(q, 'div', 'error-container', {}, 'Failed to load payment information. Please try again later.');
+    } finally {
+      if (this.loadingScreen) {
+        this.loadingScreen.hide();
+      }
     }
   }
 
@@ -62,13 +82,27 @@ export class PaymentView extends View {
       this.balance = financeData.balance.balance;
       this.transactions = financeData.transactions;
 
-      console.log(this.balance);
-      console.log(this.transactions);
+      console.log('Current balance:', this.balance);
+      console.log('Transactions:', this.transactions);
     } catch (error) {
       console.error('Failed to load finance data:', error);
       this.balance = 0;
       this.transactions = [];
     }
+  }
+
+  private showNotification(title: string, message: string, isError: boolean = false): void {
+    const modalContent = `
+      <div class="modal-body">
+        <div class="modal-title">${title}</div>
+        <div class="modal-message">${message}</div>
+        <div class="modal-buttons">
+          <button type="button" class="modal-button button-confirm ${isError ? 'button-tertiary' : 'button-primary'}">OK</button>
+        </div>
+      </div>
+    `;
+
+    modalManager.show('payment-notification', modalContent);
   }
 
   private renderDepositForm(q: Quark): void {
@@ -96,17 +130,19 @@ export class PaymentView extends View {
           const description = descriptionInput.value.trim();
 
           if (isNaN(amount) || amount <= 0) {
-            alert('Please enter a valid amount');
+            this.showNotification('Validation Error', 'Please enter a valid amount', true);
             return;
           }
 
           if (!description) {
-            alert('Please enter a description');
+            this.showNotification('Validation Error', 'Please enter a description', true);
             return;
           }
 
           try {
             depositButton.disabled = true;
+            LoadingScreen.show();
+
             const response = await financeEndpoints.addFunds(this.userId, amount, description);
 
             if (response.is_successful) {
@@ -118,17 +154,18 @@ export class PaymentView extends View {
               await this.loadFinanceData();
               this.updateBalanceDisplay();
 
-              alert('Funds added successfully');
+              this.showNotification('Success', 'Funds added successfully');
 
               this.renderTransactionTable(this.transactionTableContainer!);
             } else {
-              alert(`Failed to deposit funds: ${response.error || 'Unknown error'}`);
+              this.showNotification('Error', `Failed to deposit funds: ${response.error || 'Unknown error'}`, true);
             }
           } catch (error) {
             console.error('Error depositing funds:', error);
-            alert('Failed to deposit funds. Please try again later.');
+            this.showNotification('Error', 'Failed to deposit funds. Please try again later.', true);
           } finally {
             depositButton.disabled = false;
+            LoadingScreen.hide();
           }
         },
         type: ButtonType.PRIMARY,
@@ -163,22 +200,24 @@ export class PaymentView extends View {
           const description = descriptionInput.value.trim();
 
           if (isNaN(amount) || amount <= 0) {
-            alert('Please enter a valid amount');
+            this.showNotification('Validation Error', 'Please enter a valid amount', true);
             return;
           }
 
           if (amount > this.balance) {
-            alert('Insufficient funds');
+            this.showNotification('Validation Error', 'Insufficient funds', true);
             return;
           }
 
           if (!description) {
-            alert('Please enter a description');
+            this.showNotification('Validation Error', 'Please enter a description', true);
             return;
           }
 
           try {
             withdrawButton.disabled = true;
+            LoadingScreen.show();
+
             const response = await financeEndpoints.withdrawFunds(this.userId, amount, description);
 
             if (response.is_successful) {
@@ -190,18 +229,19 @@ export class PaymentView extends View {
               await this.loadFinanceData();
               this.updateBalanceDisplay();
 
-              alert('Funds withdrawn successfully');
+              this.showNotification('Success', 'Funds withdrawn successfully');
 
               // Re-render the transaction table
               this.renderTransactionTable(this.transactionTableContainer!);
             } else {
-              alert(`Failed to withdraw funds: ${response.error || 'Unknown error'}`);
+              this.showNotification('Error', `Failed to withdraw funds: ${response.error || 'Unknown error'}`, true);
             }
           } catch (error) {
             console.error('Error withdrawing funds:', error);
-            alert('Failed to withdraw funds. Please try again later.');
+            this.showNotification('Error', 'Failed to withdraw funds. Please try again later.', true);
           } finally {
             withdrawButton.disabled = false;
+            LoadingScreen.hide();
           }
         },
         type: ButtonType.TERTIARY,

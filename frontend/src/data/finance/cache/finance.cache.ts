@@ -32,14 +32,15 @@ export class FinanceCache extends CacheObject<{ balance: Balance; transactions: 
     const balanceResponse = await financeEndpoints.getUserBalance(this.userId);
     const transactionsResponse = await financeEndpoints.getUserTransactions(this.userId);
 
-    console.log(balanceResponse);
-    console.log(transactionsResponse);
+    console.log('Balance response:', balanceResponse);
+    console.log('Transactions response:', transactionsResponse);
 
     if (!balanceResponse.is_successful || !transactionsResponse.is_successful) {
       throw new Error('Failed to load finance data');
     }
 
     const transactions = (transactionsResponse.data as TransactionResponse)?.balance || [];
+    // The balance is directly returned in the data field as a number
     const balance = balanceResponse.data as unknown as Balance;
 
     return {
