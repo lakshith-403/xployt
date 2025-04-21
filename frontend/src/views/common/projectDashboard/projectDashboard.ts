@@ -64,7 +64,9 @@ class projectDashboardView extends View {
     const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
     const complaintsTab = new ComplaintsTab(this.params.projectId);
 
-    const tabs = [
+    const tabs = [];
+
+    const commonTabs = [
       {
         title: 'Overview',
         render: (q: Quark) => {
@@ -96,15 +98,8 @@ class projectDashboardView extends View {
         },
       },
     ];
-    if (currentUser.type === 'Client') {
-      tabs.push({
-        title: 'Settings',
-        render: (q: Quark) => {
-          settingsTab?.render(q);
-        },
-      });
-    }
-    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
+
+    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker', 'Admin'];
     if (usersWithPaymentsTab.includes(currentUser.type)) {
       const paymentsTab = new PaymentsTab(this.params.projectId, currentUser, this.projectInfo);
       tabs.push({
@@ -114,6 +109,18 @@ class projectDashboardView extends View {
         },
       });
     }
+
+    tabs.push(...commonTabs);
+
+    if (currentUser.type === 'Client') {
+      tabs.push({
+        title: 'Settings',
+        render: (q: Quark) => {
+          settingsTab?.render(q);
+        },
+      });
+    }
+
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
       $(q, 'span', 'project-title', {}, this.projectTitle);
