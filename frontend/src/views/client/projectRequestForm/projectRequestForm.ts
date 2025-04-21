@@ -57,8 +57,12 @@ class ProjectRequestForm extends View {
 
     const validationSchema: ValidationSchema = {
       title: 'string',
-      startDate: 'date',
-      endDate: 'date',
+      startDate: 'date|future',
+      endDate: (formState: any) => {
+        const startDate = new Date(formState.startDate.year, formState.startDate.month, formState.startDate.day);
+        const endDate = new Date(formState.endDate.year, formState.endDate.month, formState.endDate.day);
+        return endDate > startDate ? 'date|future' : 'date|future|min-date';
+      },
       description: 'string-strict',
       url: 'url',
       technicalStack: 'string|comma',
