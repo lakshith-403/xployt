@@ -20,6 +20,11 @@ export const HomeSidebar: SidebarTab[] = [
     title: 'Reports',
     url: 'reports',
   },
+  {
+    id: 'payments',
+    title: 'Payments',
+    url: 'payments',
+  },
 ];
 
 export const AdminSidebar: SidebarTab[] = [

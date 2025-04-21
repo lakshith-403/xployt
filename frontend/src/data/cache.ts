@@ -9,16 +9,17 @@ import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLea
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
 import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
-import { ProjectTeamCache} from '@data/common/cache/projectTeam.cache';
+import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
 
 import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
-import {ProjectCache} from "@data/common/cache/project.cache";
-import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
-import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
-import {VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
+import { ProjectCache } from '@data/common/cache/project.cache';
+import { HackerInvitationsCache } from '@data/hacker/cache/hacker.invitations.cache';
+import { ClientInvitationsCache } from '@data/client/cache/client.invitations.cache';
+import { VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
+import { FinanceCache } from './finance/cache/finance.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -39,7 +40,8 @@ class CacheStore {
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
   private projectsMap: Map<string, ProjectCache>;
-  private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>
+  private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>;
+  private financeMap: Map<number, FinanceCache>;
 
   constructor() {
     this.user = new UserCache();
@@ -62,6 +64,7 @@ class CacheStore {
     this.leadProjectsMap = new Map();
     this.projectsMap = new Map();
     this.vulnerabilityReportsMap = new Map();
+    this.financeMap = new Map();
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -159,8 +162,8 @@ class CacheStore {
   }
 
   public getInvitedHackers(projectId: string): ClientInvitationsCache {
-    if(!this.InvitedHackersMap.has(projectId)){
-      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId))
+    if (!this.InvitedHackersMap.has(projectId)) {
+      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId));
     }
     return this.InvitedHackersMap.get(projectId)!;
   }
@@ -186,12 +189,19 @@ class CacheStore {
     return this.projectsMap.get(projectId)!;
   }
 
-    public getVulnerabilityReport(reportId: string): VulnerabilityReportCache {
-        if (!this.vulnerabilityReportsMap.has(reportId)) {
-        this.vulnerabilityReportsMap.set(reportId, new VulnerabilityReportCache(reportId));
-        }
-        return this.vulnerabilityReportsMap.get(reportId)!;
+  public getVulnerabilityReport(reportId: string): VulnerabilityReportCache {
+    if (!this.vulnerabilityReportsMap.has(reportId)) {
+      this.vulnerabilityReportsMap.set(reportId, new VulnerabilityReportCache(reportId));
     }
+    return this.vulnerabilityReportsMap.get(reportId)!;
+  }
+
+  public getFinance(userId: number): FinanceCache {
+    if (!this.financeMap.has(userId)) {
+      this.financeMap.set(userId, new FinanceCache(userId));
+    }
+    return this.financeMap.get(userId)!;
+  }
 }
 
 export const CACHE_STORE = new CacheStore();

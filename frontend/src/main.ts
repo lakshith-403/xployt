@@ -61,6 +61,7 @@ import { complaintFormViewHandler } from '@views/common/projectDashboard/complai
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
+import { paymentViewHandler } from './views/common/payments';
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
 ModalManager.includeModal('alertOnlyCancel', {
@@ -162,7 +163,7 @@ const ValidatorApplicationRouteHandler = new RouteHandler('/validator/applicatio
 
 const CommonRouteHandlers = new RouteHandler(
   '/',
-  [userProfileViewHandler, projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
+  [userProfileViewHandler, projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler, paymentViewHandler],
   new SidebarView('/', HomeSidebar),
   false,
   false,
