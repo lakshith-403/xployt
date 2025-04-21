@@ -117,7 +117,7 @@ export default class CommonOverview {
       // Basic Project Info Section - for all states and roles
       $(q, 'div', '', {}, (q) => {
         $(q, 'h2', 'sub-heading-2', {}, 'Project Info');
-        UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'technicalStack', 'startDate', 'state'], { className: 'd-flex flex-column gap-1' });
+        UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], { className: 'd-flex flex-column gap-1' });
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles

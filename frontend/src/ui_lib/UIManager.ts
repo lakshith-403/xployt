@@ -47,14 +47,15 @@ export class UIManager {
    */
   public static listObjectGivenKeys(q: Quark, object: any, showKeys: string[] = [], options: { className: string; preserveCasing?: boolean } = { className: '' }): void {
     $(q, 'ul', options.className, {}, (q) => {
-      Object.keys(object).forEach((key) => {
-        if (!showKeys.includes(key)) return;
-        $(q, 'li', '', {}, (q) => {
-          const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
-          $(q, 'span', '', {}, displayKey);
-          $(q, 'span', '', {}, ' : ');
-          $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
-        });
+      showKeys.forEach((key) => {
+        if (key in object) {
+          $(q, 'li', '', {}, (q) => {
+            const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+            $(q, 'span', '', {}, displayKey);
+            $(q, 'span', '', {}, ' : ');
+            $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+          });
+        }
       });
     });
   }
