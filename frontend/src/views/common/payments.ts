@@ -11,6 +11,13 @@ import modalManager, { convertToDom } from '@/components/ModalManager/ModalManag
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import './payments.scss';
 
+interface PaymentCompleteEvent extends CustomEvent {
+  detail: {
+    success: boolean;
+    amount: string;
+  };
+}
+
 export class PaymentView extends View {
   private userCache: UserCache = CACHE_STORE.getUser();
   private userId: number = 0;
@@ -20,6 +27,9 @@ export class PaymentView extends View {
   private balanceElement: HTMLElement | null = null;
   private transactionTableContainer: HTMLElement | null = null;
   private loadingScreen: LoadingScreen | null = null;
+  private paymentWindowReference: Window | null = null;
+  private paymentCheckInterval: number | null = null;
+  private paymentCompleted: boolean = false;
 
   constructor() {
     super();
@@ -140,32 +150,46 @@ export class PaymentView extends View {
           }
 
           try {
+            // Disable the button during payment
             depositButton.disabled = true;
+
+            // Show loading screen
             LoadingScreen.show();
 
-            const response = await financeEndpoints.addFunds(this.userId, amount, description);
+            // Reset payment completion flag
+            this.paymentCompleted = false;
 
-            if (response.is_successful) {
-              amountInput.value = '';
-              descriptionInput.value = '';
+            // Set up payment completion listener
+            const handlePaymentComplete = (event: Event) => {
+              const paymentEvent = event as PaymentCompleteEvent;
+              console.log('Payment completed:', paymentEvent.detail);
 
-              // Invalidate cache and reload data
-              CACHE_STORE.getFinance(this.userId).invalidate_cache();
-              await this.loadFinanceData();
-              this.updateBalanceDisplay();
+              this.paymentCompleted = true;
 
-              this.showNotification('Success', 'Funds added successfully');
+              // Process the payment after successful bank payment
+              this.processDeposit(amount, description);
+            };
 
-              this.renderTransactionTable(this.transactionTableContainer!);
-            } else {
-              this.showNotification('Error', `Failed to deposit funds: ${response.error || 'Unknown error'}`, true);
-            }
+            // Add event listener for payment completion
+            window.addEventListener('paymentComplete', handlePaymentComplete);
+
+            // Create the bank payment modal instead of opening a new window
+            this.openBankPaymentModal(amount, description, () => {
+              // Remove the event listener
+              window.removeEventListener('paymentComplete', handlePaymentComplete);
+
+              // If payment wasn't completed via the event, show cancellation message
+              if (!this.paymentCompleted) {
+                this.showNotification('Payment Cancelled', 'The payment was cancelled', true);
+                LoadingScreen.hide();
+                depositButton.disabled = false;
+              }
+            });
           } catch (error) {
-            console.error('Error depositing funds:', error);
-            this.showNotification('Error', 'Failed to deposit funds. Please try again later.', true);
-          } finally {
-            depositButton.disabled = false;
+            console.error('Error opening payment window:', error);
+            this.showNotification('Error', 'Failed to open payment window. Please try again later.', true);
             LoadingScreen.hide();
+            depositButton.disabled = false;
           }
         },
         type: ButtonType.PRIMARY,
@@ -173,6 +197,109 @@ export class PaymentView extends View {
 
       depositButton.render(q);
     });
+  }
+
+  private openBankPaymentModal(amount: number, description: string, onClose: () => void): void {
+    // Create a unique modal name for this payment
+    const modalName = `bank-payment-${Date.now()}`;
+
+    // Create the HTML content for the bank payment
+    const htmlContent = `
+      <div class="modal-body bank-payment-modal">
+        <div class="header">
+          <div class="logo">BP</div>
+          <h1>Bank Payment Gateway</h1>
+        </div>
+        
+        <div class="amount-section">
+          <p>Amount to be paid:</p>
+          <p class="amount">$${amount.toFixed(2)}</p>
+        </div>
+        
+        <div class="card-section">
+          <div class="card-icons">
+            <div class="card-icon">Visa</div>
+            <div class="card-icon">MC</div>
+            <div class="card-icon">Amex</div>
+            <div class="card-icon">PayP</div>
+          </div>
+          <p>This is a simulated payment gateway. No actual payment will be processed.</p>
+          <p>Description: ${description}</p>
+        </div>
+        
+        <div class="modal-buttons">
+          <button type="button" class="modal-button button-tertiary button-cancel">Cancel</button>
+          <button type="button" class="modal-button button-primary button-confirm">Proceed with Payment</button>
+        </div>
+        
+        <div class="security-info">
+          <p>🔒 Secure Connection | 256-bit Encryption | PCI DSS Compliant</p>
+        </div>
+      </div>
+    `;
+
+    // Configure button handlers
+    const buttonConfig = {
+      '.button-cancel': () => {
+        modalManager.hide(modalName);
+        onClose();
+      },
+      '.button-confirm': () => {
+        // Dispatch the payment complete event
+        const customEvent = new CustomEvent('paymentComplete', {
+          detail: {
+            success: true,
+            amount: amount.toFixed(2),
+          },
+        });
+        window.dispatchEvent(customEvent);
+
+        // Hide the modal
+        modalManager.hide(modalName);
+      },
+    };
+
+    // Register the modal
+    modalManager.includeModal(modalName, buttonConfig);
+
+    // Show the payment modal
+    modalManager.show(modalName, htmlContent);
+  }
+
+  private async processDeposit(amount: number, description: string): Promise<void> {
+    try {
+      const response = await financeEndpoints.addFunds(this.userId, amount, description);
+
+      if (response.is_successful) {
+        // Reset form fields
+        const amountInput = document.querySelector('.deposit-form input[type="number"]') as HTMLInputElement;
+        const descriptionInput = document.querySelector('.deposit-form input[type="text"]') as HTMLInputElement;
+
+        if (amountInput) amountInput.value = '';
+        if (descriptionInput) descriptionInput.value = '';
+
+        // Invalidate cache and reload data
+        CACHE_STORE.getFinance(this.userId).invalidate_cache();
+        await this.loadFinanceData();
+        this.updateBalanceDisplay();
+
+        this.showNotification('Success', 'Funds added successfully');
+
+        // Re-render the transaction table
+        this.renderTransactionTable(this.transactionTableContainer!);
+      } else {
+        this.showNotification('Error', `Failed to deposit funds: ${response.error || 'Unknown error'}`, true);
+      }
+    } catch (error) {
+      console.error('Error depositing funds:', error);
+      this.showNotification('Error', 'Failed to deposit funds. Please try again later.', true);
+    } finally {
+      LoadingScreen.hide();
+
+      // Enable the button
+      const depositButton = document.querySelector('.deposit-form button') as HTMLButtonElement;
+      if (depositButton) depositButton.disabled = false;
+    }
   }
 
   private renderWithdrawForm(q: Quark): void {
