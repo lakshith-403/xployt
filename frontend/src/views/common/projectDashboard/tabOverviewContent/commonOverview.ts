@@ -42,7 +42,7 @@ export default class CommonOverview {
           highlightClassName: 'text-light-green',
           showKeys: ['name', 'email'],
           callback: () => {
-            router.navigateTo('/user-info/' + cardConfig.userId);
+            router.navigateTo(this.userRole === 'Admin' ? '/admin/user-info/' + cardConfig.userId : '/user-info/' + cardConfig.userId);
           },
         }).render(q);
       });

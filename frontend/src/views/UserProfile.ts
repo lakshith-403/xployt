@@ -27,7 +27,6 @@ export class UserProfileView extends View {
       this.userProfile = await NETWORK.get(`/api/fetch-profile/${this.userId}`);
       this.profile = this.userProfile.data.results[0];
       console.log('UserProfileView: Profile loaded:', this.profile);
-      
     } catch (error) {
       console.error('Error loading profile:', error);
       alert('Error loading profile:' + error);
@@ -66,18 +65,22 @@ export class UserProfileView extends View {
       });
 
       $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
-
         $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
           $(q, 'span', 'text-light-green', {}, 'User Info');
           $(q, 'div', 'py-1 px-2', {}, (q) => {
             const selectedFields1 = ['username', 'firstName', 'lastName', 'phone'];
             selectedFields1.forEach((key) => {
               if (key in this.profile) {
-                  $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
-                    $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
-                    $(q, 'span', 'field-value', {}, this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]);
-                  });
-              
+                $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
+                  $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
+                  $(
+                    q,
+                    'span',
+                    'field-value',
+                    {},
+                    this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]
+                  );
+                });
               }
             });
           });
@@ -87,9 +90,9 @@ export class UserProfileView extends View {
           $(q, 'span', 'text-light-green', {}, 'Additional Info');
           $(q, 'div', 'py-1 px-2', {}, (q) => {
             let selectedFields2 = [''];
-            
+
             // Add role-specific fields
-            switch(this.profile?.role?.toLowerCase()) {
+            switch (this.profile?.role?.toLowerCase()) {
               case 'validator':
               case 'projectlead':
                 selectedFields2 = [...selectedFields2, 'skills', 'experience', 'reference'];
@@ -103,7 +106,13 @@ export class UserProfileView extends View {
               if (key in this.profile) {
                 $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
                   $(q, 'span', 'field-label', {}, this.formatFieldLabel(key));
-                  $(q, 'span', 'field-value', {}, this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]);
+                  $(
+                    q,
+                    'span',
+                    'field-value',
+                    {},
+                    this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]
+                  );
                 });
               }
             });
@@ -115,11 +124,15 @@ export class UserProfileView extends View {
 
   private formatFieldLabel(key: string): string {
     // Convert camelCase to Title Case with spaces
-    return key
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, (str) => str.toUpperCase())
-      .trim() + ':';
+    return (
+      key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (str) => str.toUpperCase())
+        .trim() + ':'
+    );
   }
 }
 
 export const userProfileViewHandler = new ViewHandler('user-info/{userId}', UserProfileView);
+
+export const userProfileForAdminViewHandler = new ViewHandler('/user-info/{userId}', UserProfileView);
