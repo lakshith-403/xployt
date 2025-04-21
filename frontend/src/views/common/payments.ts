@@ -1,7 +1,7 @@
 import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
 import { View, ViewHandler } from '@/ui_lib/view';
 import { CACHE_STORE } from '@/data/cache';
-import { UserCache } from '@/data/user';
+import { UserCache, UserType } from '@/data/user';
 import { Transaction } from '@/data/finance/cache/finance.cache';
 import { Button, ButtonType } from '@/components/button/base';
 import { financeEndpoints } from '@/data/finance/network/finance.network';
@@ -63,7 +63,10 @@ export class PaymentView extends View {
         });
 
         $(q, 'div', 'payment-actions', {}, (q) => {
-          this.renderDepositForm(q);
+          if (user.type === 'Client') {
+            this.renderDepositForm(q);
+          }
+
           this.renderWithdrawForm(q);
         });
 
