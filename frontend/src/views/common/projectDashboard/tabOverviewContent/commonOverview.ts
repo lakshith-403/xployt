@@ -140,38 +140,6 @@ export default class CommonOverview {
         })();
       }
 
-      // Payments Section - for Active state and ProjectLead, Client, Admin roles
-      if (this.projectInfo.state === 'Active' && ['ProjectLead', 'Client', 'Admin'].includes(this.userRole)) {
-        $(q, 'div', '', { id: 'basic-info' }, (q) => {
-          $(q, 'section', '', { id: 'payments' }, (q) => {
-            $(q, 'div', '', {}, (q) => {
-              $(q, 'h2', '', {}, 'Payments');
-              new OverviewPayments(this.projectId, this.userRole).render(q);
-            });
-            // CHECK - Fix when data available
-            // $(q, 'div', '', {}, (q) => {
-            //   const pieChartOptions = {
-            //     data: {
-            //       'Pending Payments': 30000,
-            //       Paid: 20000,
-            //       Remaining: 30000,
-            //       'On Hold': 40000,
-            //     },
-            //     title: '',
-            //     subtitle: '',
-            //     colorScheme: 'greenTheme' as 'greenTheme',
-            //   };
-
-            //   $(q, 'div', '', {}, (q) => {
-            //     $(q, 'h2', '', {}, 'Payments Distribution');
-            //     const pieChart = new PieChart(pieChartOptions);
-            //     pieChart.render(q);
-            //   });
-            // });
-          });
-        });
-      }
-
       // Hacker Invitations Section - for Active state and Client role
       if (this.projectInfo.state === 'Active' && this.userRole === 'Client') {
         $(q, 'section', '', { id: 'reports' }, (q) => {

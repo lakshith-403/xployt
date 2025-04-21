@@ -25,7 +25,7 @@ export class OverviewPayments {
       this.paymentData = paymentResponse.data.payments;
 
       // Load funding info only for Client and ProjectLead
-      if (['Client', 'ProjectLead'].includes(this.userRole)) {
+      if (['Client', 'ProjectLead', 'Admin', 'Hacker'].includes(this.userRole)) {
         const fundingResponse = await NETWORK.get(`/api/common/projectFunding/${this.projectId}`);
         this.totalPricePool = fundingResponse.data.initialFunding;
         this.totalExpenditure = fundingResponse.data.totalExpenditure;
@@ -40,7 +40,7 @@ export class OverviewPayments {
 
     $(q, 'div', 'section-content', {}, (q) => {
       // Only show price cards for Client and ProjectLead
-      if (['Client', 'ProjectLead'].includes(this.userRole)) {
+      if (['Client', 'ProjectLead', 'Admin', 'Hacker'].includes(this.userRole)) {
         $(q, 'div', 'summary', {}, (q) => {
           new PriceCard({
             title: 'Total Price Pool',
