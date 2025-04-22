@@ -11,6 +11,7 @@ import { AttachmentTag } from './AttachmentTag';
 import { MessageComponent } from './MessageComp';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
+import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
 
 export class DiscussionView extends View {
   private readonly discussionId: string;
@@ -25,6 +26,8 @@ export class DiscussionView extends View {
   private attachedFileContainer!: Quark;
   private isResolved: boolean = false;
   private resolveButtonContainer: Quark | null = null;
+  private projectDiscussionCache: ProjectDiscussionCache | null = null;
+  private isAdmin: boolean = false;
 
   constructor({ discussionId }: { discussionId: string }) {
     super();
@@ -54,8 +57,18 @@ export class DiscussionView extends View {
     this.loader.show(q);
 
     try {
+      // Check if current user is admin
+      const currentUser = await CACHE_STORE.getUser().get();
+      this.isAdmin = currentUser.type === 'Admin';
+
       // Load the discussion data
       this.discussion = await this.discussionCache.get();
+
+      // If this discussion belongs to a project, initialize project discussion cache
+      if (this.discussion?.projectId) {
+        this.projectDiscussionCache = new ProjectDiscussionCache(this.discussion.projectId);
+      }
+
       this.titleElem.innerText = `${this.discussion?.title} #${this.discussion?.projectId}`;
 
       // Check if this is a complaint discussion
@@ -131,11 +144,17 @@ export class DiscussionView extends View {
   private renderMessages(): void {
     this.messagesPane.innerHTML = '';
     $(this.messagesPane, 'div', 'message-list', {}, (q) => {
+      if (this.isAdmin) {
+        $(q, 'div', 'admin-notice', {}, (q) => {
+          $(q, 'p', '', {}, 'You are viewing this discussion as an admin. Editing is disabled.');
+        });
+      }
+
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
-          if (this.isResolved) {
-            // For resolved discussions, pass empty functions that do nothing
+          if (this.isResolved || this.isAdmin) {
+            // For resolved discussions or admin users, pass empty functions that do nothing
             new MessageComponent(
               message,
               () => {},
@@ -146,23 +165,39 @@ export class DiscussionView extends View {
             new MessageComponent(
               message,
               (message) => {
-                this.discussionCache.saveMessage(message);
-                this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
-                this.renderMessages();
-                this.renderAttachments();
+                this.discussionCache.saveMessage(message).then(() => {
+                  // Update local discussion data
+                  this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
+
+                  // Update project cache if available
+                  if (this.projectDiscussionCache && this.discussion) {
+                    this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+                  }
+
+                  this.renderMessages();
+                  this.renderAttachments();
+                });
               },
               (message) => {
-                this.discussionCache.deleteMessage(message);
-                this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
-                this.renderMessages();
-                this.renderAttachments();
+                this.discussionCache.deleteMessage(message).then(() => {
+                  // Update local discussion data
+                  this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
+
+                  // Update project cache if available
+                  if (this.projectDiscussionCache && this.discussion) {
+                    this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+                  }
+
+                  this.renderMessages();
+                  this.renderAttachments();
+                });
               }
             ).render(q);
           }
         });
 
-      // Only render the input field if the discussion is not resolved
-      if (!this.isResolved) {
+      // Only render the input field if the discussion is not resolved and user is not admin
+      if (!this.isResolved && !this.isAdmin) {
         const textArea = new TextAreaBase({
           placeholder: 'Enter your message',
           name: 'message',
@@ -199,47 +234,34 @@ export class DiscussionView extends View {
     const user = await CACHE_STORE.getUser().get();
     console.log(this.selectedFiles);
 
-    let attachments: Attachment[] = this.selectedFiles.map((file) => ({
-      id: crypto.randomUUID(),
-      type: 'other',
-      url: '',
-      name: file.name,
-      uploadedBy: {
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      uploadedAt: new Date(),
-    }));
+    if (content.trim() === '' && this.selectedFiles.length === 0) return;
 
-    for (let i = 0; i < attachments.length; i++) {
-      const attachment = attachments[i];
-      attachments[i].url = attachment.id + '.' + attachment.name.split('.').pop();
-    }
-
+    // Create message and send it
     const message: Message = {
-      content: content,
       id: crypto.randomUUID(),
       sender: {
         userId: user.id,
         name: user.name,
         email: user.email,
       },
-      attachments: attachments,
+      content: content,
+      attachments: [],
       timestamp: new Date().toISOString(),
       type: 'text',
       discussionId: this.discussionId,
     };
 
     try {
-      this.loader.show(this.messagesPane);
-      const sentMessage = await this.discussionCache.sendMessage(message, this.selectedFiles);
-      console.log('Message sent:', sentMessage);
-      this.loader.hide();
+      await this.discussionCache.sendMessage(message, this.selectedFiles);
+
+      // Update project cache if available
+      if (this.projectDiscussionCache && this.discussion) {
+        this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+      }
+
       this.renderMessages();
       this.renderAttachments();
     } catch (error) {
-      this.loader.hide();
       console.error('Failed to send message:', error);
     }
   }
@@ -299,7 +321,7 @@ export class DiscussionView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
 
       // If the user is a project lead and the discussion is not resolved, add the resolve button
-      if (currentUser.type === 'ProjectLead' && !this.isResolved) {
+      if (currentUser.type === 'ProjectLead' && !this.isResolved && !this.isAdmin) {
         this.resolveButtonContainer = $(this.titleElem.parentElement!, 'div', 'resolve-conflict-container', {});
 
         new IconButton({

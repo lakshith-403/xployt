@@ -58,6 +58,9 @@ import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { userProfileForAdminViewHandler, userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
+
+import { complaintViewHandler } from '@views/complaint';
+
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
@@ -217,6 +220,8 @@ const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], unde
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
+const ComplaintRouteHandler = new RouteHandler('/complaint/{complaintId}', [complaintViewHandler], undefined, false, false, false, true);
+
 router.setTopNavigationView(new TopNavigationView());
 
 router.addRouteHandler(HomeRouteHandler);
@@ -239,3 +244,4 @@ router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
 // router.addRouteHandler(UserProfileViewHandler);
 router.addRouteHandler(ReportRouteHandler);
+router.addRouteHandler(ComplaintRouteHandler);

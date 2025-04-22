@@ -2,22 +2,32 @@ import { DiscussionView } from '@/views/discussion/Discussion';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { Discussion as DiscussionData } from '@/data/discussion/discussion';
 import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
+import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 
 export default class Discussion {
   private projectId: string;
   private discussions: DiscussionData[];
   private selectedDiscussionId: string | null = null;
   private discussionContainer!: Quark;
+  private projectDiscussionCache: ProjectDiscussionCache;
+  private loadingListContainer!: Quark;
 
   constructor(projectId: string) {
     this.projectId = projectId;
     this.discussions = [];
+    this.projectDiscussionCache = new ProjectDiscussionCache(this.projectId);
   }
 
   private async fetchDiscussions() {
-    const discussions = new ProjectDiscussionCache(this.projectId);
-    const allDiscussions = await discussions.get();
-    this.discussions = allDiscussions.filter((discussion) => !discussion.title.toLowerCase().startsWith('complaint:'));
+    try {
+      LoadingScreen.show();
+      const allDiscussions = await this.projectDiscussionCache.get();
+      this.discussions = allDiscussions.filter((discussion) => !discussion.title.toLowerCase().startsWith('complaint:'));
+      LoadingScreen.hide();
+    } catch (error) {
+      console.error('Failed to fetch discussions:', error);
+      LoadingScreen.hide();
+    }
   }
 
   render(q: Quark): void {
@@ -25,8 +35,8 @@ export default class Discussion {
       // Main content area with side navigation and content
       $(q, 'div', 'w-100 d-flex', {}, (q) => {
         // Left side navigation (1/4 of the space)
-        $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
-          this.renderDiscussionsList(q);
+        this.loadingListContainer = $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
+          $(q, 'div', 'text-center py-4 text-primary', {}, 'Loading discussions...');
         });
 
         // Right side content area (3/4 of the space)
@@ -35,19 +45,22 @@ export default class Discussion {
         });
       });
     });
+
+    // Fetch discussions after rendering initial structure
+    this.renderDiscussionsList();
   }
 
-  private renderDiscussionsList(q: Quark): void {
+  private renderDiscussionsList(): void {
     this.fetchDiscussions().then(() => {
       // Clear previous content
-      q.innerHTML = '';
+      this.loadingListContainer.innerHTML = '';
 
       if (this.discussions.length === 0) {
-        $(q, 'span', 'text-center p-3', {}, 'No discussions available');
+        $(this.loadingListContainer, 'span', 'text-center p-3', {}, 'No discussions available');
         return;
       }
 
-      $(q, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
+      $(this.loadingListContainer, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
         this.discussions.forEach((discussion, index) => {
           $(
             q,
@@ -67,6 +80,8 @@ export default class Discussion {
   }
 
   private showDiscussion(discussionId: string): void {
+    LoadingScreen.show();
+
     // Update selected discussion
     this.selectedDiscussionId = discussionId;
 
@@ -85,7 +100,20 @@ export default class Discussion {
 
       // Render selected discussion
       const discussionView = new DiscussionView({ discussionId });
-      discussionView.render(this.discussionContainer);
+      discussionView
+        .render(this.discussionContainer)
+        .then(() => {
+          LoadingScreen.hide();
+        })
+        .catch(() => {
+          LoadingScreen.hide();
+        });
     }
+  }
+
+  // Refresh discussions after a discussion is updated
+  public refreshDiscussions(): void {
+    this.projectDiscussionCache.invalidate_cache();
+    this.renderDiscussionsList();
   }
 }
