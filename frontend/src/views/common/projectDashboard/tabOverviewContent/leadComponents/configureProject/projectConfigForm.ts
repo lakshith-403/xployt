@@ -6,7 +6,6 @@ import TestingSecurity from './1_TestingSecurity/TestingSecurity';
 import Payments from './2_Payment/Payments';
 import NETWORK from '@/data/network/network';
 import { UIManager } from '@/ui_lib/UIManager';
-import { router } from '@/ui_lib/router';
 class ProjectConfigForm extends View {
   params: { projectId: string; configured: string };
   configured: boolean;

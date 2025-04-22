@@ -20,6 +20,8 @@ interface Options {
   noDataMessage?: string;
   orderKeys?: string[]; // New option for specifying order
   lastLine?: boolean;
+  cellClassName?: string;
+  cellClassNames?: { [key: number]: string }; // Add cell-specific class names by index
 }
 
 export class CustomTable {
@@ -129,21 +131,23 @@ export class CustomTable {
     // If orderKeys is provided, reorder keys based on it
     const orderedKeys = this.options.orderKeys ? this.options.orderKeys.filter((key) => keys.includes(key)) : keys;
     // console.log('orderedKeys', orderedKeys);
-    orderedKeys.forEach((key: string) => {
+    orderedKeys.forEach((key: string, index: number) => {
       const element = object[key];
+      const cellClass = this.options.cellClassNames && this.options.cellClassNames[index] ? this.options.cellClassNames[index] : this.options.cellClassName || '';
+
       switch (typeof element) {
         case 'string':
-          $(q, 'span', 'table-cell text-center', {}, element == 'null' ? '-' : element);
+          $(q, 'span', `table-cell text-center ${cellClass}`, {}, element == 'null' ? '-' : element);
           break;
         case 'object':
-          $(q, 'span', 'table-cell text-center', {}, (q) => {
+          $(q, 'span', `table-cell text-center ${cellClass}`, {}, (q) => {
             if (element !== null && typeof element.render === 'function') {
               element.render(q);
             }
           });
           break;
         default:
-          $(q, 'span', 'table-cell text-center', {}, String(element) ?? '-');
+          $(q, 'span', `table-cell text-center ${cellClass}`, {}, String(element) ?? '-');
       }
     });
   }

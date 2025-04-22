@@ -15,6 +15,7 @@ class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
   private userId!: string;
+  private projectInfo!: any;
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
@@ -45,6 +46,7 @@ class projectDashboardView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
       const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
+      this.projectInfo = response.data;
       this.projectTitle = response.data.project.title;
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -62,7 +64,9 @@ class projectDashboardView extends View {
     const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
     const complaintsTab = new ComplaintsTab(this.params.projectId);
 
-    const tabs = [
+    const tabs = [];
+
+    const commonTabs = [
       {
         title: 'Reports',
         render: (q: Quark) => {
@@ -94,6 +98,20 @@ class projectDashboardView extends View {
         },
       },
     ];
+
+    tabs.push(...commonTabs);
+
+    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker', 'Admin'];
+    if (usersWithPaymentsTab.includes(currentUser.type)) {
+      const paymentsTab = new PaymentsTab(this.params.projectId, currentUser, this.projectInfo);
+      tabs.push({
+        title: 'Payments',
+        render: (q: Quark) => {
+          paymentsTab.render(q);
+        },
+      });
+    }
+
     if (currentUser.type === 'Client') {
       tabs.push({
         title: 'Settings',
@@ -102,16 +120,7 @@ class projectDashboardView extends View {
         },
       });
     }
-    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
-    if (usersWithPaymentsTab.includes(currentUser.type)) {
-      const paymentsTab = new PaymentsTab(this.params.projectId);
-      tabs.push({
-        title: 'Payments',
-        render: (q: Quark) => {
-          paymentsTab.render(q);
-        },
-      });
-    }
+
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
       $(q, 'span', 'project-title', {}, this.projectTitle);

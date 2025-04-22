@@ -49,7 +49,7 @@ export default class ReportsTab {
 
         $(q, 'div', 'w-100 d-flex', {}, (q) => {
           $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
-            if (['ProjectLead', 'Client', 'Hacker', 'Validator'].includes(this.userRole)) {
+            if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(this.userRole)) {
               $(q, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
                 const reportActions = [
                   { title: 'Accepted Reports', id: 'Validated', action: () => this.fetchAndDisplayReports(this.userRole, this.projectId, 'Validated') },
@@ -127,7 +127,7 @@ export default class ReportsTab {
       // Display the fetched data
       if (this.tableContainer) {
         $(this.tableContainer, 'div', 'w-100', {}, async (q) => {
-          if (['ProjectLead', 'Client', 'Hacker', 'Validator'].includes(roleName)) {
+          if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(roleName)) {
             const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
             const reports = response.data.reports;
             const TABLE_HEADERS = ['Report Id', 'Severity', 'Vulnerability Type', 'Title', 'Created At'];
@@ -144,6 +144,10 @@ export default class ReportsTab {
                   router.navigateTo(`/reports/vulnerability/${this.projectId}/${report.reportId}`);
                 },
                 orderKeys: ['reportId', 'severity', 'vulnerabilityType', 'title', 'createdAt'],
+                cellClassNames: {
+                  2: 'text-small',
+                  3: 'text-small',
+                },
               },
             });
             const checkboxManager = new CheckboxManager(this.filterOptions, (checkboxValues) => {

@@ -52,17 +52,22 @@ export function isValidDate(date: any): { result: boolean; message: string } {
   return { result: true, message: '' };
 }
 
-const allowedExtensions = [
-  'txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat',
-  'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'
-];
+const allowedExtensions = ['txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat', 'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'];
 
 export const isValidFileType = (filename: string): boolean => {
   const extension = filename.split('.').pop()?.toLowerCase();
   return allowedExtensions.includes(extension || '');
 };
 
-export function validateField(key: string, value: any, expectedType: string): { result: boolean; message: string } {
+export function validateField(key: string, value: any, expectedType: string | ((formState: any) => string)): { result: boolean; message: string } {
+  // Check if expectedType is a function
+  if (typeof expectedType === 'function') {
+    // The function should return the validation type string
+    const dynamicType = expectedType(value);
+    // Recursively call validateField with the dynamic type
+    return validateField(key, value, dynamicType);
+  }
+
   // Verifying a string
   if (expectedType === 'string') {
     console.log('checking string: ', key, value);
@@ -86,6 +91,23 @@ export function validateField(key: string, value: any, expectedType: string): { 
     if (!dateValidation.result) {
       return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
     }
+  }
+
+  if (expectedType === 'date|future') {
+    const dateValidation = isValidDate(value);
+    console.log('checking date: ', key, value);
+    if (!dateValidation.result) {
+      return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
+    }
+    const today = new Date();
+    const inputDate = new Date(`${value.year}-${value.month}-${value.day}`);
+    if (inputDate <= today) {
+      return { result: false, message: `${key} must be a future date` };
+    }
+  }
+
+  if (expectedType === 'date|future|min-date') {
+    return { result: false, message: `Project end date must be after start date` };
   }
 
   // Verifying an email
@@ -208,7 +230,20 @@ export function validateField(key: string, value: any, expectedType: string): { 
 
 export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
   for (const key in validationSchema) {
-    const fieldValidation = validateField(key, formState[key], validationSchema[key]);
+    const expectedType = validationSchema[key];
+    let fieldValidation;
+
+    // Handle function type validators differently
+    if (typeof expectedType === 'function') {
+      // Get the validation type dynamically from the function
+      const dynamicType = expectedType(formState);
+      // Then validate with that type
+      fieldValidation = validateField(key, formState[key], dynamicType);
+    } else {
+      // Regular string-based validation
+      fieldValidation = validateField(key, formState[key], expectedType);
+    }
+
     if (!fieldValidation.result) {
       console.error('validation error: ', fieldValidation.message);
       setContent(modalAlertOnlyOK, {

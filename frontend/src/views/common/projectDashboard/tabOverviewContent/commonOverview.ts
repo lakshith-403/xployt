@@ -3,8 +3,8 @@ import { UIManager } from '@ui_lib/UIManager';
 import { router } from '@ui_lib/router';
 import { Button, ButtonType } from '@/components/button/base';
 import { IconButton } from '@components/button/icon.button';
-import { OverviewPayments } from './clientComponents/payments';
-import PieChart from '@/components/charts/pieChart';
+// import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
+// import PieChart from '@/components/charts/pieChart';
 import UserCard from '@components/UserCard';
 import { UserType } from '@data/user';
 import NETWORK from '@/data/network/network';
@@ -42,7 +42,7 @@ export default class CommonOverview {
           highlightClassName: 'text-light-green',
           showKeys: ['name', 'email'],
           callback: () => {
-            router.navigateTo('/user-info/' + cardConfig.userId);
+            router.navigateTo(this.userRole === 'Admin' ? '/admin/user-info/' + cardConfig.userId : '/user-info/' + cardConfig.userId);
           },
         }).render(q);
       });
@@ -117,7 +117,7 @@ export default class CommonOverview {
       // Basic Project Info Section - for all states and roles
       $(q, 'div', '', {}, (q) => {
         $(q, 'h2', 'sub-heading-2', {}, 'Project Info');
-        UIManager.listObjectGivenKeys(q, this.projectInfo, ['description', 'technicalStack', 'startDate', 'state'], { className: 'd-flex flex-column gap-1' });
+        UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], { className: 'd-flex flex-column gap-1' });
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles
@@ -138,38 +138,6 @@ export default class CommonOverview {
             UIManager.listObjectGivenKeys(q, this.projectInfo, ['noOfValidators', 'noOfHackers'], { className: 'd-flex flex-column gap-1' });
           });
         })();
-      }
-
-      // Payments Section - for Active state and ProjectLead, Client, Admin roles
-      if (this.projectInfo.state === 'Active' && ['ProjectLead', 'Client', 'Admin'].includes(this.userRole)) {
-        $(q, 'div', '', { id: 'basic-info' }, (q) => {
-          $(q, 'section', '', { id: 'payments' }, (q) => {
-            $(q, 'div', '', {}, (q) => {
-              $(q, 'h2', '', {}, 'Payments');
-              new OverviewPayments(this.projectId, this.userRole).render(q);
-            });
-            // CHECK - Fix when data available
-            // $(q, 'div', '', {}, (q) => {
-            //   const pieChartOptions = {
-            //     data: {
-            //       'Pending Payments': 30000,
-            //       Paid: 20000,
-            //       Remaining: 30000,
-            //       'On Hold': 40000,
-            //     },
-            //     title: '',
-            //     subtitle: '',
-            //     colorScheme: 'greenTheme' as 'greenTheme',
-            //   };
-
-            //   $(q, 'div', '', {}, (q) => {
-            //     $(q, 'h2', '', {}, 'Payments Distribution');
-            //     const pieChart = new PieChart(pieChartOptions);
-            //     pieChart.render(q);
-            //   });
-            // });
-          });
-        });
       }
 
       // Hacker Invitations Section - for Active state and Client role

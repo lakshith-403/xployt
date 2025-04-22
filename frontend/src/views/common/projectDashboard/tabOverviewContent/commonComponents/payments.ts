@@ -1,6 +1,6 @@
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { PriceCard } from '@components/card/card.base';
-import { tableBase } from '@components/table/table.base';
+import { CustomTable } from '@/components/table/customTable';
 import NETWORK from '@/data/network/network';
 import { UserType } from '@data/user';
 import '../../tabOverview.scss';
@@ -9,6 +9,7 @@ interface PaymentLevel {
   level: string;
   amount: number;
   reportCount: number;
+  items: string;
 }
 
 export class OverviewPayments {
@@ -25,7 +26,7 @@ export class OverviewPayments {
       this.paymentData = paymentResponse.data.payments;
 
       // Load funding info only for Client and ProjectLead
-      if (['Client', 'ProjectLead'].includes(this.userRole)) {
+      if (['Client', 'ProjectLead', 'Admin', 'Hacker'].includes(this.userRole)) {
         const fundingResponse = await NETWORK.get(`/api/common/projectFunding/${this.projectId}`);
         this.totalPricePool = fundingResponse.data.initialFunding;
         this.totalExpenditure = fundingResponse.data.totalExpenditure;
@@ -40,7 +41,7 @@ export class OverviewPayments {
 
     $(q, 'div', 'section-content', {}, (q) => {
       // Only show price cards for Client and ProjectLead
-      if (['Client', 'ProjectLead'].includes(this.userRole)) {
+      if (['Client', 'ProjectLead', 'Admin', 'Hacker'].includes(this.userRole)) {
         $(q, 'div', 'summary', {}, (q) => {
           new PriceCard({
             title: 'Total Price Pool',
@@ -60,8 +61,22 @@ export class OverviewPayments {
             severity: payment.level,
             amount: payment.amount,
             reports: payment.reportCount,
+            bugType: payment.items.split(',').join('\n\n'),
           }));
-          new tableBase(tableData, ['Severity', 'Amount', 'Reports']).render(q);
+          new CustomTable({
+            content: tableData,
+            headers: ['Severity', 'Amount', 'Reports', 'Bug Type'],
+            className: 'table-payments w-100',
+            options: {
+              filteredField: 'severity',
+              falseKeys: [],
+              noDataMessage: 'No payment levels configured',
+              cellClassName: 'd-flex justify-content-center align-items-center',
+              cellClassNames: {
+                3: 'd-flex justify-content-center align-items-center text-small',
+              },
+            },
+          }).render(q);
         });
       } else {
         $(q, 'div', 'text-center p-3', {}, (q) => {
