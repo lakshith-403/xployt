@@ -13,11 +13,10 @@ import { NavigationView } from '@ui_lib/view';
 
 //components
 import { SidebarTab, SidebarView } from '@components/SideBar/SideBar';
-import { NotificationList } from '@components/notifications/notificationsList';
-import { NotificationButton } from '@components/notifications/notificationButton';
 import { Button } from '@components/button/base';
 import { convertToDom } from '@components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
+import {Notifications} from "@components/notifications/newNotifications";
 
 //alerts
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
@@ -65,6 +64,7 @@ import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportRe
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
+
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
 ModalManager.includeModal('alertOnlyCancel', {
@@ -95,9 +95,6 @@ class TopNavigationView implements NavigationView {
     logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
       this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
-      const notificationList = new NotificationList(false, { userId: '1' });
-      const notificationButton = new NotificationButton(notificationList, q);
-      notificationButton.render();
 
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
       $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
@@ -118,6 +115,7 @@ class TopNavigationView implements NavigationView {
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
         if (user.type != 'Guest') {
+          new Notifications(this.buttonContainer, user.id).render();
           new Button({
             label: 'Sign Out',
             onClick: () => {
