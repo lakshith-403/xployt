@@ -27,6 +27,7 @@ export class DiscussionView extends View {
   private isResolved: boolean = false;
   private resolveButtonContainer: Quark | null = null;
   private projectDiscussionCache: ProjectDiscussionCache | null = null;
+  private isAdmin: boolean = false;
 
   constructor({ discussionId }: { discussionId: string }) {
     super();
@@ -56,6 +57,10 @@ export class DiscussionView extends View {
     this.loader.show(q);
 
     try {
+      // Check if current user is admin
+      const currentUser = await CACHE_STORE.getUser().get();
+      this.isAdmin = currentUser.type === 'Admin';
+
       // Load the discussion data
       this.discussion = await this.discussionCache.get();
 
@@ -139,11 +144,17 @@ export class DiscussionView extends View {
   private renderMessages(): void {
     this.messagesPane.innerHTML = '';
     $(this.messagesPane, 'div', 'message-list', {}, (q) => {
+      if (this.isAdmin) {
+        $(q, 'div', 'admin-notice', {}, (q) => {
+          $(q, 'p', '', {}, 'You are viewing this discussion as an admin. Editing is disabled.');
+        });
+      }
+
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
-          if (this.isResolved) {
-            // For resolved discussions, pass empty functions that do nothing
+          if (this.isResolved || this.isAdmin) {
+            // For resolved discussions or admin users, pass empty functions that do nothing
             new MessageComponent(
               message,
               () => {},
@@ -185,8 +196,8 @@ export class DiscussionView extends View {
           }
         });
 
-      // Only render the input field if the discussion is not resolved
-      if (!this.isResolved) {
+      // Only render the input field if the discussion is not resolved and user is not admin
+      if (!this.isResolved && !this.isAdmin) {
         const textArea = new TextAreaBase({
           placeholder: 'Enter your message',
           name: 'message',
@@ -310,7 +321,7 @@ export class DiscussionView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
 
       // If the user is a project lead and the discussion is not resolved, add the resolve button
-      if (currentUser.type === 'ProjectLead' && !this.isResolved) {
+      if (currentUser.type === 'ProjectLead' && !this.isResolved && !this.isAdmin) {
         this.resolveButtonContainer = $(this.titleElem.parentElement!, 'div', 'resolve-conflict-container', {});
 
         new IconButton({
