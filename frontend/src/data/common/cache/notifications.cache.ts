@@ -15,7 +15,7 @@ interface NotificationInfo {
     message: string;
     timestamp: string;
     isRead: boolean;
-    link: string;
+    url: string;
 }
 
 export class Notification {
@@ -25,7 +25,7 @@ export class Notification {
     message: string;
     timestamp: string;
     isRead: boolean;
-    link: string;
+    url: string;
 
     constructor(data: any) {
         this.id = data['id'];
@@ -34,7 +34,7 @@ export class Notification {
         this.message = data['message'];
         this.timestamp = data['timestamp'];
         this.isRead = data['isRead'];
-        this.link = data['link'];
+        this.url = data['url'];
     }
 
     markAsRead(): void {
@@ -64,6 +64,19 @@ export class NotificationsCache extends CacheObject<Notification[]> {
         return response.data.map((notificationInfo: NotificationInfo) => {
             return new Notification({ ...notificationInfo });
         });
+    }
+
+    async markAsRead(notification:Notification): Promise<void>{
+        console.log("Marking notification as read: ", notification.id);
+
+        notification.markAsRead();
+
+        try{
+            await notificationEndPoints.markAsRead(notification.id);
+        } catch (error){
+            console.error('Network error while updating notifications:', error);
+            throw new DataFailure('update notifications', 'Network error');
+        }
     }
 }
 

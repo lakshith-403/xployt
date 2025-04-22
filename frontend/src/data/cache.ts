@@ -7,7 +7,7 @@ import { ProjectTeamCacheMock } from './validator/cache/project.team';
 // import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projects';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
-import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import { NotificationsCache } from '@data/common/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
 import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
@@ -30,7 +30,7 @@ class CacheStore {
   // private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   // private readonly clientMap: Map<string, ClientCache>; // No longer needed
-  private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
+  private readonly notificationsListMap: Map<string, NotificationsCache>;
   private readonly HackerInvitationsMap: Map<string, HackerInvitationsCache>;
   private readonly ProjectInvitationsMap: Map<string, InvitationsCache>;
   private readonly InvitedHackersMap: Map<string, ClientInvitationsCache>;
@@ -153,7 +153,7 @@ class CacheStore {
 
   public getNotificationsList(userId: string): NotificationsCache {
     if (!this.notificationsListMap.has(userId)) {
-      this.notificationsListMap.set(userId, new NotificationsCacheMock());
+      this.notificationsListMap.set(userId, new NotificationsCache());
     }
     return this.notificationsListMap.get(userId)!;
   }
