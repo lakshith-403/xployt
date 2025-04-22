@@ -60,8 +60,7 @@ import { userProfileForAdminViewHandler, userProfileViewHandler } from '@views/U
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
 
 import { complaintViewHandler } from '@views/complaint';
-// Sidebars
-import { HomeSidebar, AdminSidebar } from '@views/sideBars';
+
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
