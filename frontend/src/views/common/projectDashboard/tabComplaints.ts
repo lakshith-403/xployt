@@ -2,22 +2,32 @@ import { DiscussionView } from '@/views/discussion/Discussion';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { Discussion as DiscussionData } from '@/data/discussion/discussion';
 import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
+import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 
 export default class Complaints {
   private projectId: string;
   private complaints: DiscussionData[];
   private selectedComplaintId: string | null = null;
   private complaintContainer!: Quark;
+  private projectDiscussionCache: ProjectDiscussionCache;
+  private loadingListContainer!: Quark;
 
   constructor(projectId: string) {
     this.projectId = projectId;
     this.complaints = [];
+    this.projectDiscussionCache = new ProjectDiscussionCache(this.projectId);
   }
 
   private async fetchComplaints() {
-    const discussions = new ProjectDiscussionCache(this.projectId);
-    const allDiscussions = await discussions.get();
-    this.complaints = allDiscussions.filter((discussion) => discussion.title.toLowerCase().startsWith('complaint:'));
+    try {
+      LoadingScreen.show();
+      const allDiscussions = await this.projectDiscussionCache.get();
+      this.complaints = allDiscussions.filter((discussion) => discussion.title.toLowerCase().startsWith('complaint:'));
+      LoadingScreen.hide();
+    } catch (error) {
+      console.error('Failed to fetch complaints:', error);
+      LoadingScreen.hide();
+    }
   }
 
   render(q: Quark): void {
@@ -25,8 +35,8 @@ export default class Complaints {
       // Main content area with side navigation and content
       $(q, 'div', 'w-100 d-flex', {}, (q) => {
         // Left side navigation (1/4 of the space)
-        $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
-          this.renderComplaintsList(q);
+        this.loadingListContainer = $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
+          $(q, 'div', 'text-center py-4 text-primary', {}, 'Loading complaints...');
         });
 
         // Right side content area (3/4 of the space)
@@ -35,19 +45,22 @@ export default class Complaints {
         });
       });
     });
+
+    // Fetch complaints after rendering initial structure
+    this.renderComplaintsList();
   }
 
-  private renderComplaintsList(q: Quark): void {
+  private renderComplaintsList(): void {
     this.fetchComplaints().then(() => {
       // Clear previous content
-      q.innerHTML = '';
+      this.loadingListContainer.innerHTML = '';
 
       if (this.complaints.length === 0) {
-        $(q, 'span', 'text-center p-3', {}, 'No complaints available');
+        $(this.loadingListContainer, 'span', 'text-center p-3', {}, 'No complaints available');
         return;
       }
 
-      $(q, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
+      $(this.loadingListContainer, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
         this.complaints.forEach((complaint, index) => {
           $(
             q,
@@ -67,6 +80,8 @@ export default class Complaints {
   }
 
   private showComplaint(complaintId: string): void {
+    LoadingScreen.show();
+
     // Update selected complaint
     this.selectedComplaintId = complaintId;
 
@@ -85,7 +100,20 @@ export default class Complaints {
 
       // Render selected complaint
       const discussionView = new DiscussionView({ discussionId: complaintId });
-      discussionView.render(this.complaintContainer);
+      discussionView
+        .render(this.complaintContainer)
+        .then(() => {
+          LoadingScreen.hide();
+        })
+        .catch(() => {
+          LoadingScreen.hide();
+        });
     }
+  }
+
+  // Refresh complaints after a complaint is updated
+  public refreshComplaints(): void {
+    this.projectDiscussionCache.invalidate_cache();
+    this.renderComplaintsList();
   }
 }

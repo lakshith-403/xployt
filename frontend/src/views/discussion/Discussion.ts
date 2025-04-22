@@ -11,6 +11,7 @@ import { AttachmentTag } from './AttachmentTag';
 import { MessageComponent } from './MessageComp';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
+import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
 
 export class DiscussionView extends View {
   private readonly discussionId: string;
@@ -25,6 +26,7 @@ export class DiscussionView extends View {
   private attachedFileContainer!: Quark;
   private isResolved: boolean = false;
   private resolveButtonContainer: Quark | null = null;
+  private projectDiscussionCache: ProjectDiscussionCache | null = null;
 
   constructor({ discussionId }: { discussionId: string }) {
     super();
@@ -56,6 +58,12 @@ export class DiscussionView extends View {
     try {
       // Load the discussion data
       this.discussion = await this.discussionCache.get();
+
+      // If this discussion belongs to a project, initialize project discussion cache
+      if (this.discussion?.projectId) {
+        this.projectDiscussionCache = new ProjectDiscussionCache(this.discussion.projectId);
+      }
+
       this.titleElem.innerText = `${this.discussion?.title} #${this.discussion?.projectId}`;
 
       // Check if this is a complaint discussion
@@ -146,16 +154,32 @@ export class DiscussionView extends View {
             new MessageComponent(
               message,
               (message) => {
-                this.discussionCache.saveMessage(message);
-                this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
-                this.renderMessages();
-                this.renderAttachments();
+                this.discussionCache.saveMessage(message).then(() => {
+                  // Update local discussion data
+                  this.discussion!.messages = this.discussion!.messages.map((m) => (m.id === message.id ? message : m));
+
+                  // Update project cache if available
+                  if (this.projectDiscussionCache && this.discussion) {
+                    this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+                  }
+
+                  this.renderMessages();
+                  this.renderAttachments();
+                });
               },
               (message) => {
-                this.discussionCache.deleteMessage(message);
-                this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
-                this.renderMessages();
-                this.renderAttachments();
+                this.discussionCache.deleteMessage(message).then(() => {
+                  // Update local discussion data
+                  this.discussion!.messages = this.discussion!.messages.filter((m) => m.id !== message.id);
+
+                  // Update project cache if available
+                  if (this.projectDiscussionCache && this.discussion) {
+                    this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+                  }
+
+                  this.renderMessages();
+                  this.renderAttachments();
+                });
               }
             ).render(q);
           }
@@ -199,47 +223,34 @@ export class DiscussionView extends View {
     const user = await CACHE_STORE.getUser().get();
     console.log(this.selectedFiles);
 
-    let attachments: Attachment[] = this.selectedFiles.map((file) => ({
-      id: crypto.randomUUID(),
-      type: 'other',
-      url: '',
-      name: file.name,
-      uploadedBy: {
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-      },
-      uploadedAt: new Date(),
-    }));
+    if (content.trim() === '' && this.selectedFiles.length === 0) return;
 
-    for (let i = 0; i < attachments.length; i++) {
-      const attachment = attachments[i];
-      attachments[i].url = attachment.id + '.' + attachment.name.split('.').pop();
-    }
-
+    // Create message and send it
     const message: Message = {
-      content: content,
       id: crypto.randomUUID(),
       sender: {
         userId: user.id,
         name: user.name,
         email: user.email,
       },
-      attachments: attachments,
+      content: content,
+      attachments: [],
       timestamp: new Date().toISOString(),
       type: 'text',
       discussionId: this.discussionId,
     };
 
     try {
-      this.loader.show(this.messagesPane);
-      const sentMessage = await this.discussionCache.sendMessage(message, this.selectedFiles);
-      console.log('Message sent:', sentMessage);
-      this.loader.hide();
+      await this.discussionCache.sendMessage(message, this.selectedFiles);
+
+      // Update project cache if available
+      if (this.projectDiscussionCache && this.discussion) {
+        this.projectDiscussionCache.updateDiscussionInCache(this.discussion);
+      }
+
       this.renderMessages();
       this.renderAttachments();
     } catch (error) {
-      this.loader.hide();
       console.error('Failed to send message:', error);
     }
   }
