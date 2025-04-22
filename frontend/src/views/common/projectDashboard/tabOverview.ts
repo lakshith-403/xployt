@@ -50,13 +50,5 @@ export default class Overview {
         await defaultOverview.render(q);
         break;
     }
-    $(q, 'div', 'ms-auto', {}, (q) => {
-      const submitComplaintButton = new FormButton({
-        label: 'Submit Complaint',
-        onClick: () => router.navigateTo(`/projects/${this.projectId}/complaint`),
-        type: ButtonType.SECONDARY,
-      });
-      submitComplaintButton.render(q);
-    });
   }
 }

@@ -3,6 +3,9 @@ import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
 import { Discussion as DiscussionData } from '@/data/discussion/discussion';
 import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
 import LoadingScreen from '@/components/loadingScreen/loadingScreen';
+import { ButtonType } from '@/components/button/base';
+import { router } from '@/ui_lib/router';
+import { FormButton } from '@/components/button/form.button';
 
 export default class Complaints {
   private projectId: string;
@@ -31,6 +34,14 @@ export default class Complaints {
   }
 
   render(q: Quark): void {
+    $(q, 'div', 'w-100 d-flex justify-content-end my-2', {}, (q) => {
+      const submitComplaintButton = new FormButton({
+        label: 'Submit Complaint',
+        onClick: () => router.navigateTo(`/projects/${this.projectId}/complaint`),
+        type: ButtonType.SECONDARY,
+      });
+      submitComplaintButton.render(q);
+    });
     $(q, 'div', 'bg-secondary rounded w-100 d-flex align-items-center justify-content-start flex-column rounded-3 border-secondary-thick', { style: 'overflow-y: hidden;' }, (q) => {
       // Main content area with side navigation and content
       $(q, 'div', 'w-100 d-flex', {}, (q) => {
