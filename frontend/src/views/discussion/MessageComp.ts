@@ -12,6 +12,7 @@ export class MessageComponent {
   private readonly onSaveCallback: (message: Message) => void;
   private readonly onDeleteCallback: (message: Message) => void;
   private readonly isReadOnly: boolean;
+  private readonly isSystemMessage: boolean;
 
   private tempMessage: Message | null = null;
 
@@ -20,8 +21,9 @@ export class MessageComponent {
     this.isEditing = false;
     this.onSaveCallback = onSaveCallback;
     this.onDeleteCallback = onDeleteCallback;
+    this.isSystemMessage = this.message.type === 'complaint' || this.message.type === 'report';
     // If callbacks are empty functions, consider the component read-only
-    this.isReadOnly = onSaveCallback.toString() === (() => {}).toString() && onDeleteCallback.toString() === (() => {}).toString();
+    this.isReadOnly = (onSaveCallback.toString() === (() => {}).toString() && onDeleteCallback.toString() === (() => {}).toString()) || this.isSystemMessage;
   }
 
   render(q: Quark): void {

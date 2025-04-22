@@ -20,6 +20,7 @@ import { HackerInvitationsCache } from '@data/hacker/cache/hacker.invitations.ca
 import { ClientInvitationsCache } from '@data/client/cache/client.invitations.cache';
 import { VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
 import { FinanceCache } from './finance/cache/finance.cache';
+import { ComplaintCache, ComplaintsCache, ComplaintByDiscussionCache } from '@/data/common/cache/complaint.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -42,6 +43,9 @@ class CacheStore {
   private projectsMap: Map<string, ProjectCache>;
   private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>;
   private financeMap: Map<number, FinanceCache>;
+  private readonly complaintMap: Map<string, ComplaintCache> = new Map();
+  private readonly complaintsCache: ComplaintsCache = new ComplaintsCache();
+  private readonly complaintByDiscussionMap: Map<string, ComplaintByDiscussionCache> = new Map();
 
   constructor() {
     this.user = new UserCache();
@@ -201,6 +205,24 @@ class CacheStore {
       this.financeMap.set(userId, new FinanceCache(userId));
     }
     return this.financeMap.get(userId)!;
+  }
+
+  public getComplaint(complaintId: string): ComplaintCache {
+    if (!this.complaintMap.has(complaintId)) {
+      this.complaintMap.set(complaintId, new ComplaintCache(complaintId));
+    }
+    return this.complaintMap.get(complaintId)!;
+  }
+
+  public getComplaints(): ComplaintsCache {
+    return this.complaintsCache;
+  }
+
+  public getComplaintByDiscussion(discussionId: string): ComplaintByDiscussionCache {
+    if (!this.complaintByDiscussionMap.has(discussionId)) {
+      this.complaintByDiscussionMap.set(discussionId, new ComplaintByDiscussionCache(discussionId));
+    }
+    return this.complaintByDiscussionMap.get(discussionId)!;
   }
 }
 

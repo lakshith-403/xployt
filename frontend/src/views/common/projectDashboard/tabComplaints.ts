@@ -6,6 +6,7 @@ import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import { ButtonType } from '@/components/button/base';
 import { router } from '@/ui_lib/router';
 import { FormButton } from '@/components/button/form.button';
+import { CACHE_STORE } from '@/data/cache';
 
 export default class Complaints {
   private projectId: string;
@@ -80,7 +81,7 @@ export default class Complaints {
               (index < this.complaints.length - 1 ? ' border-bottom-1' : '') +
               (this.selectedComplaintId === complaint.id ? ' bg-primary' : ' bg-secondary'),
             {
-              onclick: () => this.showComplaint(complaint.id),
+              onclick: () => this.handleComplaintClick(complaint.id),
               id: `complaint-${complaint.id}`,
             },
             complaint.title
@@ -88,6 +89,25 @@ export default class Complaints {
         });
       });
     });
+  }
+
+  private async handleComplaintClick(complaintId: string): Promise<void> {
+    try {
+      // First find the corresponding complaint to get the complaint ID
+      const complaint = await CACHE_STORE.getComplaintByDiscussion(complaintId).get();
+      console.log(complaint);
+      if (complaint) {
+        // Navigate to the standalone complaint view with the actual complaint ID
+        router.navigateTo(`/complaint/${complaint.id}`);
+      } else {
+        // Fallback for backward compatibility - directly show the discussion in the tab
+        this.showComplaint(complaintId);
+      }
+    } catch (error) {
+      console.error('Error fetching complaint for discussion:', error);
+      // Fallback to old behavior
+      this.showComplaint(complaintId);
+    }
   }
 
   private showComplaint(complaintId: string): void {
