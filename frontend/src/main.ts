@@ -186,7 +186,7 @@ const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, 
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ProjectLeadRouteHandlers = new RouteHandler('/lead', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 const ProjectLeadRouteHandlersWithSidebar = new RouteHandler('/lead', [leadReportFormViewHandler], undefined, false, false, false, true);
 
 const AdminRouteHandlers = new RouteHandler(
