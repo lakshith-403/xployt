@@ -6,6 +6,8 @@ import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import { CustomTable } from '@/components/table/customTable';
 import { UserCache } from '@/data/user';
 import { CACHE_STORE } from '@/data/cache';
+import { FormTextField } from '@components/text_field/form.text_field';
+import { TextAreaBase } from '@components/test_area/textArea.base';
 
 class LeadReportForm extends View {
   private readonly params: { projectId: string; configured: string };
@@ -15,6 +17,8 @@ class LeadReportForm extends View {
   private hackerInfo: any;
   private validatorInfo: any;
   private readonly sectionClasses = 'container-lg h-min-15 p-1 bg-secondary rounded-3';
+  private vulnTypes: any;
+  private feedbackPerType: Map<string, Quark> = new Map();
 
   constructor(params: { projectId: string; configured: string }) {
     super(params);
@@ -45,8 +49,8 @@ class LeadReportForm extends View {
     this.userId = user.id;
   }
 
-  private async waitForProjectInfo(elementId: string): Promise<void> {
-    while (!this.projectInfo) {
+  private async waitForProjectInfo(dataName: string, elementId: string): Promise<void> {
+    while (!(this as any)[dataName]) {
       LoadingScreen.showLocal(elementId);
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
@@ -92,7 +96,7 @@ class LeadReportForm extends View {
       // Hacker Info Section
       $(q, 'section', this.sectionClasses, { id: 'lr-hacker-info' }, async (q) => {
         $(q, 'h2', 'sub-heading-2 text-light-green', {}, 'Project Hackers');
-        await this.waitForProjectInfo('lr-hacker-info');
+        await this.waitForProjectInfo('projectInfo', 'lr-hacker-info');
         UIManager.listObjectGivenKeys(q, this.projectInfo, ['noOfHackers'], { className: 'd-flex flex-column gap-1' });
 
         this.hackerInfo = (
@@ -114,7 +118,7 @@ class LeadReportForm extends View {
       // Validator Info Section
       $(q, 'section', this.sectionClasses, { id: 'lr-validator-info' }, async (q) => {
         $(q, 'h2', 'sub-heading-2 text-light-green', {}, 'Project Validators');
-        await this.waitForProjectInfo('lr-validator-info');
+        await this.waitForProjectInfo('projectInfo', 'lr-validator-info');
         UIManager.listObjectGivenKeys(q, this.projectInfo, ['noOfValidators'], { className: 'd-flex flex-column gap-1' });
 
         this.validatorInfo = (
@@ -172,11 +176,26 @@ class LeadReportForm extends View {
           headers: ['Vulnerability Type', 'Bugs Found'],
           noDataMessage: 'No vulnerabilities found',
         }).render(q);
+
+        this.vulnTypes = vulnResponse.map((report: any) => report.vulnerabilityType);
       });
 
       // Recommendations Section
-      $(q, 'section', this.sectionClasses, { id: 'lr-recommendations-info' }, (q) => {
+      $(q, 'section', this.sectionClasses, { id: 'lr-recommendations-info' }, async (q) => {
         $(q, 'h2', 'sub-heading-2 text-light-green', {}, 'Recommendations');
+        await this.waitForProjectInfo('vulnTypes', 'lr-recommendations-info');
+        console.log(this.vulnTypes);
+        this.vulnTypes.forEach((vulnType: any) => {
+          console.log(vulnType);
+          $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
+            $(q, 'h3', 'sub-heading-3', {}, vulnType);
+            const textArea = new TextAreaBase({
+              placeholder: 'Enter your feedback',
+            });
+            this.feedbackPerType.set(vulnType, textArea as unknown as Quark);
+            textArea.render(q);
+          });
+        });
       });
     });
   }
