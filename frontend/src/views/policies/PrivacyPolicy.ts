@@ -1,5 +1,5 @@
 import {View, ViewHandler} from "@ui_lib/view";
-import { Quark, QuarkFunction as $ } from "@ui_lib/quark";
+import {Quark, QuarkFunction as $} from "@ui_lib/quark";
 import privacyPolicies from "./policy.data";
 import './policy.scss'
 
@@ -19,56 +19,58 @@ interface PolicySection {
     content: string[];
 }
 
-export type { PrivacyPolicy, PolicySection };
+export type {PrivacyPolicy, PolicySection};
 
 export class PrivacyPolicyView extends View {
-  private policy: PrivacyPolicy;
+    private policy: PrivacyPolicy;
 
-  constructor(params: {userType: string}) {
-    super();
-    if(params.userType == "client"){
-        this.policy = privacyPolicies.clientOrganizationPolicy;
-    }else if(params.userType == "hacker") {
-        this.policy = privacyPolicies.hackerPolicy;
-    }else{
-        this.policy = privacyPolicies.internalStaffPolicy;
+    constructor(params: { userType: string }) {
+        super();
+        if (params.userType == "client") {
+            this.policy = privacyPolicies.clientOrganizationPolicy;
+        } else if (params.userType == "hacker") {
+            this.policy = privacyPolicies.hackerPolicy;
+        } else {
+            this.policy = privacyPolicies.internalStaffPolicy;
+        }
+
     }
 
-  }
+    render(q: Quark): void {
+        $(q, "div", "privacy-policy", {}, (q) => {
+            // Render header
+            $(q, "div", "policy-header", {}, (q) => {
+                $(q, "h1", "policy-title", {}, `${this.policy.platformName} Privacy Policy`);
+                $(q, "p", "policy-dates", {}, `Effective Date: ${this.policy.effectiveDate}`);
+                $(q, "p", "policy-dates", {}, `Last Updated: ${this.policy.lastUpdated}`);
+            });
 
-  render(q: Quark): void {
-      $(q, "div", "privacy-policy", {}, (q) => {
-          // Render header
-          $(q, "div", "policy-header", {}, (q) => {
-              $(q, "h1", "policy-title", {}, `${this.policy.platformName} Privacy Policy`);
-              $(q, "p", "policy-dates", {}, `Effective Date: ${this.policy.effectiveDate}`);
-              $(q, "p", "policy-dates", {}, `Last Updated: ${this.policy.lastUpdated}`);
-          });
+            // Render sections
+            $(q, "div", "policy-sections", {}, (q) => {
+                this.policy.sections.forEach((section) => {
+                    $(q, "div", "policy-section", {}, (q) => {
+                        $(q, "h2", "section-title", {}, section.title);
+                        $(q, "ul", "section-content", {}, (q) => {
+                            section.content.forEach((item) => {
+                                const isSubPoint = item.trim().startsWith("- ");
+                                const content = isSubPoint ? item.trim().substring(2) : item;
+                                $(q, "li", isSubPoint ? "content-item sub-point" : "content-item", {}, content);
+                            });
+                        });
+                    });
+                });
+            });
 
-          // Render sections
-          $(q, "div", "policy-sections", {}, (q) => {
-              this.policy.sections.forEach((section) => {
-                  $(q, "div", "policy-section", {}, (q) => {
-                      $(q, "h2", "section-title", {}, section.title);
-                      $(q, "ul", "section-content", {}, (q) => {
-                          section.content.forEach((item) => {
-                              $(q, "li", "content-item", {}, item);
-                          });
-                      });
-                  });
-              });
-          });
-
-          // Render contact information
-          $(q, "div", "policy-contact", {}, (q) => {
-              $(q, "h2", "contact-title", {}, "Contact Information");
-              $(q, "p", "contact-email", {}, `Email: ${this.policy.contact.email}`);
-              if (this.policy.contact.phone) {
-                  $(q, "p", "contact-phone", {}, `Phone: ${this.policy.contact.phone}`);
-              }
-          });
-      });
-  }
+            // Render contact information
+            $(q, "div", "policy-contact", {}, (q) => {
+                $(q, "h2", "contact-title", {}, "Contact Information");
+                $(q, "p", "contact-email", {}, `Email: ${this.policy.contact.email}`);
+                if (this.policy.contact.phone) {
+                    $(q, "p", "contact-phone", {}, `Phone: ${this.policy.contact.phone}`);
+                }
+            });
+        });
+    }
 }
 
 export const privacyPolicyViewHandler = new ViewHandler(

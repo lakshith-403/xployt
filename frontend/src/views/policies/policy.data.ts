@@ -1,12 +1,4 @@
-const platformDetails = {
-    platformName: "Xployt",
-    contact: {
-        email: "privacy@xployt.com",
-        phone: "1-800-123-4567"
-    },
-    effectiveDate: "01.01.2026",
-    lastUpdated: "01.06.2024"
-};
+import platformDetails from "@views/policies/platform.data";
 
 const privacyPolicies = {
     clientOrganizationPolicy: {
@@ -227,4 +219,3 @@ const privacyPolicies = {
 };
 
 export default privacyPolicies;
-export {platformDetails};
