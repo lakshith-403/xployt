@@ -8,6 +8,7 @@ import NETWORK from '@/data/network/network';
 import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 import { CustomTable } from '@/components/table/customTable';
 import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
+import { Button, ButtonType } from '@/components/button/base';
 export default class ReportsTab {
   private projectState: string;
   private currentUser: User | null;
@@ -35,7 +36,7 @@ export default class ReportsTab {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    if (this.projectState !== 'Active') {
+    if (this.projectState in ['Active', 'Completed', 'Closed']) {
       $(q, 'div', 'bg-secondary px-2 py-1 text-light-green rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
         $(q, 'span', '', {}, 'Nothing to show here yet');
       });
@@ -82,6 +83,26 @@ export default class ReportsTab {
           });
         });
       });
+
+      if (this.userRole === 'ProjectLead' && this.projectState === 'Completed') {
+        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
+          new Button({
+            label: 'Create Project Report',
+            onClick: () => {
+              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
+            },
+          }).render(q);
+        });
+      } else if (this.userRole === 'ProjectLead' && this.projectState === 'Closed') {
+        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
+          new Button({
+            label: 'View Project Report',
+            onClick: () => {
+              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
+            },
+          }).render(q);
+        });
+      }
     }
 
     // Click on Accepted Reports by default when the tab is rendered
