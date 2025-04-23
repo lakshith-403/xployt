@@ -215,6 +215,92 @@ const privacyPolicies = {
             }
         ],
         contact: platformDetails.contact
+    },
+    guestPrivacyPolicy: {
+        effectiveDate: platformDetails.effectiveDate,
+        lastUpdated: platformDetails.lastUpdated,
+        platformName: platformDetails.platformName,
+        title: "Privacy Policy",
+        appliesTo: "Users accessing Xployt without registering or logging in",
+        sections: [
+            {
+                title: "What Information We Collect",
+                content: [
+                    "When you access our platform as a guest, we may automatically collect:",
+                    "- Device information (browser type, operating system)",
+                    "- IP address",
+                    "- Browsing behavior within our platform (pages viewed, time spent, etc.)",
+                    "- Referring website (if you arrived via an external link)",
+                    "We do not collect personal identifiers such as name, email, or contact details unless voluntarily provided through contact forms or support inquiries."
+                ]
+            },
+            {
+                title: "Use of Cookies & Tracking Tools",
+                content: [
+                    "We use essential cookies and analytics tools (e.g., Google Analytics) to:",
+                    "- Improve user experience",
+                    "- Understand how visitors interact with our platform",
+                    "- Maintain security and prevent misuse",
+                    "You can manage or disable cookies through your browser settings, but doing so may limit platform functionality."
+                ]
+            },
+            {
+                title: "How We Use Guest Data",
+                content: [
+                    "Guest data is used strictly for:",
+                    "- Analytics and performance optimization",
+                    "- Security monitoring",
+                    "- Enhancing platform content and navigation",
+                    "We do not use guest data for advertising or sell it to third parties."
+                ]
+            },
+            {
+                title: "Data Retention",
+                content: [
+                    "We retain guest usage data for a limited period (e.g., 30–90 days), after which it is anonymized or deleted unless legally required otherwise."
+                ]
+            },
+            {
+                title: "Third-Party Services",
+                content: [
+                    "We may share anonymized data with trusted third-party services for analytics or hosting (e.g., cloud infrastructure providers), but we ensure all partners comply with industry-standard data protection measures."
+                ]
+            },
+            {
+                title: "No User Profiling",
+                content: [
+                    "We do not create behavioral profiles or attempt to re-identify guests unless you convert to a registered user or explicitly provide your details."
+                ]
+            },
+            {
+                title: "Your Rights",
+                content: [
+                    "Although you are not required to identify yourself as a guest, you still have the right to:",
+                    "- Request details about data we may have collected",
+                    "- Ask for deletion of identifiable info you may have submitted",
+                    "Please contact us at [privacy@xployt.com] if you have any concerns."
+                ]
+            },
+            {
+                title: "Changes to This Policy",
+                content: [
+                    "We may update this Guest Privacy Policy from time to time. Changes will be posted here with an updated 'Effective Date'."
+                ]
+            }
+        ],
+        contact: {
+            email: "privacy@xployt.com"
+        },
+        acceptanceClause: "By continuing to use Xployt as a guest, you agree to this Privacy Policy",
+        uiOptions: {
+            showCheckbox: true,
+            mobileShortForm: [
+                "We collect limited device/browsing data from guests",
+                "Data used only for analytics and security",
+                "No advertising or third-party sales",
+                "Manage cookies via browser settings"
+            ]
+        }
     }
 };
 
