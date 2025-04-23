@@ -79,12 +79,12 @@ export default class ReportsTab {
 
           // Right side div (3/4 of the space)
           $(q, 'div', 'col-9 d-flex flex-column align-items-center justify-content-start', {}, (q) => {
-            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%' }, (q) => {});
+            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%', id: 'reports-table' }, (q) => {});
           });
         });
       });
 
-      if (this.userRole === 'ProjectLead' && this.projectState === 'Completed') {
+      if (this.userRole === 'ProjectLead' && this.projectState in ['Completed', 'Active']) {
         $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
           new Button({
             label: 'Create Project Report',
@@ -149,7 +149,7 @@ export default class ReportsTab {
       if (this.tableContainer) {
         $(this.tableContainer, 'div', 'w-100', {}, async (q) => {
           if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(roleName)) {
-            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
+            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`, { localLoading: true, elementId: 'reports-table' });
             const reports = response.data.reports;
             const TABLE_HEADERS = ['Report Id', 'Severity', 'Vulnerability Type', 'Title', 'Created At'];
             const table = new CustomTable({
