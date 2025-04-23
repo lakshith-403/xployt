@@ -24,15 +24,16 @@ export default class UserCard {
   private userInfo: any;
 
   async loadData(): Promise<void> {
-    const response = await NETWORK.get(`/api/new-user/${this.userId}?role=${this.userRole}`);
+    const response = await NETWORK.get(`/api/new-user/${this.userId}?role=${this.userRole}`, { localLoading: true, elementId: 'user-card' });
     this.userInfo = response.data.userData[0];
     console.log('User Info', this.userInfo);
   }
 
   async render(q: Quark): Promise<void> {
-    await this.loadData();
-    const card = $(q, 'div', this.className + ' p-2 rounded-2 d-flex flex-column gap-1', {}, (q) => {
+    const card = $(q, 'div', this.className + ' p-2 rounded-2 d-flex flex-column gap-1 container-sm h-min-10', { id: 'user-card' }, async (q) => {
       $(q, 'span', 'text-default font-bold', {}, this.title);
+
+      await this.loadData();
 
       if (this.userInfo && typeof this.userInfo === 'object') {
         Object.keys(this.userInfo).forEach((key) => {

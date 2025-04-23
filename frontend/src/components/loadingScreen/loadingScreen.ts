@@ -56,11 +56,12 @@ export default class LoadingScreen {
       return;
     }
 
-    if (!this.localInstances.has(elementId)) {
+    if (!this.localInstances.has(elementId) || !targetElement.querySelector('.loading-screen-local')) {
       // Set the target element to position relative if it's not already
       const currentPosition = window.getComputedStyle(targetElement).position;
       if (currentPosition === 'static') {
         targetElement.style.position = 'relative';
+        targetElement.style.overflow = 'hidden';
       }
 
       // Create a new loading screen within the target element

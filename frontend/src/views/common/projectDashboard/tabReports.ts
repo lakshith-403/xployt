@@ -36,7 +36,7 @@ export default class ReportsTab {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    if (this.projectState in ['Active', 'Completed', 'Closed']) {
+    if (this.projectState in ['Active', 'Completed', 'Closed', 'Review']) {
       $(q, 'div', 'bg-secondary px-2 py-1 text-light-green rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
         $(q, 'span', '', {}, 'Nothing to show here yet');
       });
@@ -79,29 +79,30 @@ export default class ReportsTab {
 
           // Right side div (3/4 of the space)
           $(q, 'div', 'col-9 d-flex flex-column align-items-center justify-content-start', {}, (q) => {
-            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%' }, (q) => {});
+            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%', id: 'reports-table' }, (q) => {});
           });
         });
       });
 
-      if (this.userRole === 'ProjectLead' && this.projectState === 'Completed') {
-        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
-          new Button({
-            label: 'Create Project Report',
-            onClick: () => {
-              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
-            },
-          }).render(q);
-        });
-      } else if (this.userRole === 'ProjectLead' && this.projectState === 'Closed') {
-        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
-          new Button({
-            label: 'View Project Report',
-            onClick: () => {
-              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
-            },
-          }).render(q);
-        });
+      if (this.userRole === 'ProjectLead') {
+        const buttonConfig = {
+          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Review: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+        };
+
+        if (buttonConfig[this.projectState as keyof typeof buttonConfig]) {
+          $(q, 'div', 'w-100 d-flex align-items-center justify-content-end mt-2', {}, (q) => {
+            new Button({
+              type: ButtonType.SECONDARY,
+              label: buttonConfig[this.projectState as keyof typeof buttonConfig].label,
+              onClick: () => {
+                router.navigateTo(buttonConfig[this.projectState as keyof typeof buttonConfig].path);
+              },
+            }).render(q);
+          });
+        }
       }
     }
 
@@ -149,7 +150,7 @@ export default class ReportsTab {
       if (this.tableContainer) {
         $(this.tableContainer, 'div', 'w-100', {}, async (q) => {
           if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(roleName)) {
-            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
+            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`, { localLoading: true, elementId: 'reports-table' });
             const reports = response.data.reports;
             const TABLE_HEADERS = ['Report Id', 'Severity', 'Vulnerability Type', 'Title', 'Created At'];
             const table = new CustomTable({
