@@ -203,19 +203,24 @@ class LeadReportForm extends View {
           savedFeedback = Object.fromEntries(savedDataResponse.feedback.map((entry: any) => [entry.vulnerabilityType, entry.suggestions]));
           this.savedSummary = savedDataResponse.summary;
         }
-
-        this.vulnTypes.forEach((vulnType: any) => {
-          $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
-            $(q, 'h3', 'sub-heading-3', {}, vulnType);
-            const textArea = new TextAreaBase({
-              placeholder: 'Enter your feedback',
-              disabled: this.params.projectState === 'Closed',
-              value: savedFeedback[vulnType] || '',
+        if (this.vulnTypes.length > 0) {
+          this.vulnTypes.forEach((vulnType: any) => {
+            $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
+              $(q, 'h3', 'sub-heading-3', {}, vulnType);
+              const textArea = new TextAreaBase({
+                placeholder: 'Enter your feedback',
+                disabled: this.params.projectState === 'Closed',
+                value: savedFeedback[vulnType] || '',
+              });
+              this.feedbackPerType.set(vulnType, textArea as unknown as Quark);
+              textArea.render(q);
             });
-            this.feedbackPerType.set(vulnType, textArea as unknown as Quark);
-            textArea.render(q);
           });
-        });
+        } else {
+          $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
+            $(q, 'span', 'paragraph pl-2', {}, 'No vulnerabilities found to provide feedback');
+          });
+        }
       });
 
       $(q, 'section', this.sectionClasses, { id: 'lr-summary' }, async (q) => {
