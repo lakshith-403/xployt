@@ -80,10 +80,26 @@ class Network {
     });
   }
 
-  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback']; // Define recognized options
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback', 'localLoading', 'elementId']; // Added new options
 
-  private normalizeOptions(options: any): { showLoading: boolean; handleError: boolean; throwError: boolean; showSuccess: boolean; successCallback: () => void } {
-    const defaultOptions = { showLoading: true, handleError: true, throwError: true, showSuccess: false, successCallback: () => {} };
+  private normalizeOptions(options: any): {
+    showLoading: boolean;
+    handleError: boolean;
+    throwError: boolean;
+    showSuccess: boolean;
+    successCallback: () => void;
+    localLoading: boolean;
+    elementId: string | null;
+  } {
+    const defaultOptions = {
+      showLoading: true,
+      handleError: true,
+      throwError: true,
+      showSuccess: false,
+      successCallback: () => {},
+      localLoading: false,
+      elementId: null,
+    };
 
     // Check if any unrecognized option is set
     Object.keys(options).forEach((key) => {
@@ -116,7 +132,11 @@ class Network {
     }
 
     if (normalizedOptions.showLoading) {
-      UIManager.showLoadingScreen();
+      if (normalizedOptions.localLoading && normalizedOptions.elementId) {
+        UIManager.showLocalLoadingScreen(normalizedOptions.elementId);
+      } else {
+        UIManager.showLoadingScreen();
+      }
     }
 
     try {
@@ -137,7 +157,11 @@ class Network {
       }
     } finally {
       if (normalizedOptions.showLoading) {
-        UIManager.hideLoadingScreen();
+        if (normalizedOptions.localLoading && normalizedOptions.elementId) {
+          UIManager.hideLocalLoadingScreen(normalizedOptions.elementId);
+        } else {
+          UIManager.hideLoadingScreen();
+        }
       }
     }
   }
