@@ -86,8 +86,8 @@ export default class ReportsTab {
 
       if (this.userRole === 'ProjectLead') {
         const buttonConfig = {
-          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
-          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
           Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
           Review: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
         };
