@@ -22,7 +22,6 @@ export class Checkbox {
   render(q: Quark) {
     $(q, 'div', 'checkbox', {}, (q) => {
       $(q, 'label', '', {}, (q) => {
-        $(q, 'span', '', {}, this.label);
         this.checkbox = $(q, 'input', '', { type: 'checkbox', checked: this.checked }, (q) => {
           q.addEventListener('change', (event) => {
             const target = event.target as HTMLInputElement;
@@ -32,6 +31,7 @@ export class Checkbox {
             }
           });
         });
+        $(q, 'span', '', {}, this.label);
       });
     });
 

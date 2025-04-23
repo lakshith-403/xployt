@@ -57,13 +57,13 @@ import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { userProfileForAdminViewHandler, userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
-
 import { complaintViewHandler } from '@views/complaint';
-
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
+import {privacyPolicyViewHandler} from "@views/policies/PrivacyPolicy";
+import {userAgreementViewHandler} from "@views/policies/UserAgreement";
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -158,7 +158,7 @@ const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefin
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
-const LandingRouteHandlers = new RouteHandler('/home/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false, false);
+const LandingRouteHandlers = new RouteHandler('/home/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler, privacyPolicyViewHandler, userAgreementViewHandler], undefined, false, false, false);
 
 const ValidatorApplicationRouteHandler = new RouteHandler('/validator/application', [validatorApplicationViewHandler], undefined, false, false, false, false);
 
