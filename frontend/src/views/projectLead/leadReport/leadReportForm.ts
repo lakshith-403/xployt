@@ -49,7 +49,7 @@ class LeadReportForm extends View {
   }
 
   private onSubmit: (formState: any) => void = async (formState: any) => {};
-  private sectionClases = 'container-lg h-min-15 p-1 bg-secondary rounded-3 overflow-hidden';
+  private sectionClases = 'container-lg h-min-15 p-1 bg-secondary rounded-3';
 
   async render(q: Quark): Promise<void> {
     await this.loadData();

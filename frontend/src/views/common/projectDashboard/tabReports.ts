@@ -84,24 +84,24 @@ export default class ReportsTab {
         });
       });
 
-      if (this.userRole === 'ProjectLead' && this.projectState in ['Completed', 'Active']) {
-        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
-          new Button({
-            label: 'Create Project Report',
-            onClick: () => {
-              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
-            },
-          }).render(q);
-        });
-      } else if (this.userRole === 'ProjectLead' && this.projectState === 'Closed') {
-        $(q, 'div', 'w-100 d-flex align-items-center justify-content-end', {}, (q) => {
-          new Button({
-            label: 'View Project Report',
-            onClick: () => {
-              router.navigateTo(`/lead/projects/${this.projectId}/lead-report`);
-            },
-          }).render(q);
-        });
+      if (this.userRole === 'ProjectLead') {
+        const buttonConfig = {
+          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+        };
+
+        if (buttonConfig[this.projectState as keyof typeof buttonConfig]) {
+          $(q, 'div', 'w-100 d-flex align-items-center justify-content-end mt-2', {}, (q) => {
+            new Button({
+              type: ButtonType.SECONDARY,
+              label: buttonConfig[this.projectState as keyof typeof buttonConfig].label,
+              onClick: () => {
+                router.navigateTo(buttonConfig[this.projectState as keyof typeof buttonConfig].path);
+              },
+            }).render(q);
+          });
+        }
       }
     }
 

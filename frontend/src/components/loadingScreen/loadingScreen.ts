@@ -61,6 +61,7 @@ export default class LoadingScreen {
       const currentPosition = window.getComputedStyle(targetElement).position;
       if (currentPosition === 'static') {
         targetElement.style.position = 'relative';
+        targetElement.style.overflow = 'hidden';
       }
 
       // Create a new loading screen within the target element
