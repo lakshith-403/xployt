@@ -16,7 +16,7 @@ import { SidebarTab, SidebarView } from '@components/SideBar/SideBar';
 import { Button } from '@components/button/base';
 import { convertToDom } from '@components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
-import {Notifications} from "@components/notifications/newNotifications";
+import { Notifications } from '@components/notifications/newNotifications';
 
 //alerts
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
@@ -57,13 +57,12 @@ import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
 import { userProfileForAdminViewHandler, userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
-
 import { complaintViewHandler } from '@views/complaint';
-
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
+import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -179,6 +178,7 @@ const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ProjectLeadRouteHandlersWithSidebar = new RouteHandler('/lead', [leadReportFormViewHandler], undefined, false, false, false, true);
 
 const AdminRouteHandlers = new RouteHandler(
   '/admin',
@@ -243,3 +243,4 @@ router.addRouteHandler(UserViewHandlers);
 // router.addRouteHandler(UserProfileViewHandler);
 router.addRouteHandler(ReportRouteHandler);
 router.addRouteHandler(ComplaintRouteHandler);
+router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);

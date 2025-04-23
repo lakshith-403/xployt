@@ -368,3 +368,13 @@ $heights: (
     }
   }
 }
+
+@for $i from 1 through 30 {
+  .z-#{$i} {
+    z-index: $i !important;
+  }
+}
+
+.z-1500 {
+  z-index: 1500 !important;
+}

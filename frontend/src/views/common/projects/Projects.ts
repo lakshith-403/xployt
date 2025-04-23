@@ -17,7 +17,7 @@ export default class ProjectsView extends View {
   private userCache: UserCache;
   private user: any;
   private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured', 'Configured'];
-  private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed'];
+  private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed', 'Closed'];
 
   private projects: any[] = [];
   constructor(params: { projectId: string }) {
