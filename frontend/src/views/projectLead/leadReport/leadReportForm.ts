@@ -8,9 +8,14 @@ import { UserCache } from '@/data/user';
 import { CACHE_STORE } from '@/data/cache';
 import { FormTextField } from '@components/text_field/form.text_field';
 import { TextAreaBase } from '@components/test_area/textArea.base';
+import { Button } from '@/components/button/base';
+import { ButtonType } from '@/components/button/base';
+import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import { router } from '@/ui_lib/router';
 
 class LeadReportForm extends View {
-  private readonly params: { projectId: string; configured: string };
+  private readonly params: { projectId: string; projectState: string };
   private projectInfo: any;
   private userCache!: UserCache;
   private userId!: string;
@@ -19,8 +24,10 @@ class LeadReportForm extends View {
   private readonly sectionClasses = 'container-lg h-min-15 p-1 bg-secondary rounded-3';
   private vulnTypes: any;
   private feedbackPerType: Map<string, Quark> = new Map();
+  private summaryTextArea!: TextAreaBase;
+  private savedSummary: string = '';
 
-  constructor(params: { projectId: string; configured: string }) {
+  constructor(params: { projectId: string; projectState: string }) {
     super(params);
     this.params = params;
     this.projectInfo = null;
@@ -184,21 +191,85 @@ class LeadReportForm extends View {
       $(q, 'section', this.sectionClasses, { id: 'lr-recommendations-info' }, async (q) => {
         $(q, 'h2', 'sub-heading-2 text-light-green', {}, 'Recommendations');
         await this.waitForProjectInfo('vulnTypes', 'lr-recommendations-info');
-        console.log(this.vulnTypes);
+
+        let savedFeedback: any = {};
+        if (this.params.projectState === 'Closed') {
+          const savedDataResponse = (
+            await NETWORK.get(`/api/lead/stats/${this.params.projectId}/saved`, {
+              localLoading: true,
+              elementId: 'lr-recommendations-info',
+            })
+          ).data;
+          savedFeedback = Object.fromEntries(savedDataResponse.feedback.map((entry: any) => [entry.vulnerabilityType, entry.suggestions]));
+          this.savedSummary = savedDataResponse.summary;
+        }
+
         this.vulnTypes.forEach((vulnType: any) => {
-          console.log(vulnType);
           $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
             $(q, 'h3', 'sub-heading-3', {}, vulnType);
             const textArea = new TextAreaBase({
               placeholder: 'Enter your feedback',
+              disabled: this.params.projectState === 'Closed',
+              value: savedFeedback[vulnType] || '',
             });
             this.feedbackPerType.set(vulnType, textArea as unknown as Quark);
             textArea.render(q);
           });
         });
       });
+
+      $(q, 'section', this.sectionClasses, { id: 'lr-summary' }, async (q) => {
+        $(q, 'h2', 'sub-heading-2 text-light-green', {}, 'Summary');
+
+        if (this.params.projectState === 'Closed') {
+          await this.waitForProjectInfo('savedSummary', 'lr-summary');
+        }
+
+        this.summaryTextArea = new TextAreaBase({
+          placeholder: 'Enter project summary',
+          rows: 10,
+          disabled: this.params.projectState === 'Closed',
+          value: this.savedSummary || '',
+        });
+        this.summaryTextArea.render(q);
+      });
+
+      if (['Review', 'review'].includes(this.params.projectState)) {
+        $(q, 'div', 'd-flex justify-content-end mt-3', {}, (q) => {
+          const submitButton = new Button({
+            label: 'Submit Report',
+            type: ButtonType.PRIMARY,
+            onClick: async () => {
+              // Check if all text areas are filled
+              const allFilled = Array.from(this.feedbackPerType.values()).every((textArea: any) => textArea.getValue().trim() !== '') && this.summaryTextArea.getValue().trim() !== '';
+
+              if (!allFilled) {
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Error',
+                  '.modal-message': 'Please fill all the feedback fields',
+                });
+                ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                return;
+              }
+
+              await NETWORK.post(`/api/lead/stats/${this.params.projectId}/`, {
+                feedback: Object.fromEntries(Array.from(this.feedbackPerType.entries()).map(([type, textArea]: [string, any]) => [type, textArea.getValue()])),
+                summary: this.summaryTextArea.getValue(),
+              });
+              setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Success',
+                '.modal-message': 'Report submitted successfully!',
+              });
+              ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                router.navigateTo('/projects');
+              });
+            },
+          });
+          submitButton.render(q);
+        });
+      }
     });
   }
 }
 
-export const leadReportFormViewHandler = new ViewHandler('/projects/{projectId}/lead-report', LeadReportForm);
+export const leadReportFormViewHandler = new ViewHandler('/projects/{projectId}/lead-report/{projectState}', LeadReportForm);

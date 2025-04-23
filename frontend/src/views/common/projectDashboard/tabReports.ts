@@ -36,7 +36,7 @@ export default class ReportsTab {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    if (this.projectState in ['Active', 'Completed', 'Closed']) {
+    if (this.projectState in ['Active', 'Completed', 'Closed', 'Review']) {
       $(q, 'div', 'bg-secondary px-2 py-1 text-light-green rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
         $(q, 'span', '', {}, 'Nothing to show here yet');
       });
@@ -88,7 +88,8 @@ export default class ReportsTab {
         const buttonConfig = {
           Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
           Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
-          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report` },
+          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Review: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
         };
 
         if (buttonConfig[this.projectState as keyof typeof buttonConfig]) {
