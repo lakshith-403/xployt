@@ -30,8 +30,10 @@ export class PrivacyPolicyView extends View {
             this.policy = privacyPolicies.clientOrganizationPolicy;
         } else if (params.userType == "hacker") {
             this.policy = privacyPolicies.hackerPolicy;
-        } else {
+        } else if (params.userType == "validator" || params.userType == "admin" || params.userType == "projectlead") {
             this.policy = privacyPolicies.internalStaffPolicy;
+        } else {
+            this.policy = privacyPolicies.guestPrivacyPolicy;
         }
 
     }
