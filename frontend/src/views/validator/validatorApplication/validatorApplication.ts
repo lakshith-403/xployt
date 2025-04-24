@@ -46,8 +46,8 @@ interface formState {
     year: string,
   },
   skills: string,
-  certificates?: ReportAttachment[],
-  cv?: ReportAttachment,
+  certificates?: any,
+  cv?: any,
   references:string,
   relevantExperience: string,
   areaOfExpertise: string[],
@@ -87,23 +87,29 @@ class ValidatorApplication extends View {
   private files: File[][] = [];
 
   private prepareFiles(): void {
-    if (this.formState.certificates) {
+    console.log("File list", this.files)
       this.formState.certificates = this.files[0].map((file) => {
+        console.log("Preparing cert", file);
         const id = crypto.randomUUID();
         return {
           id,
           name: file.name,
           url: `${id}.${file.name.split('.').pop()}`,
-        };
+        } as ReportAttachment;
       });
-    }
 
-    const id = crypto.randomUUID();
-    this.formState.cv = {
-      id: id,
-      name: this.files[1][0].name,
-      url: `${id}${this.files[1][0].name.split('.').pop()}`
-    }
+    console.log("Prepared certs", this.formState.certificates)
+
+      this.formState.cv = this.files[1].map((file) => {
+        const id = crypto.randomUUID();
+        console.log("Preparing cv", file)
+        return {
+          id,
+          name: file.name,
+          url: `${id}.${file.name.split('.').pop()}`,
+        } as ReportAttachment;
+      });
+    console.log("Prepared CV", this.formState.cv)
   }
 
   private onSubmit: (formState: any) => void = async () => {
