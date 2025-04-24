@@ -53,11 +53,27 @@ export function isValidDate(date: any): { result: boolean; message: string } {
 }
 
 const allowedExtensions = ['txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat', 'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'];
+const allowedExtensionsCert = ['png', 'hiec', 'jpg', 'jpeg', 'pdf'];
 
-export const isValidFileType = (filename: string): boolean => {
-  const extension = filename.split('.').pop()?.toLowerCase();
-  return allowedExtensions.includes(extension || '');
+export const isValidFileType = (file: File, strict: boolean): boolean => {
+
+  const extension = file.name.split('.').pop()?.toLowerCase() || '';
+  if(strict){
+    return allowedExtensionsCert.includes(extension) && isValidFileSize(file);
+  } else {
+    return allowedExtensions.includes(extension) && isValidFileSizeStrict(file);
+  }
 };
+
+export const isValidFileSize = (file: File): boolean => {
+    const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
+    return file.size <= maxSizeInBytes;
+}
+
+export const isValidFileSizeStrict = (file: File): boolean => {
+  const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB
+  return file.size <= maxSizeInBytes;
+}
 
 export function validateField(key: string, value: any, expectedType: string | ((formState: any) => string)): { result: boolean; message: string } {
   // Check if expectedType is a function
@@ -220,7 +236,14 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   if (expectedType === 'file') {
     console.log('checking file type: ', key, value);
-    if (!isValidFileType(value)) {
+    if (!isValidFileType(value, false)) {
+      return { result: false, message: `${key} must be a valid file type` };
+    }
+  }
+
+  if (expectedType === 'file-strict') {
+    console.log('checking file type: ', key, value);
+    if (!isValidFileType(value, true)) {
       return { result: false, message: `${key} must be a valid file type` };
     }
   }

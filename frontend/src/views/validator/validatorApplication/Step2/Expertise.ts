@@ -6,6 +6,8 @@ import { expertiseTags } from './data';
 import './Expertise.scss';
 
 import { Step } from './../../../../components/multistepForm/multistep-form';
+import {isValidFileSizeStrict, isValidFileType, validateField} from "@components/multistepForm/validationUtils";
+import {FieldErrorMessage} from "@views/hacker/VulnerabilityReport/VulnerabilityReportForm";
 
 class Expertise implements Step {
   private updateParentState!: (newState: any) => void;
@@ -31,17 +33,29 @@ class Expertise implements Step {
           this.fields.skills.render(q);
           this.fields.skills.setValue(state.skills);
         });
-        // $(q, 'div', 'form-field', {}, (q) => {
-        //   this.fields.certificates.render(q);
-        //   this.fields.certificates.setValue(state.certificates);
-        // });
+        $(q, 'div', 'form-field', {id: "certificates"}, (q) => {
+          this.fields.certificates.render(q);
+          const fileInputContainer = document.querySelector('#certificates') as HTMLElement;
+          const fileInputElement = fileInputContainer.querySelector('input[type="file"]') as HTMLInputElement;
+
+          fileInputElement.addEventListener('change', () => {
+            this.handleFileUploads(fileInputElement, 'cert');
+          });
+        });
         $(q, 'div', 'form-field', {}, (q) => {
           this.fields.references.render(q);
-          this.fields.references.setValue(state.references);
         });
-        $(q, 'div', 'form-field-container', {}, (q) => {
+        $(q, 'div', 'form-field-container', {id: "cv"}, (q) => {
           $(q, 'div', 'form-field', {}, (q) => {
             this.fields.file.render(q);
+
+            const fileInputContainer = document.querySelector('#cv') as HTMLElement;
+            const fileInputElement = fileInputContainer.querySelector('input[type="file"]') as HTMLInputElement;
+
+            fileInputElement.addEventListener('change', () => {
+              this.handleFileUploads(fileInputElement, 'cv');
+            });
+
           });
         });
       });
@@ -54,11 +68,10 @@ class Expertise implements Step {
       placeholder: 'Enter your skills and proficiencies as a comma separated list',
       name: 'skills',
     }),
-    // certificates: new TextAreaBase({
-    //   label: 'Certificates',
-    //   placeholder: 'Enter your certificates as a comma separated list',
-    //   name: 'certificates',
-    // }),
+    certificates: new FileInputBase({
+      label: 'Enter your certificates as a comma separated list',
+      name: 'certificates',
+    }),
     references: new TextAreaBase({
       label: 'References',
       placeholder: 'Enter your references as a comma separated list',
@@ -81,7 +94,21 @@ class Expertise implements Step {
     }),
   };
 
-  constructor() {
+  private files: File[][];
+  private handleFileUploads(fileInput: HTMLInputElement, type: string): void {
+    const fieldFiles = fileInput.files;
+    if (!fieldFiles) return;
+
+    this.addFiles(fieldFiles, type);
+  }
+
+  private addFiles(fieldFiles: FileList, type: string): void {
+    const index = type == "cv" ? 1: 0;
+    this.files[index] = Array.from(fieldFiles);
+  }
+
+  constructor(files: File[][]) {
+    this.files = files;
     console.log('Console in');
     for (const field of Object.values(this.fields)) {
       console.log(field);

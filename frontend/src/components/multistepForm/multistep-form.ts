@@ -25,6 +25,7 @@ export interface ValidationSchema {
     | 'number|null'
     | 'string|comma'
     | 'date|future'
+      | 'file-strict'
     | ((formState: any) => string);
 }
 
@@ -316,6 +317,7 @@ class MultistepForm {
         }
       }
     }
+
     //console.log('Updated form state:', this.formState);
     if (this.checkIfRequiredFieldsAreFilled()) {
       //console.log('Required fields are filled');
