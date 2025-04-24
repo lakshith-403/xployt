@@ -1,14 +1,14 @@
 import { CACHE_STORE } from '@/data/cache';
-import { User, UserCache } from '@data/user';
-import { UserType } from '@data/user';
+import { User } from '@data/user';
 import { QuarkFunction as $, Quark } from '@ui_lib/quark';
-import { View } from '@ui_lib/view';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
-import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 import { CustomTable } from '@/components/table/customTable';
 import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
 import { Button, ButtonType } from '@/components/button/base';
+import { modalAlertOnlyOK } from '@/main';
+import modalManager, { setContent } from '@/components/ModalManager/ModalManager';
+
 export default class ReportsTab {
   private projectState: string;
   private currentUser: User | null;
@@ -86,10 +86,39 @@ export default class ReportsTab {
 
       if (this.userRole === 'ProjectLead') {
         const buttonConfig = {
-          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
-          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
-          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
-          Review: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Completed: {
+            label: 'Create Project Report',
+            action: () => {
+              router.navigateTo(`/lead/projects/${this.projectId}/lead-report/${this.projectState}`);
+            },
+          },
+          Active: {
+            label: 'Create Project Report',
+            action: () => {
+              setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Alert',
+                '.modal-message': 'You can only create a project report for projects in "Review" stage',
+              });
+              modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+            },
+          },
+          Closed: {
+            label: 'View Project Report',
+            path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}`,
+            action: () => {
+              setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Alert',
+                '.modal-message': 'You can only create a project report for projects in "Review" stage',
+              });
+              modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+            },
+          },
+          Review: {
+            label: 'Create Project Report',
+            action: () => {
+              router.navigateTo(`/lead/projects/${this.projectId}/lead-report/${this.projectState}`);
+            },
+          },
         };
 
         if (buttonConfig[this.projectState as keyof typeof buttonConfig]) {
@@ -98,7 +127,7 @@ export default class ReportsTab {
               type: ButtonType.SECONDARY,
               label: buttonConfig[this.projectState as keyof typeof buttonConfig].label,
               onClick: () => {
-                router.navigateTo(buttonConfig[this.projectState as keyof typeof buttonConfig].path);
+                buttonConfig[this.projectState as keyof typeof buttonConfig].action();
               },
             }).render(q);
           });
