@@ -86,12 +86,6 @@ export default class ReportsTab {
 
       if (this.userRole === 'ProjectLead') {
         const buttonConfig = {
-          Completed: {
-            label: 'Create Project Report',
-            action: () => {
-              router.navigateTo(`/lead/projects/${this.projectId}/lead-report/${this.projectState}`);
-            },
-          },
           Active: {
             label: 'Create Project Report',
             action: () => {
@@ -103,7 +97,7 @@ export default class ReportsTab {
             },
           },
           Closed: {
-            label: 'View Project Report',
+            label: 'Create Project Report',
             path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}`,
             action: () => {
               setContent(modalAlertOnlyOK, {
@@ -115,6 +109,12 @@ export default class ReportsTab {
           },
           Review: {
             label: 'Create Project Report',
+            action: () => {
+              router.navigateTo(`/lead/projects/${this.projectId}/lead-report/${this.projectState}`);
+            },
+          },
+          Completed: {
+            label: 'View Project Report',
             action: () => {
               router.navigateTo(`/lead/projects/${this.projectId}/lead-report/${this.projectState}`);
             },
@@ -195,6 +195,7 @@ export default class ReportsTab {
                   router.navigateTo(`/reports/vulnerability/${this.projectId}/${report.reportId}`);
                 },
                 orderKeys: ['reportId', 'severity', 'vulnerabilityType', 'title', 'createdAt'],
+                cellClassName: 'cursor-pointer',
                 cellClassNames: {
                   2: 'text-small',
                   3: 'text-small',
