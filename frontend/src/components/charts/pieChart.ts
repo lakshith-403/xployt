@@ -19,7 +19,7 @@ class PieChart {
     scheme2: ['#4BC0C0', '#FF9F40', '#9966FF', '#FF6384', '#36A2EB'],
     scheme3: ['#FFCD56', '#C9CBCF', '#FF6384', '#4BC0C0', '#FF9F40'],
     greyTheme: ['#B0B0B0', '#D3D3D3', '#A9A9A9', '#808080', '#696969'],
-    greenTheme: ['#008000', '#00FF00', '#32CD32', '#98FB98', '#2E8B57'],
+    greenTheme: ['#768948', '#607744', '#34623F', '#1E2F23', '#B39C4D'],
     blackTheme: ['#000000', '#2F2F2F', '#4F4F4F', '#6F6F6F', '#8F8F8F'],
   };
 
@@ -83,6 +83,11 @@ class PieChart {
     startAngle = 0;
     dataValues.forEach((value, index) => {
       const sliceAngle = (value / totalValue) * 2 * Math.PI;
+
+      if (sliceAngle < 0.01) {
+        return;
+      }
+
       const labelX = canvas.width / 2 + (Math.min(canvas.width / 2, canvas.height / 2) / 2) * Math.cos(startAngle + sliceAngle / 2);
       const labelY = canvas.height / 2 + (Math.min(canvas.width / 2, canvas.height / 2) / 2) * Math.sin(startAngle + sliceAngle / 2);
 

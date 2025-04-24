@@ -1,0 +1,94 @@
+.payments-view {
+  padding: 1rem;
+
+  .payment-statistics {
+    margin-bottom: 2rem;
+  }
+
+  .payment-stats {
+    display: flex;
+    gap: 1.5rem;
+
+    .stat-card {
+      flex: 1;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background-color: var(--color-bg-secondary);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+
+      .stat-title {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-text-primary);
+      }
+    }
+  }
+
+  .reports-section {
+    margin-top: 2rem;
+
+    h3 {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .reports-table-container {
+    width: 100%;
+
+    .reports-payment-table {
+      width: 100%;
+
+      .table-row {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: var(--color-bg-hover);
+        }
+      }
+
+      .table-cell {
+        padding: 0.75rem;
+      }
+    }
+  }
+
+  /* Modal styling */
+  .modal-body {
+    padding: 1.5rem;
+
+    .modal-title {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .modal-message {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+
+      .modal-button {
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+
+        &:hover {
+          background-color: var(--color-primary-dark);
+        }
+      }
+    }
+  }
+}

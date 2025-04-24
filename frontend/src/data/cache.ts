@@ -21,6 +21,7 @@ import { ClientInvitationsCache } from '@data/client/cache/client.invitations.ca
 import { VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
 import { FinanceCache } from './finance/cache/finance.cache';
 import { ComplaintCache, ComplaintsCache, ComplaintByDiscussionCache } from '@/data/common/cache/complaint.cache';
+import { ProjectFinanceCache } from './finance/cache/project-finance.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -46,6 +47,7 @@ class CacheStore {
   private readonly complaintMap: Map<string, ComplaintCache> = new Map();
   private readonly complaintsCache: ComplaintsCache = new ComplaintsCache();
   private readonly complaintByDiscussionMap: Map<string, ComplaintByDiscussionCache> = new Map();
+  private projectFinanceMap: Map<number, ProjectFinanceCache> = new Map();
 
   constructor() {
     this.user = new UserCache();
@@ -223,6 +225,13 @@ class CacheStore {
       this.complaintByDiscussionMap.set(discussionId, new ComplaintByDiscussionCache(discussionId));
     }
     return this.complaintByDiscussionMap.get(discussionId)!;
+  }
+
+  public getProjectFinance(projectId: number): ProjectFinanceCache {
+    if (!this.projectFinanceMap.has(projectId)) {
+      this.projectFinanceMap.set(projectId, new ProjectFinanceCache(projectId));
+    }
+    return this.projectFinanceMap.get(projectId)!;
   }
 }
 
