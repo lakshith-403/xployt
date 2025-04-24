@@ -14,10 +14,13 @@
 html {
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
+
   body {
     min-height: 100vh;
     padding: 0;
     margin: 0;
+    overflow-x: hidden;
     font-family: 'Montserrat', sans-serif;
   }
 }
@@ -27,7 +30,8 @@ html {
   height: var(--navbar-height);
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
-  box-shadow: 0 8px 11px 0 rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.2);
   width: 100%;
   color: white;
   padding: 1rem 2rem;
@@ -38,19 +42,30 @@ html {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.4s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
 
   .icon-image {
     font-size: 1.5rem;
     height: 100%;
     margin: 0.4rem;
     cursor: pointer;
+    transform-origin: center;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
   .buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
     padding-right: 2rem;
 
     button {
@@ -61,19 +76,18 @@ html {
       font-size: 0.9rem;
       background-color: transparent;
       width: fit-content;
-    }
 
-    button:hover {
-      opacity: 0.75;
+      &:hover {
+        opacity: 0.75;
+      }
     }
-
-    span{
+    span {
       display: flex;
     }
   }
 }
 
-#home, .landing{
+#home, .landing {
   background: linear-gradient(315deg, #00473a 0%, #000909 100%);
   width: 100%;
   height: 100vh;
@@ -95,21 +109,53 @@ html {
 
     .icon-image {
       width: 100%;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUpFade 0.5s ease forwards;
+      transition: transform 0.5s ease;
+
+      &:hover {
+        transform: translateY(0) scale(1.02);
+      }
     }
 
     .home-buttons {
       display: flex;
       flex-direction: row;
       gap: 1rem;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
     }
+
+    &:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
   }
 
   h1 {
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-style: normal;
     font-weight: 700;
     line-height: 120%;
     margin: 0;
+    background: linear-gradient(90deg, #ffffff, #aeaeae);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 15px rgba(0, 71, 58, 0.2);
+
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 80%;
+    margin-bottom: 1rem;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideUpFade 0.6s ease 0.3s forwards;
   }
 
   .title {
@@ -125,12 +171,16 @@ html {
   min-height: calc(100vh - var(--navbar-height));
   overflow-y: auto;
   width: var(--sidebar-width);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Montserrat', sans-serif;
+  animation: slideRightFadeNav 0.4s ease 0.4s forwards;;
 }
 
 #footer {
   position: relative;
   z-index: 1000;
   width: 100%;
+  color: var(--text-light);
 }
 
 #root {
@@ -138,7 +188,7 @@ html {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  top: var(--navbar-height);
+  top: 0;
   position: relative;
 
   #content {
@@ -146,7 +196,7 @@ html {
     margin-left: var(--sidebar-width);
     //padding: 20px;
     overflow-y: auto;
-    min-height: calc(100vh - (var(--navbar-height) + var(--footer-height)) + 10rem);
+    min-height: calc(100vh - var(--navbar-height));
     width: calc(100% - var(--sidebar-width));
     background-color: var(--background-primary);
     color: var(--color-primary);
@@ -158,13 +208,69 @@ html {
   margin-left: 0 !important;
   width: 100% !important;
 }
+
 .no-navbar#content {
   margin-top: 0 !important;
 }
+
 .spaced-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRightFadeNav {
+  from {
+    opacity: 0;
+    transform: translateX(-12rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
