@@ -7,9 +7,6 @@ import Hacker from './tabOverviewContent/hacker';
 import CommonOverview from './tabOverviewContent/commonOverview';
 
 import './tabOverview.scss';
-import { ButtonType } from '@/components/button/base';
-import { FormButton } from '@/components/button/form.button';
-import { router } from '@/ui_lib/router';
 
 export default class Overview {
   private user!: User;
