@@ -9,12 +9,15 @@ import UserCard from '@components/UserCard';
 import { UserType } from '@data/user';
 import NETWORK from '@/data/network/network';
 import { FormButton } from '@/components/button/form.button';
+import { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import modalManager from '@/components/ModalManager/ModalManager';
 
 export default class CommonOverview {
   private projectInfo: any;
   private detailedProjectInfoContainer: any;
 
-  constructor(private readonly projectId: string, private readonly userRole: UserType) {}
+  constructor(private readonly projectId: string, private readonly userRole: UserType, public readonly rerender: () => void) {}
 
   private async loadData(): Promise<void> {
     try {
@@ -153,6 +156,52 @@ export default class CommonOverview {
               },
             }).render(q);
           });
+        });
+      }
+
+      if (this.projectInfo.state === 'Active' && this.userRole === 'ProjectLead') {
+        $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center gap-2  justify-content-center', {}, (q) => {
+          $(q, 'span', 'col-6 text-center', {}, 'Close Project');
+          new IconButton({
+            icon: 'fa fa-check',
+            label: 'Close Project',
+            type: ButtonType.TERTIARY,
+            onClick: () => {
+              setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Warning',
+                '.modal-message': 'Are you sure you want to close the project?       This action cannot be undone!',
+              });
+              modalManager
+                .show('alertOnlyOK', modalAlertOnlyOK, true)
+                .then(async () => {
+                  try {
+                    await NETWORK.delete(`/api/lead/project/${this.projectId}`, {
+                      successCallback: () => {
+                        console.log('Project closed successfully');
+                        modalManager.hide('alertOnlyOK');
+                      },
+                    });
+                  } catch (error) {
+                    setContent(modalAlertOnlyOK, {
+                      '.modal-title': 'Error',
+                      '.modal-message': 'Failed to close project. Please try again.',
+                    });
+                    modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                  }
+                })
+                .then(() => {
+                  console.log('Project closed successfully and now showing modal');
+                  setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Alert',
+                    '.modal-message': 'Project closed successfully',
+                  });
+                  modalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                    NETWORK.invalidateCache(`/api/single-project/\\w+\\?role=ProjectLead`);
+                    this.rerender();
+                  });
+                });
+            },
+          }).render(q);
         });
       }
     });

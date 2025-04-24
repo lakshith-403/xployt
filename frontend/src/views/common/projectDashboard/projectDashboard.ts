@@ -57,7 +57,7 @@ class projectDashboardView extends View {
     const currentUser = await CACHE_STORE.getUser().get();
     this.userId = currentUser.id;
 
-    const overviewTab = new OverviewTab(this.params.projectId);
+    const overviewTab = new OverviewTab(this.params.projectId, () => this.rerender());
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
@@ -68,12 +68,6 @@ class projectDashboardView extends View {
 
     const commonTabs = [
       {
-        title: 'Reports',
-        render: (q: Quark) => {
-          reportsTab.render(q);
-        },
-      },
-      {
         title: 'Overview',
         render: (q: Quark) => {
           overviewTab.render(q);
@@ -83,6 +77,12 @@ class projectDashboardView extends View {
         title: 'Team',
         render: (q: Quark) => {
           teamTab.render(q);
+        },
+      },
+      {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
         },
       },
       {
