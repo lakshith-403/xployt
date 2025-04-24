@@ -48,6 +48,16 @@ export class PriceCard extends Card {
     this.amount = options.amount;
   }
 
+  update(newAmount: number): void {
+    this.amount = newAmount;
+    if (this.element) {
+      const priceElement = this.element.querySelector('.card-price');
+      if (priceElement) {
+        priceElement.textContent = `$${typeof this.amount === 'number' ? this.amount.toFixed(2) : this.amount}`;
+      }
+    }
+  }
+
   // Override the render method to include price and different content style
   render(parent: Quark) {
     this.element = $(parent, 'div', 'card price-card', {}, (q) => {
