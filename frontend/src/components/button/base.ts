@@ -30,13 +30,15 @@ export class Button {
   set disabled(disabled: boolean) {
     if (disabled) {
       this.element?.classList.add('disabled');
+      this.element?.addEventListener('click', this.onClick);
     } else {
       this.element?.classList.remove('disabled');
+      this.element?.removeEventListener('click', this.onClick);
     }
   }
 
   render(parent: Quark) {
     this.element = $(parent, 'button', `button-${this.type} button-component`, {}, this.label);
-    this.element.addEventListener('click', this.onClick);
+    if (!this.disabled ) this.element.addEventListener('click', this.onClick);
   }
 }
