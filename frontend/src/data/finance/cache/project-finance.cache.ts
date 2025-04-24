@@ -16,6 +16,7 @@ export interface ReportPayment {
 export interface ProjectFinanceData {
   projectId: number;
   reports: ReportPayment[];
+  totalExpenditure: number;
 }
 
 export class ProjectFinanceCache extends CacheObject<ProjectFinanceData> {

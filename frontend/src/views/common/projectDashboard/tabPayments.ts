@@ -56,7 +56,7 @@ export default class Payments {
         this.projectReports = financeData.reports;
         this.calculatePaymentStats();
         this.renderReportsTable();
-        this.renderPaymentStats();
+        this.renderPaymentStats(financeData.totalExpenditure || 0);
       } else {
         console.error('Failed to load project finance data');
         this.showError('Failed to load project finance data');
@@ -193,13 +193,10 @@ export default class Payments {
     }).render(this.tableContainer);
   }
 
-  private renderPaymentStats(): void {
+  private renderPaymentStats(totalExpenditure: number = 0): void {
     if (!this.statsContainer) return;
 
     this.statsContainer.innerHTML = '';
-
-    const totalAllocated = this.totalPaid + this.totalPending * 2;
-    const remaining = Math.max(0, totalAllocated - this.totalPaid);
 
     $(this.statsContainer, 'div', 'payment-stats d-flex flex-row justify-content-around mb-4', {}, (q) => {
       $(q, 'div', 'stat-card', {}, (q) => {
@@ -215,22 +212,23 @@ export default class Payments {
       if (this.role !== 'Hacker') {
         $(q, 'div', 'stat-card', {}, (q) => {
           $(q, 'div', 'stat-title', {}, 'Total Allocated');
-          $(q, 'div', 'stat-value', {}, `$${totalAllocated.toFixed(2)}`);
+          $(q, 'div', 'stat-value', {}, `$${totalExpenditure.toFixed(2)}`);
         });
       }
     });
 
-    if (totalAllocated > 0) {
+    if (totalExpenditure > 0 || this.totalPaid > 0 || this.totalPending > 0) {
       const pieChartOptions = {
         data: {
           Paid: this.totalPaid,
           Pending: this.totalPending,
-          Allocated: totalAllocated,
+          Allocated: totalExpenditure,
         },
         title: '',
         subtitle: '',
         colorScheme: 'greenTheme' as 'greenTheme',
       };
+
       if (this.role !== 'Hacker') {
         $(this.statsContainer, 'div', '', {}, (q) => {
           $(q, 'h3', 'mb-3', {}, 'Payment Distribution');
