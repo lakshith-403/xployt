@@ -3,7 +3,6 @@ import { View, ViewHandler } from '../ui_lib/view';
 import { TextField } from '../components/text_field/base';
 import { IconButton } from '../components/button/icon.button';
 import { Button, ButtonType } from '../components/button/base';
-import './Profile.scss';
 import { CollapsibleBase } from '../components/Collapsible/collap.base';
 import { CACHE_STORE } from '../data/cache';
 import NETWORK from '@/data/network/network';
@@ -67,7 +66,7 @@ export class ProfileView extends View {
       console.log('ProfileView: Loaded profile:', this.profile);
     } catch (error) {
       console.error('Error loading profile:', error);
-      alert('Error loading profile:' + error);
+      // alert('Error loading profile:' + error);
     }
   }
 
@@ -277,20 +276,20 @@ export class ProfileView extends View {
   }
 
   public async render(q: Quark): Promise<void> {
-    q.innerHTML = ''; // Clear existing content
-;
+    q.innerHTML = '';
     await this.loadProfile();
     q.innerHTML = '';
-    $(q, 'div', 'profile-view', {}, (q) => {
+
+    $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
       // Header row
-      $(q, 'div', 'profile-header', {}, (q) => {
-        $(q, 'h1', '', {}, `Hello ${this.profile?.name || 'User'}!`);
-        $(q, 'div', 'profile-picture-container', {}, (q) => {
-          $(q, 'img', 'profile-picture', {
+      $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
+        $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
+        $(q, 'div', 'position-relative w-30', {}, (q) => {
+          $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
             src: this.profile?.profilePicture || 'assets/avatar.png',
             alt: '',
           });
-          $(q, 'div', 'profile-picture-button-container', {}, (q) => {
+          $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
             new IconButton({
               label: '',
               icon: 'fa fa-camera',
@@ -311,7 +310,7 @@ export class ProfileView extends View {
       }
 
       // Render collapsibles
-      $(q, 'div', 'collapsibles-container', {}, (q) => {
+      $(q, 'div', 'w-100 d-flex flex-column align-items-center', {}, (q) => {
         // User Info Section
         this.userInfoCollapsible.render(q);
         $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {

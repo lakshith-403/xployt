@@ -5,15 +5,17 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import PaymentsTab from './payments';
+import PaymentsTab from './tabPayments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';
-
+import TabSettings from '@views/common/projectDashboard/TabSettings';
+import ComplaintsTab from './tabComplaints';
 class projectDashboardView extends View {
   params: { projectId: string };
   private projectTitle!: string;
   private userId!: string;
+  private projectInfo!: any;
   constructor(params: { projectId: string }) {
     console.log('projectDashboardView constructor executed');
     super(params);
@@ -44,6 +46,7 @@ class projectDashboardView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
       const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
+      this.projectInfo = response.data;
       this.projectTitle = response.data.project.title;
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -51,14 +54,19 @@ class projectDashboardView extends View {
     }
     q.innerHTML = '';
 
+    const currentUser = await CACHE_STORE.getUser().get();
+    this.userId = currentUser.id;
+
     const overviewTab = new OverviewTab(this.params.projectId);
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
+    const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
+    const complaintsTab = new ComplaintsTab(this.params.projectId);
 
-    const currentUser = await CACHE_STORE.getUser().get();
-    this.userId = currentUser.id;
-    const tabs = [
+    const tabs = [];
+
+    const commonTabs = [
       {
         title: 'Reports',
         render: (q: Quark) => {
@@ -83,10 +91,19 @@ class projectDashboardView extends View {
           discussionTab.render(q);
         },
       },
+      {
+        title: 'Complaints',
+        render: (q: Quark) => {
+          complaintsTab.render(q);
+        },
+      },
     ];
-    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker'];
+
+    tabs.push(...commonTabs);
+
+    const usersWithPaymentsTab = ['ProjectLead', 'Client', 'Hacker', 'Admin'];
     if (usersWithPaymentsTab.includes(currentUser.type)) {
-      const paymentsTab = new PaymentsTab(this.params.projectId);
+      const paymentsTab = new PaymentsTab(this.params.projectId, currentUser, this.projectInfo);
       tabs.push({
         title: 'Payments',
         render: (q: Quark) => {
@@ -94,6 +111,16 @@ class projectDashboardView extends View {
         },
       });
     }
+
+    if (currentUser.type === 'Client') {
+      tabs.push({
+        title: 'Settings',
+        render: (q: Quark) => {
+          settingsTab?.render(q);
+        },
+      });
+    }
+
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
       $(q, 'span', 'project-title', {}, this.projectTitle);

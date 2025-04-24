@@ -52,17 +52,38 @@ export function isValidDate(date: any): { result: boolean; message: string } {
   return { result: true, message: '' };
 }
 
-const allowedExtensions = [
-  'txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat',
-  'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'
-];
+const allowedExtensions = ['txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh', 'ps1', 'js', 'bat', 'zip', 'png', 'jpg', 'jpeg', 'vsdx', 'drawio', 'xml', 'svg', 'pcap', 'pcapng'];
+const allowedExtensionsCert = ['png', 'hiec', 'jpg', 'jpeg', 'pdf'];
 
-export const isValidFileType = (filename: string): boolean => {
-  const extension = filename.split('.').pop()?.toLowerCase();
-  return allowedExtensions.includes(extension || '');
+export const isValidFileType = (file: File, strict: boolean): boolean => {
+
+  const extension = file.name.split('.').pop()?.toLowerCase() || '';
+  if(strict){
+    return allowedExtensionsCert.includes(extension) && isValidFileSize(file);
+  } else {
+    return allowedExtensions.includes(extension) && isValidFileSizeStrict(file);
+  }
 };
 
-export function validateField(key: string, value: any, expectedType: string): { result: boolean; message: string } {
+export const isValidFileSize = (file: File): boolean => {
+    const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
+    return file.size <= maxSizeInBytes;
+}
+
+export const isValidFileSizeStrict = (file: File): boolean => {
+  const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB
+  return file.size <= maxSizeInBytes;
+}
+
+export function validateField(key: string, value: any, expectedType: string | ((formState: any) => string)): { result: boolean; message: string } {
+  // Check if expectedType is a function
+  if (typeof expectedType === 'function') {
+    // The function should return the validation type string
+    const dynamicType = expectedType(value);
+    // Recursively call validateField with the dynamic type
+    return validateField(key, value, dynamicType);
+  }
+
   // Verifying a string
   if (expectedType === 'string') {
     console.log('checking string: ', key, value);
@@ -86,6 +107,23 @@ export function validateField(key: string, value: any, expectedType: string): { 
     if (!dateValidation.result) {
       return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
     }
+  }
+
+  if (expectedType === 'date|future') {
+    const dateValidation = isValidDate(value);
+    console.log('checking date: ', key, value);
+    if (!dateValidation.result) {
+      return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
+    }
+    const today = new Date();
+    const inputDate = new Date(`${value.year}-${value.month}-${value.day}`);
+    if (inputDate <= today) {
+      return { result: false, message: `${key} must be a future date` };
+    }
+  }
+
+  if (expectedType === 'date|future|min-date') {
+    return { result: false, message: `Project end date must be after start date` };
   }
 
   // Verifying an email
@@ -198,7 +236,14 @@ export function validateField(key: string, value: any, expectedType: string): { 
 
   if (expectedType === 'file') {
     console.log('checking file type: ', key, value);
-    if (!isValidFileType(value)) {
+    if (!isValidFileType(value, false)) {
+      return { result: false, message: `${key} must be a valid file type` };
+    }
+  }
+
+  if (expectedType === 'file-strict') {
+    console.log('checking file type: ', key, value);
+    if (!isValidFileType(value, true)) {
       return { result: false, message: `${key} must be a valid file type` };
     }
   }
@@ -208,7 +253,20 @@ export function validateField(key: string, value: any, expectedType: string): { 
 
 export function validateFormState(formState: any, validationSchema: ValidationSchema): boolean {
   for (const key in validationSchema) {
-    const fieldValidation = validateField(key, formState[key], validationSchema[key]);
+    const expectedType = validationSchema[key];
+    let fieldValidation;
+
+    // Handle function type validators differently
+    if (typeof expectedType === 'function') {
+      // Get the validation type dynamically from the function
+      const dynamicType = expectedType(formState);
+      // Then validate with that type
+      fieldValidation = validateField(key, formState[key], dynamicType);
+    } else {
+      // Regular string-based validation
+      fieldValidation = validateField(key, formState[key], expectedType);
+    }
+
     if (!fieldValidation.result) {
       console.error('validation error: ', fieldValidation.message);
       setContent(modalAlertOnlyOK, {

@@ -7,18 +7,22 @@ import { ProjectTeamCacheMock } from './validator/cache/project.team';
 // import { HackerProjectInfoCache, HackerProjectInfoCacheMock } from './hacker/cache/hacker.projects';
 import { ProjectConfigInfoCache, ProjectConfigInfoCacheMock } from './projectLead/cache/projectConfigInfo';
 import { ClientCacheMock } from './projectLead/cache/client.cache'; // No longer needed
-import { NotificationsCache, NotificationsCacheMock } from '@data/hacker/cache/notifications.cache';
+import { NotificationsCache } from '@data/common/cache/notifications.cache';
 import { InvitationsCache } from '@data/common/cache/invitations.cache';
-import { ProjectTeamCache} from '@data/common/cache/projectTeam.cache';
+import { ProjectTeamCache } from '@data/common/cache/projectTeam.cache';
 import { DiscussionCache } from './discussion/cache/discussion';
 
 import { UserProfileCache } from './user/cache/userProfile';
 import { ProjectsLeadCache, ProjectsLeadCacheMock } from './projectLead/cache/projects.cache';
 import { ProjectsClientCache } from './client/cache/projects.cache';
-import {ProjectCache} from "@data/common/cache/project.cache";
-import {HackerInvitationsCache} from "@data/hacker/cache/hacker.invitations.cache";
-import {ClientInvitationsCache} from "@data/client/cache/client.invitations.cache";
-import {VulnerabilityReportCache} from "@data/common/cache/vulnerabilityReport.cache";
+import { ProjectCache } from '@data/common/cache/project.cache';
+import { HackerInvitationsCache } from '@data/hacker/cache/hacker.invitations.cache';
+import { ClientInvitationsCache } from '@data/client/cache/client.invitations.cache';
+import { VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
+import { FinanceCache } from './finance/cache/finance.cache';
+import { ComplaintCache, ComplaintsCache, ComplaintByDiscussionCache } from '@/data/common/cache/complaint.cache';
+import { ProjectFinanceCache } from './finance/cache/project-finance.cache';
+import { FinanceSummaryCache } from './finance/cache/finance-summary.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -28,7 +32,7 @@ class CacheStore {
   // private readonly hackerProjectInfoMap: Map<string, HackerProjectInfoCacheMock>;
   private readonly projectConfigInfoMap: Map<string, ProjectConfigInfoCache>;
   // private readonly clientMap: Map<string, ClientCache>; // No longer needed
-  private readonly notificationsListMap: Map<string, NotificationsCacheMock>;
+  private readonly notificationsListMap: Map<string, NotificationsCache>;
   private readonly HackerInvitationsMap: Map<string, HackerInvitationsCache>;
   private readonly ProjectInvitationsMap: Map<string, InvitationsCache>;
   private readonly InvitedHackersMap: Map<string, ClientInvitationsCache>;
@@ -39,7 +43,13 @@ class CacheStore {
   private clientProjectsMap: Map<string, ProjectsClientCache>;
   private leadProjectsMap: Map<string, ProjectsLeadCache>;
   private projectsMap: Map<string, ProjectCache>;
-  private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>
+  private vulnerabilityReportsMap: Map<string, VulnerabilityReportCache>;
+  private financeMap: Map<number, FinanceCache>;
+  private readonly complaintMap: Map<string, ComplaintCache> = new Map();
+  private readonly complaintsCache: ComplaintsCache = new ComplaintsCache();
+  private readonly complaintByDiscussionMap: Map<string, ComplaintByDiscussionCache> = new Map();
+  private projectFinanceMap: Map<number, ProjectFinanceCache> = new Map();
+  private financeSummaryMap: Map<string, FinanceSummaryCache> = new Map();
 
   constructor() {
     this.user = new UserCache();
@@ -62,6 +72,7 @@ class CacheStore {
     this.leadProjectsMap = new Map();
     this.projectsMap = new Map();
     this.vulnerabilityReportsMap = new Map();
+    this.financeMap = new Map();
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -146,7 +157,7 @@ class CacheStore {
 
   public getNotificationsList(userId: string): NotificationsCache {
     if (!this.notificationsListMap.has(userId)) {
-      this.notificationsListMap.set(userId, new NotificationsCacheMock());
+      this.notificationsListMap.set(userId, new NotificationsCache());
     }
     return this.notificationsListMap.get(userId)!;
   }
@@ -159,8 +170,8 @@ class CacheStore {
   }
 
   public getInvitedHackers(projectId: string): ClientInvitationsCache {
-    if(!this.InvitedHackersMap.has(projectId)){
-      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId))
+    if (!this.InvitedHackersMap.has(projectId)) {
+      this.InvitedHackersMap.set(projectId, new ClientInvitationsCache(projectId));
     }
     return this.InvitedHackersMap.get(projectId)!;
   }
@@ -186,12 +197,52 @@ class CacheStore {
     return this.projectsMap.get(projectId)!;
   }
 
-    public getVulnerabilityReport(reportId: string): VulnerabilityReportCache {
-        if (!this.vulnerabilityReportsMap.has(reportId)) {
-        this.vulnerabilityReportsMap.set(reportId, new VulnerabilityReportCache(reportId));
-        }
-        return this.vulnerabilityReportsMap.get(reportId)!;
+  public getVulnerabilityReport(reportId: string): VulnerabilityReportCache {
+    if (!this.vulnerabilityReportsMap.has(reportId)) {
+      this.vulnerabilityReportsMap.set(reportId, new VulnerabilityReportCache(reportId));
     }
+    return this.vulnerabilityReportsMap.get(reportId)!;
+  }
+
+  public getFinance(userId: number): FinanceCache {
+    if (!this.financeMap.has(userId)) {
+      this.financeMap.set(userId, new FinanceCache(userId));
+    }
+    return this.financeMap.get(userId)!;
+  }
+
+  public getComplaint(complaintId: string): ComplaintCache {
+    if (!this.complaintMap.has(complaintId)) {
+      this.complaintMap.set(complaintId, new ComplaintCache(complaintId));
+    }
+    return this.complaintMap.get(complaintId)!;
+  }
+
+  public getComplaints(): ComplaintsCache {
+    return this.complaintsCache;
+  }
+
+  public getComplaintByDiscussion(discussionId: string): ComplaintByDiscussionCache {
+    if (!this.complaintByDiscussionMap.has(discussionId)) {
+      this.complaintByDiscussionMap.set(discussionId, new ComplaintByDiscussionCache(discussionId));
+    }
+    return this.complaintByDiscussionMap.get(discussionId)!;
+  }
+
+  public getProjectFinance(projectId: number): ProjectFinanceCache {
+    if (!this.projectFinanceMap.has(projectId)) {
+      this.projectFinanceMap.set(projectId, new ProjectFinanceCache(projectId));
+    }
+    return this.projectFinanceMap.get(projectId)!;
+  }
+
+  public getFinanceSummary(userId: number, userRole: string): FinanceSummaryCache {
+    const key = `${userId}-${userRole}`;
+    if (!this.financeSummaryMap.has(key)) {
+      this.financeSummaryMap.set(key, new FinanceSummaryCache(userId, userRole));
+    }
+    return this.financeSummaryMap.get(key)!;
+  }
 }
 
 export const CACHE_STORE = new CacheStore();

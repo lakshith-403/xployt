@@ -13,11 +13,10 @@ import { NavigationView } from '@ui_lib/view';
 
 //components
 import { SidebarTab, SidebarView } from '@components/SideBar/SideBar';
-import { NotificationList } from '@components/notifications/notificationsList';
-import { NotificationButton } from '@components/notifications/notificationButton';
 import { Button } from '@components/button/base';
 import { convertToDom } from '@components/ModalManager/ModalManager';
 import ModalManager from './components/ModalManager/ModalManager';
+import { Notifications } from '@components/notifications/newNotifications';
 
 //alerts
 import alertOnlyOK from '@alerts/alertOnlyOK.html';
@@ -26,6 +25,9 @@ import alertOnlyCancel from '@alerts/alertOnlyCancel.html';
 
 //cache
 import { CACHE_STORE } from '@data/cache';
+
+// Sidebars
+import { HomeSidebar, AdminSidebar } from '@views/sideBars';
 
 //view handlers
 import { homeViewHandler } from '@views/home';
@@ -39,7 +41,6 @@ import { projectConfigFormViewHandler } from '@views/common/projectDashboard/tab
 import { vulnReportViewHandler } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
 import { profileViewHandler } from '@views/Profile';
 import { validatorApplicationViewHandler } from '@views/validator/validatorApplication/validatorApplication';
-// import { validatorDashboardViewHandler } from '@views/validator/dashboard/dashboard';
 import { projectRequestFormViewHandler } from '@views/client/projectRequestForm/projectRequestForm';
 import { discussionViewHandler } from '@views/discussion/Discussion';
 import { userDashboardViewHandler } from '@views/UserDashboard';
@@ -54,13 +55,16 @@ import { listValidatorsViewHandler } from '@views/admin/promoteToLead/listValida
 import { listUsersViewHandler } from '@views/admin/userManagement/listUsers';
 import { styleGuideViewHandler } from '@views/common/styleGuide';
 import { adminProjectsViewHandler } from '@views/admin/projects/Projects';
-import { userProfileViewHandler } from '@views/UserProfile';
+import { userProfileForAdminViewHandler, userProfileViewHandler } from '@views/UserProfile';
 import { complaintFormViewHandler } from '@views/common/projectDashboard/complaintForm';
-
-// Sidebars
-import { HomeSidebar, AdminSidebar } from '@views/sideBars';
+import { complaintViewHandler } from '@views/complaint';
 import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportReview';
-import {editReportViewHandler} from "@views/hacker/VulnerabilityReport/EditReport";
+import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
+import { adminReportsViewHandler } from '@views/admin/Report';
+import { paymentViewHandler } from './views/common/payments';
+import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
+import { privacyPolicyViewHandler } from '@views/policies/PrivacyPolicy';
+import { userAgreementViewHandler } from '@views/policies/UserAgreement';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -92,14 +96,11 @@ class TopNavigationView implements NavigationView {
     logo.onclick = () => router.navigateTo('/');
     $(q, 'div', 'buttons', {}, (q) => {
       this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
-      const notificationList = new NotificationList(false, { userId: '1' });
-      const notificationButton = new NotificationButton(notificationList, q);
-      notificationButton.render();
 
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/hacker') }, 'Hackers');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/validator/application') }, 'Validators');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/client') }, 'Organizations');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
+      $(q, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -115,6 +116,7 @@ class TopNavigationView implements NavigationView {
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
         if (user.type != 'Guest') {
+          new Notifications(this.buttonContainer, user.id).render();
           new Button({
             label: 'Sign Out',
             onClick: () => {
@@ -157,13 +159,20 @@ const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefin
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
-const LandingRouteHandlers = new RouteHandler('/', [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler], undefined, false, false);
+const LandingRouteHandlers = new RouteHandler(
+  '/home/',
+  [validatorLandingPageViewHandler, clientLandingPageViewHandler, hackerLandingPageViewHandler, privacyPolicyViewHandler, userAgreementViewHandler],
+  undefined,
+  false,
+  false,
+  false
+);
 
 const ValidatorApplicationRouteHandler = new RouteHandler('/validator/application', [validatorApplicationViewHandler], undefined, false, false, false, false);
 
 const CommonRouteHandlers = new RouteHandler(
   '/',
-  [userProfileViewHandler,projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler],
+  [userProfileViewHandler, projectsViewHandler, reportsViewHandler, discussionViewHandler, userDashboardViewHandler, paymentViewHandler],
   new SidebarView('/', HomeSidebar),
   false,
   false,
@@ -177,11 +186,20 @@ const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, 
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
-const ProjectLeadRouteHandlers = new RouteHandler('/lead', [vulnReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ProjectLeadRouteHandlers = new RouteHandler('/lead', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ProjectLeadRouteHandlersWithSidebar = new RouteHandler('/lead', [leadReportFormViewHandler], undefined, false, false, false, true);
 
 const AdminRouteHandlers = new RouteHandler(
   '/admin',
-  [adminDashboardViewHandler, validatorApplicationsViewHandler, listValidatorsViewHandler, listUsersViewHandler, adminProjectsViewHandler],
+  [
+    adminDashboardViewHandler,
+    validatorApplicationsViewHandler,
+    listValidatorsViewHandler,
+    listUsersViewHandler,
+    adminProjectsViewHandler,
+    adminReportsViewHandler,
+    userProfileForAdminViewHandler,
+  ],
   new SidebarView('/', AdminSidebar),
   false,
   false,
@@ -209,6 +227,8 @@ const UserViewHandlers = new RouteHandler('/profile', [profileViewHandler], unde
 
 const DiscussionRouteHandler = new RouteHandler('/discussion', [discussionViewHandler], undefined, false, false, false, true);
 
+const ComplaintRouteHandler = new RouteHandler('/complaint/{complaintId}', [complaintViewHandler], undefined, false, false, false, true);
+
 router.setTopNavigationView(new TopNavigationView());
 
 router.addRouteHandler(HomeRouteHandler);
@@ -231,3 +251,5 @@ router.addRouteHandler(ProjectRouteHandler);
 router.addRouteHandler(UserViewHandlers);
 // router.addRouteHandler(UserProfileViewHandler);
 router.addRouteHandler(ReportRouteHandler);
+router.addRouteHandler(ComplaintRouteHandler);
+router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);

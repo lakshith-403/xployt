@@ -6,6 +6,7 @@ import ModalManager, { setContent } from '@/components/ModalManager/ModalManager
 export class UIManager {
   private static instance: UIManager;
   private static loadingScreenCounter: number = 0;
+  private static localLoadingScreenCounters: Map<string, number> = new Map();
 
   private constructor() {}
 
@@ -47,14 +48,15 @@ export class UIManager {
    */
   public static listObjectGivenKeys(q: Quark, object: any, showKeys: string[] = [], options: { className: string; preserveCasing?: boolean } = { className: '' }): void {
     $(q, 'ul', options.className, {}, (q) => {
-      Object.keys(object).forEach((key) => {
-        if (!showKeys.includes(key)) return;
-        $(q, 'li', '', {}, (q) => {
-          const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
-          $(q, 'span', '', {}, displayKey);
-          $(q, 'span', '', {}, ' : ');
-          $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
-        });
+      showKeys.forEach((key) => {
+        if (key in object) {
+          $(q, 'li', '', {}, (q) => {
+            const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+            $(q, 'span', '', {}, displayKey);
+            $(q, 'span', '', {}, ' : ');
+            $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
+          });
+        }
       });
     });
   }
@@ -104,6 +106,29 @@ export class UIManager {
     this.loadingScreenCounter = Math.max(0, this.loadingScreenCounter - 1);
     if (this.loadingScreenCounter === 0) {
       LoadingScreen.hide();
+    }
+  }
+
+  static showLocalLoadingScreen(elementId: string): void {
+    if (!elementId) return;
+
+    const counter = this.localLoadingScreenCounters.get(elementId) || 0;
+    this.localLoadingScreenCounters.set(elementId, counter + 1);
+
+    if (counter === 0) {
+      LoadingScreen.showLocal(elementId);
+    }
+  }
+
+  static hideLocalLoadingScreen(elementId: string): void {
+    if (!elementId) return;
+
+    const counter = this.localLoadingScreenCounters.get(elementId) || 0;
+    const newCounter = Math.max(0, counter - 1);
+    this.localLoadingScreenCounters.set(elementId, newCounter);
+
+    if (newCounter === 0) {
+      LoadingScreen.hideLocal(elementId);
     }
   }
 

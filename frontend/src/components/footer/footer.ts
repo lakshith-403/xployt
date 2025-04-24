@@ -1,15 +1,20 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { IconButton } from '../button/icon.button';
 import './footer.scss';
+import {router} from "@ui_lib/router";
+import {User} from "@data/user";
+import {CACHE_STORE} from "@data/cache";
 
 export class Footer {
+  user!: User;
   constructor() {}
 
-  render(q: Quark) {
+  async render(q: Quark) {
+    this.user = await CACHE_STORE.getUser().get();
     $(q, 'div', 'footer', {}, (q) => {
       $(q, 'div', 'footer-top', {}, (q) => {
         $(q, 'div', 'content-left', {}, (q) => {
-          $(q, 'img', 'footer-logo', { src: './../assets/xployt-logo.png', alt: 'logo' }, '');
+          $(q, 'img', 'footer-logo', {src: './../assets/xployt-logo.png', alt: 'logo'}, '');
           $(q, 'div', 'icons', {}, (q) => {
             new IconButton({
               icon: 'fa-brands fa-instagram',
@@ -43,9 +48,12 @@ export class Footer {
         });
 
         $(q, 'div', 'content-middle', {}, (q) => {
-          $(q, 'span', 'link', {}, 'Validator Applications');
-          $(q, 'span', 'link', {}, 'Terms and Policy');
-          $(q, 'span', 'link', {}, 'Privacy Statement');
+          $(q, 'span', 'link', {}, 'Validator Applications')
+              .addEventListener('click', () => router.navigateTo('/validator/application'));
+          (this.user?.type == "Client" || this.user?.type == "Hacker") && $(q, 'span', 'link', {}, 'User Agreement')
+              .addEventListener('click', () => router.navigateTo(`/home/user-agreement/${this.user?.type.toLocaleLowerCase}`));
+          $(q, 'span', 'link', {}, 'Privacy Policy')
+              .addEventListener('click', () => router.navigateTo(`/home/privacy-policy/${this.user?.type.toLocaleLowerCase}`));
           $(q, 'span', 'link', {}, 'Help Center');
           $(q, 'span', 'link', {}, 'Sitemap');
         });

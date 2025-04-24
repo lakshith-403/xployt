@@ -3,10 +3,13 @@ import './SideBar.scss';
 // import { Router } from '../../ui_lib/router';
 import { NavigationView } from '../../ui_lib/view';
 import { router } from '../../ui_lib/router';
+import { UserCache } from '@/data/user';
+import { CACHE_STORE } from '@/data/cache';
 export interface SidebarTab {
   id: string;
   title: string;
   url: string;
+  roles?: string[];
 }
 
 export class SidebarView implements NavigationView {
@@ -45,12 +48,18 @@ export class SidebarView implements NavigationView {
   render(q: Quark, currentRoute: string): void {
     // console.log('currentRoute', currentRoute);
     // Sidebar
-    $(q, 'div', 'side-bar', {}, (q) => {
+    $(q, 'div', 'side-bar', {}, async (q) => {
       // $(q, 'button', 'toggle-btn', { onclick: this.toggleSidebar }, (q) => {
       //   q.innerHTML = '☰';
       // });
+      const userType = (await CACHE_STORE.getUser().get()).type;
       $(q, 'nav', 'sidebar-nav', {}, (q) => {
         this.tabs.forEach((tab) => {
+          if (tab.roles != null) {
+            if (!tab.roles.includes(userType)) {
+              return;
+            }
+          }
           $(
             q,
             'button',

@@ -27,4 +27,8 @@ export class projectEndpoints {
 
     return response;
   }
+
+  static async closeProject(projectId: string): Promise<Response> {
+    return NETWORK.sendHttpRequest('POST', `/api/projects/close/${projectId}`);
+  }
 }

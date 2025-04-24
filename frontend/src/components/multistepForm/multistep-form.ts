@@ -11,7 +11,22 @@ export abstract class Step {
   abstract render: (q: Quark, formState: any, updateParentState: (newState: any) => void) => void;
 }
 export interface ValidationSchema {
-  [key: string]: 'string' | 'date' | 'array|string' | 'array|string-strict' | 'number' | 'string-strict' | 'url' | 'object|string' | 'email' | 'string|2' | 'number|null' | 'string|comma';
+  [key: string]:
+    | 'string'
+    | 'date'
+    | 'array|string'
+    | 'array|string-strict'
+    | 'number'
+    | 'string-strict'
+    | 'url'
+    | 'object|string'
+    | 'email'
+    | 'string|2'
+    | 'number|null'
+    | 'string|comma'
+    | 'date|future'
+      | 'file-strict'
+    | ((formState: any) => string);
 }
 
 export interface Steps {
@@ -302,6 +317,7 @@ class MultistepForm {
         }
       }
     }
+
     //console.log('Updated form state:', this.formState);
     if (this.checkIfRequiredFieldsAreFilled()) {
       //console.log('Required fields are filled');

@@ -8,6 +8,7 @@ import NETWORK from '@/data/network/network';
 import { BREADCRUMBS } from '@/components/breadCrumbs/breadCrumbs';
 import { CustomTable } from '@/components/table/customTable';
 import { CheckboxManager } from '@/components/checkboxManager/checkboxManager';
+import { Button, ButtonType } from '@/components/button/base';
 export default class ReportsTab {
   private projectState: string;
   private currentUser: User | null;
@@ -35,7 +36,7 @@ export default class ReportsTab {
 
   async render(q: Quark): Promise<void> {
     await this.loadData();
-    if (this.projectState !== 'Active') {
+    if (this.projectState in ['Active', 'Completed', 'Closed', 'Review']) {
       $(q, 'div', 'bg-secondary px-2 py-1 text-light-green rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
         $(q, 'span', '', {}, 'Nothing to show here yet');
       });
@@ -49,7 +50,7 @@ export default class ReportsTab {
 
         $(q, 'div', 'w-100 d-flex', {}, (q) => {
           $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
-            if (['ProjectLead', 'Client', 'Hacker', 'Validator'].includes(this.userRole)) {
+            if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(this.userRole)) {
               $(q, 'span', 'd-flex align-items-center justify-content-center flex-column w-100', {}, (q) => {
                 const reportActions = [
                   { title: 'Accepted Reports', id: 'Validated', action: () => this.fetchAndDisplayReports(this.userRole, this.projectId, 'Validated') },
@@ -78,10 +79,31 @@ export default class ReportsTab {
 
           // Right side div (3/4 of the space)
           $(q, 'div', 'col-9 d-flex flex-column align-items-center justify-content-start', {}, (q) => {
-            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%' }, (q) => {});
+            this.tableContainer = $(q, 'div', 'px-2 pt-1 w-100 d-flex flex-column align-items-center justify-content-start gap-2', { style: 'height: 100%', id: 'reports-table' }, (q) => {});
           });
         });
       });
+
+      if (this.userRole === 'ProjectLead') {
+        const buttonConfig = {
+          Completed: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Active: { label: 'Create Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Closed: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+          Review: { label: 'View Project Report', path: `/lead/projects/${this.projectId}/lead-report/${this.projectState}` },
+        };
+
+        if (buttonConfig[this.projectState as keyof typeof buttonConfig]) {
+          $(q, 'div', 'w-100 d-flex align-items-center justify-content-end mt-2', {}, (q) => {
+            new Button({
+              type: ButtonType.SECONDARY,
+              label: buttonConfig[this.projectState as keyof typeof buttonConfig].label,
+              onClick: () => {
+                router.navigateTo(buttonConfig[this.projectState as keyof typeof buttonConfig].path);
+              },
+            }).render(q);
+          });
+        }
+      }
     }
 
     // Click on Accepted Reports by default when the tab is rendered
@@ -127,8 +149,8 @@ export default class ReportsTab {
       // Display the fetched data
       if (this.tableContainer) {
         $(this.tableContainer, 'div', 'w-100', {}, async (q) => {
-          if (['ProjectLead', 'Client', 'Hacker', 'Validator'].includes(roleName)) {
-            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`);
+          if (['ProjectLead', 'Client', 'Hacker', 'Validator', 'Admin'].includes(roleName)) {
+            const response = await NETWORK.get(`/api/fetch-reports/${roleName}/${projectId}/${status}/${this.currentUser?.id}`, { localLoading: true, elementId: 'reports-table' });
             const reports = response.data.reports;
             const TABLE_HEADERS = ['Report Id', 'Severity', 'Vulnerability Type', 'Title', 'Created At'];
             const table = new CustomTable({
@@ -144,6 +166,10 @@ export default class ReportsTab {
                   router.navigateTo(`/reports/vulnerability/${this.projectId}/${report.reportId}`);
                 },
                 orderKeys: ['reportId', 'severity', 'vulnerabilityType', 'title', 'createdAt'],
+                cellClassNames: {
+                  2: 'text-small',
+                  3: 'text-small',
+                },
               },
             });
             const checkboxManager = new CheckboxManager(this.filterOptions, (checkboxValues) => {
