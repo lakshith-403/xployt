@@ -152,15 +152,24 @@ export default class Payments {
               },
             }
           : '';
-
-      return {
-        id: report.reportId,
-        severity: report.severity,
-        status: report.status,
-        amount: `$${report.payment_amount.toFixed(2)}`,
-        paid: report.paid ? 'Yes' : 'No',
-        action: paymentButton,
-      };
+      if (this.role === 'Client') {
+        return {
+          id: report.reportId,
+          severity: report.severity,
+          status: report.status,
+          amount: `$${report.payment_amount.toFixed(2)}`,
+          paid: report.paid ? 'Yes' : 'No',
+          action: paymentButton,
+        };
+      } else {
+        return {
+          id: report.reportId,
+          severity: report.severity,
+          status: report.status,
+          amount: `$${report.payment_amount.toFixed(2)}`,
+          paid: report.paid ? 'Yes' : 'No',
+        };
+      }
     });
 
     const headers = ['ID', 'Severity', 'Status', 'Amount', 'Paid'];
@@ -203,10 +212,12 @@ export default class Payments {
         $(q, 'div', 'stat-value', {}, `$${this.totalPending.toFixed(2)}`);
       });
 
-      $(q, 'div', 'stat-card', {}, (q) => {
-        $(q, 'div', 'stat-title', {}, 'Total Allocated');
-        $(q, 'div', 'stat-value', {}, `$${totalAllocated.toFixed(2)}`);
-      });
+      if (this.role !== 'Hacker') {
+        $(q, 'div', 'stat-card', {}, (q) => {
+          $(q, 'div', 'stat-title', {}, 'Total Allocated');
+          $(q, 'div', 'stat-value', {}, `$${totalAllocated.toFixed(2)}`);
+        });
+      }
     });
 
     if (totalAllocated > 0) {
@@ -220,12 +231,13 @@ export default class Payments {
         subtitle: '',
         colorScheme: 'greenTheme' as 'greenTheme',
       };
-
-      $(this.statsContainer, 'div', '', {}, (q) => {
-        $(q, 'h3', 'mb-3', {}, 'Payment Distribution');
-        const pieChart = new PieChart(pieChartOptions);
-        pieChart.render(q);
-      });
+      if (this.role !== 'Hacker') {
+        $(this.statsContainer, 'div', '', {}, (q) => {
+          $(q, 'h3', 'mb-3', {}, 'Payment Distribution');
+          const pieChart = new PieChart(pieChartOptions);
+          pieChart.render(q);
+        });
+      }
     }
   }
 
