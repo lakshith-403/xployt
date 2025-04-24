@@ -5,7 +5,7 @@ import './projectDashboard.scss';
 import OverviewTab from './tabOverview';
 import DiscussionTab from './tabDiscussion';
 import TeamTab from './tabTeam';
-import PaymentsTab from './payments';
+import PaymentsTab from './tabPayments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';

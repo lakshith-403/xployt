@@ -21,6 +21,8 @@ import { ClientInvitationsCache } from '@data/client/cache/client.invitations.ca
 import { VulnerabilityReportCache } from '@data/common/cache/vulnerabilityReport.cache';
 import { FinanceCache } from './finance/cache/finance.cache';
 import { ComplaintCache, ComplaintsCache, ComplaintByDiscussionCache } from '@/data/common/cache/complaint.cache';
+import { ProjectFinanceCache } from './finance/cache/project-finance.cache';
+import { FinanceSummaryCache } from './finance/cache/finance-summary.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -46,6 +48,8 @@ class CacheStore {
   private readonly complaintMap: Map<string, ComplaintCache> = new Map();
   private readonly complaintsCache: ComplaintsCache = new ComplaintsCache();
   private readonly complaintByDiscussionMap: Map<string, ComplaintByDiscussionCache> = new Map();
+  private projectFinanceMap: Map<number, ProjectFinanceCache> = new Map();
+  private financeSummaryMap: Map<string, FinanceSummaryCache> = new Map();
 
   constructor() {
     this.user = new UserCache();
@@ -223,6 +227,21 @@ class CacheStore {
       this.complaintByDiscussionMap.set(discussionId, new ComplaintByDiscussionCache(discussionId));
     }
     return this.complaintByDiscussionMap.get(discussionId)!;
+  }
+
+  public getProjectFinance(projectId: number): ProjectFinanceCache {
+    if (!this.projectFinanceMap.has(projectId)) {
+      this.projectFinanceMap.set(projectId, new ProjectFinanceCache(projectId));
+    }
+    return this.projectFinanceMap.get(projectId)!;
+  }
+
+  public getFinanceSummary(userId: number, userRole: string): FinanceSummaryCache {
+    const key = `${userId}-${userRole}`;
+    if (!this.financeSummaryMap.has(key)) {
+      this.financeSummaryMap.set(key, new FinanceSummaryCache(userId, userRole));
+    }
+    return this.financeSummaryMap.get(key)!;
   }
 }
 

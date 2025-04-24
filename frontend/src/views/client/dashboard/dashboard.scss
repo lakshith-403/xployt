@@ -1,4 +1,4 @@
-.client-dashboard{
+.client-dashboard {
   padding: 2rem;
   max-width: 75rem;
   margin: auto;
@@ -7,13 +7,13 @@
     padding: 2rem;
   }
 
-  .summary{
+  .summary {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 1rem;
 
-    .req-btn{
+    .req-btn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -24,13 +24,12 @@
         border-radius: 50%;
       }
     }
-
   }
 
   .card {
     gap: 0npm run start;
 
-    .card-content{
+    .card-content {
       height: 100%;
     }
   }
