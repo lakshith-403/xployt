@@ -15,20 +15,20 @@ import { router } from '@/ui_lib/router';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    title: 'Test Title',
+    title: '',
     startDate: {
-      day: '1',
-      month: '1',
-      year: '2025',
+      day: '',
+      month: '',
+      year: '',
     },
     endDate: {
-      day: '1',
-      month: '1',
-      year: '2025',
+      day: '',
+      month: '',
+      year: '',
     },
-    description: 'Test Description',
-    url: 'https://www.google.com',
-    technicalStack: 'Test Technical Stack',
+    description: '',
+    url: '',
+    technicalStack: '',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
