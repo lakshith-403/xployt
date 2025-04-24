@@ -59,7 +59,7 @@ export class LoginView extends View {
         const loginIcon = $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
         loginIcon.onclick = () => router.navigateTo('/');
 
-        $(q, 'p', 'login-description', {}, '');
+        $(q, 'p', 'login-description', {}, 'Your gateway to ethical hacking and cybersecurity collaboration.');
       });
       $(q, 'div', 'login-container', {}, (q) => {
         $(q, 'h1', 'login-title', {}, 'Sign in');

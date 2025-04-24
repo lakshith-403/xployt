@@ -10,9 +10,30 @@
   flex: 1;
   width: 20rem;
   background-color: var(--background-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .card-icon {
+      font-size: 1.5rem;
+      margin-right: 0.75rem;
+      color: var(--accent-color);
+    }
+  }
 
   .card-title {
     text-align: left;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+    color: var(--color-primary);
   }
 
   .card-content {
@@ -20,10 +41,33 @@
   }
 
   .card-price {
-    font-size: 2.5rem;
-    color: var(--light-green);
-    font-weight: 600;
-    text-align: center;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
     width: 100%;
+    font-weight: 600;
+
+    .price-currency {
+      font-size: 1.5rem;
+      color: var(--light-green);
+      margin-right: 0.25rem;
+    }
+
+    .price-amount {
+      font-size: 2.5rem;
+      color: var(--light-green);
+    }
+
+    .price-period {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-left: 0.25rem;
+    }
+  }
+
+  .card-extra {
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
   }
 }
