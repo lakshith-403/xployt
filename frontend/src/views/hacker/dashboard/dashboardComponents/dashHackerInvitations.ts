@@ -30,7 +30,7 @@ export class dashHackerInvitations {
         const projectInfo = (await projectCache.get(true, invitation.projectId.toString())) as Project;
         projectInfo.projectId = invitation.projectId;
         console.log(`Project Info for invitation ${invitation.projectId}:`, projectInfo);
-        const popupElement = await this.InvitationPopup({ projectInfo: projectInfo, hackerId: this.userId });
+        const popupElement = await this.InvitationPopup({ projectInfo: projectInfo, hackerId: this.userId, status: invitation.status });
         console.log('in status:', invitation.status);
         const statusLabels: any = {
           Pending: { label: 'View', disable: false },
@@ -47,6 +47,7 @@ export class dashHackerInvitations {
           Date: invitation.timestamp,
           title: projectInfo.title,
           startDate: projectInfo.startDate,
+          disable: disable,
           popup: new Popup({
             overlayContent: popupElement,
             label,
