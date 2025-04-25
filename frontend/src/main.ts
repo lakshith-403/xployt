@@ -62,9 +62,10 @@ import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportRe
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
-import {privacyPolicyViewHandler} from "@views/policies/PrivacyPolicy";
-import {userAgreementViewHandler} from "@views/policies/UserAgreement";
+import { privacyPolicyViewHandler } from '@views/policies/PrivacyPolicy';
+import { userAgreementViewHandler } from '@views/policies/UserAgreement';
 import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
+import { passwordResetViewHandler } from '@views/PasswordReset';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -158,6 +159,7 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
 
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const PasswordResetRouteHandler = new RouteHandler('/reset-password', [passwordResetViewHandler], undefined, true, true);
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
 
@@ -236,6 +238,7 @@ router.setTopNavigationView(new TopNavigationView());
 router.addRouteHandler(HomeRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
+router.addRouteHandler(PasswordResetRouteHandler);
 router.addRouteHandler(AdminLoginRouteHandler);
 router.addRouteHandler(LandingRouteHandlers);
 router.addRouteHandler(ValidatorApplicationRouteHandler);

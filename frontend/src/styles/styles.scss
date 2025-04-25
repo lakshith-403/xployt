@@ -81,13 +81,15 @@ html {
         opacity: 0.75;
       }
     }
+
     span {
       display: flex;
     }
   }
 }
 
-#home, .landing {
+#home,
+.landing {
   background: linear-gradient(315deg, #00473a 0%, #000909 100%);
   width: 100%;
   height: 100vh;
@@ -131,7 +133,6 @@ html {
     &:nth-child(2) {
       animation-delay: 0.3s;
     }
-
   }
 
   h1 {
@@ -145,7 +146,6 @@ html {
     background-clip: text;
     color: transparent;
     text-shadow: 0 2px 15px rgba(0, 71, 58, 0.2);
-
   }
 
   p {
@@ -173,7 +173,7 @@ html {
   width: var(--sidebar-width);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   font-family: 'Montserrat', sans-serif;
-  animation: slideRightFadeNav 0.4s ease 0.4s forwards;;
+  animation: slideRightFadeNav 0.4s ease 0.4s forwards;
 }
 
 #footer {
@@ -219,6 +219,38 @@ html {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+// Password Reset Page styles
+.reset-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.section-title {
+  margin-bottom: 1.5rem;
+  color: #e6e6e6;
+  font-size: 1.2rem;
+}
+
+.email-display {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.forgot-password-link {
+  color: #4caf50;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
 }
 
 // Animations
