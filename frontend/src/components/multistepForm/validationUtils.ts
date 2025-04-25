@@ -30,7 +30,7 @@ const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
-const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
+const urlRegex = /^(https?:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/; // Matches a valid URL
 
 const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
 
@@ -56,9 +56,8 @@ const allowedExtensions = ['txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh
 const allowedExtensionsCert = ['png', 'hiec', 'jpg', 'jpeg', 'pdf'];
 
 export const isValidFileType = (file: File, strict: boolean): boolean => {
-
   const extension = file.name.split('.').pop()?.toLowerCase() || '';
-  if(strict){
+  if (strict) {
     return allowedExtensionsCert.includes(extension) && isValidFileSize(file);
   } else {
     return allowedExtensions.includes(extension) && isValidFileSizeStrict(file);
@@ -66,14 +65,14 @@ export const isValidFileType = (file: File, strict: boolean): boolean => {
 };
 
 export const isValidFileSize = (file: File): boolean => {
-    const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
-    return file.size <= maxSizeInBytes;
-}
+  const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
+  return file.size <= maxSizeInBytes;
+};
 
 export const isValidFileSizeStrict = (file: File): boolean => {
   const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB
   return file.size <= maxSizeInBytes;
-}
+};
 
 export function validateField(key: string, value: any, expectedType: string | ((formState: any) => string)): { result: boolean; message: string } {
   // Check if expectedType is a function
@@ -212,10 +211,12 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a url
   if (expectedType === 'url') {
-    console.log('checking url: ', key, value);
+    // console.log('checking url: ', key, value);
+    // console.log(urlRegex.test(value));
     if (!urlRegex.test(value)) {
       return { result: false, message: `${key} must be a valid URL` };
     }
+    // console.log('No validation error');
   }
 
   // Verifying a string(2)
