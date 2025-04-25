@@ -8,20 +8,20 @@ import { requestProject } from '@/data/client/network/projectConfig.network';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    title: '',
+    title: 'sdf dfsdfs',
     startDate: {
-      day: '',
-      month: '',
-      year: '',
+      day: '6',
+      month: '6',
+      year: '2025',
     },
     endDate: {
-      day: '',
-      month: '',
-      year: '',
+      day: '6',
+      month: '7',
+      year: '2025',
     },
-    description: '',
+    description: 'ttttttttt',
     url: '',
-    technicalStack: '',
+    technicalStack: 'sdwd',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {
