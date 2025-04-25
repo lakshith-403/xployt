@@ -30,7 +30,7 @@ const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
-const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
+const urlRegex = /^(https?:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/; // Matches a valid URL
 
 const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
 
@@ -211,12 +211,12 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a url
   if (expectedType === 'url') {
-    console.log('checking url: ', key, value);
-    console.log(urlRegex.test(value));
+    // console.log('checking url: ', key, value);
+    // console.log(urlRegex.test(value));
     if (!urlRegex.test(value)) {
       return { result: false, message: `${key} must be a valid URL` };
     }
-    console.log('No validation error');
+    // console.log('No validation error');
   }
 
   // Verifying a string(2)
