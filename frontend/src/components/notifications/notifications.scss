@@ -2,20 +2,40 @@
   position: relative;
   display: inline-block;
   text-align: left;
+  --transition-speed: 0.25s;
 
   .notification-list {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
-    background: rgba(0, 0, 0, 0.60);
-    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.80);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding-block: 0.5rem;
     border-radius: 8px;
+    display: none;
     width: 300px;
+    max-height: 600px;
+    overflow-y: auto;
     color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: none;
+    //display: none;
     z-index: 100;
+    transition: opacity var(--transition-speed) ease,
+    transform var(--transition-speed) ease,
+    visibility var(--transition-speed) ease;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+    }
   }
 
   .notification-header {
