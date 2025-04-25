@@ -13,7 +13,7 @@ export default class Overview {
   private userCache: UserCache;
   private role!: UserType;
 
-  constructor(private projectId: string) {
+  constructor(private projectId: string, public readonly rerender: () => void) {
     this.userCache = CACHE_STORE.getUser();
   }
 
@@ -35,7 +35,7 @@ export default class Overview {
         await hacker.render(q);
         break;
       default:
-        const defaultOverview = new CommonOverview(this.projectId, this.role);
+        const defaultOverview = new CommonOverview(this.projectId, this.role, () => this.rerender());
         await defaultOverview.render(q);
         break;
     }

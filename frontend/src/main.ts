@@ -62,9 +62,9 @@ import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportRe
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
+import {privacyPolicyViewHandler} from "@views/policies/PrivacyPolicy";
+import {userAgreementViewHandler} from "@views/policies/UserAgreement";
 import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
-import { privacyPolicyViewHandler } from '@views/policies/PrivacyPolicy';
-import { userAgreementViewHandler } from '@views/policies/UserAgreement';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -85,6 +85,7 @@ ModalManager.includeModal('alertForErrors', {
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
   buttonContainer!: Quark;
+  notificationContainer!: Quark;
   userType!: Quark;
 
   willUpdate: () => void = () => {};
@@ -94,9 +95,10 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     logo.onclick = () => router.navigateTo('/');
+
     $(q, 'div', 'buttons', {}, (q) => {
       this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
-
+      this.notificationContainer = $(q, 'span', '', {}, (q) => {});
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
       $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
       $(q, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
@@ -116,7 +118,7 @@ class TopNavigationView implements NavigationView {
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
         if (user.type != 'Guest') {
-          new Notifications(this.buttonContainer, user.id).render();
+          new Notifications(this.notificationContainer, user.id).render();
           new Button({
             label: 'Sign Out',
             onClick: () => {

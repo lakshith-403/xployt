@@ -6,85 +6,62 @@ button.button-component {
   font-weight: 600;
   border-style: solid;
   border-width: 1px;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
 
   &.icon-button {
     display: flex;
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    i, svg {
+      transition: transform 0.3s ease;
+    }
+    &:hover {
+      i, svg {
+        transform: scale(1.03);
+      }
+    }
   }
+
   &.button-primary {
     background-color: var(--light-green);
     color: var(--dark-gray);
     //border-color: var(--light-gray);
   }
+
   &.button-secondary {
     background-color: rgb(0, 0, 0, 0);
     color: var(--color-primary);
     border: 2px solid;
     border-color: var(--color-primary);
-
+    transition: color 0.3s ease, border-color 0.3s ease;
   }
-  &.button-tertiary{
+
+  &.button-tertiary {
     background-color: #d94338;
     color: white;
     border: none;
   }
+
+  &.button-quaternary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-primary);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
 }
-
-// .button-component {
-//   padding: 8px 15px;
-//   margin: 10px;
-//   border: 1px solid transparent;
-//   border-radius: 10px;
-//   font-size: 16px;
-//   cursor: pointer;
-//   box-shadow: 1px 1px 0px #888888;
-//   font-family: 'Montserrat';
-
-//   &.button-secondary {
-//     background-color: var(--secondary-button-background-color);
-//     color: var(--secondary-button-text-color);
-
-//     &:hover {
-//       background-color: var(--secondary-button-hover-background-color);
-//       box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
-//     }
-
-//     &:active {
-//       background-color: var(--secondary-button-active-background-color);
-//       box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
-//     }
-//   }
-
-//   &.button-primary {
-//     background-color: var(--primary-button-background-color);
-//     color: var(--primary-button-text-color);
-
-//     &:hover {
-//       background-color: var(--primary-button-hover-background-color);
-//       box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
-//     }
-
-//     &:active {
-//       background-color: var(--primary-button-active-background-color);
-//       box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
-//     }
-//   }
-
-//   &.button-alt {
-//     background-color: var(--alt-button-background-color);
-//     color: var(--alt-button-text-color);
-//     border: 1px solid var(--primary-button-text-bordercolor);
-
-//     &:hover {
-//       background-color: var(--alt-button-hover-background-color);
-//       box-shadow: 0 4px 6px var(--button-hover-box-shadow-color);
-//     }
-
-//     &:active {
-//       background-color: var(--alt-button-active-background-color);
-//       box-shadow: 0 2px 4px var(--button-active-box-shadow-color);
-//     }
-//   }
-// }

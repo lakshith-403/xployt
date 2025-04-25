@@ -38,6 +38,8 @@ class Expertise implements Step {
           const fileInputContainer = document.querySelector('#certificates') as HTMLElement;
           const fileInputElement = fileInputContainer.querySelector('input[type="file"]') as HTMLInputElement;
 
+          state.file = fileInputElement.value;
+
           fileInputElement.addEventListener('change', () => {
             this.handleFileUploads(fileInputElement, 'cert');
           });
@@ -51,6 +53,8 @@ class Expertise implements Step {
 
             const fileInputContainer = document.querySelector('#cv') as HTMLElement;
             const fileInputElement = fileInputContainer.querySelector('input[type="file"]') as HTMLInputElement;
+
+            state.certificates = fileInputElement.value;
 
             fileInputElement.addEventListener('change', () => {
               this.handleFileUploads(fileInputElement, 'cv');
@@ -97,6 +101,7 @@ class Expertise implements Step {
   private files: File[][];
   private handleFileUploads(fileInput: HTMLInputElement, type: string): void {
     const fieldFiles = fileInput.files;
+    console.log("Files,", fieldFiles)
     if (!fieldFiles) return;
 
     this.addFiles(fieldFiles, type);
