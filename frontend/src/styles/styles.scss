@@ -202,6 +202,14 @@ html {
     color: var(--color-primary);
     position: relative;
   }
+
+  #breadcrumbs-container{
+    margin-top: var(--navbar-height);
+  }
+  #sidebar + #breadcrumbs-container {
+    margin-left: var(--sidebar-width);
+  }
+
 }
 
 .no-sidebar#content {
