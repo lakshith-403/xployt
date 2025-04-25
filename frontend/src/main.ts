@@ -182,7 +182,7 @@ const CommonRouteHandlers = new RouteHandler(
   true
 );
 
-const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+// const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
@@ -243,7 +243,7 @@ router.addRouteHandler(ValidatorApplicationRouteHandler);
 router.addRouteHandler(CommonRouteHandlers);
 router.addRouteHandler(TestRouteHandlers);
 
-router.addRouteHandler(ValidatorRouteHandlers);
+// router.addRouteHandler(ValidatorRouteHandlers);
 router.addRouteHandler(HackerRouteHandlers);
 router.addRouteHandler(ClientRouteHandlers);
 router.addRouteHandler(ProjectLeadRouteHandlers);

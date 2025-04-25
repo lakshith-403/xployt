@@ -213,6 +213,11 @@ html {
   margin-top: 0 !important;
 }
 
+// global element styles
+label{
+  width: 10rem;
+}
+
 .spaced-row {
   display: flex;
   flex-direction: row;

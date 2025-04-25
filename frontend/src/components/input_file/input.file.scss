@@ -1,28 +1,217 @@
 .file-input-container {
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   margin: 0.6rem 0;
   box-sizing: border-box;
   border-radius: 10px;
-  resize: vertical;
-  color: var(--light-gray);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  input[type="file"] {
+    display: none; /* Hide the actual file input */
+  }
 
   .file-input-label {
-    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    background-color: var(--background-secondary);
+    text-align: left;
+    width: 100%;
+    min-height: 2.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-inline: 1rem;
+
+    &:hover {
+      transform: translateX(2px);
+      color: var(--color-primary-dark, var(--color-primary));
+
+      &::after {
+        width: 50%;
+      }
+    }
+
+    .attachment-tag {
+      display: flex;
+      flex-direction: row;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+      padding: 0.5rem;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateX(2px) scale(1.02);
+      }
+
+      &:active {
+        transform: translateX(0) scale(0.95);
+      }
+
+      .delete {
+        opacity: 0.75;
+
+        &:hover {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .file-labels {
+    padding: 0.5rem 0.75rem;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--color-primary-dark, var(--color-primary));
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+
+      .file-placeholder::before {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &.has-file {
+      background-color: rgba(var(--color-primary-rgb, 0, 120, 212), 0.05);
+
+      .file-name {
+        animation: slideIn 0.3s forwards;
+        display: block;
+      }
+
+      .file-placeholder {
+        opacity: 0;
+      }
+    }
+
+    .file-placeholder {
+      transition: all 0.3s ease;
+      opacity: 0.8;
+      position: relative;
+      padding-left: 20px;
+
+      //&::before {
+      //  content: '📎';
+      //  position: absolute;
+      //  left: 0;
+      //  top: 50%;
+      //  transform: translateY(-50%) translateX(-10px);
+      //  opacity: 0;
+      //  transition: all 0.3s ease;
+      //}
+    }
+
+    .file-name {
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      height: 100%;
+      width: calc(100% - 1.5rem);
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &.drag-over {
+      border-style: dashed;
+      border-width: 2px;
+      border-color: var(--color-accent, var(--color-primary));
+      animation: pulse 1.5s infinite;
+    }
   }
 
   .file-input {
-    background-color: var(--background-secondary);
-    padding: 1rem 0.5rem;
-    border: 1px solid var(--color-primary);
-    border-radius: 4px;
-    border-radius: 10px;
+    display: none; /* Hide the actual file input */
+  }
 
-    span {
-      background-color: var(--background-secondary);
-      padding: 1rem 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+  button {
+    width: fit-content;
+    text-wrap: nowrap;
+    transition: all 0.3s ease;
+    z-index: 1;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
+
+    &:active {
+    }
+
+    &.uploading {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb, 0, 120, 212), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb, 0, 120, 212), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb, 0, 120, 212), 0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
