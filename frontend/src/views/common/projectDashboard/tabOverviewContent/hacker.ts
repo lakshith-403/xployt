@@ -5,9 +5,12 @@ import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewCont
 import { OverviewReports } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/reports';
 import { CACHE_STORE } from '@data/cache';
 import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
-import {Project, ProjectCache} from "@data/common/cache/project.cache";
-import BasicInfoComponent from "@components/basicInfo/basicInfoComponent";
-import {User} from "@data/user";
+import { Project, ProjectCache } from '@data/common/cache/project.cache';
+import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
+import { User } from '@data/user';
+import modalManager from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import { setContent } from '@/components/ModalManager/ModalManager';
 
 export default class Hacker {
   project: Project = {} as Project;
@@ -52,7 +55,7 @@ export default class Hacker {
 
       $(q, 'section', '', { id: 'payments' }, (q) => {
         $(q, 'h2', '', {}, 'Payments');
-        new OverviewPayments(this.projectId, "Hacker", this.currentUser.id).render(q);
+        new OverviewPayments(this.projectId, 'Hacker', this.currentUser.id).render(q);
       });
       $(q, 'section', '', { id: 'reports' }, (q) => {
         $(q, 'span', '', {}, (q) => {
@@ -60,9 +63,18 @@ export default class Hacker {
           new IconButton({
             icon: 'fa fa-plus',
             label: 'Create Report',
+            className: this.project.state !== 'Active' ? 'cursor-not-allowed' : '',
             onClick: () => {
-              const url = '/hacker/new-report/' + this.projectId;
-              router.navigateTo(url);
+              if (this.project.state === 'Active') {
+                const url = '/hacker/new-report/' + this.projectId;
+                router.navigateTo(url);
+              } else {
+                setContent(modalAlertOnlyOK, {
+                  '.modal-title': 'Alert',
+                  '.modal-message': 'You can only create reports for active projects',
+                });
+                modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
+              }
             },
           }).render(q);
         });
