@@ -67,14 +67,25 @@ export class LoginView extends View {
         this.emailField.render(q);
         this.passwordField.render(q);
 
-        // $(q, 'div', 'spaced-row', {}, (q) => {
-        //   $(q, 'div', 'remember-me', {}, (q) => {
-        //     $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
-        //     $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
-        //   });
+        $(q, 'div', 'spaced-row', {}, (q) => {
+          $(q, 'div', '', {}, (q) => {
+            // Empty div for spacing
+          });
 
-        //   $(q, 'a', 'label', {}, 'Forgot password?');
-        // });
+          $(
+            q,
+            'a',
+            'forgot-password-link',
+            {
+              href: '#',
+              onclick: (e: MouseEvent) => {
+                e.preventDefault();
+                router.navigateTo('/reset-password');
+              },
+            },
+            'Forgot password?'
+          );
+        });
 
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.loginButton.render(q);
