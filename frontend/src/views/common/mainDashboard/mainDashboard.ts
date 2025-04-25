@@ -98,7 +98,7 @@ export class MainDashboard extends View {
 
     $(q, 'div', 'p-4 d-flex flex-column align-items-center justify-content-center', {}, (q) => {
       $(q, 'h1', 'text-center heading-1', {}, this.getDashboardTitle());
-      $(q, 'div', 'container align-items-center justify-content-center flex-container-lg gap-2', {}, (q) => {
+      $(q, 'div', 'container .align-items-start justify-content-center flex-container-lg gap-2', {}, (q) => {
         this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center col-5', {}, (q) => {
           $(q, 'p', 'pie-chart-subtitle text-center sub-heading-3', {}, 'Project Statistics');
         });
@@ -138,6 +138,10 @@ export class MainDashboard extends View {
           callback: (project) => {
             router.navigateTo(`/projects/${project.projectId}`);
           },
+          cellClassName: '',
+          cellClassNames: {
+            1: ''
+          }
         },
       });
       table.render(this.recentProjectsContainer);
