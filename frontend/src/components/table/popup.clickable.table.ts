@@ -22,9 +22,9 @@ export class PopupTable extends ClickableTable {
           Object.values(item).forEach((element, index) => {
             if (typeof element === 'string' || typeof element === 'number') {
               console.log('string', element);
-              $(q, 'span', 'table-cell', {}, element.toString());
+              $(q, 'span', 'table-cell text-center', {}, element.toString());
             } else if (element instanceof Popup) {
-              $(q, 'span', 'table-cell', {}, (q) => {
+              $(q, 'span', 'table-cell text-center', {}, (q) => {
                 console.log('element', element);
                 element.render(q);
               });

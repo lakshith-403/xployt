@@ -9,12 +9,15 @@ import UserCard from '@components/UserCard';
 import { UserType } from '@data/user';
 import NETWORK from '@/data/network/network';
 import { FormButton } from '@/components/button/form.button';
+import { setContent } from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import modalManager from '@/components/ModalManager/ModalManager';
 
 export default class CommonOverview {
   private projectInfo: any;
   private detailedProjectInfoContainer: any;
 
-  constructor(private readonly projectId: string, private readonly userRole: UserType) {}
+  constructor(private readonly projectId: string, private readonly userRole: UserType, public readonly rerender: () => void) {}
 
   private async loadData(): Promise<void> {
     try {
@@ -51,6 +54,23 @@ export default class CommonOverview {
       if (this.projectInfo.state === 'Pending' && this.userRole === 'Client') {
         $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
           $(q, 'span', '', {}, 'Awaiting Project Lead Confirmation');
+        });
+      }
+
+      // Project Configuration Section - for Unconfigured state and Client role
+      if (['Closed', 'Review', 'Completed'].includes(this.projectInfo.state)) {
+        $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+          switch (this.projectInfo.state) {
+            case 'Closed':
+              $(q, 'span', '', {}, 'This project has been closed');
+              break;
+            case 'Review':
+              $(q, 'span', '', {}, 'This project is in review');
+              break;
+            case 'Completed':
+              $(q, 'span', '', {}, 'This project has been completed');
+              break;
+          }
         });
       }
 
@@ -121,7 +141,7 @@ export default class CommonOverview {
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles
-      if (['Configured', 'Active'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
+      if (['Configured', 'Active', 'Review', 'Closed', 'Completed'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
         (async () => {
           UIManager.listArrayObjectValues(q, 'Scopes', this.detailedProjectInfoContainer.scopes, ['scopeName'], { className: 'd-flex flex-column gap-1' });
 
@@ -141,18 +161,74 @@ export default class CommonOverview {
       }
 
       // Hacker Invitations Section - for Active state and Client role
-      if (this.projectInfo.state === 'Active' && this.userRole === 'Client') {
+      if (['Active', 'Review', 'Completed', 'Closed'].includes(this.projectInfo.state) && this.userRole === 'Client') {
         $(q, 'section', '', { id: 'reports' }, (q) => {
           $(q, 'span', '', {}, (q) => {
             $(q, 'h2', '', {}, 'Hacker Invitations');
-            new IconButton({
+            const button = new IconButton({
               icon: 'fa fa-plus',
               label: 'Invite-Hackers',
+              // disabled: this.projectInfo.state !== 'Active',
+              className: this.projectInfo.state !== 'Active' ? 'cursor-not-allowed' : '',
               onClick: () => {
-                router.navigateTo(`/client/invite-hackers/${this.projectId}`);
+                if (this.projectInfo.state === 'Active') {
+                  router.navigateTo(`/client/invite-hackers/${this.projectId}`);
+                } else {
+                  setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Alert',
+                    '.modal-message': 'You can only invite hackers to active projects',
+                  });
+                  modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
+                }
               },
             }).render(q);
           });
+        });
+      }
+
+      if (this.projectInfo.state === 'Active' && this.userRole === 'ProjectLead') {
+        $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center gap-2  justify-content-center', {}, (q) => {
+          $(q, 'span', 'col-6 text-center', {}, 'Close Project');
+          new IconButton({
+            icon: 'fa fa-check',
+            label: 'Close Project',
+            type: ButtonType.TERTIARY,
+            onClick: () => {
+              setContent(modalAlertOnlyOK, {
+                '.modal-title': 'Warning',
+                '.modal-message': 'Are you sure you want to close the project?       This action cannot be undone!',
+              });
+              modalManager
+                .show('alertOnlyOK', modalAlertOnlyOK, true)
+                .then(async () => {
+                  try {
+                    await NETWORK.delete(`/api/lead/project/${this.projectId}`, {
+                      successCallback: () => {
+                        console.log('Project closed successfully');
+                        modalManager.hide('alertOnlyOK');
+                      },
+                    });
+                  } catch (error) {
+                    setContent(modalAlertOnlyOK, {
+                      '.modal-title': 'Error',
+                      '.modal-message': 'Failed to close project. Please try again.',
+                    });
+                    modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+                  }
+                })
+                .then(() => {
+                  console.log('Project closed successfully and now showing modal');
+                  setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Alert',
+                    '.modal-message': 'Project closed successfully',
+                  });
+                  modalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                    NETWORK.invalidateCache(`/api/single-project/\\w+\\?role=ProjectLead`);
+                    this.rerender();
+                  });
+                });
+            },
+          }).render(q);
         });
       }
     });

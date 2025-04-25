@@ -4,31 +4,24 @@ import ProjectInfo from './1_ProjectInfo/ProjectInfo';
 import MultistepForm, { ValidationSchema } from '../../../components/multistepForm/multistep-form';
 import './projectRequestForm.scss';
 import { Steps } from '@/components/multistepForm/multistep-form';
-import LoadingScreen from '@/components/loadingScreen/loadingScreen';
 import { requestProject } from '@/data/client/network/projectConfig.network';
-import ModalManager, { convertToDom } from '@/components/ModalManager/ModalManager';
-import { setContent } from '@/components/ModalManager/ModalManager';
-import { modalAlertOnlyCancel } from '@/main';
-
-import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
-import { router } from '@/ui_lib/router';
 
 class ProjectRequestForm extends View {
   private formState: any = {
-    title: 'Test Title',
+    title: '',
     startDate: {
-      day: '1',
-      month: '1',
-      year: '2025',
+      day: '',
+      month: '',
+      year: '',
     },
     endDate: {
-      day: '1',
-      month: '1',
-      year: '2025',
+      day: '',
+      month: '',
+      year: '',
     },
-    description: 'Test Description',
-    url: 'https://www.google.com',
-    technicalStack: 'Test Technical Stack',
+    description: '',
+    url: '',
+    technicalStack: '',
   };
 
   private onSubmit: (formState: any) => void = async (formState: any) => {

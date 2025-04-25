@@ -16,8 +16,8 @@ export default class ProjectsView extends View {
   private params: { projectId: string };
   private userCache: UserCache;
   private user: any;
-  private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured', 'Configured'];
-  private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed', 'Closed'];
+  private static readonly FILTER_OPTIONS = ['Pending', 'Active', 'Unconfigured', 'Configured', 'Closed', 'Review'];
+  private static readonly FILTER_OPTIONS_2 = ['Rejected', 'Completed'];
 
   private projects: any[] = [];
   constructor(params: { projectId: string }) {
@@ -48,6 +48,7 @@ export default class ProjectsView extends View {
       className: 'table-projects',
       options: {
         filteredField: 'state',
+        cellClassName: 'cursor-pointer',
         falseKeys: [],
         noDataMessage: 'No projects to show',
         callback: (project) => {
@@ -83,7 +84,7 @@ export default class ProjectsView extends View {
         });
       }
 
-      const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured'].includes(project.state));
+      const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured', 'Review', 'Closed'].includes(project.state));
       const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));
 
       $(q, 'div', 'd-flex flex-column align-items-center', {}, (q) => {

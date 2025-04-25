@@ -144,6 +144,10 @@ class Network {
       if (normalizedOptions.showSuccess) {
         UIManager.showSuccessModal(response.title, response.message, normalizedOptions.successCallback);
       }
+
+      if (normalizedOptions.successCallback && !normalizedOptions.showSuccess) {
+        normalizedOptions.successCallback();
+      }
       return response;
     } catch (error: any) {
       console.error(`Error catched in handleRequest: ${method}:`, error);
