@@ -65,7 +65,8 @@ import { paymentViewHandler } from './views/common/payments';
 import {privacyPolicyViewHandler} from "@views/policies/PrivacyPolicy";
 import {userAgreementViewHandler} from "@views/policies/UserAgreement";
 import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
-
+import { signupViewHandler } from '@views/Signup';
+import { clientSignUpViewHandler } from '@views/client/signUp';
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
 ModalManager.includeModal('alertOnlyCancel', {
@@ -160,6 +161,7 @@ const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, fal
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
+const NewSignupRouteHandler = new RouteHandler('/newsignup', [signupViewHandler], undefined, false);
 
 const LandingRouteHandlers = new RouteHandler(
   '/home/',
@@ -187,6 +189,7 @@ const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarVie
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const ClientRegisterRouteHandlers = new RouteHandler('/client', [clientSignUpViewHandler], undefined, false, false, false, true);
 
 const ProjectLeadRouteHandlers = new RouteHandler('/lead', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 const ProjectLeadRouteHandlersWithSidebar = new RouteHandler('/lead', [leadReportFormViewHandler], undefined, false, false, false, true);
@@ -237,6 +240,7 @@ router.addRouteHandler(HomeRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
 router.addRouteHandler(AdminLoginRouteHandler);
+router.addRouteHandler(NewSignupRouteHandler);
 router.addRouteHandler(LandingRouteHandlers);
 router.addRouteHandler(ValidatorApplicationRouteHandler);
 
@@ -255,3 +259,4 @@ router.addRouteHandler(UserViewHandlers);
 router.addRouteHandler(ReportRouteHandler);
 router.addRouteHandler(ComplaintRouteHandler);
 router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);
+router.addRouteHandler(ClientRegisterRouteHandlers);
