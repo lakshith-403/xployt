@@ -57,6 +57,23 @@ export default class CommonOverview {
         });
       }
 
+      // Project Configuration Section - for Unconfigured state and Client role
+      if (['Closed', 'Review', 'Completed'].includes(this.projectInfo.state)) {
+        $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center justify-content-center', {}, (q) => {
+          switch (this.projectInfo.state) {
+            case 'Closed':
+              $(q, 'span', '', {}, 'This project has been closed');
+              break;
+            case 'Review':
+              $(q, 'span', '', {}, 'This project is in review');
+              break;
+            case 'Completed':
+              $(q, 'span', '', {}, 'This project has been completed');
+              break;
+          }
+        });
+      }
+
       if (this.projectInfo.state === 'Unconfigured' && this.userRole === 'Client') {
         new Button({
           label: 'Configure Project',
@@ -124,7 +141,7 @@ export default class CommonOverview {
       });
 
       // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles
-      if (['Configured', 'Active'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
+      if (['Configured', 'Active', 'Review', 'Closed', 'Completed'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
         (async () => {
           UIManager.listArrayObjectValues(q, 'Scopes', this.detailedProjectInfoContainer.scopes, ['scopeName'], { className: 'd-flex flex-column gap-1' });
 
@@ -144,15 +161,25 @@ export default class CommonOverview {
       }
 
       // Hacker Invitations Section - for Active state and Client role
-      if (this.projectInfo.state === 'Active' && this.userRole === 'Client') {
+      if (['Active', 'Review', 'Completed', 'Closed'].includes(this.projectInfo.state) && this.userRole === 'Client') {
         $(q, 'section', '', { id: 'reports' }, (q) => {
           $(q, 'span', '', {}, (q) => {
             $(q, 'h2', '', {}, 'Hacker Invitations');
-            new IconButton({
+            const button = new IconButton({
               icon: 'fa fa-plus',
               label: 'Invite-Hackers',
+              // disabled: this.projectInfo.state !== 'Active',
+              className: this.projectInfo.state !== 'Active' ? 'cursor-not-allowed' : '',
               onClick: () => {
-                router.navigateTo(`/client/invite-hackers/${this.projectId}`);
+                if (this.projectInfo.state === 'Active') {
+                  router.navigateTo(`/client/invite-hackers/${this.projectId}`);
+                } else {
+                  setContent(modalAlertOnlyOK, {
+                    '.modal-title': 'Alert',
+                    '.modal-message': 'You can only invite hackers to active projects',
+                  });
+                  modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
+                }
               },
             }).render(q);
           });
