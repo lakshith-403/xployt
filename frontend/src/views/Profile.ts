@@ -388,8 +388,21 @@ export class ProfileView extends View {
                 });
               });
             }
+          this.updateFields();
+          $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
+            new Button({
+              label: 'Change Password',
+              type: ButtonType.SECONDARY,
+              onClick: () => router.navigateTo('/reset-password'),
+            }).render(q);
+
+            new Button({
+              label: 'Save Changes',
+              type: ButtonType.PRIMARY,
+              onClick: () => this.saveChanges(),
+            }).render(q);
           });
-        }
+        });
 
         // Save button
         $(q, 'div', 'save-button-container', {}, (q) => {

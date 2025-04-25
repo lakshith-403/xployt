@@ -13,6 +13,7 @@ export interface ButtonOptions {
   label: string;
   onClick: (event: Event) => void;
   type?: ButtonType;
+  className?: string;
 }
 
 export class Button {
@@ -20,11 +21,13 @@ export class Button {
   protected onClick: (event: Event) => void;
   protected type: ButtonType;
   protected element?: Quark;
+  protected className?: string;
 
   constructor(options: ButtonOptions) {
     this.label = options.label;
     this.onClick = options.onClick;
     this.type = options.type || ButtonType.PRIMARY;
+    this.className = options.className || '';
   }
 
   set disabled(disabled: boolean) {
@@ -38,7 +41,7 @@ export class Button {
   }
 
   render(parent: Quark) {
-    this.element = $(parent, 'button', `button-${this.type} button-component`, {}, this.label);
-    if (!this.disabled ) this.element.addEventListener('click', this.onClick);
+    this.element = $(parent, 'button', `button-${this.type} button-component ${this.className}`, {}, this.label);
+    if (!this.disabled) this.element.addEventListener('click', this.onClick);
   }
 }
