@@ -31,12 +31,7 @@
     padding-inline: 1rem;
 
     &:hover {
-      transform: translateX(2px);
       color: var(--color-primary-dark, var(--color-primary));
-
-      &::after {
-        width: 50%;
-      }
     }
 
     .attachment-tag {
@@ -90,10 +85,6 @@
       }
     }
 
-    &:active {
-      transform: scale(0.98);
-    }
-
     &.has-file {
       background-color: rgba(var(--color-primary-rgb, 0, 120, 212), 0.05);
 
@@ -137,12 +128,6 @@
       text-overflow: ellipsis;
     }
 
-    &.drag-over {
-      border-style: dashed;
-      border-width: 2px;
-      border-color: var(--color-accent, var(--color-primary));
-      animation: pulse 1.5s infinite;
-    }
   }
 
   .file-input {
