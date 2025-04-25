@@ -6,6 +6,7 @@ export interface TextFieldOptions {
   type?: string;
   onChange?: (value: string) => void;
   name?: string;
+  value?: string;
 }
 
 export class TextField {
@@ -16,6 +17,7 @@ export class TextField {
   protected element?: Quark;
   protected container?: Quark;
   public name!: string;
+  public valueOption?: string;
 
   constructor(options: TextFieldOptions) {
     this.label = options.label;
@@ -23,6 +25,7 @@ export class TextField {
     this.type = options.type || 'text';
     this.onChange = options.onChange;
     this.name = options.name || '';
+    this.valueOption = options.value || '';
   }
 
   public get value() {
@@ -39,6 +42,7 @@ export class TextField {
     this.element = $(this.container, 'input', 'text-field-input', {
       type: this.type,
       placeholder: this.placeholder,
+      value: this.valueOption ? this.valueOption : '',
     });
 
     if (this.onChange) {

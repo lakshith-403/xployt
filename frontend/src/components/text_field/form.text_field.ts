@@ -8,6 +8,7 @@ export interface FormTextFieldOptions extends TextFieldOptions {
   type?: string;
   onFocus?: (event: FocusEvent) => void;
   onBlur?: (event: FocusEvent) => void;
+  valueOption?: string;
 }
 
 export class FormTextField extends TextField {
