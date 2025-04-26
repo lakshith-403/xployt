@@ -48,6 +48,7 @@ interface formState {
   skills: string;
   // certificates?: any[];
   cv?: File | any;
+  cvProcessed?: File[] | any[];
   references: string;
   relevantExperience: string;
   areaOfExpertise: string[];
@@ -82,6 +83,7 @@ class ValidatorApplication extends View {
       2: true,
     },
     cv: null,
+    cvProcessed: [],
     // certificates: [],
     // comments: '',
   };
@@ -102,7 +104,7 @@ class ValidatorApplication extends View {
     // console.log('Prepared certs', this.formState.certificates);
 
     if (this.files.length > 0 && this.files[1].length > 0) {
-      this.formState.cv = this.files[1].map((file) => {
+      this.formState.cvProcessed = this.files[1].map((file) => {
         const id = crypto.randomUUID();
         console.log('Preparing cv', file);
         return {
@@ -111,7 +113,7 @@ class ValidatorApplication extends View {
           url: `${id}.${file.name.split('.').pop()}`,
         } as ReportAttachment;
       });
-      console.log('Prepared CV', this.formState.cv);
+      console.log('Prepared CV', this.formState.cvProcessed);
     }
   }
 
@@ -140,7 +142,9 @@ class ValidatorApplication extends View {
       this.prepareFiles();
 
       const formData = new FormData();
-      formData.append('application', JSON.stringify(this.formState));
+      const formStateWithoutCV = { ...this.formState };
+      delete formStateWithoutCV.cv;
+      formData.append('application', JSON.stringify(formStateWithoutCV));
 
       // Append all valid files
       validFiles.forEach((file) => {
