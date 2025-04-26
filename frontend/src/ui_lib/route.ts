@@ -14,6 +14,7 @@ export class RouteHandler {
   hideFooter: boolean = false;
   hideBreadCrumbs: boolean = true;
   isProtected: boolean = false;
+  allowedRoles: string[] = [];
 
   /**
    * Creates an instance of RouteHandler.
@@ -31,7 +32,8 @@ export class RouteHandler {
     hideTopNavigation: boolean = false,
     hideFooter: boolean = false,
     hideBreadCrumbs: boolean = true,
-    isProtected: boolean = false
+    isProtected: boolean = false,
+    allowedRoles: string[] = []
   ) {
     this.route = route;
     this.viewHandlers = viewHandlers;
@@ -40,6 +42,7 @@ export class RouteHandler {
     this.hideFooter = hideFooter;
     this.hideBreadCrumbs = hideBreadCrumbs;
     this.isProtected = isProtected;
+    this.allowedRoles = allowedRoles;
   }
 
   /**
@@ -63,7 +66,11 @@ export class RouteHandler {
       console.log('trying protected route');
       const user = await CACHE_STORE.getUser().get();
       console.log('user', user);
-      if (user.type === 'Guest') {
+      if (this.allowedRoles.length > 0) {
+        if (!this.allowedRoles.includes(user.type)) {
+          throw new Error('User does not have permission to access this route');
+        }
+      } else if (user.type === 'Guest') {
         throw new Error('Guest user cannot access protected route');
       }
     }

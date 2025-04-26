@@ -210,7 +210,8 @@ const AdminRouteHandlers = new RouteHandler(
   false,
   false,
   false,
-  false
+  true,
+  ['Admin']
 );
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
