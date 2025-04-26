@@ -57,7 +57,7 @@ interface formState {
     2: boolean;
   };
 
-  comments: string;
+  // comments: string;
 }
 
 class ValidatorApplication extends View {
@@ -83,7 +83,7 @@ class ValidatorApplication extends View {
     },
     cv: null,
     // certificates: [],
-    comments: '',
+    // comments: '',
   };
   private files: File[][] = [];
 
@@ -201,8 +201,8 @@ class ValidatorApplication extends View {
         title: 'Terms and Conditions',
         step: new TermsAndConditions(),
         stateUsed: {
-          termsAndConditions: 'optional',
-          comments: 'optional',
+          termsAndConditions: 'required',
+          // comments: 'optional',
         },
       },
     ];
@@ -220,7 +220,7 @@ class ValidatorApplication extends View {
       references: 'string|comma',
       relevantExperience: 'string|comma',
       areaOfExpertise: 'object|string',
-      comments: 'string',
+      // comments: 'string',
     };
 
     const multistepForm = new MultistepForm(steps, this.formState, 'Apply', { progressBarLocation: 'progress-bar-bottom' }, this.onSubmit, validationSchema);
