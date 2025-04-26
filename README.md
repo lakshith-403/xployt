@@ -1,11 +1,7 @@
-# Frontend
+# Frontend of Xployt
 
 ```bash
 npm run start
 ```
 
-# Backend
-
-```bash
-mvn tomcat7:run
-```
+[Backend Repository](https://github.com/lakshith-403/xployt-backend)

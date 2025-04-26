@@ -1,4 +1,4 @@
-import { RouteHandler } from './route';
+import { RouteHandler, RouteError } from './route';
 import { NavigationView } from './view';
 // import { Quark, QuarkFunction as $ } from './quark';
 import NotFound from '../components/notFound/notFound';
@@ -76,9 +76,12 @@ class Router {
         try {
           pathFound = await routeHandler.render(path);
         } catch (error) {
-          console.error('Error rendering route:', error);
-          this.navigateTo('/login');
-          return;
+          if (error instanceof RouteError) {
+            console.error('Error rendering route:', error.message);
+            this.navigateTo('/login');
+            return;
+          }
+          throw error;
         }
         if (pathFound) {
           break;

@@ -1,0 +1,156 @@
+.hacker-signup {
+  background-color: var(--background-primary);
+  margin: 5rem 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h1 {
+    color: var(--color-primary);
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    label {
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    input {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      width: 100%;
+      font-size: 0.9rem;
+      background-color: var(--background-secondary);
+      color: var(--color-primary);
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      &:focus {
+        outline: 2px solid var(--color-primary);
+      }
+    }
+
+    // File input specific styles
+    .file-input {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .file-label {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        background-color: var(--background-secondary);
+        color: var(--color-primary);
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: var(--color-primary);
+          color: var(--background-primary);
+        }
+      }
+
+      .file-name {
+        color: var(--color-primary);
+        font-size: 0.9rem;
+      }
+    }
+
+    // Tag input specific styles
+    .tag-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      background-color: var(--background-secondary);
+      min-height: 2.5rem;
+
+      .tag {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        background-color: var(--color-primary);
+        color: var(--background-primary);
+        font-size: 0.8rem;
+
+        .remove-tag {
+          cursor: pointer;
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+
+      input {
+        border: none;
+        background: none;
+        color: var(--color-primary);
+        flex: 1;
+        min-width: 120px;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .submit-button {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    button {
+      width: fit-content;
+      text-wrap: nowrap;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      background-color: var(--color-primary);
+      color: var(--background-primary);
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .error-message {
+    color: #d56868;
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 400;
+    width: 100%;
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+} 
