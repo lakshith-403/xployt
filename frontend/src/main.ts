@@ -191,10 +191,9 @@ const CommonRouteHandlers = new RouteHandler(
 const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
-const HackerRegisterRouteHandlers = new RouteHandler('/hacker', [hackerSignUpViewHandler], undefined, false, false, false, true);
+const HackerRegisterRouteHandlers = new RouteHandler('/register', [hackerSignUpViewHandler,clientSignUpViewHandler], undefined, false, false, false, false);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
-const ClientRegisterRouteHandlers = new RouteHandler('/client', [clientSignUpViewHandler], undefined, false, false, false, true);
 
 const ProjectLeadRouteHandlers = new RouteHandler('/lead', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 const ProjectLeadRouteHandlersWithSidebar = new RouteHandler('/lead', [leadReportFormViewHandler], undefined, false, false, false, true);
@@ -265,5 +264,4 @@ router.addRouteHandler(UserViewHandlers);
 router.addRouteHandler(ReportRouteHandler);
 router.addRouteHandler(ComplaintRouteHandler);
 router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);
-router.addRouteHandler(ClientRegisterRouteHandlers);
 router.addRouteHandler(HackerRegisterRouteHandlers);

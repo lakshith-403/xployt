@@ -9,6 +9,7 @@ import { router } from "@/ui_lib/router";
 import { Button } from "@/components/button/base";
 import { FileInputBase } from "@/components/input_file/input.file";
 import { TagInput } from "@/components/text_field/tagInput/tagInput";
+import './hackerSignUp.scss';
 
 class HackerSignUp extends View {
   private skills: string[] = [];
@@ -221,4 +222,4 @@ class HackerSignUp extends View {
   }
 }
 
-export const hackerSignUpViewHandler = new ViewHandler('/register', HackerSignUp);
+export const hackerSignUpViewHandler = new ViewHandler('/hacker', HackerSignUp);

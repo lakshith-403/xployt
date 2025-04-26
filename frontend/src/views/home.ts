@@ -17,14 +17,14 @@ class HomeView extends View {
     this.clientButton = new Button({
       label: 'Submit a Project',
       onClick: () => {
-        router.navigateTo('/client');
+        router.navigateTo('/home/client');
       },
     });
     this.hackerButton = new Button({
       label: 'Start Hacking',
       type: ButtonType.SECONDARY,
       onClick: () => {
-        router.navigateTo('/hacker');
+        router.navigateTo('/home/hacker');
       },
     });
     this.dashboardButton = new Button({

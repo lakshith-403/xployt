@@ -66,7 +66,7 @@ class LandingPageClient extends View {
                     type: ButtonType.SECONDARY,
                     label: "Sign Up",
                     onClick: () => {
-                        router.navigateTo('/login');
+                        router.navigateTo('/register/client');
                     }
                 }).render(q)
             });

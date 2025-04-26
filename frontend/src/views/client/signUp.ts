@@ -7,6 +7,7 @@ import { View, ViewHandler } from "@/ui_lib/view";
 import NETWORK from "@/data/network/network";
 import { router } from "@/ui_lib/router";
 import { Button } from "@/components/button/base";
+import './signUp.scss';
 
 class ClientSignUp extends View {
   constructor() {
@@ -149,4 +150,4 @@ class ClientSignUp extends View {
   }
 }
 
-export const clientSignUpViewHandler = new ViewHandler('/register', ClientSignUp);
+export const clientSignUpViewHandler = new ViewHandler('/client', ClientSignUp);
