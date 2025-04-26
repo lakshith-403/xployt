@@ -27,6 +27,7 @@ export interface PublicUser {
   userId: string;
   name: string;
   email: string;
+  role?: string;
 }
 
 export interface Discussion {
