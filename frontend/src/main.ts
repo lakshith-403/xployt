@@ -66,6 +66,7 @@ import { privacyPolicyViewHandler } from '@views/policies/PrivacyPolicy';
 import { userAgreementViewHandler } from '@views/policies/UserAgreement';
 import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
 import { passwordResetViewHandler } from '@views/PasswordReset';
+import { systemEarningsViewHandler } from '@views/admin/earnings/SystemEarnings';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -203,6 +204,7 @@ const AdminRouteHandlers = new RouteHandler(
     adminProjectsViewHandler,
     adminReportsViewHandler,
     userProfileForAdminViewHandler,
+    systemEarningsViewHandler,
   ],
   new SidebarView('/', AdminSidebar),
   false,
