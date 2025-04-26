@@ -1,4 +1,7 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
+import { loginViewHandler } from "@views/Login";
+import { User } from "@data/user";
+import { CACHE_STORE } from "@data/cache";
 
 interface ContentItem {
   // id: number; // or string, depending on your requirements
@@ -21,10 +24,11 @@ interface Options {
   orderKeys?: string[]; // New option for specifying order
   lastLine?: boolean;
   cellClassName?: string;
-  cellClassNames?: { [key: number]: string }; // Add cell-specific class names by index
+  cellClassNames?: { [key: number]: string } | { [key: number]: ((key: string, userType: string) => string) };
 }
 
 export class CustomTable {
+  user!: User
   content: ContentItem[];
   headers: string[];
   className: string;
@@ -46,7 +50,8 @@ export class CustomTable {
     }
   }
 
-  public render(q: Quark): void {
+  public async render(q: Quark): Promise<void> {
+    this.user = await CACHE_STORE.getUser().get();
     $(q, 'div', `table ${this.className}`, {}, (q) => {
       if (this.headers && this.headers.length > 0) {
         $(q, 'div', 'table-header', {}, (q) => {
@@ -133,7 +138,14 @@ export class CustomTable {
     // console.log('orderedKeys', orderedKeys);
     orderedKeys.forEach((key: string, index: number) => {
       const element = object[key];
-      const cellClass = this.options.cellClassNames && this.options.cellClassNames[index] ? this.options.cellClassNames[index] : this.options.cellClassName || '';
+      // Determine the cell class
+      const cellClass = this.options.cellClassNames
+        ? typeof this.options.cellClassNames[index] === 'function'
+          ? (this.options.cellClassNames[index] as (key: string, user: string) => string)(element, this.user.type)
+          : typeof this.options.cellClassNames[index] === 'string'
+            ? this.options.cellClassNames[index]
+            : ''
+        : '';
 
       switch (typeof element) {
         case 'string':

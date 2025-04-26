@@ -117,16 +117,16 @@ class Expertise implements Step {
     console.log('Console in');
     for (const field of Object.values(this.fields)) {
       console.log(field);
-      field.setOnChange((value: string) => {
-        const keys = field.name.split('.');
-        // console.log(keys);
-        if (keys.length > 1) {
-          const nestedState: { [key: string]: any } = keys.reduceRight((acc: any, key: string) => ({ [key]: acc }), value);
-          this.updateParentState(nestedState);
-        } else {
-          this.updateParentState({ [keys[0]]: value });
-        }
-      });
+      // field.setOnChange((value: string) => {
+      //   const keys = field.name.split('.');
+      //   // console.log(keys);
+      //   if (keys.length > 1) {
+      //     const nestedState: { [key: string]: any } = keys.reduceRight((acc: any, key: string) => ({ [key]: acc }), value);
+      //     this.updateParentState(nestedState);
+      //   } else {
+      //     this.updateParentState({ [keys[0]]: value });
+      //   }
+      // });
     }
   }
 }

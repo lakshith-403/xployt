@@ -1,3 +1,5 @@
+import { CACHE_STORE } from "@data/cache";
+
 /**
  * Matches a URL against a specified pattern.
  * @param url - The URL to match.

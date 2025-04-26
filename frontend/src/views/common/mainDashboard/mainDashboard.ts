@@ -8,6 +8,7 @@ import * as utils from '@/ui_lib/utils';
 import { CACHE_STORE } from '@/data/cache';
 import { router } from '@/ui_lib/router';
 import { UserType } from '@/data/user';
+import { mapProjectStateToClass } from "@/styles/style.util";
 
 export class MainDashboard extends View {
   private pieChartContainer!: HTMLElement;
@@ -140,7 +141,7 @@ export class MainDashboard extends View {
           },
           cellClassName: '',
           cellClassNames: {
-            1: ''
+            1: mapProjectStateToClass
           }
         },
       });
