@@ -8,11 +8,13 @@ import NETWORK from "@/data/network/network";
 import { router } from "@/ui_lib/router";
 import { Button } from "@/components/button/base";
 import { FileInputBase } from "@/components/input_file/input.file";
+import { TagInput } from "@/components/text_field/tagInput/tagInput";
 
 class HackerSignUp extends View {
   private skills: string[] = [];
   private availableSkills: { id: number; skill: string }[] = [];
   private certificateField: FileInputBase;
+  private skillsInput: TagInput;
 
   constructor() {
     super();
@@ -22,6 +24,15 @@ class HackerSignUp extends View {
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
       name: 'certificates'
+    });
+    this.skillsInput = new TagInput({
+      label: 'Skills',
+      placeholder: 'Select your skills',
+      suggestions: [],
+      onChange: (skills) => {
+        this.skills = skills;
+        console.log('Selected skills:', this.skills);
+      }
     });
   }
 
@@ -33,6 +44,16 @@ class HackerSignUp extends View {
           id: skill.id,
           skill: skill.skill
         }));
+        // Update TagInput suggestions with available skills
+        this.skillsInput = new TagInput({
+          label: 'Skills',
+          placeholder: 'Select your skills',
+          suggestions: this.availableSkills.map(s => s.skill),
+          onChange: (skills) => {
+            this.skills = skills;
+            console.log('Selected skills:', this.skills);
+          }
+        });
         if (this.currentQuark) {
           await this.rerender();
         }
@@ -95,46 +116,6 @@ class HackerSignUp extends View {
     })
   };
 
-  private renderSkills(q: Quark): void {
-    $(q, 'div', 'skills-container', {}, (q) => {
-      $(q, 'h3', '', {}, 'Select Your Skills');
-      $(q, 'div', 'skills-grid', {}, (q) => {
-        if (this.availableSkills.length === 0) {
-          $(q, 'div', 'no-skills', {}, 'Loading skills...');
-          return;
-        }
-        
-        this.availableSkills.forEach(skill => {
-          $(q, 'div', 'skill-item', {}, (q) => {
-            const isChecked = this.skills.includes(skill.skill);
-            $(q, 'input', '', {
-              type: 'checkbox',
-              id: `skill-${skill.id}`,
-              checked: isChecked
-            }, (q) => {
-              const inputElement = q as unknown as HTMLInputElement;
-              // Set initial state
-              inputElement.checked = isChecked;
-              
-              inputElement.addEventListener('change', (e) => {
-                const target = e.target as HTMLInputElement;
-                if (target.checked) {
-                  if (!this.skills.includes(skill.skill)) {
-                    this.skills.push(skill.skill);
-                  }
-                } else {
-                  this.skills = this.skills.filter(s => s !== skill.skill);
-                }
-                console.log('Current skills:', this.skills); // Debug log
-              });
-            });
-            $(q, 'label', '', { for: `skill-${skill.id}` }, skill.skill);
-          });
-        });
-      });
-    });
-  }
-
   render(q: Quark): void {
     $(q, 'div', 'hacker-signup', {}, (q) => {
       $(q, 'h1', '', {}, 'Hacker Sign Up');
@@ -168,7 +149,9 @@ class HackerSignUp extends View {
       $(q, 'div', 'form-field', {}, (q) => {
         this.certificateField.render(q);
       });
-      this.renderSkills(q);
+      $(q, 'div', 'form-field', {}, (q) => {
+        this.skillsInput.render(q);
+      });
     });
 
     $(q, 'div', 'submit-button', {}, (q) => {
