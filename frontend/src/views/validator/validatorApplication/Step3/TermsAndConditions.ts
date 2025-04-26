@@ -14,13 +14,13 @@ export class TermsAndConditions implements Step {
   private privacyPolicy?: Checkbox;
 
   constructor() {
-    this.commentsField = new TextField({
-      label: 'Additional Comments',
-      placeholder: 'Enter any additional comments',
-      onChange: (value) => {
-        this.updateParentState!({ comments: value });
-      },
-    });
+    // this.commentsField = new TextField({
+    //   label: 'Additional Comments',
+    //   placeholder: 'Enter any additional comments',
+    //   onChange: (value) => {
+    //     this.updateParentState!({ comments: value });
+    //   },
+    // });
 
     this.acceptTermsCheckbox = new Checkbox({
       label: 'I have read and accept the terms and conditions in the Validator Application Agreement.',
@@ -53,7 +53,6 @@ export class TermsAndConditions implements Step {
       $(q, 'p', '', {}, 'Please read and accept the terms and conditions to proceed.');
 
       $(q, 'div', 'policies', {}, (q) => {
-
         $(q, 'div', 'form-field', {}, (q) => {
           this.acceptTermsCheckbox!.render(q);
           this.acceptTermsCheckbox?.setChecked(state.termsAndConditions[0]);
@@ -62,7 +61,7 @@ export class TermsAndConditions implements Step {
             e.preventDefault();
             const url = '/home/user-agreement/validator';
             window.open(url, '_blank');
-          })
+          });
         });
 
         $(q, 'div', 'form-field', {}, (q) => {
@@ -73,7 +72,7 @@ export class TermsAndConditions implements Step {
             e.preventDefault();
             const url = '/home/privacy-policy/validator';
             window.open(url, '_blank');
-          })
+          });
         });
 
         $(q, 'div', 'form-field', {}, (q) => {
@@ -81,10 +80,10 @@ export class TermsAndConditions implements Step {
           this.joinYourCheckbox?.setChecked(state.termsAndConditions[1]);
         });
 
-        $(q, 'div', 'form-field', {}, (q) => {
-          this.commentsField!.render(q);
-          this.commentsField?.setValue(state.comments);
-        });
+        // $(q, 'div', 'form-field', {}, (q) => {
+        //   this.commentsField!.render(q);
+        //   this.commentsField?.setValue(state.comments);
+        // });
       });
     });
   }
