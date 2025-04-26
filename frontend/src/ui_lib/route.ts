@@ -3,6 +3,13 @@ import { extractPathParams, extractQueryParams, matchUrl, matchUrlWithBase } fro
 import { ViewHandler } from './view';
 import { NavigationView } from './view';
 import { router } from './router';
+
+export class RouteError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 /**
  * Handles routing logic for a specific route and its associated view handlers.
  */
@@ -68,10 +75,10 @@ export class RouteHandler {
       console.log('user', user);
       if (this.allowedRoles.length > 0) {
         if (!this.allowedRoles.includes(user.type)) {
-          throw new Error('User does not have permission to access this route');
+          throw new RouteError('User does not have permission to access this route');
         }
       } else if (user.type === 'Guest') {
-        throw new Error('Guest user cannot access protected route');
+        throw new RouteError('Guest user cannot access protected route');
       }
     }
 
