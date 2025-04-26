@@ -10,9 +10,9 @@ import { router } from '@/ui_lib/router';
 import alertOnlyConfirm from '@alerts/alertOnlyConfirm.html';
 import ModalManager, { convertToDom, setContent } from '@components/ModalManager/ModalManager';
 import NETWORK from '@/data/network/network';
-import {modalAlertForErrors, modalAlertOnlyOK} from '@/main';
-import {ReportAttachment} from "@data/common/cache/vulnerabilityReport.cache";
-import {isValidFileType} from "@components/multistepForm/validationUtils";
+import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
+import { ReportAttachment } from '@data/common/cache/vulnerabilityReport.cache';
+import { isValidFileType } from '@components/multistepForm/validationUtils';
 
 // The modal for validator application
 const modalElement = convertToDom(alertOnlyConfirm);
@@ -35,30 +35,30 @@ interface Step {
 }
 
 interface formState {
-  name: string,
-  email: string,
-  mobile: string,
-  country: string,
-  linkedin: string,
+  name: string;
+  email: string;
+  mobile: string;
+  country: string;
+  linkedin: string;
   dateOfBirth: {
-    day: string,
-    month: string,
-    year: string,
-  },
-  skills: string,
-  certificates?: any,
-  cv?: any,
-  references:string,
-  relevantExperience: string,
-  areaOfExpertise: string[],
+    day: string;
+    month: string;
+    year: string;
+  };
+  skills: string;
+  // certificates?: any[];
+  cv?: File | any;
+  references: string;
+  relevantExperience: string;
+  areaOfExpertise: string[];
   termsAndConditions: {
-    0: boolean,
-    1: boolean,
-    2: boolean,
-  },
+    0: boolean;
+    1: boolean;
+    2: boolean;
+  };
 
-  comments: string,
-};
+  comments: string;
+}
 
 class ValidatorApplication extends View {
   private formState: formState = {
@@ -81,35 +81,38 @@ class ValidatorApplication extends View {
       1: true,
       2: true,
     },
-
+    cv: null,
+    // certificates: [],
     comments: '',
   };
   private files: File[][] = [];
 
   private prepareFiles(): void {
-    console.log("File list", this.files)
-      this.formState.certificates = this.files[0].map((file) => {
-        console.log("Preparing cert", file);
-        const id = crypto.randomUUID();
-        return {
-          id,
-          name: file.name,
-          url: `${id}.${file.name.split('.').pop()}`,
-        } as ReportAttachment;
-      });
+    console.log('File list', this.files);
+    // this.formState.certificates = this.files[0].map((file) => {
+    //   console.log('Preparing cert', file);
+    //   const id = crypto.randomUUID();
+    //   return {
+    //     id,
+    //     name: file.name,
+    //     url: `${id}.${file.name.split('.').pop()}`,
+    //   } as ReportAttachment;
+    // });
 
-    console.log("Prepared certs", this.formState.certificates)
+    // console.log('Prepared certs', this.formState.certificates);
 
+    if (this.files.length > 0 && this.files[1].length > 0) {
       this.formState.cv = this.files[1].map((file) => {
         const id = crypto.randomUUID();
-        console.log("Preparing cv", file)
+        console.log('Preparing cv', file);
         return {
           id,
           name: file.name,
           url: `${id}.${file.name.split('.').pop()}`,
         } as ReportAttachment;
       });
-    console.log("Prepared CV", this.formState.cv)
+      console.log('Prepared CV', this.formState.cv);
+    }
   }
 
   private onSubmit: (formState: any) => void = async () => {
@@ -118,34 +121,40 @@ class ValidatorApplication extends View {
       const validFiles = this.files.flat().filter((file, index) => {
         if (!isValidFileType(file, true)) {
           validation = false;
-          console.error('validation error: ', "Invalid file");
+          console.error('validation error: ', 'Invalid file');
           setContent(modalAlertOnlyOK, {
             '.modal-title': 'Validation Error',
             '.modal-message': `Invalid file ${file.name}`,
           });
           ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
 
-          index === 0 ? this.files[0] = [] : this.files[1].splice(index - 1, 1);
+          index === 0 ? (this.files[0] = []) : this.files[1].splice(index - 1, 1);
           return false;
         }
         return true;
       });
-        if (!validation) {
-            return;
-        }
+      if (!validation) {
+        return;
+      }
 
       this.prepareFiles();
 
       const formData = new FormData();
       formData.append('application', JSON.stringify(this.formState));
+
+      // Append all valid files
       validFiles.forEach((file) => {
         formData.append('files', file);
-      })
+      });
 
-      const response = await NETWORK.sendHttpRequest('POST', '/api/validator/manage', formData, 'multipart/form-data');
-      ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
-        console.log('response', response);
-        // router.navigateTo('/');
+      const response = await NETWORK.post('/api/validator/manage', formData, {
+        dataTransferType: 'multipart/form-data',
+        successCallback: () => {
+          ModalManager.show('applicationSubmitted', modalElement, true).then(() => {
+            console.log('response', response);
+            router.navigateTo('/');
+          });
+        },
       });
     } catch (error: any) {
       console.error('Error submitting application:', error);
@@ -160,8 +169,6 @@ class ValidatorApplication extends View {
         ModalManager.hide('alertForErrors');
       });
     }
-
-    router.navigateTo('/dashboard');
   };
 
   render(q: Quark): void {
@@ -185,7 +192,7 @@ class ValidatorApplication extends View {
           relevantExperience: 'optional',
           areaOfExpertise: 'optional',
           skills: 'optional',
-          // certificate: 'optional',
+          certificates: 'optional',
           cv: 'optional',
           references: 'optional',
         },
@@ -208,8 +215,8 @@ class ValidatorApplication extends View {
       linkedin: 'url',
       dateOfBirth: 'date',
       skills: 'string|comma',
-      // certificates: '',
-      cv: 'string',
+      certificates: 'string',
+      cv: 'ignore',
       references: 'string|comma',
       relevantExperience: 'string|comma',
       areaOfExpertise: 'object|string',
