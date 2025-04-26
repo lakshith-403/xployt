@@ -236,6 +236,24 @@ export class DiscussionView extends View {
 
     if (content.trim() === '' && this.selectedFiles.length === 0) return;
 
+    let attachments: Attachment[] = this.selectedFiles.map((file) => ({
+      id: crypto.randomUUID(),
+      type: 'other',
+      url: '',
+      name: file.name,
+      uploadedBy: {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      uploadedAt: new Date(),
+    }));
+
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = attachments[i];
+      attachments[i].url = attachment.id + '.' + attachment.name.split('.').pop();
+    }
+
     // Create message and send it
     const message: Message = {
       id: crypto.randomUUID(),
@@ -245,7 +263,7 @@ export class DiscussionView extends View {
         email: user.email,
       },
       content: content,
-      attachments: [],
+      attachments: attachments,
       timestamp: new Date().toISOString(),
       type: 'text',
       discussionId: this.discussionId,

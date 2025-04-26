@@ -69,6 +69,7 @@ import { signupViewHandler } from '@views/Signup';
 import { clientSignUpViewHandler } from '@views/client/signUp';
 import { passwordResetViewHandler } from '@views/PasswordReset';
 import { hackerSignUpViewHandler } from '@views/hacker/hackerSignUp';
+import { systemEarningsViewHandler } from '@views/admin/earnings/SystemEarnings';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -188,7 +189,7 @@ const CommonRouteHandlers = new RouteHandler(
   true
 );
 
-const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+// const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 const HackerRegisterRouteHandlers = new RouteHandler('/register', [hackerSignUpViewHandler,clientSignUpViewHandler], undefined, false, false, false, false);
@@ -208,12 +209,14 @@ const AdminRouteHandlers = new RouteHandler(
     adminProjectsViewHandler,
     adminReportsViewHandler,
     userProfileForAdminViewHandler,
+    systemEarningsViewHandler,
   ],
   new SidebarView('/', AdminSidebar),
   false,
   false,
   false,
-  false
+  true,
+  ['Admin']
 );
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
@@ -252,7 +255,7 @@ router.addRouteHandler(ValidatorApplicationRouteHandler);
 router.addRouteHandler(CommonRouteHandlers);
 router.addRouteHandler(TestRouteHandlers);
 
-router.addRouteHandler(ValidatorRouteHandlers);
+// router.addRouteHandler(ValidatorRouteHandlers);
 router.addRouteHandler(HackerRouteHandlers);
 router.addRouteHandler(ClientRouteHandlers);
 router.addRouteHandler(ProjectLeadRouteHandlers);

@@ -14,7 +14,7 @@ export class UserTag {
         $(q, 'div', '', { src: 'assets/avatar.png' });
         $(q, 'span', '', {}, this.user.name);
       });
-      $(q, 'span', 'type', {}, '');
+      $(q, 'span', 'type', {}, this.user.role);
     });
   }
 }

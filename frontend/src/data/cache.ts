@@ -23,6 +23,7 @@ import { FinanceCache } from './finance/cache/finance.cache';
 import { ComplaintCache, ComplaintsCache, ComplaintByDiscussionCache } from '@/data/common/cache/complaint.cache';
 import { ProjectFinanceCache } from './finance/cache/project-finance.cache';
 import { FinanceSummaryCache } from './finance/cache/finance-summary.cache';
+import { SystemEarningsCache } from './finance/cache/system-earnings.cache';
 
 class CacheStore {
   private readonly user: UserCache;
@@ -50,6 +51,7 @@ class CacheStore {
   private readonly complaintByDiscussionMap: Map<string, ComplaintByDiscussionCache> = new Map();
   private projectFinanceMap: Map<number, ProjectFinanceCache> = new Map();
   private financeSummaryMap: Map<string, FinanceSummaryCache> = new Map();
+  private systemEarningsCache: SystemEarningsCache;
 
   constructor() {
     this.user = new UserCache();
@@ -73,6 +75,7 @@ class CacheStore {
     this.projectsMap = new Map();
     this.vulnerabilityReportsMap = new Map();
     this.financeMap = new Map();
+    this.systemEarningsCache = new SystemEarningsCache();
   }
 
   public getClientProjects(clientId: string): ProjectsClientCache {
@@ -242,6 +245,10 @@ class CacheStore {
       this.financeSummaryMap.set(key, new FinanceSummaryCache(userId, userRole));
     }
     return this.financeSummaryMap.get(key)!;
+  }
+
+  public getSystemEarnings(): SystemEarningsCache {
+    return this.systemEarningsCache;
   }
 }
 
