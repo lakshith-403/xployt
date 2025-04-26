@@ -56,7 +56,7 @@ class Expertise implements Step {
             const fileInputContainer = document.querySelector('#cv') as HTMLElement;
             const fileInputElement = fileInputContainer.querySelector('input[type="file"]') as HTMLInputElement;
 
-            state.certificates = fileInputElement.value;
+            // state.cv = fileInputElement.value;
 
             fileInputElement.addEventListener('change', () => {
               this.handleFileUploads(fileInputElement, 'cv');

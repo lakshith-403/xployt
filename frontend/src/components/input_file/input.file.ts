@@ -38,6 +38,7 @@ export class FileInputBase {
   }
 
   public setValue(files: FileList | null | undefined): void {
+    console.log('Setting value', files);
     if (files) {
       this.files = Array.from(files); // Update the files array
       this.renderUploadedFiles();
