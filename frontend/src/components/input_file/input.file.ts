@@ -1,6 +1,6 @@
-import {QuarkFunction as $, Quark} from './../../ui_lib/quark';
+import { QuarkFunction as $, Quark } from './../../ui_lib/quark';
 import './input.file.scss';
-import {Button, ButtonType} from '@components/button/base';
+import { Button, ButtonType } from '@components/button/base';
 
 export interface FileInputProps {
   label?: string;
@@ -34,6 +34,13 @@ export class FileInputBase {
     }
     if (this.props.onChange) {
       this.props.onChange(files);
+    }
+  }
+
+  public setValue(files: FileList | null | undefined): void {
+    if (files) {
+      this.files = Array.from(files); // Update the files array
+      this.renderUploadedFiles();
     }
   }
 
@@ -72,7 +79,7 @@ export class FileInputBase {
     const container = $(parent, 'div', 'file-input-container', {});
 
     $(container, 'label', 'label', {}, 'Attachments');
-    this.fileInputLabel = $(container, 'span', 'file-input-label', {},);
+    this.fileInputLabel = $(container, 'span', 'file-input-label', {});
 
     this.element = $(container, 'input', 'file-input', {
       type: 'file',
@@ -88,7 +95,7 @@ export class FileInputBase {
       type: ButtonType.PRIMARY,
       onClick: (e) => {
         e.preventDefault();
-        e.stopPropagation()
+        e.stopPropagation();
         console.log(this.element);
         this.element.click();
       },
