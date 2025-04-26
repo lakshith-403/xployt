@@ -13,7 +13,7 @@ class SignupView extends View {
       label: 'Sign Up as Hacker',
       type: ButtonType.SECONDARY,
       onClick: () => {
-        router.navigateTo('/hacker/signup');
+        router.navigateTo('/hacker/register');
       },
     });
     this.clientButton = new Button({

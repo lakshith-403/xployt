@@ -7,10 +7,41 @@ import { View, ViewHandler } from "@/ui_lib/view";
 import NETWORK from "@/data/network/network";
 import { router } from "@/ui_lib/router";
 import { Button } from "@/components/button/base";
+import { FileInputBase } from "@/components/input_file/input.file";
 
-class ClientSignUp extends View {
+class HackerSignUp extends View {
+  private skills: string[] = [];
+  private availableSkills: { id: number; skill: string }[] = [];
+  private certificateField: FileInputBase;
+
   constructor() {
     super();
+    this.loadSkills();
+    this.certificateField = new FileInputBase({
+      label: 'Certificates',
+      accept: '.pdf,.jpg,.jpeg,.png',
+      multiple: true,
+      name: 'certificates'
+    });
+  }
+
+  private async loadSkills() {
+    try {
+      const response = await NETWORK.get('/api/hackerSkills');
+      if (response.data && response.data.skills) {
+        this.availableSkills = response.data.skills.map((skill: any) => ({
+          id: skill.id,
+          skill: skill.skill
+        }));
+        if (this.currentQuark) {
+          await this.rerender();
+        }
+      } else {
+        console.error('Invalid skills data format:', response.data);
+      }
+    } catch (error) {
+      console.error('Failed to load skills:', error);
+    }
   }
 
   private fields: { [key: string]: FormTextField } = {
@@ -64,9 +95,49 @@ class ClientSignUp extends View {
     })
   };
 
+  private renderSkills(q: Quark): void {
+    $(q, 'div', 'skills-container', {}, (q) => {
+      $(q, 'h3', '', {}, 'Select Your Skills');
+      $(q, 'div', 'skills-grid', {}, (q) => {
+        if (this.availableSkills.length === 0) {
+          $(q, 'div', 'no-skills', {}, 'Loading skills...');
+          return;
+        }
+        
+        this.availableSkills.forEach(skill => {
+          $(q, 'div', 'skill-item', {}, (q) => {
+            const isChecked = this.skills.includes(skill.skill);
+            $(q, 'input', '', {
+              type: 'checkbox',
+              id: `skill-${skill.id}`,
+              checked: isChecked
+            }, (q) => {
+              const inputElement = q as unknown as HTMLInputElement;
+              // Set initial state
+              inputElement.checked = isChecked;
+              
+              inputElement.addEventListener('change', (e) => {
+                const target = e.target as HTMLInputElement;
+                if (target.checked) {
+                  if (!this.skills.includes(skill.skill)) {
+                    this.skills.push(skill.skill);
+                  }
+                } else {
+                  this.skills = this.skills.filter(s => s !== skill.skill);
+                }
+                console.log('Current skills:', this.skills); // Debug log
+              });
+            });
+            $(q, 'label', '', { for: `skill-${skill.id}` }, skill.skill);
+          });
+        });
+      });
+    });
+  }
+
   render(q: Quark): void {
-    $(q, 'div', 'client-signup', {}, (q) => {
-      $(q, 'h1', '', {}, 'Client Sign Up');
+    $(q, 'div', 'hacker-signup', {}, (q) => {
+      $(q, 'h1', '', {}, 'Hacker Sign Up');
       $(q, 'div', 'form-field', {}, (q) => {
         this.fields.email.render(q);
       });
@@ -94,6 +165,10 @@ class ClientSignUp extends View {
       $(q, 'div', 'form-field', {}, (q) => {
         this.fields.linkedIn.render(q);
       });
+      $(q, 'div', 'form-field', {}, (q) => {
+        this.certificateField.render(q);
+      });
+      this.renderSkills(q);
     });
 
     $(q, 'div', 'submit-button', {}, (q) => {
@@ -112,18 +187,32 @@ class ClientSignUp extends View {
             return;
           }
 
+          console.log('Submitting with skills:', this.skills);
+
           try {
-            const response = await NETWORK.post('/api/clientRegister', {
-              email: this.fields.email.getValue(),
-              password: this.fields.password.getValue(),
-              username: this.fields.username.getValue(),
-              firstName: this.fields.firstName.getValue(),
-              lastName: this.fields.lastName.getValue(),
-              phone: this.fields.phone.getValue(),
-              dob: this.fields.dob.getValue(),
-              linkedIn: this.fields.linkedIn.getValue(),
-              companyName: this.fields.companyName.getValue(),
-            }, {
+            const formData = new FormData();
+            formData.append('email', this.fields.email.getValue());
+            formData.append('password', this.fields.password.getValue());
+            formData.append('username', this.fields.username.getValue());
+            formData.append('firstName', this.fields.firstName.getValue());
+            formData.append('lastName', this.fields.lastName.getValue());
+            formData.append('phone', this.fields.phone.getValue());
+            formData.append('dob', this.fields.dob.getValue());
+            formData.append('linkedIn', this.fields.linkedIn.getValue());
+            formData.append('companyName', this.fields.companyName.getValue());
+            formData.append('skills', JSON.stringify(this.skills));
+
+            const certificateFiles = this.certificateField.getElement().files;
+            if (certificateFiles) {
+              for (let i = 0; i < certificateFiles.length; i++) {
+                formData.append('certificates', certificateFiles[i]);
+              }
+            }
+
+            const response = await NETWORK.post('/api/register', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
               successCallback: () => {
                 setContent(modalAlertOnlyOK, {
                   '.modal-title': 'Success',
@@ -149,4 +238,4 @@ class ClientSignUp extends View {
   }
 }
 
-export const clientSignUpViewHandler = new ViewHandler('/register', ClientSignUp);
+export const hackerSignUpViewHandler = new ViewHandler('/register', HackerSignUp);

@@ -68,6 +68,7 @@ import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadRep
 import { signupViewHandler } from '@views/Signup';
 import { clientSignUpViewHandler } from '@views/client/signUp';
 import { passwordResetViewHandler } from '@views/PasswordReset';
+import { hackerSignUpViewHandler } from '@views/hacker/hackerSignUp';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -190,6 +191,7 @@ const CommonRouteHandlers = new RouteHandler(
 const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const HackerRegisterRouteHandlers = new RouteHandler('/hacker', [hackerSignUpViewHandler], undefined, false, false, false, true);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 const ClientRegisterRouteHandlers = new RouteHandler('/client', [clientSignUpViewHandler], undefined, false, false, false, true);
@@ -264,3 +266,4 @@ router.addRouteHandler(ReportRouteHandler);
 router.addRouteHandler(ComplaintRouteHandler);
 router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);
 router.addRouteHandler(ClientRegisterRouteHandlers);
+router.addRouteHandler(HackerRegisterRouteHandlers);
