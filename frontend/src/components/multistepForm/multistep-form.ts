@@ -12,6 +12,8 @@ export abstract class Step {
 export interface ValidationSchema {
   [key: string]:
     | 'string'
+    | 'single-word'
+    | 'tel'
     | 'date'
     | 'array|string'
     | 'array|string-strict'
@@ -24,6 +26,7 @@ export interface ValidationSchema {
     | 'number|null'
     | 'string|comma'
     | 'date|future'
+    | 'date|past'
     | 'file-strict'
     | 'ignore'
     | ((formState: any) => string);

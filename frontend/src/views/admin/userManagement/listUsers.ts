@@ -116,6 +116,7 @@ export class ListUsers extends View {
       headers: this.TABLE_HEADERS,
       className: 'table-users py-1 mb-4',
       options: {
+        clickable: false,
         filteredField: 'Status',
         falseKeys: filterOptions,
         noDataMessage: 'No users to show',

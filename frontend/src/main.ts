@@ -122,7 +122,7 @@ class TopNavigationView implements NavigationView {
         this.notificationContainer.innerHTML = '';
         if (user.type != 'Guest') {
           new Notifications(this.notificationContainer, user.id).render();
-          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/dashboard') }, 'Dashboard');
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo(user.type === 'Admin' ? '/admin' : '/dashboard') }, 'Dashboard');
           new Button({
             label: 'Sign Out',
             onClick: () => {
