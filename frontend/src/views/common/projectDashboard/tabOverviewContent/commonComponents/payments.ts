@@ -41,7 +41,7 @@ export class OverviewPayments {
 
     $(q, 'div', 'section-content', {}, (q) => {
       // Only show price cards for Client and ProjectLead
-      if (['Client', 'ProjectLead', 'Admin', 'Hacker'].includes(this.userRole)) {
+      if (['Client', 'ProjectLead', 'Admin'].includes(this.userRole)) {
         $(q, 'div', 'summary', {}, (q) => {
           new PriceCard({
             title: 'Total Price Pool',

@@ -70,9 +70,10 @@ export class PriceCard extends Card {
   update(newAmount: number): void {
     this.amount = newAmount;
     if (this.element) {
-      const priceElement = this.element.querySelector('.card-price');
+      const priceElement = this.element.querySelector('.price-amount');
       if (priceElement) {
-        priceElement.textContent = `$${typeof this.amount === 'number' ? this.amount.toFixed(2) : this.amount}`;
+        priceElement.textContent = `${typeof this.amount === 'number' ? this.amount.toFixed(2) : this.amount}`;
+        console.log(`Updated price: ${this.amount}`);
       }
     }
   }
