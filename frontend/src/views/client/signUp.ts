@@ -32,11 +32,6 @@ class ClientSignUp extends View {
       name: 'password',
       type: 'password',
     }),
-    username: new FormTextField({
-      label: 'Username',
-      placeholder: 'Enter your username',
-      name: 'username',
-    }),
     firstName: new FormTextField({
       label: 'First Name',
       placeholder: 'Enter your first name',
@@ -73,10 +68,6 @@ class ClientSignUp extends View {
   private validateField(fieldName: string): boolean {
     const field = this.fields[fieldName];
     const value = field.getValue();
-
-    // if (field.props.required && !value) {
-    //   return false;
-    // }
 
     if (fieldName === 'email' && value) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -137,10 +128,6 @@ class ClientSignUp extends View {
 
           $(q, 'div', 'form-row', {}, (q) => {
             $(q, 'div', 'form-field', {}, (q) => {
-              this.fields.username.render(q);
-            });
-
-            $(q, 'div', 'form-field', {}, (q) => {
               this.fields.dob.render(q);
             });
           });
@@ -187,7 +174,6 @@ class ClientSignUp extends View {
         $(q, 'div', 'terms', {}, (q) => {
           $(q, 'p', '', {}, 'By signing up, you agree to our ');
           $(q, 'a', '', { href: '/terms' }, 'Terms of Service');
-          // $(q, ' and ');
           $(q, 'a', '', { href: '/privacy' }, 'Privacy Policy');
         });
 
@@ -196,7 +182,7 @@ class ClientSignUp extends View {
           onClick: async () => {
             if (this.isLoading) return;
 
-            const requiredFields = ['email', 'password', 'username', 'firstName', 'lastName', 'phone', 'dob'];
+            const requiredFields = ['email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
             const invalidFields = requiredFields.filter(field => !this.validateField(field));
 
             if (invalidFields.length > 0) {
@@ -220,7 +206,6 @@ class ClientSignUp extends View {
               const response = await NETWORK.post('/api/clientRegister', {
                 email: this.fields.email.getValue(),
                 password: this.fields.password.getValue(),
-                username: this.fields.username.getValue(),
                 firstName: this.fields.firstName.getValue(),
                 lastName: this.fields.lastName.getValue(),
                 phone: this.fields.phone.getValue(),
