@@ -19,6 +19,7 @@ export class ProfileView extends View {
   private firstNameField: FormTextField;
   private lastNameField: FormTextField;
   private dobField: FormTextField;
+  private usernameField: FormTextField;
 
   // Role-specific fields
   // Validator/ProjectLead fields
@@ -34,6 +35,7 @@ export class ProfileView extends View {
   private skillSetContainer: Quark | null = null;
   private skillSetFields: FormTextField[] = [];
   private skillSetValues: string[] = [];
+  private linkedInField: FormTextField;
 
   constructor() {
     super();
@@ -46,6 +48,7 @@ export class ProfileView extends View {
     this.firstNameField = new FormTextField({ label: 'First Name' });
     this.lastNameField = new FormTextField({ label: 'Last Name' });
     this.dobField = new FormTextField({ label: 'Date of Birth', type: 'date' });
+    this.usernameField = new FormTextField({ label: 'Username', placeholder: 'Enter your username', name: 'username' });
 
     // Client fields
     this.companyNameField = new FormTextField({ label: 'Company Name' });
@@ -55,6 +58,9 @@ export class ProfileView extends View {
     this.experienceField = new FormTextField({ label: 'Experience' });
     this.cvLinkField = new FormTextField({ label: 'CV Link' });
     this.referenceField = new FormTextField({ label: 'References' });
+
+    // Hacker fields
+    this.linkedInField = new FormTextField({ label: 'LinkedIn Profile', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedIn' });
   }
 
   private async loadProfile() {
@@ -108,6 +114,7 @@ export class ProfileView extends View {
 
       // Update common fields
       this.emailField.setValue(this.profile.email || '');
+      this.usernameField.setValue(this.profile.username || '');
       this.phoneField.setValue(this.profile.phone || '');
       this.firstNameField.setValue(this.profile.firstName || '');
       this.lastNameField.setValue(this.profile.lastName || '');
@@ -125,9 +132,12 @@ export class ProfileView extends View {
         this.referenceField.setValue(this.profile.reference || '');
       } else if (this.profile.role === 'Client') {
         this.companyNameField.setValue(this.profile.companyName || '');
-      } else if (this.profile.role === 'Hacker' && this.profile.skillSet) {
-        this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
-        this.updateSkillSetFields();
+      } else if (this.profile.role === 'Hacker') {
+        this.linkedInField.setValue(this.profile.linkedIn || '');
+        if (this.profile.skillSet) {
+          this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+          this.updateSkillSetFields();
+        }
       }
     }
   }
@@ -230,6 +240,7 @@ export class ProfileView extends View {
       // Collect common field data
       const profileData: any = {
         email: this.emailField.getValue(),
+        username: this.usernameField.getValue(),
         phone: this.phoneField.getValue(),
         firstName: this.firstNameField.getValue(),
         lastName: this.lastNameField.getValue(),
@@ -252,6 +263,7 @@ export class ProfileView extends View {
 
         // Filter out empty skills
         profileData.skillSet = this.skillSetValues.filter((skill) => skill.trim() !== '');
+        profileData.linkedIn = this.linkedInField.getValue();
       }
 
       console.log('Sending profile data:', JSON.stringify(profileData, null, 2));
@@ -358,6 +370,7 @@ export class ProfileView extends View {
         $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
           $(q, 'div', 'profile-details', {}, (q) => {
             this.emailField.render(q);
+            this.usernameField.render(q);
             this.phoneField.render(q);
             this.firstNameField.render(q);
             this.lastNameField.render(q);
@@ -384,16 +397,37 @@ export class ProfileView extends View {
             } else if (this.profile.role === 'Hacker') {
               console.log('Rendering hacker section with skills:', this.skillSetValues);
               $(q, 'div', 'hacker-details', {}, (q) => {
+                // Add Blast Points display
+                $(q, 'div', 'blast-points-container', {}, (q) => {
+                  $(q, 'h3', '', {}, 'Blast Points');
+                  $(q, 'div', 'blast-points-value', {}, (q) => {
+                    const blastPoints = this.profile.blastPoints !== undefined ? this.profile.blastPoints : 0;
+                    console.log('Displaying blast points:', blastPoints);
+                    $(q, 'span', 'points', {}, blastPoints.toString());
+                  });
+                });
+
                 $(q, 'h3', '', {}, 'Skills');
                 $(q, 'div', 'skill-set-container', {}, (q) => {
                   this.skillSetContainer = q;
                   // Initialize skill fields with existing values
                   if (this.profile.skillSet) {
                     console.log('Skill set from profile:', this.profile.skillSet);
-                    this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+                    // Handle both array and string formats
+                    if (typeof this.profile.skillSet === 'string') {
+                      this.skillSetValues = [this.profile.skillSet];
+                    } else if (Array.isArray(this.profile.skillSet)) {
+                      this.skillSetValues = [...this.profile.skillSet];
+                    } else {
+                      this.skillSetValues = [];
+                    }
                     console.log('Processed skill set values:', this.skillSetValues);
                     this.updateSkillSetFields();
                   }
+                });
+                // Add LinkedIn field for hackers
+                $(q, 'div', 'linkedin-field', {}, (q) => {
+                  this.linkedInField.render(q);
                 });
               });
             }
