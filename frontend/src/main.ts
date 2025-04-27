@@ -105,9 +105,6 @@ class TopNavigationView implements NavigationView {
       this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
       this.notificationContainer = $(q, 'span', '', {}, (q) => {});
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -122,8 +119,10 @@ class TopNavigationView implements NavigationView {
         // console.log(user);
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
+        this.notificationContainer.innerHTML = '';
         if (user.type != 'Guest') {
           new Notifications(this.notificationContainer, user.id).render();
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/dashboard') }, 'Dashboard');
           new Button({
             label: 'Sign Out',
             onClick: () => {
@@ -140,18 +139,13 @@ class TopNavigationView implements NavigationView {
             },
           }).render(this.buttonContainer);
         } else {
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
           new Button({
             label: 'Sign In',
             onClick: () => {
               router.navigateTo('/login');
-              this.renderButtons();
-            },
-          }).render(this.buttonContainer);
-
-          new Button({
-            label: 'Admin Sign In',
-            onClick: () => {
-              router.navigateTo('/adminLogin');
               this.renderButtons();
             },
           }).render(this.buttonContainer);
@@ -192,7 +186,7 @@ const CommonRouteHandlers = new RouteHandler(
 // const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
-const HackerRegisterRouteHandlers = new RouteHandler('/register', [hackerSignUpViewHandler,clientSignUpViewHandler], undefined, false, false, false, false);
+const HackerRegisterRouteHandlers = new RouteHandler('/register', [hackerSignUpViewHandler, clientSignUpViewHandler], undefined, false, false, false, false);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
