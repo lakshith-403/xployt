@@ -23,7 +23,7 @@ class Payments implements Step {
       this.renderFieldFullWidth(q, this.fields.informative, state.informative);
       this.renderFieldFullWidth(q, this.fields.informativeFunding, state.informativeFunding);
       // this.renderFieldFullWidth(q, this.fields.visibility, state.visibility);
-      this.renderFieldFullWidth(q, this.fields.attachments, state.attachments);
+      // this.renderFieldFullWidth(q, this.fields.attachments, state.attachments);
     });
   }
 
@@ -64,7 +64,7 @@ class Payments implements Step {
     low: new TagInput({ label: 'Low', placeholder: 'Select areas considered of low risk from those given', name: 'low', suggestions: lowLevelTags }),
     informative: new TagInput({ label: 'Informative', placeholder: 'Select areas considered of informative risk from those given', name: 'informative', suggestions: informativeLevelTags }),
     // visibility: new FormRadioButton({ label: 'Visibility', options: ['Public', 'Private'], name: 'visibility' }),
-    attachments: new FileInputBase({ label: 'Attachments', name: 'attachments' }),
+    // attachments: new FileInputBase({ label: 'Attachments', name: 'attachments' }),
   };
 
   constructor() {
