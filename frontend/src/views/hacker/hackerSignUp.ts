@@ -1,14 +1,14 @@
-import { setContent } from "@/components/ModalManager/ModalManager";
-import modalManager from "@/components/ModalManager/ModalManager";
-import { modalAlertOnlyOK } from "@/main";
-import { FormTextField } from "@/components/text_field/form.text_field";
-import { QuarkFunction as $, Quark } from "@/ui_lib/quark";
-import { View, ViewHandler } from "@/ui_lib/view";
-import NETWORK from "@/data/network/network";
-import { router } from "@/ui_lib/router";
-import { Button } from "@/components/button/base";
-import { FileInputBase } from "@/components/input_file/input.file";
-import { TagInput } from "@/components/text_field/tagInput/tagInput";
+import { setContent } from '@/components/ModalManager/ModalManager';
+import modalManager from '@/components/ModalManager/ModalManager';
+import { modalAlertOnlyOK } from '@/main';
+import { FormTextField } from '@/components/text_field/form.text_field';
+import { QuarkFunction as $, Quark } from '@/ui_lib/quark';
+import { View, ViewHandler } from '@/ui_lib/view';
+import NETWORK from '@/data/network/network';
+import { router } from '@/ui_lib/router';
+import { Button } from '@/components/button/base';
+import { FileInputBase } from '@/components/input_file/input.file';
+import { TagInput } from '@/components/text_field/tagInput/tagInput';
 import './hackerSignUp.scss';
 
 class HackerSignUp extends View {
@@ -24,7 +24,7 @@ class HackerSignUp extends View {
       label: 'Certificates',
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
-      name: 'certificates'
+      name: 'certificates',
     });
     this.skillsInput = new TagInput({
       label: 'Skills',
@@ -33,7 +33,7 @@ class HackerSignUp extends View {
       onChange: (skills) => {
         this.skills = skills;
         console.log('Selected skills:', this.skills);
-      }
+      },
     });
   }
 
@@ -43,17 +43,17 @@ class HackerSignUp extends View {
       if (response.data && response.data.skills) {
         this.availableSkills = response.data.skills.map((skill: any) => ({
           id: skill.id,
-          skill: skill.skill
+          skill: skill.skill,
         }));
         // Update TagInput suggestions with available skills
         this.skillsInput = new TagInput({
           label: 'Skills',
           placeholder: 'Select your skills',
-          suggestions: this.availableSkills.map(s => s.skill),
+          suggestions: this.availableSkills.map((s) => s.skill),
           onChange: (skills) => {
             this.skills = skills;
             console.log('Selected skills:', this.skills);
-          }
+          },
         });
         if (this.currentQuark) {
           await this.rerender();
@@ -67,54 +67,54 @@ class HackerSignUp extends View {
   }
 
   private fields: { [key: string]: FormTextField } = {
-    email: new FormTextField({ 
-      label: 'Email *', 
+    email: new FormTextField({
+      label: 'Email *',
       placeholder: 'Enter your email',
       name: 'email',
-      type: 'email'
+      type: 'email',
     }),
-    password: new FormTextField({ 
-      label: 'Password *', 
+    password: new FormTextField({
+      label: 'Password *',
       placeholder: 'Enter your password',
       name: 'password',
-      type: 'password'
+      type: 'password',
     }),
-    username: new FormTextField({ 
-      label: 'Username', 
+    username: new FormTextField({
+      label: 'Username',
       placeholder: 'Enter your username',
-      name: 'username'
+      name: 'username',
     }),
-    firstName: new FormTextField({ 
-      label: 'First Name', 
+    firstName: new FormTextField({
+      label: 'First Name',
       placeholder: 'Enter your first name',
-      name: 'firstName'
+      name: 'firstName',
     }),
-    lastName: new FormTextField({ 
-      label: 'Last Name', 
+    lastName: new FormTextField({
+      label: 'Last Name',
       placeholder: 'Enter your last name',
-      name: 'lastName'
+      name: 'lastName',
     }),
-    phone: new FormTextField({ 
-      label: 'Phone Number', 
+    phone: new FormTextField({
+      label: 'Phone Number',
       placeholder: 'Enter your phone number',
-      name: 'phone'
+      name: 'phone',
     }),
-    companyName: new FormTextField({ 
-      label: 'Company Name', 
+    companyName: new FormTextField({
+      label: 'Company Name',
       placeholder: 'Enter your company name',
-      name: 'companyName'
+      name: 'companyName',
     }),
-    dob: new FormTextField({ 
-      label: 'Date of Birth', 
+    dob: new FormTextField({
+      label: 'Date of Birth',
       placeholder: 'YYYY-MM-DD',
       name: 'dob',
-      type: 'date'
+      type: 'date',
     }),
-    linkedIn: new FormTextField({ 
-      label: 'LinkedIn Profile', 
+    linkedIn: new FormTextField({
+      label: 'LinkedIn Profile',
       placeholder: 'Enter your LinkedIn profile URL',
-      name: 'linkedIn'
-    })
+      name: 'linkedIn',
+    }),
   };
 
   render(q: Quark): void {
@@ -156,18 +156,18 @@ class HackerSignUp extends View {
     });
 
     $(q, 'div', 'submit-button', {}, (q) => {
-      new Button({     
+      new Button({
         label: 'Sign Up',
         onClick: async () => {
           const requiredFields = ['email', 'password', 'username', 'firstName', 'lastName', 'phone', 'dob'];
-          const emptyFields = requiredFields.filter(field => !this.fields[field].getValue());
-          
+          const emptyFields = requiredFields.filter((field) => !this.fields[field].getValue());
+
           if (emptyFields.length > 0) {
             setContent(modalAlertOnlyOK, {
               '.modal-title': 'Error',
               '.modal-message': 'Failed to sign up. Please fill in all the fields.',
             });
-            modalManager.show('alertOnlyOK', modalAlertOnlyOK);    
+            modalManager.show('alertOnlyOK', modalAlertOnlyOK);
             return;
           }
 
@@ -186,37 +186,36 @@ class HackerSignUp extends View {
             formData.append('companyName', this.fields.companyName.getValue());
             formData.append('skills', JSON.stringify(this.skills));
 
-            const certificateFiles = this.certificateField.getElement().files;
-            if (certificateFiles) {
-              for (let i = 0; i < certificateFiles.length; i++) {
-                formData.append('certificates', certificateFiles[i]);
-              }
-            }
+            // const certificateFiles = this.certificateField.getElement().files;
+            // if (certificateFiles) {
+            //   for (let i = 0; i < certificateFiles.length; i++) {
+            //     formData.append('certificates', certificateFiles[i]);
+            //   }
+            // }
 
             const response = await NETWORK.post('/api/register', formData, {
               headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
               },
               successCallback: () => {
                 setContent(modalAlertOnlyOK, {
                   '.modal-title': 'Success',
-                  '.modal-message': 'Registration successful!'
+                  '.modal-message': 'Registration successful!',
                 });
                 modalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
                   router.navigateTo('/');
-                }); 
-              } 
-            });   
-      
+                });
+              },
+            });
           } catch (error) {
             console.error('Registration failed:', error);
             setContent(modalAlertOnlyOK, {
               '.modal-title': 'Error',
-              '.modal-message': 'Registration failed. Please try again.'
+              '.modal-message': 'Registration failed. Please try again.',
             });
             modalManager.show('alertOnlyOK', modalAlertOnlyOK);
           }
-        }
+        },
       }).render(q);
     });
   }

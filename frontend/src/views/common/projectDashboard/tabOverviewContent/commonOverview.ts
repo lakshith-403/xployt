@@ -186,7 +186,7 @@ export default class CommonOverview {
         });
       }
 
-      if (this.projectInfo.state === 'Active' && this.userRole === 'ProjectLead') {
+      if (['Active', 'Unconfigured', 'Configured'].includes(this.projectInfo.state) && this.userRole === 'ProjectLead') {
         $(q, 'div', 'bg-secondary text-light-green px-2 py-1 rounded w-100 d-flex align-items-center gap-2  justify-content-center', {}, (q) => {
           $(q, 'span', 'col-6 text-center', {}, 'Close Project');
           new IconButton({
@@ -196,7 +196,7 @@ export default class CommonOverview {
             onClick: () => {
               setContent(modalAlertOnlyOK, {
                 '.modal-title': 'Warning',
-                '.modal-message': 'Are you sure you want to close the project?       This action cannot be undone!',
+                '.modal-message': 'Are you sure you want to close the project? This action cannot be undone!',
               });
               modalManager
                 .show('alertOnlyOK', modalAlertOnlyOK, true)
