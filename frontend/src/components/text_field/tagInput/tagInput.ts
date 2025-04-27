@@ -10,6 +10,7 @@ interface TagInputOptions {
   placeholder?: string;
   onChange?: (value: string[]) => void;
   name?: string;
+  hideLabel?: boolean;
 }
 
 export class TagInput {
@@ -21,11 +22,13 @@ export class TagInput {
   private label?: string;
   private updateTags?: (tags: string[]) => void;
   public name?: string;
+  private hideLabel?: boolean;
 
   constructor(options: TagInputOptions) {
     this.suggestions = options.suggestions;
     this.label = options.label;
     this.name = options.name;
+    this.hideLabel = options.hideLabel;
     this.textField = new FormTextField({
       label: '',
       class: 'tag-input',
@@ -65,6 +68,12 @@ export class TagInput {
     this.renderAutocomplete();
   }
 
+  public removeAllTags() {
+    this.selectedTags = [];
+    this.tagList?.updateTags(this.selectedTags); // Update the TagList
+    this.renderAutocomplete();
+  }
+
   private handleInputChange(value: string) {
     this.inputValue = value;
     this.renderAutocomplete();
@@ -94,9 +103,16 @@ export class TagInput {
   public setOnChange(onChange: (tags: string[]) => void) {
     this.updateTags = onChange;
   }
+
+  public getSelectedTags(): string[] {
+    return [...this.selectedTags];
+  }
+
   render(q: Quark) {
     $(q, 'div', 'parent-element', {}, (q) => {
-      $(q, 'label', 'tag-input-label', {}, this.label);
+      if (!this.hideLabel) {
+        $(q, 'label', 'tag-input-label', {}, this.label);
+      }
       $(q, 'div', 'tag-input-container', {}, (q) => {
         this.tagList = new TagList({ tags: this.selectedTags, onRemove: (tag) => this.removeTag(tag), update: this.updateTags! });
         this.tagList.render(q);
