@@ -79,11 +79,6 @@ class HackerSignUp extends View {
       name: 'password',
       type: 'password',
     }),
-    username: new FormTextField({
-      label: 'Username',
-      placeholder: 'Enter your username',
-      name: 'username',
-    }),
     firstName: new FormTextField({
       label: 'First Name',
       placeholder: 'Enter your first name',
@@ -127,9 +122,6 @@ class HackerSignUp extends View {
         this.fields.password.render(q);
       });
       $(q, 'div', 'form-field', {}, (q) => {
-        this.fields.username.render(q);
-      });
-      $(q, 'div', 'form-field', {}, (q) => {
         this.fields.firstName.render(q);
       });
       $(q, 'div', 'form-field', {}, (q) => {
@@ -159,7 +151,7 @@ class HackerSignUp extends View {
       new Button({
         label: 'Sign Up',
         onClick: async () => {
-          const requiredFields = ['email', 'password', 'username', 'firstName', 'lastName', 'phone', 'dob'];
+          const requiredFields = ['email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
           const emptyFields = requiredFields.filter((field) => !this.fields[field].getValue());
 
           if (emptyFields.length > 0) {
@@ -177,7 +169,6 @@ class HackerSignUp extends View {
             const formData = new FormData();
             formData.append('email', this.fields.email.getValue());
             formData.append('password', this.fields.password.getValue());
-            formData.append('username', this.fields.username.getValue());
             formData.append('firstName', this.fields.firstName.getValue());
             formData.append('lastName', this.fields.lastName.getValue());
             formData.append('phone', this.fields.phone.getValue());
@@ -194,9 +185,7 @@ class HackerSignUp extends View {
             }
 
             const response = await NETWORK.post('/api/register', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
+              dataTransferType: 'multipart/form-data',
               successCallback: () => {
                 setContent(modalAlertOnlyOK, {
                   '.modal-title': 'Success',
