@@ -33,10 +33,8 @@ export class Button {
   set disabled(disabled: boolean) {
     if (disabled) {
       this.element?.classList.add('disabled');
-      this.element?.addEventListener('click', this.onClick);
     } else {
       this.element?.classList.remove('disabled');
-      this.element?.removeEventListener('click', this.onClick);
     }
   }
 
