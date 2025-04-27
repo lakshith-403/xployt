@@ -63,16 +63,23 @@ export class ProfileView extends View {
       const response = await NETWORK.get(`/api/new-profile/${user.id}`);
       this.profile = response.data.profile;
 
-      console.log('ProfileView: Loaded profile:', this.profile);
+      console.log('ProfileView: Raw profile data:', this.profile);
 
       // Ensure skillSet is properly initialized for Hackers
       if (this.profile.role === 'Hacker') {
-        this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : this.profile.skillSet ? [this.profile.skillSet] : [];
-        console.log('Loaded skill set:', this.skillSetValues);
+        console.log('Raw skillSet from backend:', this.profile.skillSet);
+        // Handle both array and string formats
+        if (typeof this.profile.skillSet === 'string') {
+          this.skillSetValues = [this.profile.skillSet];
+        } else if (Array.isArray(this.profile.skillSet)) {
+          this.skillSetValues = [...this.profile.skillSet];
+        } else {
+          this.skillSetValues = [];
+        }
+        console.log('Processed skillSet values:', this.skillSetValues);
       }
     } catch (error) {
       console.error('Error loading profile:', error);
-      // alert('Error loading profile:' + error);
     }
   }
 
@@ -134,14 +141,15 @@ export class ProfileView extends View {
       this.skillSetFields = [];
 
       // Create fields for existing skills
-      if (Array.isArray(this.skillSetValues)) {
+      if (Array.isArray(this.skillSetValues) && this.skillSetValues.length > 0) {
+        console.log('Creating fields for skills:', this.skillSetValues);
         this.skillSetValues.forEach((skill, index) => {
           if (skill && skill.trim() !== '') {
             this.addSkillField(this.skillSetContainer!, skill, index);
           }
         });
-      }
-      if (this.skillSetValues.length === 0) {
+      } else {
+        console.log('No skills to display');
         $(this.skillSetContainer, 'div', 'skill-field-container', {}, (q) => {
           $(q, 'p', 'text-center', {}, 'No skills added yet');
         });
@@ -162,16 +170,15 @@ export class ProfileView extends View {
   }
 
   private addSkillField(container: Quark, value: string, index: number) {
+    console.log('Adding skill field with value:', value, 'at index:', index);
     $(container, 'div', 'skill-field-container', {}, (q) => {
       const skillField = new FormTextField({
         label: `Skill ${index + 1}`,
         placeholder: 'Your skill',
-        valueOption: value,
+        value: value,
       });
-      console.log('Skill field:', skillField);
-      console.log('Skill value here:', value);
-      // Set value after creation instead of in constructor
-      skillField.setValue(value);
+      
+      console.log('Skill field created with value:', value);
 
       $(q, 'div', 'skill-field-row', {}, (q) => {
         skillField.render(q);
@@ -314,6 +321,7 @@ export class ProfileView extends View {
 
   // Separate UI creation into its own method
   private createUIStructure(q: Quark): void {
+    q.innerHTML = '';
     $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
       // Header row
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
@@ -374,15 +382,16 @@ export class ProfileView extends View {
                 this.companyNameField.render(q);
               });
             } else if (this.profile.role === 'Hacker') {
+              console.log('Rendering hacker section with skills:', this.skillSetValues);
               $(q, 'div', 'hacker-details', {}, (q) => {
                 $(q, 'h3', '', {}, 'Skills');
                 $(q, 'div', 'skill-set-container', {}, (q) => {
                   this.skillSetContainer = q;
-                  // Move updateFields call here for Hacker role
+                  // Initialize skill fields with existing values
                   if (this.profile.skillSet) {
-                    console.log('Skill set:', this.profile.skillSet);
-                    this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet.filter((skill: string) => skill && skill.trim() !== '') : [];
-                    console.log('Skill set values:', this.skillSetValues);
+                    console.log('Skill set from profile:', this.profile.skillSet);
+                    this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+                    console.log('Processed skill set values:', this.skillSetValues);
                     this.updateSkillSetFields();
                   }
                 });
