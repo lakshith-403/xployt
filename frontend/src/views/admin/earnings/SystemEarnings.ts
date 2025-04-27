@@ -15,6 +15,7 @@ class SystemEarningsView extends View {
   private endDateInput?: HTMLInputElement;
   private isDateFiltered: boolean = false;
   private filteredEarnings: SystemEarning[] = [];
+  private currentEarnings: SystemEarning[] = [];
 
   constructor(params: any) {
     super(params);
@@ -51,6 +52,11 @@ class SystemEarningsView extends View {
               label: 'Clear Filter',
               onClick: () => this.clearDateFilter(),
             }).render(q);
+
+            new Button({
+              label: 'Download CSV',
+              onClick: () => this.downloadCSV(),
+            }).render(q);
           });
         });
       });
@@ -78,6 +84,7 @@ class SystemEarningsView extends View {
       LoadingScreen.showLocal('earnings-table-container');
 
       const earningsData = await CACHE_STORE.getSystemEarnings().get(true);
+      this.currentEarnings = earningsData.earnings;
 
       this.renderSummary(earningsData.totalEarnings);
       this.renderEarningsTable(earningsData.earnings);
@@ -104,6 +111,7 @@ class SystemEarningsView extends View {
       this.isDateFiltered = true;
 
       this.filteredEarnings = await CACHE_STORE.getSystemEarnings().getByDateRange(startDate, endDate);
+      this.currentEarnings = this.filteredEarnings;
 
       // Calculate total from filtered earnings
       const totalEarnings = this.filteredEarnings.reduce((sum, earning) => sum + earning.amount, 0);
@@ -132,6 +140,46 @@ class SystemEarningsView extends View {
 
     // Reload all earnings data
     this.loadEarningsData();
+  }
+
+  private downloadCSV(): void {
+    if (!this.currentEarnings.length) {
+      alert('No data available to download');
+      return;
+    }
+
+    const headers = ['ID', 'Report ID', 'Client ID', 'Hacker ID', 'Amount', 'Description', 'Date'];
+
+    const csvRows = [
+      headers.join(','),
+      ...this.currentEarnings.map((earning) => {
+        return [
+          earning.id,
+          earning.reportId,
+          earning.clientId,
+          earning.hackerId,
+          earning.amount.toFixed(2),
+          `"${earning.description.replace(/"/g, '""')}"`, // Escape quotes in description
+          this.formatDateTime(earning.timestamp),
+        ].join(',');
+      }),
+    ];
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    // Create a download link and trigger the download
+    const link = document.createElement('a');
+    const dateInfo = this.isDateFiltered ? `_${this.startDateInput?.value}_to_${this.endDateInput?.value}` : `_${this.formatDate(new Date())}`;
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `system_earnings${dateInfo}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   private renderSummary(totalEarnings: number): void {
