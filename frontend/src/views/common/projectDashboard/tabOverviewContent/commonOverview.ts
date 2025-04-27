@@ -45,7 +45,7 @@ export default class CommonOverview {
 
             $(q, 'div', 'card-content', {}, (q) => {
               UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], {
-                className: 'info-list'
+                className: 'info-list',
               });
             });
           });
@@ -53,8 +53,7 @@ export default class CommonOverview {
           $(q, 'hr', 'section-divider', {});
 
           // Detailed Project Info Section - for Configured and Active states, ProjectLead and Client roles
-          if (['Configured', 'Active', 'Review', 'Closed', 'Completed'].includes(this.projectInfo.state) &&
-            ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
+          if (['Configured', 'Active', 'Review', 'Closed', 'Completed'].includes(this.projectInfo.state) && ['ProjectLead', 'Client', 'Admin', 'Validator'].includes(this.userRole)) {
             (async () => {
               // Scopes Card
               $(q, 'div', 'dashboard-card scopes-card', {}, (q) => {
@@ -65,7 +64,7 @@ export default class CommonOverview {
 
                 $(q, 'div', 'card-content', {}, (q) => {
                   UIManager.listArrayObjectValues(q, '', this.detailedProjectInfoContainer.scopes, ['scopeName'], {
-                    className: 'scope-list'
+                    className: 'scope-list',
                   });
                 });
               });
@@ -81,11 +80,10 @@ export default class CommonOverview {
                   const outOfScope = this.projectInfo.outOfScope || '';
                   const outOfScopeArray = outOfScope.trim() ? outOfScope.split(',').filter((item: string) => item.trim()) : ['Not specified'];
                   UIManager.listArrayValues(q, '', outOfScopeArray, {
-                    className: 'out-of-scope-list'
+                    className: 'out-of-scope-list',
                   });
                 });
               });
-
 
               // Security Requirements Card
               $(q, 'div', 'dashboard-card security-card', {}, (q) => {
@@ -98,7 +96,7 @@ export default class CommonOverview {
                   const securityRequirements = this.projectInfo.securityRequirements || '';
                   const securityRequirementsArray = securityRequirements.trim() ? securityRequirements.split(',').filter((item: string) => item.trim()) : ['Not specified'];
                   UIManager.listArrayValues(q, '', securityRequirementsArray, {
-                    className: 'security-list'
+                    className: 'security-list',
                   });
                 });
               });
@@ -114,7 +112,7 @@ export default class CommonOverview {
 
                 $(q, 'div', 'card-content', {}, (q) => {
                   UIManager.listObjectGivenKeys(q, this.projectInfo, ['noOfValidators', 'noOfHackers'], {
-                    className: 'team-list'
+                    className: 'team-list',
                   });
                 });
               });
@@ -126,9 +124,7 @@ export default class CommonOverview {
         $(q, 'div', 'dashboard-column actions-column', {}, (q) => {
           // User Card Section
           $(q, 'div', 'dashboard-card user-card-container', {}, (q) => {
-            const cardConfig = this.userRole === 'Client' ?
-              { userId: this.projectInfo.leadId, type: 'lead' } :
-              { userId: this.projectInfo.clientId, type: 'client' };
+            const cardConfig = this.userRole === 'Client' ? { userId: this.projectInfo.leadId, type: 'lead' } : { userId: this.projectInfo.clientId, type: 'client' };
 
             $(q, 'h2', 'card-title', {}, (q) => {
               $(q, 'i', 'card-icon fa fa-user', {});
@@ -197,7 +193,6 @@ export default class CommonOverview {
 
               // Action Buttons
               $(q, 'div', 'action-buttons', {}, (q) => {
-
                 $(q, 'h2', 'card-title', {}, (q) => {
                   $(q, 'i', 'card-icon fa fa-plus-circle', {});
                   $(q, 'span', '', {}, 'Actions');
