@@ -7,6 +7,7 @@ import { CACHE_STORE } from '@/data/cache';
 import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
 import { FormTextField } from '@/components/text_field/form.text_field';
+import { FileInputBase } from '../components/input_file/input.file';
 import { TagInput } from '@/components/text_field/tagInput/tagInput';
 
 export class ProfileView extends View {
@@ -35,7 +36,9 @@ export class ProfileView extends View {
   // Hacker fields
   private skillSetValues: string[] = [];
   private linkedInField: FormTextField;
+  private certificateField: FileInputBase;
   private skillsInput: TagInput;
+
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
@@ -60,6 +63,13 @@ export class ProfileView extends View {
 
     // Hacker fields
     this.linkedInField = new FormTextField({ label: 'LinkedIn Profile', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedIn' });
+
+    this.certificateField = new FileInputBase({
+      label: 'Certificates',
+      accept: '.pdf,.jpg,.jpeg,.png',
+      multiple: true,
+      name: 'certificates'
+
     this.skillsInput = new TagInput({
       label: '',
       placeholder: 'Enter your skills',
@@ -70,6 +80,7 @@ export class ProfileView extends View {
         this.skillSetValues = [];
         this.skillSetValues.push(...tags);
       },
+
     });
   }
 
@@ -198,12 +209,34 @@ export class ProfileView extends View {
       // Get required name from profile if not in fields
       profileData.name = this.profile.name; // Keep original name
 
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      // Add profile data as a JSON string
+      const profileJson = JSON.stringify(profileData);
+      formData.append('profile', profileJson);
+
+      // Add certificate files if they exist
+      const certificateFiles = this.certificateField.getFiles();
+      if (certificateFiles.length > 0) {
+        certificateFiles.forEach((file: File, index: number) => {
+          formData.append('certificates', file);
+        });
+      }
+
       // Send update request with explicit debug options
       try {
         console.log(`Sending PUT request to /api/new-profile/${user.id}`);
-        const response = await NETWORK.put(`/api/new-profile/${user.id}`, profileData, {
+        console.log('FormData contents:', {
+          profile: profileJson,
+          files: certificateFiles.map(f => f.name)
+        });
+        
+        const response = await NETWORK.put(`/api/new-profile/${user.id}`, formData, {
           handleError: true,
           throwError: true,
+          dataTransferType: 'multipart/form-data',
+          showLoading: true
         });
 
         console.log('Profile update response:', response);
@@ -336,9 +369,15 @@ export class ProfileView extends View {
                 $(q, 'div', 'skill-set-container', {}, (q) => {
                   this.skillsInput.render(q);
                 });
+
                 // Add LinkedIn field for hackers
                 $(q, 'div', 'linkedin-field', {}, (q) => {
                   this.linkedInField.render(q);
+                });
+
+                // Add certificate upload field
+                $(q, 'div', 'certificate-field', {}, (q) => {
+                  this.certificateField.render(q);
                 });
               });
             }
