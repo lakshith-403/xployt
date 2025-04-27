@@ -8,6 +8,7 @@ import * as utils from '@/ui_lib/utils';
 import { CACHE_STORE } from '@/data/cache';
 import { router } from '@/ui_lib/router';
 import { UserType } from '@/data/user';
+import { mapProjectStateToClass } from "@/styles/style.util";
 
 export class MainDashboard extends View {
   private pieChartContainer!: HTMLElement;
@@ -96,7 +97,7 @@ export class MainDashboard extends View {
     q.innerHTML = '';
     await this.loadUser();
 
-    $(q, 'div', 'p-4 d-flex flex-column align-items-center justify-content-center', {}, (q) => {
+    $(q, 'div', 'p-4 d-flex flex-column align-items-center justify-content-center mt-8', {}, (q) => {
       $(q, 'h1', 'text-center heading-1', {}, this.getDashboardTitle());
       $(q, 'div', 'container .align-items-start justify-content-center flex-container-lg gap-2', {}, (q) => {
         this.pieChartContainer = $(q, 'div', 'pie-chart-container align-items-center d-flex flex-column justify-content-center col-5', {}, (q) => {
@@ -140,7 +141,7 @@ export class MainDashboard extends View {
           },
           cellClassName: '',
           cellClassNames: {
-            1: ''
+            1: mapProjectStateToClass
           }
         },
       });

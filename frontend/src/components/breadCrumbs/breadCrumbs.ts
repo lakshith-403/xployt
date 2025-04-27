@@ -45,6 +45,15 @@ export class Breadcrumbs {
   private render(): void {
     const q = document.getElementById('breadcrumbs-container');
     if (!q) return;
+
+    // Hide the container if no breadcrumbs are present
+    if (this.breadcrumbs.length === 0) {
+      q.style.display = 'none';
+      return;
+    }
+
+    // Show the container and render breadcrumbs
+    q.style.display = 'block';
     q.innerHTML = '';
     this.breadcrumbs.forEach((breadcrumb, index) => {
       const isLast = index === this.breadcrumbs.length - 1;

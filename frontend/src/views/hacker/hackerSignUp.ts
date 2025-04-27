@@ -186,7 +186,7 @@ class HackerSignUp extends View {
             formData.append('companyName', this.fields.companyName.getValue());
             formData.append('skills', JSON.stringify(this.skills));
 
-            const certificateFiles = this.certificateField.getElement().files;
+            const certificateFiles = this.certificateField.files;
             if (certificateFiles) {
               for (let i = 0; i < certificateFiles.length; i++) {
                 formData.append('certificates', certificateFiles[i]);
