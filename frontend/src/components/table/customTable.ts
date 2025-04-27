@@ -1,7 +1,7 @@
 import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
-import { loginViewHandler } from "@views/Login";
-import { User } from "@data/user";
-import { CACHE_STORE } from "@data/cache";
+import { loginViewHandler } from '@views/Login';
+import { User } from '@data/user';
+import { CACHE_STORE } from '@data/cache';
 
 interface ContentItem {
   // id: number; // or string, depending on your requirements
@@ -24,22 +24,25 @@ interface Options {
   orderKeys?: string[]; // New option for specifying order
   lastLine?: boolean;
   cellClassName?: string;
-  cellClassNames?: { [key: number]: string } | { [key: number]: ((key: string, userType: string) => string) };
+  clickable?: boolean;
+  cellClassNames?: { [key: number]: string } | { [key: number]: (key: string, userType: string) => string };
 }
 
 export class CustomTable {
-  user!: User
+  user!: User;
   content: ContentItem[];
   headers: string[];
   className: string;
   options: Options;
   rows?: HTMLElement;
+  clickable?: boolean;
 
   constructor(params: CustomTableParams) {
     this.content = params.content;
     this.headers = params.headers;
     this.className = params.className;
     this.options = params.options;
+    this.clickable = params.options.clickable ?? true;
 
     // Set filteredField and falseKeys if options are provided
     if (this.options.filteredField && !this.options.falseKeys) {
@@ -143,23 +146,23 @@ export class CustomTable {
         ? typeof this.options.cellClassNames[index] === 'function'
           ? (this.options.cellClassNames[index] as (key: string, user: string) => string)(element, this.user.type)
           : typeof this.options.cellClassNames[index] === 'string'
-            ? this.options.cellClassNames[index]
-            : ''
+          ? this.options.cellClassNames[index]
+          : ''
         : '';
 
       switch (typeof element) {
         case 'string':
-          $(q, 'span', `table-cell text-center ${cellClass}`, {}, element == 'null' ? '-' : element);
+          $(q, 'span', `table-cell text-center ${cellClass} ${this.clickable ? 'cursor-pointer' : ''}`, {}, element == 'null' ? '-' : element);
           break;
         case 'object':
-          $(q, 'span', `table-cell text-center ${cellClass}`, {}, (q) => {
+          $(q, 'span', `table-cell text-center ${cellClass} ${this.clickable ? 'cursor-pointer' : ''}`, {}, (q) => {
             if (element !== null && typeof element.render === 'function') {
               element.render(q);
             }
           });
           break;
         default:
-          $(q, 'span', `table-cell text-center ${cellClass}`, {}, String(element) ?? '-');
+          $(q, 'span', `table-cell text-center ${cellClass} ${this.clickable ? 'cursor-pointer' : ''}`, {}, String(element) ?? '-');
       }
     });
   }
