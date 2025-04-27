@@ -19,6 +19,7 @@ export class ProfileView extends View {
   private firstNameField: FormTextField;
   private lastNameField: FormTextField;
   private dobField: FormTextField;
+  private usernameField: FormTextField;
 
   // Role-specific fields
   // Validator/ProjectLead fields
@@ -34,6 +35,7 @@ export class ProfileView extends View {
   private skillSetContainer: Quark | null = null;
   private skillSetFields: FormTextField[] = [];
   private skillSetValues: string[] = [];
+  private linkedInField: FormTextField;
 
   constructor() {
     super();
@@ -46,6 +48,7 @@ export class ProfileView extends View {
     this.firstNameField = new FormTextField({ label: 'First Name' });
     this.lastNameField = new FormTextField({ label: 'Last Name' });
     this.dobField = new FormTextField({ label: 'Date of Birth', type: 'date' });
+    this.usernameField = new FormTextField({ label: 'Username', placeholder: 'Enter your username', name: 'username' });
 
     // Client fields
     this.companyNameField = new FormTextField({ label: 'Company Name' });
@@ -55,6 +58,9 @@ export class ProfileView extends View {
     this.experienceField = new FormTextField({ label: 'Experience' });
     this.cvLinkField = new FormTextField({ label: 'CV Link' });
     this.referenceField = new FormTextField({ label: 'References' });
+
+    // Hacker fields
+    this.linkedInField = new FormTextField({ label: 'LinkedIn Profile', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedIn' });
   }
 
   private async loadProfile() {
@@ -63,16 +69,23 @@ export class ProfileView extends View {
       const response = await NETWORK.get(`/api/new-profile/${user.id}`);
       this.profile = response.data.profile;
 
-      console.log('ProfileView: Loaded profile:', this.profile);
+      console.log('ProfileView: Raw profile data:', this.profile);
 
       // Ensure skillSet is properly initialized for Hackers
       if (this.profile.role === 'Hacker') {
-        this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : this.profile.skillSet ? [this.profile.skillSet] : [];
-        console.log('Loaded skill set:', this.skillSetValues);
+        console.log('Raw skillSet from backend:', this.profile.skillSet);
+        // Handle both array and string formats
+        if (typeof this.profile.skillSet === 'string') {
+          this.skillSetValues = [this.profile.skillSet];
+        } else if (Array.isArray(this.profile.skillSet)) {
+          this.skillSetValues = [...this.profile.skillSet];
+        } else {
+          this.skillSetValues = [];
+        }
+        console.log('Processed skillSet values:', this.skillSetValues);
       }
     } catch (error) {
       console.error('Error loading profile:', error);
-      // alert('Error loading profile:' + error);
     }
   }
 
@@ -101,6 +114,7 @@ export class ProfileView extends View {
 
       // Update common fields
       this.emailField.setValue(this.profile.email || '');
+      this.usernameField.setValue(this.profile.username || '');
       this.phoneField.setValue(this.profile.phone || '');
       this.firstNameField.setValue(this.profile.firstName || '');
       this.lastNameField.setValue(this.profile.lastName || '');
@@ -118,9 +132,12 @@ export class ProfileView extends View {
         this.referenceField.setValue(this.profile.reference || '');
       } else if (this.profile.role === 'Client') {
         this.companyNameField.setValue(this.profile.companyName || '');
-      } else if (this.profile.role === 'Hacker' && this.profile.skillSet) {
-        this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
-        this.updateSkillSetFields();
+      } else if (this.profile.role === 'Hacker') {
+        this.linkedInField.setValue(this.profile.linkedIn || '');
+        if (this.profile.skillSet) {
+          this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+          this.updateSkillSetFields();
+        }
       }
     }
   }
@@ -134,14 +151,15 @@ export class ProfileView extends View {
       this.skillSetFields = [];
 
       // Create fields for existing skills
-      if (Array.isArray(this.skillSetValues)) {
+      if (Array.isArray(this.skillSetValues) && this.skillSetValues.length > 0) {
+        console.log('Creating fields for skills:', this.skillSetValues);
         this.skillSetValues.forEach((skill, index) => {
           if (skill && skill.trim() !== '') {
             this.addSkillField(this.skillSetContainer!, skill, index);
           }
         });
-      }
-      if (this.skillSetValues.length === 0) {
+      } else {
+        console.log('No skills to display');
         $(this.skillSetContainer, 'div', 'skill-field-container', {}, (q) => {
           $(q, 'p', 'text-center', {}, 'No skills added yet');
         });
@@ -162,16 +180,15 @@ export class ProfileView extends View {
   }
 
   private addSkillField(container: Quark, value: string, index: number) {
+    console.log('Adding skill field with value:', value, 'at index:', index);
     $(container, 'div', 'skill-field-container', {}, (q) => {
       const skillField = new FormTextField({
         label: `Skill ${index + 1}`,
         placeholder: 'Your skill',
-        valueOption: value,
+        value: value,
       });
-      console.log('Skill field:', skillField);
-      console.log('Skill value here:', value);
-      // Set value after creation instead of in constructor
-      skillField.setValue(value);
+      
+      console.log('Skill field created with value:', value);
 
       $(q, 'div', 'skill-field-row', {}, (q) => {
         skillField.render(q);
@@ -223,6 +240,7 @@ export class ProfileView extends View {
       // Collect common field data
       const profileData: any = {
         email: this.emailField.getValue(),
+        username: this.usernameField.getValue(),
         phone: this.phoneField.getValue(),
         firstName: this.firstNameField.getValue(),
         lastName: this.lastNameField.getValue(),
@@ -245,6 +263,7 @@ export class ProfileView extends View {
 
         // Filter out empty skills
         profileData.skillSet = this.skillSetValues.filter((skill) => skill.trim() !== '');
+        profileData.linkedIn = this.linkedInField.getValue();
       }
 
       console.log('Sending profile data:', JSON.stringify(profileData, null, 2));
@@ -314,6 +333,7 @@ export class ProfileView extends View {
 
   // Separate UI creation into its own method
   private createUIStructure(q: Quark): void {
+    q.innerHTML = '';
     $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
       // Header row
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
@@ -350,6 +370,7 @@ export class ProfileView extends View {
         $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
           $(q, 'div', 'profile-details', {}, (q) => {
             this.emailField.render(q);
+            this.usernameField.render(q);
             this.phoneField.render(q);
             this.firstNameField.render(q);
             this.lastNameField.render(q);
@@ -374,54 +395,70 @@ export class ProfileView extends View {
                 this.companyNameField.render(q);
               });
             } else if (this.profile.role === 'Hacker') {
+              console.log('Rendering hacker section with skills:', this.skillSetValues);
               $(q, 'div', 'hacker-details', {}, (q) => {
+                // Add Blast Points display
+                $(q, 'div', 'blast-points-container', {}, (q) => {
+                  $(q, 'h3', '', {}, 'Blast Points');
+                  $(q, 'div', 'blast-points-value', {}, (q) => {
+                    const blastPoints = this.profile.blastPoints !== undefined ? this.profile.blastPoints : 0;
+                    console.log('Displaying blast points:', blastPoints);
+                    $(q, 'span', 'points', {}, blastPoints.toString());
+                  });
+                });
+
                 $(q, 'h3', '', {}, 'Skills');
                 $(q, 'div', 'skill-set-container', {}, (q) => {
                   this.skillSetContainer = q;
-                  // Move updateFields call here for Hacker role
+                  // Initialize skill fields with existing values
                   if (this.profile.skillSet) {
-                    console.log('Skill set:', this.profile.skillSet);
-                    this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet.filter((skill: string) => skill && skill.trim() !== '') : [];
-                    console.log('Skill set values:', this.skillSetValues);
+                    console.log('Skill set from profile:', this.profile.skillSet);
+                    // Handle both array and string formats
+                    if (typeof this.profile.skillSet === 'string') {
+                      this.skillSetValues = [this.profile.skillSet];
+                    } else if (Array.isArray(this.profile.skillSet)) {
+                      this.skillSetValues = [...this.profile.skillSet];
+                    } else {
+                      this.skillSetValues = [];
+                    }
+                    console.log('Processed skill set values:', this.skillSetValues);
                     this.updateSkillSetFields();
                   }
+                });
+                // Add LinkedIn field for hackers
+                $(q, 'div', 'linkedin-field', {}, (q) => {
+                  this.linkedInField.render(q);
                 });
               });
             }
             this.updateFields();
-            $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
-              new Button({
-                label: 'Change Password',
-                type: ButtonType.SECONDARY,
-                onClick: () => router.navigateTo('/reset-password'),
-              }).render(q);
-
-              new Button({
-                label: 'Save Changes',
-                type: ButtonType.PRIMARY,
-                onClick: () => this.saveChanges(),
-              }).render(q);
-            });
           });
         }
-
-        // Save button
-        $(q, 'div', 'save-button-container', {}, (q) => {
+        $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
           new Button({
-            label: 'Save Changes',
-            type: ButtonType.PRIMARY,
-            onClick: () => this.saveChanges(),
+            label: 'Change Password',
+            type: ButtonType.SECONDARY,
+            onClick: () => router.navigateTo('/reset-password'),
+          }).render(q);
+
+          // Save button
+          $(q, 'div', 'save-button-container', {}, (q) => {
+            new Button({
+              label: 'Save Changes',
+              type: ButtonType.PRIMARY,
+              onClick: () => this.saveChanges(),
+            }).render(q);
+          });
+
+          new Button({
+            label: 'Logout',
+            type: ButtonType.SECONDARY,
+            onClick: () => {
+              CACHE_STORE.getUser().signOut();
+              router.navigateTo('/');
+            },
           }).render(q);
         });
-
-        new Button({
-          label: 'Logout',
-          type: ButtonType.SECONDARY,
-          onClick: () => {
-            CACHE_STORE.getUser().signOut();
-            router.navigateTo('/');
-          },
-        }).render(q);
       });
     });
 

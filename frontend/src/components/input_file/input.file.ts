@@ -102,4 +102,8 @@ export class FileInputBase {
       },
     }).render(container);
   }
+
+  public getFiles(): File[] {
+    return this.files;
+  }
 }
