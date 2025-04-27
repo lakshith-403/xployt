@@ -41,7 +41,7 @@ class HomeView extends View {
     let buttonComp: Quark;
     $(q, 'div', '', { id: 'home' }, (q) => {
       $(q, 'div', 'home-section', {}, (q) => {
-        $(q, 'h1', '', {}, 'Security Through Collaboration');
+        $(q, 'h1', '', {}, 'Secureing the Future. One Bug at a Time');
         $(q, 'p', '', {}, 'Collaborate. Protect. Strengthen your systems.');
         buttonComp = $(q, 'span', 'home-buttons', {}, (q) => {
           this.hackerButton.render(q);
