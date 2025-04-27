@@ -61,7 +61,7 @@ class ReportsView extends View {
         orderKeys: ['reportId', 'projectId', 'severity', 'title', 'vulnerabilityType', 'createdAt'],
       },
     });
-    $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
+    $(collapsible.getContent(), 'div', 'filter-bar py-1', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');
       const checkboxManager = new CheckboxManager(ReportsView.FILTER_OPTIONS, (checkboxValues) => {
         table.updateRows(checkboxValues);
