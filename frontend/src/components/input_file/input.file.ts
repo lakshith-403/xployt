@@ -18,7 +18,7 @@ export class FileInputBase {
   private uploadedFilesContainer!: HTMLElement;
   private props: FileInputProps;
   public name: string;
-  private files: File[] = [];
+  files: File[] = [];
 
   constructor(props: FileInputProps) {
     this.props = props;
@@ -101,5 +101,9 @@ export class FileInputBase {
         this.element.click();
       },
     }).render(container);
+  }
+
+  public getFiles(): File[] {
+    return this.files;
   }
 }

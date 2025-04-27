@@ -81,7 +81,7 @@ class Router {
             this.navigateTo('/login');
             return;
           }
-          throw error;
+          // throw error;
         }
         if (pathFound) {
           break;

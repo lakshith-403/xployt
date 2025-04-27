@@ -186,12 +186,12 @@ class HackerSignUp extends View {
             formData.append('companyName', this.fields.companyName.getValue());
             formData.append('skills', JSON.stringify(this.skills));
 
-            // const certificateFiles = this.certificateField.getElement().files;
-            // if (certificateFiles) {
-            //   for (let i = 0; i < certificateFiles.length; i++) {
-            //     formData.append('certificates', certificateFiles[i]);
-            //   }
-            // }
+            const certificateFiles = this.certificateField.getFiles();
+            if (certificateFiles.length > 0) {
+              for (let i = 0; i < certificateFiles.length; i++) {
+                formData.append('certificates', certificateFiles[i]);
+              }
+            }
 
             const response = await NETWORK.post('/api/register', formData, {
               headers: {

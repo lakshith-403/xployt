@@ -131,6 +131,17 @@ $heights: (
   }
 }
 
+// Minimum Width Utilities
+@for $i from 1 through 40 {
+  .w-min-#{$i} {
+    min-width: #{$i}rem !important;
+  }
+}
+
+.width-fit {
+  width: fit-content;
+}
+
 // Column Utilities
 @for $i from 1 through 12 {
   .col-#{$i} {

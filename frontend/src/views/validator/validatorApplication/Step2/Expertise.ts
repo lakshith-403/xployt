@@ -6,8 +6,8 @@ import { expertiseTags } from './data';
 import './Expertise.scss';
 
 import { Step } from './../../../../components/multistepForm/multistep-form';
-import { isValidFileSizeStrict, isValidFileType, validateField } from '@components/multistepForm/validationUtils';
-import { FieldErrorMessage } from '@views/hacker/VulnerabilityReport/VulnerabilityReportForm';
+import {isValidFileSizeStrict, isValidFileType, validateField} from "@components/multistepForm/validationUtils";
+import {FieldErrorMessage} from "@views/hacker/VulnerabilityReport/VulnerabilityReportForm";
 
 class Expertise implements Step {
   private updateParentState!: (newState: any) => void;
@@ -61,6 +61,7 @@ class Expertise implements Step {
             fileInputElement.addEventListener('change', () => {
               this.handleFileUploads(fileInputElement, 'cv');
             });
+
           });
         });
       });

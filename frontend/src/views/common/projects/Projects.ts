@@ -11,6 +11,7 @@ import { FormButton } from '@/components/button/form.button';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
 import { excludeFieldsFromObjects } from '@/ui_lib/utils';
+import { mapProjectStateToClass } from "@/styles/style.util";
 
 export default class ProjectsView extends View {
   private params: { projectId: string };
@@ -38,6 +39,8 @@ export default class ProjectsView extends View {
     }
   }
 
+  //map project state to css classes
+
   private renderProjectSection(q: Quark, title: string, projects: any[], filterOptions: string[]): void {
     const collapsible = new CollapsibleBase(title, '');
     collapsible.render(q);
@@ -49,6 +52,10 @@ export default class ProjectsView extends View {
       options: {
         filteredField: 'state',
         cellClassName: 'cursor-pointer',
+        cellClassNames: {
+          1: mapProjectStateToClass,
+          2: () => 'width-fit w-min-20'
+        },
         falseKeys: [],
         noDataMessage: 'No projects to show',
         callback: (project) => {

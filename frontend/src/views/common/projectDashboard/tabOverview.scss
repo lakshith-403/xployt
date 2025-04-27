@@ -1,124 +1,267 @@
-.project-info {
+.project-dashboard {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   width: 100%;
-  padding: 2rem;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-in-out;
 
-  .project-description {
-    margin-bottom: 1rem;
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--color-primary);
+    margin-block: 1.5rem;
+    margin-inline: 1rem 5rem;
+    opacity: 70%;
   }
 
-  h2 {
-    font-size: 1.25rem;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  p {
-    margin: 0;
-  }
+  // Dashboard Content Layout
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
 
-  section {
-    padding-top: 3rem;
-  }
-
-  .section-content {
-    padding-inline: 3rem;
-    padding-top: 1.5rem;
-  }
-
-  #basic-info {
-    .section-content {
+    .dashboard-column {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      gap: 2rem;
+      gap: 1.5rem;
+    }
+  }
 
-      > div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        gap: 4rem;
+  // Dashboard Cards
+  .dashboard-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: slideInUp 0.4s ease-out;
+    animation-fill-mode: both;
 
-        span {
-          flex: 1;
-          display: flex;
-          flex-direction: row;
-          gap: 3rem;
-          //width: 100%;
-        }
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
       }
     }
 
-    .key {
-      text-wrap: nowrap;
-      font-weight: bold;
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .description {
-      padding-inline: 1.5rem;
+    // Card Title
+    .card-title {
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-  }
-
-  #payments {
-    width: 100%;
-
-    .section-content {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       align-items: center;
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--light-text);
+      border-bottom: 1px solid var(--border-color);
+
+      .card-icon {
+        color: var(--primary-color);
+      }
     }
 
-    .summary {
+    // Card Content
+    .card-content {
+      padding: 1rem 1.5rem;
+    }
+
+    #user-card{
+      background-color: var(--background-secondary);
+    }
+
+    .user-card-container{
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       gap: 1rem;
+    }
+
+    .form-button{
+      width: 100%;
+    }
+
+    .text-highlight{
+        color: var(--light-green);
+        font-weight: 600;
+    }
+
+    // Card Border Styling
+    &.project-info-card .card-title { border-left: 4px solid var(--primary-color); }
+  }
+
+  // Lists styling
+  .info-list, .scope-list, .out-of-scope-list, .security-list, .team-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    li, div {
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      .strong {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      span {
+        color: var(--light-text);
+        word-break: break-word;
+      }
     }
   }
 
-  #reports {
-    > span {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 1rem;
+  // List item border colors
+  .info-list li, .info-list div {
+    border-left: 3px solid var(--primary-color);
+    strong { color: var(--primary-color); }
+  }
+
+  // Status Messages
+  .status-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+
+    i {
+      font-size: 1.1rem;
+    }
+
+    &.waiting {
+      background-color: #c8841a;
+      //border: 1px solid rgba(243, 156, 18, 0.3);
+      color: #fff;
+      cursor: not-allowed;
+    }
+
+    &.closed {
+      background-color: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: #e74c3c;
+      cursor: not-allowed;
+    }
+
+    &.completed {
+      background-color: rgba(46, 204, 113, 0.1);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      color: #2ecc71;
+      cursor: not-allowed;
+    }
+
+    &.review {
+      background-color: rgba(230, 126, 34, 0.1);
+      border: 1px solid rgba(230, 126, 34, 0.3);
+      color: #e67e22;
+      cursor: not-allowed;
     }
   }
 
-  .table-header {
-    padding: 0;
+  // Action Buttons
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .table-cell {
-    width: 7rem;
+  .action-button-container {
+    width: 100%;
+  }
+
+  // Close Project Section
+  .close-project-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    margin-top: 0.5rem;
+
+    .close-project-label {
+      color: #e74c3c;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+  }
+
+  // Invite Hackers Section
+  .invite-hackers-container {
     text-align: center;
-  }
-
-  .link {
-    color: var(--light-green);
   }
 
   .caption {
     opacity: 60%;
+    font-size: 0.85rem;
   }
 
-  .card {
-    span {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      //width: 100%;
+  .link {
+    color: var(--light-green);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 
-  button {
-    width: fit-content;
-    text-wrap: nowrap;
+  // Responsive Adjustments
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .dashboard-content {
+      grid-template-columns: 1fr;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      padding: 1rem;
+    }
+
+    .card-content {
+      padding: 1rem;
+    }
+
+    .action-buttons {
+      button {
+        padding: 0.75rem 1rem;
+      }
+    }
+  }
+}
+
+// External Modal Styling
+.modal-content {
+  .modal-title {
+    color: var(--light-text);
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .modal-message {
+    color: var(--light-text);
+    font-size: 1rem;
+    margin: 1rem 0;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
   }
 }

@@ -52,7 +52,7 @@ export class UIManager {
         if (key in object) {
           $(q, 'li', '', {}, (q) => {
             const displayKey = options.preserveCasing ? key : key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
-            $(q, 'span', '', {}, displayKey);
+            $(q, 'span', 'strong', {}, displayKey);
             $(q, 'span', '', {}, ' : ');
             $(q, 'span', '', {}, typeof object[key] === 'string' ? object[key] : JSON.stringify(object[key]));
           });
@@ -210,7 +210,7 @@ export class UIManager {
   // );
   public static listArrayObjectValues(q: Quark, title: string, objects: any[], keys: string[], options: { className?: string } = {}): void {
     $(q, 'div', 'd-flex flex-column', {}, (q) => {
-      $(q, 'h2', 'sub-heading-2', {}, title);
+      title && $(q, 'h2', 'sub-heading-2', {}, title);
       $(q, 'ul', options.className || '', {}, (q) => {
         objects.forEach((obj) => {
           $(q, 'li', 'list-object-values-item', {}, (q) => {
@@ -246,7 +246,7 @@ export class UIManager {
    */
   public static listArrayValues(q: Quark, title: string, items: any[], options: { className?: string } = {}): void {
     $(q, 'div', 'd-flex flex-column', {}, (q) => {
-      $(q, 'h2', 'sub-heading-2', {}, title);
+      title && $(q, 'h2', 'sub-heading-2', {}, title);
       $(q, 'ul', options.className || '', {}, (q) => {
         items.forEach((item) => {
           $(q, 'li', 'list-item', {}, (q) => {
