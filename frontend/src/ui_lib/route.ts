@@ -78,6 +78,7 @@ export class RouteHandler {
           throw new RouteError('User does not have permission to access this route');
         }
       } else if (user.type === 'Guest') {
+        console.log('guest user cannot access protected route');
         throw new RouteError('Guest user cannot access protected route');
       }
     }
