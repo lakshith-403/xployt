@@ -35,12 +35,12 @@ export default class Discussion {
       // Main content area with side navigation and content
       $(q, 'div', 'w-100 d-flex', {}, (q) => {
         // Left side navigation (1/4 of the space)
-        this.loadingListContainer = $(q, 'div', 'col-3 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
+        this.loadingListContainer = $(q, 'div', 'w-10 d-flex flex-column align-items-center justify-content-start border-right-1', {}, (q) => {
           $(q, 'div', 'text-center py-4 text-primary', {}, 'Loading discussions...');
         });
 
         // Right side content area (3/4 of the space)
-        this.discussionContainer = $(q, 'div', 'col-9 d-flex flex-column align-items-center justify-content-start', {}, (q) => {
+        this.discussionContainer = $(q, 'div', 'w-min-60 d-flex flex-column align-items-center justify-content-start', {}, (q) => {
           $(q, 'div', 'text-center py-4 text-primary', {}, 'Select a discussion to view');
         });
       });

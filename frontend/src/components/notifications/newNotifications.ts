@@ -29,27 +29,40 @@ export class Notifications {
         }
     }
 
-    private renderNotificationsButton(type: String) {
+    private renderNotificationsButton(type: string): void {
         this.buttonComponent.innerHTML = '';
-        let icon;
-        if(type == "unread"){
-            icon = 'fa-solid fa-bell'
-        }else if (type == "open"){
-            icon = 'fa-regular fa-bell'
-        }else {
-            icon = 'fa-solid fa-bell-slash'
-        }
+        const icon = type === "unread" ? 'fa-solid fa-bell' :
+          type === "open" ? 'fa-regular fa-bell' :
+            'fa-solid fa-bell-slash';
 
         new IconButton({
             icon: icon,
             label: '',
-            onClick: () => {
+            onClick: (event) => {
+                event.stopPropagation(); // Prevent click from propagating
                 this.isVisible = !this.isVisible;
                 this.renderNotificationsList().then();
                 this.renderNotificationsButton(this.isVisible ? "unread" : "open");
+
+                if (this.isVisible) {
+                    document.addEventListener('click', this.handleOutsideClick);
+                } else {
+                    document.removeEventListener('click', this.handleOutsideClick);
+                }
             }
-        }).render(this.buttonComponent)
+        }).render(this.buttonComponent);
     }
+
+    private handleOutsideClick = (event: MouseEvent): void => {
+        if (!this.notificationListPane.contains(event.target as Node) &&
+          !this.buttonComponent.contains(event.target as Node)) {
+            this.isVisible = false;
+            this.renderNotificationsList().then();
+            this.renderNotificationsButton("open");
+            document.removeEventListener('click', this.handleOutsideClick);
+        }
+    };
+
 
     private async renderNotificationsList(): Promise<void> {
     this.notificationListPane.innerHTML = '';
@@ -101,6 +114,8 @@ export class Notifications {
             // }).render(this.buttonComponent)
 
             this.notificationListPane = $(q, 'div', 'notification-list', {})
+
+            document.addEventListener('click', this.handleOutsideClick);
 
         });
     }

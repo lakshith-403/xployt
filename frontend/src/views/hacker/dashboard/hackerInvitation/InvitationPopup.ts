@@ -5,6 +5,8 @@ import { IconButton } from '@components/button/icon.button';
 import { ButtonType } from '@components/button/base';
 import { Project } from '@data/common/cache/project.cache';
 import { HackerInvitationsCache } from '@data/hacker/cache/hacker.invitations.cache';
+import ModalManager, { setContent } from "@components/ModalManager/ModalManager";
+import { modalAlertForErrors, modalAlertOnlyOK } from "@main";
 
 export class InvitationPopup {
   private projectInfo: Project;
@@ -22,21 +24,41 @@ export class InvitationPopup {
   private async acceptInvitation(): Promise<void> {
     try {
       await this.invitationsCache.accept(this.projectInfo.projectId.toString(), this.hackerId, true);
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Success',
+        '.modal-message': 'You have successfully accepted the invitation.',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
     } catch (error) {
       console.error('Failed to accept invitation:', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Failed to accept the invitation. Please try again.',
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors);
     }
   }
 
   private async rejectInvitation(): Promise<void> {
     try {
       await this.invitationsCache.accept(this.projectInfo.projectId.toString(), this.hackerId, false);
+      setContent(modalAlertOnlyOK, {
+        '.modal-title': 'Success',
+        '.modal-message': 'You have successfully rejected the invitation.',
+      });
+      ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
     } catch (error) {
       console.error('Failed to reject invitation:', error);
+      setContent(modalAlertForErrors, {
+        '.modal-title': 'Error',
+        '.modal-message': 'Failed to reject the invitation. Please try again.',
+      });
+      ModalManager.show('alertForErrors', modalAlertForErrors);
     }
   }
 
   async render(): Promise<HTMLElement> {
-    if (['Accepted', 'Declined'].includes(this.status)) {
+    if ([ 'Accepted', 'Declined' ].includes(this.status)) {
       return document.createElement('div');
     }
 
@@ -46,7 +68,7 @@ export class InvitationPopup {
     $(q, 'div', 'hacker-invitation', {}, (q) => {
       $(q, 'h2', '', {}, `Invitation: ${this.projectInfo.title} #${convertToTitleCase(this.projectInfo.projectId.toString())}`);
       $(q, 'div', 'content', {}, (q) => {
-        $(q, 'div', '', { id: 'basic-info' }, (q) => {
+        $(q, 'div', '', {id: 'basic-info'}, (q) => {
           new BasicInfoComponent(this.projectInfo).render(q);
         });
 
