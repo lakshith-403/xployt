@@ -44,6 +44,7 @@ export default class CommonOverview {
             });
 
             $(q, 'div', 'card-content', {}, (q) => {
+              $(q, 'a', 'project-link', { href: this.projectInfo.url, target: '_blank' }, this.projectInfo.url)
               UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], {
                 className: 'info-list',
               });
@@ -132,7 +133,7 @@ export default class CommonOverview {
             });
 
             $(q, 'div', 'user-card-wrapper', {}, (q) => {
-              new UserCard(cardConfig.userId, cardConfig.type, '', 'Project Lead', {
+              new UserCard(cardConfig.userId, cardConfig.type, '', `${this.userRole === 'Client' ? 'Project Lead' : 'Client'}`, {
                 highLightKeys: ['email'],
                 highlightClassName: 'text-highlight',
                 showKeys: ['name', 'email'],

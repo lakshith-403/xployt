@@ -7,13 +7,12 @@ import { IconButton } from '@components/button/icon.button';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { OverviewPayments } from '@views/common/projectDashboard/tabOverviewContent/commonComponents/payments';
 import { OverviewReports } from '@views/common/projectDashboard/tabOverviewContent/hackerComponents/reports';
-import BasicInfoComponent from '@components/basicInfo/basicInfoComponent';
 import modalManager from '@/components/ModalManager/ModalManager';
 import { modalAlertOnlyOK } from '@/main';
 import { setContent } from '@/components/ModalManager/ModalManager';
 import '../tabOverview.scss';
 import { UIManager } from '@ui_lib/UIManager';
-import { AssignedUserCache } from '@data/common/cache/projectTeam.cache';
+import { AssignedUser, AssignedUserCache } from '@data/common/cache/projectTeam.cache';
 import UserCard from '@components/UserCard';
 import NETWORK from '@/data/network/network';
 
@@ -21,7 +20,7 @@ export default class Hacker {
   project: Project = {} as Project;
   private readonly projectCache = CACHE_STORE.getProject(this.projectId) as ProjectCache;
   private currentUser!: User;
-  private assignedUserId: string = '';
+  private assignedUserId: string[] = [];
   private assignedUserCache = new AssignedUserCache();
   private hackerReportStatus: any;
 
@@ -33,17 +32,25 @@ export default class Hacker {
     try {
       this.project = await this.projectCache.get(false, this.projectId);
       this.currentUser = await CACHE_STORE.getUser().get();
-      const assignedUser = await this.assignedUserCache.load('validator', this.project.projectId.toString(), this.currentUser.id);
-      this.assignedUserId = assignedUser.id?.toString() ?? '';
       console.log('Hacker: Project Info', this.project);
       const response = await NETWORK.get(`/api/hacker/reportStatus/${this.projectId}/${this.currentUser.id}`, {
         localLoading: true,
         elementId: 'action-buttons',
       });
       this.hackerReportStatus = response.data.hackerInfo.status;
-      console.log('Hacker: Report Status', this.hackerReportStatus);
     } catch (error) {
       console.error('Failed to load project data', error);
+    }
+  }
+
+  async loadAssignedUser(): Promise<void> {
+    try {
+      const role = this.currentUser.type === 'Hacker' ? 'validator' : 'hacker';
+      const assignedUser: AssignedUser[] = await this.assignedUserCache.load(role, this.project.projectId.toString(), this.currentUser.id);
+      this.assignedUserId = assignedUser.map((user) => user.userId?.toString()).filter((id): id is string => id !== undefined);
+      console.log('Assigned User Ids:', this.assignedUserId);
+    } catch (error) {
+      console.error('Failed to load assigned user:', error);
     }
   }
 
@@ -69,7 +76,8 @@ export default class Hacker {
               $(q, 'div', '', { id: 'basic-info' }, (q) => {
                 // new BasicInfoComponent(this.project).render(q);
                 $(q, 'div', 'card-content', {}, (q) => {
-                  UIManager.listObjectGivenKeys(q, this.project, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], {
+                  $(q, 'a', 'project-link', { href: this.project.url, target: '_blank' }, this.project.url);
+                  UIManager.listObjectGivenKeys(q, this.project, ['startDate', 'endDate', 'technicalStack', 'state'], {
                     className: 'info-list',
                   });
                 });
@@ -174,7 +182,7 @@ export default class Hacker {
                           '.modal-title': 'Alert',
                           '.modal-message':
                             this.hackerReportStatus === 'Kicked'
-                              ? 'You are not allowed to create reports because you have been removed from the project'
+                              ? 'You are not allowed to create reports because you have been kicked from the project'
                               : 'You can only create reports for active projects',
                         });
                         modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
@@ -193,9 +201,9 @@ export default class Hacker {
               $(q, 'i', 'card-icon fa fa-user', {});
               $(q, 'span', '', {}, 'Team Details');
             });
-            $(q, 'div', 'user-card-container', {}, (q) => {
+            $(q, 'div', 'user-card-container', {}, async (q) => {
               if (this.project.leadId) {
-                new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead', {
+                await new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead', {
                   highLightKeys: ['email'],
                   highlightClassName: 'text-light-green',
                   showKeys: ['name', 'email'],
@@ -204,29 +212,48 @@ export default class Hacker {
                   },
                 }).render(q);
               }
-              if (this.assignedUserId) {
-                new UserCard(this.assignedUserId, 'validator', 'card', 'Validator', {
-                  highLightKeys: ['email'],
-                  highlightClassName: 'text-light-green',
-                  showKeys: ['name', 'email'],
-                  callback: () => {
-                    router.navigateTo('/user-info/' + this.project.leadId);
-                  },
-                }).render(q);
+              if (this.currentUser.type === 'Hacker' || this.currentUser.type === 'Validator') {
+                loading.show();
+                console.log('Trying tp get assigned user for:', this.currentUser);
+                await this.loadAssignedUser();
+                loading.hide();
+
+                for (const userId of this.assignedUserId) {
+                  if (userId) {
+                    await new UserCard(
+                      userId,
+                      this.currentUser.type === 'Hacker' ? 'validator' : 'hacker',
+                      'card',
+                      this.currentUser.type === 'Hacker' ? 'Assigned Validator' : 'Assigned Hacker',
+                      {
+                        highLightKeys: ['email'],
+                        highlightClassName: 'text-light-green',
+                        showKeys: ['name', 'email'],
+                        callback: () => {
+                          router.navigateTo('/user-info/' + userId);
+                        },
+                      }
+                    ).render(q);
+                  }
+                }
               }
             });
-          });
 
-          // Payments Card
-          $(q, 'div', 'dashboard-card payments-card', {}, (q) => {
-            $(q, 'h2', 'card-title', {}, (q) => {
-              $(q, 'i', 'card-icon fa fa-money-bill-wave', {});
-              $(q, 'span', '', {}, 'Payments');
-            });
+            // Payments Card
+            if (this.currentUser.type == 'Hacker') {
+              $(q, 'hr', 'section-divider', {});
 
-            $(q, 'div', 'card-content', {}, (q) => {
-              new OverviewPayments(this.projectId, 'Hacker', this.currentUser.id).render(q);
-            });
+              $(q, 'div', 'dashboard-card payments-card', {}, (q) => {
+                $(q, 'h2', 'card-title', {}, (q) => {
+                  $(q, 'i', 'card-icon fa fa-money-bill-wave', {});
+                  $(q, 'span', '', {}, 'Payments');
+                });
+
+                $(q, 'div', 'card-content', {}, (q) => {
+                  new OverviewPayments(this.projectId, 'Hacker', this.currentUser.id).render(q);
+                });
+              });
+            }
           });
         });
       });
