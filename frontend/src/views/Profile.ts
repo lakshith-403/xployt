@@ -24,7 +24,7 @@ export class ProfileView extends View {
   // Validator/ProjectLead fields
   private skillsField: TextField;
   private experienceField: TextField;
-  private cvLinkField: TextField;
+  private cvIDField: TextField;
   private referenceField: TextField;
   
   // Client fields
@@ -53,7 +53,7 @@ export class ProfileView extends View {
     // Validator/ProjectLead fields
     this.skillsField = new TextField({ label: 'Skills' });
     this.experienceField = new TextField({ label: 'Experience' });
-    this.cvLinkField = new TextField({ label: 'CV Link' });
+    this.cvIDField = new TextField({ label: 'CV Link' });
     this.referenceField = new TextField({ label: 'References' });
   }
 
@@ -108,26 +108,48 @@ export class ProfileView extends View {
       if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
         this.skillsField.setValue(this.profile.skills || '');
         this.experienceField.setValue(this.profile.experience || '');
-        this.cvLinkField.setValue(this.profile.cvLink || '');
+        this.cvIDField.setValue(this.profile.cvId || '');
         this.referenceField.setValue(this.profile.reference || '');
       } else if (this.profile.role === 'Client') {
         this.companyNameField.setValue(this.profile.companyName || '');
-      } else if (this.profile.role === 'Hacker' && this.profile.skillSet) {
-        this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
-        this.updateSkillSetFields();
+      } else if (this.profile.role === 'Hacker') {
+        // Make sure we have a valid skillSet array
+        if (this.profile.skillSet) {
+          // Ensure skillSet is always an array
+          this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+          console.log('Setting skill set values:', this.skillSetValues);
+          
+          // Only update fields if we have a container
+          if (this.skillSetContainer) {
+            this.updateSkillSetFields();
+          }
+        } else {
+          console.log('No skillSet property found in profile data for Hacker role');
+          this.skillSetValues = [];
+        }
       }
     }
   }
   
   private updateSkillSetFields() {
     if (this.skillSetContainer && this.profile.role === 'Hacker') {
+      console.log('updateSkillSetFields called with values:', this.skillSetValues);
+      
+      // Clear container and fields
       this.skillSetContainer.innerHTML = '';
       this.skillSetFields = [];
       
-      // Create fields for existing skills
-      this.skillSetValues.forEach((skill, index) => {
-        this.addSkillField(this.skillSetContainer!, skill, index);
-      });
+      if (this.skillSetValues && this.skillSetValues.length > 0) {
+        // Create fields for existing skills
+        this.skillSetValues.forEach((skill, index) => {
+          console.log(`Creating skill field ${index} with value: ${skill}`);
+          this.addSkillField(this.skillSetContainer!, skill, index);
+        });
+      } else {
+        console.log('No skills to display');
+        // Add a message if no skills
+        $(this.skillSetContainer, 'p', 'no-skills-text', {}, 'No skills added yet.');
+      }
       
       // Add button for new skill
       $(this.skillSetContainer, 'div', 'add-skill-button-container', {}, (q) => {
@@ -140,10 +162,14 @@ export class ProfileView extends View {
           },
         }).render(q);
       });
+    } else {
+      console.log('Cannot update skill fields - container is null or not a Hacker profile');
     }
   }
   
   private addSkillField(container: Quark, value: string, index: number) {
+    console.log(`Adding skill field to container for index ${index}, value: ${value}`);
+    
     $(container, 'div', 'skill-field-container', {}, (q) => {
       const skillField = new TextField({ 
         label: `Skill ${index + 1}`
@@ -158,6 +184,7 @@ export class ProfileView extends View {
             label: '',
             icon: 'fa fa-trash',
             onClick: () => {
+              console.log(`Removing skill at index ${index}`);
               this.skillSetValues.splice(index, 1);
               this.updateSkillSetFields();
             },
@@ -210,7 +237,7 @@ export class ProfileView extends View {
       if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
         profileData.skills = this.skillsField.getValue();
         profileData.experience = this.experienceField.getValue();
-        profileData.cvLink = this.cvLinkField.getValue();
+        profileData.cvId = this.cvIDField.getValue();
         profileData.reference = this.referenceField.getValue();
       } else if (this.profile.role === 'Client') {
         profileData.companyName = this.companyNameField.getValue();
@@ -277,101 +304,119 @@ export class ProfileView extends View {
 
   public async render(q: Quark): Promise<void> {
     q.innerHTML = '';
-    await this.loadProfile();
-    q.innerHTML = '';
-
-    $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
-      // Header row
-      $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
-        $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
-        $(q, 'div', 'position-relative w-30', {}, (q) => {
-          $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
-            src: this.profile?.profilePicture || 'assets/avatar.png',
-            alt: '',
-          });
-          $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
-            new IconButton({
-              label: '',
-              icon: 'fa fa-camera',
-              onClick: async () => {
-                console.log('Change profile picture');
-              },
-            }).render(q);
-          });
-        });
-      });
-
-      // User role display
-      if (this.profile?.role) {
-        $(q, 'div', 'user-role', {}, (q) => {
-          $(q, 'span', 'role-label', {}, 'Role: ');
-          $(q, 'span', 'role-value', {}, this.profile.role);
-        });
+    
+    try {
+      await this.loadProfile();
+      
+      if (!this.profile) {
+        console.error('Profile not loaded');
+        $(q, 'div', 'error-message', {}, 'Error loading profile. Please try again later.');
+        return;
       }
+      
+      console.log('Rendering profile with data:', this.profile);
+      q.innerHTML = '';
 
-      // Render collapsibles
-      $(q, 'div', 'w-100 d-flex flex-column align-items-center', {}, (q) => {
-        // User Info Section
-        this.userInfoCollapsible.render(q);
-        $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
-          $(q, 'div', 'profile-details', {}, (q) => {
-            this.emailField.render(q);
-            this.phoneField.render(q);
-            this.firstNameField.render(q);
-            this.lastNameField.render(q);
-            this.dobField.render(q);
+      $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
+        // Header row
+        $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
+          $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
+          $(q, 'div', 'position-relative w-30', {}, (q) => {
+            $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
+              src: this.profile?.profilePicture || 'assets/avatar.png',
+              alt: '',
+            });
+            $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
+              new IconButton({
+                label: '',
+                icon: 'fa fa-camera',
+                onClick: async () => {
+                  console.log('Change profile picture');
+                },
+              }).render(q);
+            });
           });
         });
 
-        // Role-specific section
+        // User role display
         if (this.profile?.role) {
-          this.roleSpecificCollapsible.render(q);
-          $(this.roleSpecificCollapsible.content!, 'div', 'role-specific-content', {}, (q) => {
-            if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
-              $(q, 'div', 'validator-project-lead-details', {}, (q) => {
-                this.skillsField.render(q);
-                this.experienceField.render(q);
-                this.cvLinkField.render(q);
-                this.referenceField.render(q);
-              });
-            } else if (this.profile.role === 'Client') {
-              $(q, 'div', 'client-details', {}, (q) => {
-                $(q, 'h3', '', {}, 'Client Information');
-                this.companyNameField.render(q);
-              });
-            } else if (this.profile.role === 'Hacker') {
-              $(q, 'div', 'hacker-details', {}, (q) => {
-                $(q, 'h3', '', {}, 'Skills');
-                $(q, 'div', 'skill-set-container', {}, (q) => {
-                  this.skillSetContainer = q;
-                  this.updateSkillSetFields();
-                });
-              });
-            }
+          $(q, 'div', 'user-role', {}, (q) => {
+            $(q, 'span', 'role-label', {}, 'Role: ');
+            $(q, 'span', 'role-value', {}, this.profile.role);
           });
         }
 
-        // Save button
-        $(q, 'div', 'save-button-container', {}, (q) => {
+        // Render collapsibles
+        $(q, 'div', 'w-100 d-flex flex-column align-items-center', {}, (q) => {
+          // User Info Section
+          this.userInfoCollapsible.render(q);
+          $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
+            $(q, 'div', 'profile-details', {}, (q) => {
+              this.emailField.render(q);
+              this.phoneField.render(q);
+              this.firstNameField.render(q);
+              this.lastNameField.render(q);
+              this.dobField.render(q);
+            });
+          });
+
+          // Role-specific section
+          if (this.profile?.role) {
+            this.roleSpecificCollapsible.render(q);
+            $(this.roleSpecificCollapsible.content!, 'div', 'role-specific-content', {}, (q) => {
+              if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
+                $(q, 'div', 'validator-project-lead-details', {}, (q) => {
+                  this.skillsField.render(q);
+                  this.experienceField.render(q);
+                  this.cvIDField.render(q);
+                  this.referenceField.render(q);
+                });
+              } else if (this.profile.role === 'Client') {
+                $(q, 'div', 'client-details', {}, (q) => {
+                  $(q, 'h3', '', {}, 'Client Information');
+                  this.companyNameField.render(q);
+                });
+              } else if (this.profile.role === 'Hacker') {
+                console.log('Rendering hacker section with skillSet:', this.profile.skillSet);
+                $(q, 'div', 'hacker-details', {}, (q) => {
+                  $(q, 'h3', '', {}, 'Skills');
+                  $(q, 'div', 'skill-set-container', {}, (q) => {
+                    this.skillSetContainer = q;
+                    // Initialize skill values before updating fields
+                    this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
+                    console.log('Initializing skill set container with values:', this.skillSetValues);
+                    this.updateSkillSetFields();
+                  });
+                });
+              }
+            });
+          }
+
+          // Save button
+          $(q, 'div', 'save-button-container', {}, (q) => {
+            new Button({
+              label: 'Save Changes',
+              type: ButtonType.PRIMARY,
+              onClick: () => this.saveChanges(),
+            }).render(q);
+          });
+
           new Button({
-            label: 'Save Changes',
-            type: ButtonType.PRIMARY,
-            onClick: () => this.saveChanges(),
+            label: 'Logout',
+            type: ButtonType.SECONDARY,
+            onClick: () => {
+              CACHE_STORE.getUser().signOut();
+              router.navigateTo('/');
+            },
           }).render(q);
         });
-
-        new Button({
-          label: 'Logout',
-          type: ButtonType.SECONDARY,
-          onClick: () => {
-            CACHE_STORE.getUser().signOut();
-            router.navigateTo('/');
-          },
-        }).render(q);
       });
-    });
-    
-    this.updateFields();
+      
+      this.updateFields();
+    } catch (error) {
+      console.error('Error rendering profile:', error);
+      $(q, 'div', 'error-message', {}, 'Error rendering profile. Please try again later.');
+    }
   }
 }
 
