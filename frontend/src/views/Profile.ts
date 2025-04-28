@@ -69,6 +69,7 @@ export class ProfileView extends View {
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
       name: 'certificates'
+    });
 
     this.skillsInput = new TagInput({
       label: '',
@@ -82,6 +83,7 @@ export class ProfileView extends View {
       },
 
     });
+
   }
 
   private async loadProfile() {
