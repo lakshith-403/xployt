@@ -4,8 +4,8 @@ import { View } from '@ui_lib/view';
 import NETWORK from '@/data/network/network';
 import { PopupTable, ContentItem } from '@components/table/popup.lite.table';
 import { ApplicationPopup } from './applicationPopup';
-import { modalAlertForErrors, modalAlertOnlyOK } from '@/main';
-import ModalManager, { setContent } from '@/components/ModalManager/ModalManager';
+import { CustomTable } from '../../../components/table/customTable';
+
 import { Button } from '@/components/button/base';
 export class ValidatorApplications extends View {
   private applicationsTableContent: ContentItem[] = [];
@@ -33,10 +33,14 @@ export class ValidatorApplications extends View {
     if (!this.applications || this.applications.length == 0) return;
     for (const application of this.applications) {
       try {
-        console.log(`Project Info for ${application.userId}:`, application);
+        // console.log(`Project Info for ${application.userId}:`, application);
         const popupElement = new ApplicationPopup({
           userId: application.userId,
-          renderFunction: (q) => this.renderFunction(q),
+          renderFunction: async (q) => {
+            this.applicationsTableContent = [];
+            this.applications = [];
+            await this.rerender();
+          },
         });
 
         this.applicationsTableContent.push({
@@ -59,8 +63,6 @@ export class ValidatorApplications extends View {
 
   async render(q: Quark): Promise<void> {
     q.innerHTML = '';
-
-    console.log('applications: ', this.applications);
 
     $(q, 'div', 'validator-applications py-2 d-flex flex-column align-items-center container', {}, (q) => {
       $(q, 'h1', 'validator-applications-title text-center heading-1', {}, 'Validator Applications');
@@ -85,7 +87,14 @@ export class ValidatorApplications extends View {
 
   private renderApplicationsTable(): void {
     console.log('applicationsTableContent: ', this.applicationsTableContent);
-    const requestsTable = new PopupTable(this.applicationsTableContent, ['Id', 'Name', 'Email', 'Date', 'Actions']);
+    const requestsTable = new CustomTable({
+      content: this.applicationsTableContent,
+      headers: ['Id', 'Name', 'Email', 'Date', 'Actions'],
+      className: '',
+      options: {
+        noDataMessage: 'No applications found',
+      },
+    });
     if (this.applicationsTableContainer) {
       this.applicationsTableContainer.innerHTML = '';
       requestsTable.render(this.applicationsTableContainer);
