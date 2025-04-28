@@ -12,9 +12,10 @@ import modalManager from '@/components/ModalManager/ModalManager';
 import { modalAlertOnlyOK } from '@/main';
 import { setContent } from '@/components/ModalManager/ModalManager';
 import '../tabOverview.scss';
-import { UIManager } from "@ui_lib/UIManager";
-import { AssignedUserCache } from "@data/common/cache/projectTeam.cache";
-import UserCard from "@components/UserCard";
+import { UIManager } from '@ui_lib/UIManager';
+import { AssignedUserCache } from '@data/common/cache/projectTeam.cache';
+import UserCard from '@components/UserCard';
+import NETWORK from '@/data/network/network';
 
 export default class Hacker {
   project: Project = {} as Project;
@@ -22,6 +23,7 @@ export default class Hacker {
   private currentUser!: User;
   private assignedUserId: string = '';
   private assignedUserCache = new AssignedUserCache();
+  private hackerReportStatus: any;
 
   constructor(private readonly projectId: string) {
     this.projectId = projectId;
@@ -31,9 +33,15 @@ export default class Hacker {
     try {
       this.project = await this.projectCache.get(false, this.projectId);
       this.currentUser = await CACHE_STORE.getUser().get();
-      const assignedUser = await this.assignedUserCache.load("validator", this.project.projectId.toString(), this.currentUser.id);
+      const assignedUser = await this.assignedUserCache.load('validator', this.project.projectId.toString(), this.currentUser.id);
       this.assignedUserId = assignedUser.id?.toString() ?? '';
       console.log('Hacker: Project Info', this.project);
+      const response = await NETWORK.get(`/api/hacker/reportStatus/${this.projectId}/${this.currentUser.id}`, {
+        localLoading: true,
+        elementId: 'action-buttons',
+      });
+      this.hackerReportStatus = response.data.hackerInfo.status;
+      console.log('Hacker: Report Status', this.hackerReportStatus);
     } catch (error) {
       console.error('Failed to load project data', error);
     }
@@ -62,7 +70,7 @@ export default class Hacker {
                 // new BasicInfoComponent(this.project).render(q);
                 $(q, 'div', 'card-content', {}, (q) => {
                   UIManager.listObjectGivenKeys(q, this.project, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], {
-                    className: 'info-list'
+                    className: 'info-list',
                   });
                 });
               });
@@ -156,15 +164,18 @@ export default class Hacker {
                   new IconButton({
                     icon: 'fa fa-plus',
                     label: 'Create Report',
-                    className: this.project.state !== 'Active' ? 'cursor-not-allowed' : '',
+                    className: this.project.state !== 'Active' || this.hackerReportStatus === 'Kicked' ? 'cursor-not-allowed disabled' : '',
                     onClick: () => {
-                      if (this.project.state === 'Active') {
+                      if (this.project.state === 'Active' && this.hackerReportStatus !== 'Kicked') {
                         const url = '/hacker/new-report/' + this.projectId;
                         router.navigateTo(url);
                       } else {
                         setContent(modalAlertOnlyOK, {
                           '.modal-title': 'Alert',
-                          '.modal-message': 'You can only create reports for active projects',
+                          '.modal-message':
+                            this.hackerReportStatus === 'Kicked'
+                              ? 'You are not allowed to create reports because you have been removed from the project'
+                              : 'You can only create reports for active projects',
                         });
                         modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
                       }
@@ -177,47 +188,34 @@ export default class Hacker {
 
           // User Card (Project Lead)
 
-            $(q, 'div', 'dashboard-card', {}, (q) => {
-              $(q, 'h2', 'card-title', {}, (q) => {
-                $(q, 'i', 'card-icon fa fa-user', {});
-                $(q, 'span', '', {}, 'Team Details');
-              });
-              $(q, 'div', 'user-card-container', {}, (q) => {
-
-                if (this.project.leadId) {
-                  new UserCard(
-                    this.project.leadId,
-                    'lead',
-                    'card',
-                    'Project Lead',
-                    {
-                      highLightKeys: [ 'email' ],
-                      highlightClassName: 'text-light-green',
-                      showKeys: [ 'name', 'email' ],
-                      callback: () => {
-                        router.navigateTo('/user-info/' + this.project.leadId);
-                      },
-                    }
-                  ).render(q)
-                }
-                if(this.assignedUserId) {
-                  new UserCard(
-                    this.assignedUserId,
-                    'validator',
-                    'card',
-                    'Validator',
-                    {
-                      highLightKeys: [ 'email' ],
-                      highlightClassName: 'text-light-green',
-                      showKeys: [ 'name', 'email' ],
-                      callback: () => {
-                        router.navigateTo('/user-info/' + this.project.leadId);
-                      },
-                    }
-                  ).render(q)
-                }
-              });
+          $(q, 'div', 'dashboard-card', {}, (q) => {
+            $(q, 'h2', 'card-title', {}, (q) => {
+              $(q, 'i', 'card-icon fa fa-user', {});
+              $(q, 'span', '', {}, 'Team Details');
             });
+            $(q, 'div', 'user-card-container', {}, (q) => {
+              if (this.project.leadId) {
+                new UserCard(this.project.leadId, 'lead', 'card', 'Project Lead', {
+                  highLightKeys: ['email'],
+                  highlightClassName: 'text-light-green',
+                  showKeys: ['name', 'email'],
+                  callback: () => {
+                    router.navigateTo('/user-info/' + this.project.leadId);
+                  },
+                }).render(q);
+              }
+              if (this.assignedUserId) {
+                new UserCard(this.assignedUserId, 'validator', 'card', 'Validator', {
+                  highLightKeys: ['email'],
+                  highlightClassName: 'text-light-green',
+                  showKeys: ['name', 'email'],
+                  callback: () => {
+                    router.navigateTo('/user-info/' + this.project.leadId);
+                  },
+                }).render(q);
+              }
+            });
+          });
 
           // Payments Card
           $(q, 'div', 'dashboard-card payments-card', {}, (q) => {
