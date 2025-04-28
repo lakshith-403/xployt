@@ -1,4 +1,4 @@
-import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
+import { Quark} from '@ui_lib/quark';
 import { User, UserCache } from '@data/user';
 import { UserType } from '@data/user';
 import { CACHE_STORE } from '@data/cache';
@@ -33,6 +33,10 @@ export default class Overview {
       case 'Hacker':
         const hacker = new Hacker(this.projectId);
         await hacker.render(q);
+        break;
+      case "Validator":
+        const val = new Hacker(this.projectId);
+        await val.render(q);
         break;
       default:
         const defaultOverview = new CommonOverview(this.projectId, this.role, () => this.rerender());
