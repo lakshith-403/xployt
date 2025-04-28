@@ -1,16 +1,22 @@
 .hacker-signup {
   background-color: var(--background-primary);
-  margin: 5rem 8rem;
+  max-width: 900px;
+  margin: 8rem auto;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  position: relative;
+  overflow: hidden;
 
   h1 {
     color: var(--color-primary);
-    font-size: 32px;
-    font-style: normal;
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
   }
 
   .form-field {
@@ -18,29 +24,55 @@
     flex-direction: column;
     gap: 0.5rem;
     width: 100%;
+    transition: transform 0.2s ease;
+
+    &:focus-within {
+      transform: translateY(-2px);
+    }
 
     label {
       color: var(--color-primary);
-      font-size: 0.9rem;
-      font-style: normal;
-      font-weight: 400;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::after {
+        content: '*';
+        color: var(--color-secondary, #6c5ce7);
+        font-size: 1rem;
+        display: none;
+      }
+    }
+
+    input[required] + label::after {
+      display: inline;
     }
 
     input {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      border: none;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       width: 100%;
-      font-size: 0.9rem;
+      font-size: 1rem;
       background-color: var(--background-secondary);
       color: var(--color-primary);
+      transition: all 0.2s ease;
 
       &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.4);
       }
 
       &:focus {
-        outline: 2px solid var(--color-primary);
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 100, 90, 255), 0.2);
+      }
+
+      &.error {
+        border-color: #ff5757;
+        box-shadow: 0 0 0 3px rgba(255, 87, 87, 0.2);
       }
     }
 
@@ -56,12 +88,13 @@
       }
 
       .file-label {
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
         background-color: var(--background-secondary);
         color: var(--color-primary);
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
 
         &:hover {
           background-color: var(--color-primary);
@@ -80,20 +113,22 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      padding: 0.5rem;
-      border-radius: 6px;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
       background-color: var(--background-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       min-height: 2.5rem;
 
       .tag {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
         background-color: var(--color-primary);
         color: var(--background-primary);
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
 
         .remove-tag {
           cursor: pointer;
@@ -109,6 +144,7 @@
         color: var(--color-primary);
         flex: 1;
         min-width: 120px;
+        padding: 0;
 
         &:focus {
           outline: none;
@@ -126,31 +162,101 @@
     button {
       width: fit-content;
       text-wrap: nowrap;
-      padding: 0.8rem 2rem;
-      border-radius: 6px;
-      background-color: var(--color-primary);
+      padding: 1rem 3rem;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary, #6c5ce7));
       color: var(--background-primary);
       font-weight: 600;
-      transition: opacity 0.2s ease;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.7s ease;
+      }
 
       &:hover {
-        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(var(--color-primary-rgb, 100, 90, 255), 0.4);
+
+        &::before {
+          left: 100%;
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
       }
 
       &:disabled {
-        opacity: 0.5;
+        opacity: 0.6;
         cursor: not-allowed;
+        transform: translateY(0);
+        box-shadow: none;
       }
     }
   }
 
   .error-message {
-    color: #d56868;
-    font-size: 0.9rem;
-    font-style: normal;
-    font-weight: 400;
+    color: #ff5757;
+    font-size: 0.95rem;
+    font-weight: 500;
     width: 100%;
-    text-align: left;
-    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: rgba(255, 87, 87, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #ff5757;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &::before {
+      content: '!';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: #ff5757;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .form-field {
+      gap: 0.75rem;
+    }
+
+    .submit-button {
+      button {
+        width: 100%;
+        padding: 0.875rem 2rem;
+      }
+    }
   }
 } 

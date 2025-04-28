@@ -34,14 +34,14 @@ class SignupView extends View {
         // Create two columns
         $(q, 'div', 'signup-columns d-flex flex-row justify-content-around h-100 align-items-center', {}, (q) => {
           // Left column for Hacker
-          $(q, 'div', 'signup-column', {}, (q) => {
+          $(q, 'div', 'signup-column hacker-column', {}, (q) => {
             $(q, 'h2', '', {}, 'Security Expert');
             $(q, 'p', '', {}, 'Join as a hacker to help secure systems and earn rewards.');
             this.hackerButton.render(q);
           });
 
           // Right column for Client
-          $(q, 'div', 'signup-column', {}, (q) => {
+          $(q, 'div', 'signup-column client-column', {}, (q) => {
             $(q, 'h2', '', {}, 'Client');
             $(q, 'p', '', {}, 'Submit your projects and get them secured by experts.');
             this.clientButton.render(q);

@@ -21,7 +21,6 @@ export class ProfileView extends View {
   private firstNameField: FormTextField;
   private lastNameField: FormTextField;
   private dobField: FormTextField;
-  private usernameField: FormTextField;
 
   // Role-specific fields
   // Validator/ProjectLead fields
@@ -50,7 +49,6 @@ export class ProfileView extends View {
     this.firstNameField = new FormTextField({ label: 'First Name' });
     this.lastNameField = new FormTextField({ label: 'Last Name' });
     this.dobField = new FormTextField({ label: 'Date of Birth', type: 'date' });
-    this.usernameField = new FormTextField({ label: 'Username', placeholder: 'Enter your username', name: 'username' });
 
     // Client fields
     this.companyNameField = new FormTextField({ label: 'Company Name' });
@@ -130,7 +128,6 @@ export class ProfileView extends View {
 
       // Update common fields
       this.emailField.setValue(this.profile.email || '');
-      this.usernameField.setValue(this.profile.username || '');
       this.phoneField.setValue(this.profile.phone || '');
       this.firstNameField.setValue(this.profile.firstName || '');
       this.lastNameField.setValue(this.profile.lastName || '');
@@ -185,7 +182,6 @@ export class ProfileView extends View {
       // Collect common field data
       const profileData: any = {
         email: this.emailField.getValue(),
-        username: this.usernameField.getValue(),
         phone: this.phoneField.getValue(),
         firstName: this.firstNameField.getValue(),
         lastName: this.lastNameField.getValue(),
@@ -330,7 +326,6 @@ export class ProfileView extends View {
         $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
           $(q, 'div', 'profile-details', {}, (q) => {
             this.emailField.render(q);
-            this.usernameField.render(q);
             this.phoneField.render(q);
             this.firstNameField.render(q);
             this.lastNameField.render(q);
@@ -386,30 +381,35 @@ export class ProfileView extends View {
             this.updateFields();
           });
         }
-        $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
-          new Button({
-            label: 'Change Password',
-            type: ButtonType.SECONDARY,
-            onClick: () => router.navigateTo('/reset-password'),
-          }).render(q);
 
-          // Save button
-          $(q, 'div', 'save-button-container', {}, (q) => {
+        // Action buttons section
+        $(q, 'div', 'action-buttons', {}, (q) => {
+          // Left side buttons
+          $(q, 'div', 'left-buttons', {}, (q) => {
+            new Button({
+              label: 'Change Password',
+              type: ButtonType.SECONDARY,
+              onClick: () => router.navigateTo('/reset-password'),
+            }).render(q);
+          });
+
+          // Right side buttons
+          $(q, 'div', 'right-buttons', {}, (q) => {
             new Button({
               label: 'Save Changes',
               type: ButtonType.PRIMARY,
               onClick: () => this.saveChanges(),
             }).render(q);
-          });
 
-          new Button({
-            label: 'Logout',
-            type: ButtonType.SECONDARY,
-            onClick: () => {
-              CACHE_STORE.getUser().signOut();
-              router.navigateTo('/');
-            },
-          }).render(q);
+            new Button({
+              label: 'Logout',
+              type: ButtonType.SECONDARY,
+              onClick: () => {
+                CACHE_STORE.getUser().signOut();
+                router.navigateTo('/');
+              },
+            }).render(q);
+          });
         });
       });
     });
