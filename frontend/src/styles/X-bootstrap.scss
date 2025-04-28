@@ -138,6 +138,12 @@ $heights: (
   }
 }
 
+@for $i from 1 through 40 {
+  .w-#{$i}-rm {
+    width: #{$i}rem !important;
+  }
+}
+
 .width-fit {
   width: fit-content;
 }
@@ -244,8 +250,23 @@ $heights: (
   .column-gap-#{$i} {
     column-gap: #{$i}rem;
   }
-}
 
+  .flex-grow-#{$i} {
+    flex-grow: #{$i} !important;
+  }
+  .flex-shrink-#{$i} {
+    flex-shrink: #{$i} !important;
+  }
+  .flex-basis-#{$i} {
+    flex-basis: #{$i}rem !important;
+  }
+  .flex-wrap-#{$i} {
+    flex-wrap: #{$i} !important;
+  }
+  .flex-#{$i} {
+    flex: #{$i} !important;
+  }
+}
 // Position Utilities
 .position-relative {
   position: relative;
