@@ -79,7 +79,7 @@ export default class ProjectsView extends View {
     await this.loadProjects();
 
     q.innerHTML = '';
-    $(q, 'div', 'd-flex flex-column container p-4', {}, (q) => {
+    $(q, 'div', 'd-flex flex-column container p-4 mt-8', {}, (q) => {
       if (this.user.type === 'Client') {
         $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
           const button = new FormButton({
