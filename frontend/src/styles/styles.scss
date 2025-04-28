@@ -206,9 +206,9 @@ html {
   #breadcrumbs-container {
     margin-top: var(--navbar-height);
   }
- #sidebar:not([style*="display: none"]) + #breadcrumbs-container {
-   margin-left: var(--sidebar-width);
- }
+  #sidebar:not([style*='display: none']) + #breadcrumbs-container {
+    margin-left: var(--sidebar-width);
+  }
 }
 
 .no-sidebar#content {
@@ -256,7 +256,7 @@ label {
 }
 
 .forgot-password-link {
-  color: #4caf50;
+  color: var(--light-green);
   text-decoration: none;
   font-size: 0.9rem;
 }
