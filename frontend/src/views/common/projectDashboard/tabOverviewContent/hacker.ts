@@ -75,7 +75,7 @@ export default class Hacker {
                 // new BasicInfoComponent(this.project).render(q);
                 $(q, 'div', 'card-content', {}, (q) => {
                   $(q, 'a', 'project-link', {href: this.project.url, target: '_blank'}, this.project.url)
-                  UIManager.listObjectGivenKeys(q, this.project, [ 'startDate', 'endDate', 'description', 'technicalStack', 'state' ], {
+                  UIManager.listObjectGivenKeys(q, this.project, [ 'startDate', 'endDate', 'technicalStack', 'state' ], {
                     className: 'info-list'
                   });
                 });

@@ -45,7 +45,7 @@ export default class CommonOverview {
 
             $(q, 'div', 'card-content', {}, (q) => {
               $(q, 'a', 'project-link', { href: this.projectInfo.url, target: '_blank' }, this.projectInfo.url)
-              UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'description', 'technicalStack', 'state'], {
+              UIManager.listObjectGivenKeys(q, this.projectInfo, ['startDate', 'endDate', 'technicalStack', 'state'], {
                 className: 'info-list',
               });
             });

@@ -73,7 +73,7 @@ export class dashHackerSummary {
 
   render(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'div', 'hacker-dashboard', { id: 'hacker-dashboard-summary' }, (q) => {
+    $(q, 'div', '', { id: 'hacker-dashboard-summary' }, (q) => {
       $(q, 'div', 'summary', {}, (q) => {
         this.container = q;
 
