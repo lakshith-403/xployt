@@ -7,3 +7,5 @@
 user.credentials.sql
 .bash_history
 .vscode/
+*.sql
+backend
