@@ -257,17 +257,26 @@ class LeadReportForm extends View {
                 return;
               }
 
-              await NETWORK.post(`/api/lead/stats/${this.params.projectId}/`, {
-                feedback: Object.fromEntries(Array.from(this.feedbackPerType.entries()).map(([type, textArea]: [string, any]) => [type, textArea.getValue()])),
-                summary: this.summaryTextArea.getValue(),
-              });
-              setContent(modalAlertOnlyOK, {
-                '.modal-title': 'Success',
-                '.modal-message': 'Report submitted successfully!',
-              });
-              ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
-                router.navigateTo('/projects');
-              });
+              await NETWORK.post(
+                `/api/lead/stats/${this.params.projectId}/`,
+                {
+                  feedback: Object.fromEntries(Array.from(this.feedbackPerType.entries()).map(([type, textArea]: [string, any]) => [type, textArea.getValue()])),
+                  summary: this.summaryTextArea.getValue(),
+                },
+                {
+                  successCallback: () => {
+                    NETWORK.invalidateCache('/api/new-project/\\w+/?(/\\d+)?');
+                    NETWORK.invalidateCache(`/api/single-project/\\w+\\?role=ProjectLead`);
+                    setContent(modalAlertOnlyOK, {
+                      '.modal-title': 'Success',
+                      '.modal-message': 'Report submitted successfully!',
+                    });
+                    ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+                      router.navigateTo(`/projects/${this.params.projectId}`);
+                    });
+                  },
+                }
+              );
             },
           });
           submitButton.render(q);
