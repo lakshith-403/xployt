@@ -68,15 +68,15 @@ class projectDashboardView extends View {
 
     const commonTabs = [
       {
-        title: 'Team',
-        render: (q: Quark) => {
-          teamTab.render(q);
-        },
-      },
-      {
         title: 'Overview',
         render: (q: Quark) => {
           overviewTab.render(q);
+        },
+      },
+      {
+        title: 'Team',
+        render: (q: Quark) => {
+          teamTab.render(q);
         },
       },
       {
