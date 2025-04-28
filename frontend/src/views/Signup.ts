@@ -13,13 +13,13 @@ class SignupView extends View {
       label: 'Sign Up as Hacker',
       type: ButtonType.SECONDARY,
       onClick: () => {
-        router.navigateTo('/hacker/register');
+        router.navigateTo('/register/hacker');
       },
     });
     this.clientButton = new Button({
       label: 'Sign Up as Client',
       onClick: () => {
-        router.navigateTo('/client/register');
+        router.navigateTo('/register/client');
       },
     });
   }
@@ -30,7 +30,7 @@ class SignupView extends View {
       $(q, 'div', 'signup-section', {}, (q) => {
         $(q, 'h1', '', {}, 'Choose Your Path');
         $(q, 'p', '', {}, 'Join our community as either a security expert or a client.');
-        
+
         // Create two columns
         $(q, 'div', 'signup-columns d-flex flex-row justify-content-around h-100 align-items-center', {}, (q) => {
           // Left column for Hacker
@@ -39,7 +39,7 @@ class SignupView extends View {
             $(q, 'p', '', {}, 'Join as a hacker to help secure systems and earn rewards.');
             this.hackerButton.render(q);
           });
-          
+
           // Right column for Client
           $(q, 'div', 'signup-column', {}, (q) => {
             $(q, 'h2', '', {}, 'Client');
@@ -52,4 +52,4 @@ class SignupView extends View {
   }
 }
 
-export const signupViewHandler = new ViewHandler('', SignupView); 
+export const signupViewHandler = new ViewHandler('', SignupView);

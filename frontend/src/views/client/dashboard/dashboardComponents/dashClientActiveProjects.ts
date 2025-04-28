@@ -29,23 +29,22 @@ export class dashClientActiveProjects {
 
   async render(q: Quark): Promise<void> {
     console.log('active projects', this.projects);
-    this.TableContent.length > 0
-      ? $(q, 'div', 'section', {}, (q) => {
-          $(q, 'h2', '', {}, 'Active Projects');
-          //   new ClickableTable(this.TableContent, this.headers, '', this.navigate).render(q);
+    $(q, 'div', 'section', {}, (q) => {
+      $(q, 'h2', '', {}, 'Active Projects');
+      //   new ClickableTable(this.TableContent, this.headers, '', this.navigate).render(q);
 
-          new CustomTable({
-            content: this.TableContent,
-            headers: this.headers,
-            className: '',
-            options: {
-              callback: (item) => {
-                this.navigate(item.id);
-              },
-              cellClassName: 'cursor-pointer text-center',
-            },
-          }).render(q);
-        })
-      : $(q, 'p', '', {}, 'No active projects');
+      new CustomTable({
+        content: this.TableContent,
+        headers: this.headers,
+        className: '',
+        options: {
+          noDataMessage: 'No active projects',
+          callback: (item) => {
+            this.navigate(item.id);
+          },
+          cellClassName: 'cursor-pointer text-center',
+        },
+      }).render(q);
+    });
   }
 }

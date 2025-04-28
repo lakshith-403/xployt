@@ -47,7 +47,7 @@ class ProjectConfigForm extends View {
     low: [],
     informative: [],
     // visibility: '',
-    attachments: null as File | null,
+    // attachments: null as File | null,
     initialFunding: null,
     criticalFunding: null,
     highFunding: null,

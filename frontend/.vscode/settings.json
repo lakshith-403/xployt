@@ -1,19 +1,4 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "sqltools.connections": [
-    {
-      "mysqlOptions": {
-        "authProtocol": "default",
-        "enableSsl": "Disabled"
-      },
-      "previewLimit": 50,
-      "server": "xployt-xployt.b.aivencloud.com",
-      "port": 17847,
-      "driver": "MySQL",
-      "username": "avnadmin",
-      "name": "Xployt",
-      "database": "xployt"
-    }
-  ]
+  "editor.formatOnSave": true
 }

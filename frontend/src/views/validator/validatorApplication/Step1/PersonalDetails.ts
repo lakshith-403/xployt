@@ -10,7 +10,8 @@ class PersonalDetails implements Step {
     $(q, 'div', 'personal-details', {}, (q) => {
       $(q, 'h3', 'title', {}, 'Personal Details');
 
-      this.renderFieldFullWidth(q, this.fields.name, state.name);
+      this.renderFieldFullWidth(q, this.fields.firstName, state.firstName);
+      this.renderFieldFullWidth(q, this.fields.lastName, state.lastName);
       this.renderFieldFullWidth(q, this.fields.email, state.email);
       this.renderFieldFullWidth(q, this.fields.mobile, state.mobile);
       this.renderFieldFullWidth(q, this.fields.country, state.country);
@@ -37,7 +38,8 @@ class PersonalDetails implements Step {
   }
 
   private fields: { [key: string]: FormTextField } = {
-    name: new FormTextField({ label: 'Name *', placeholder: 'Enter your name: (e.g. John Doe)', name: 'name' }),
+    firstName: new FormTextField({ label: 'First Name *', placeholder: 'Enter your first name: (e.g. John)', name: 'firstName' }),
+    lastName: new FormTextField({ label: 'Last Name *', placeholder: 'Enter your last name: (e.g. Doe)', name: 'lastName' }),
     email: new FormTextField({ label: 'Email *', placeholder: 'Enter your email: (e.g. john.doe@example.com)', name: 'email' }),
     mobile: new FormTextField({ label: 'Mobile *', placeholder: 'Enter your mobile number: (e.g. +1234567890)', name: 'mobile' }),
     country: new FormTextField({ label: 'Country *', placeholder: 'Select your country: (e.g. United States)', name: 'country' }),

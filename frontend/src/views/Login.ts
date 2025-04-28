@@ -93,7 +93,7 @@ export class LoginView extends View {
           new Button({
             label: 'Sign up',
             type: ButtonType.SECONDARY,
-            onClick: () => router.navigateTo('/register'),
+            onClick: () => router.navigateTo('/newsignup'),
           }).render(q);
         });
       });
@@ -119,14 +119,11 @@ export class LoginView extends View {
       .then((user) => {
         console.log('User logged in:', user);
 
-        // Method 1: Using a promise
-        // ModalManager.show('loginAlert', modalElement, true).then(() => {
-        //   console.log('ModalManager.show resolved');
-        // });
-        router.navigateTo('/dashboard');
-
-        // Method 2 : Basic modal
-        // ModalManager.show('loginAlert', modalElement);
+        if (user.type === 'Admin') {
+          router.navigateTo('/admin');
+        } else {
+          router.navigateTo('/dashboard');
+        }
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {

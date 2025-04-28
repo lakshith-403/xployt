@@ -24,13 +24,17 @@ const string2Regex = /^[a-zA-Z0-9]+ [a-zA-Z0-9]+$/; // Matches letters and numbe
 
 const stringStrictRegex = /^[a-zA-Z& ]*$/; // Matches only letters
 
+const singleWordRegex = /^[a-zA-Z]*$/; // Matches letters and numbers
+
 const dayRegex = /^(0?[1-9]|[12][0-9]|3[01])$/; // Matches 01-31
 const monthRegex = /^(0?[1-9]|1[0-2])$/; // Matches 01-12
 const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
-const urlRegex = /^(https?:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/; // Matches a valid URL
+const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+
+const telRegex = /^\d{10}$/; // Matches a 10-digit number
 
 const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
 
@@ -99,6 +103,17 @@ export function validateField(key: string, value: any, expectedType: string | ((
     }
   }
 
+  if (expectedType === 'single-word') {
+    if (!singleWordRegex.test(value)) {
+      return { result: false, message: `{${key} must be valid}` };
+    }
+  }
+
+  if (expectedType === 'tel') {
+    if (!telRegex.test(value)) {
+      return { result: false, message: `{${key} must be a valid phone number}` };
+    }
+  }
   // Verifying a date
   if (expectedType === 'date') {
     const dateValidation = isValidDate(value);
@@ -118,6 +133,18 @@ export function validateField(key: string, value: any, expectedType: string | ((
     const inputDate = new Date(`${value.year}-${value.month}-${value.day}`);
     if (inputDate <= today) {
       return { result: false, message: `${key} must be a future date` };
+    }
+  }
+
+  if (expectedType === 'date|past') {
+    const dateValidation = isValidDate(value);
+    if (!dateValidation.result) {
+      return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
+    }
+    const today = new Date();
+    const inputDate = new Date(`${value.year}-${value.month}-${value.day}`);
+    if (inputDate >= today) {
+      return { result: false, message: `${key} must be a past date` };
     }
   }
 
@@ -198,6 +225,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
   if (expectedType === 'ignore') {
     return { result: true, message: '' };
   }
+
   // // Verifying a positive number or null
   // if (expectedType === 'positive-number|null') {
   //   console.log('checking positive-number|null: ', key, value);

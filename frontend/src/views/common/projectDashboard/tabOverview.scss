@@ -99,6 +99,11 @@
     &.project-info-card .card-title { border-left: 4px solid var(--primary-color); }
   }
 
+  a{
+    color: var(--light-green);
+    font-weight: bold;
+  }
+
   // Lists styling
   .info-list, .scope-list, .out-of-scope-list, .security-list, .team-list {
     display: flex;

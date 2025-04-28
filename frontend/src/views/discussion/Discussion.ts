@@ -12,6 +12,7 @@ import { MessageComponent } from './MessageComp';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
 import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
+import { User } from "@data/user";
 
 export class DiscussionView extends View {
   private readonly discussionId: string;
@@ -28,6 +29,7 @@ export class DiscussionView extends View {
   private resolveButtonContainer: Quark | null = null;
   private projectDiscussionCache: ProjectDiscussionCache | null = null;
   private isAdmin: boolean = false;
+  private currentUser!: User;
 
   constructor({ discussionId }: { discussionId: string }) {
     super();
@@ -58,8 +60,8 @@ export class DiscussionView extends View {
 
     try {
       // Check if current user is admin
-      const currentUser = await CACHE_STORE.getUser().get();
-      this.isAdmin = currentUser.type === 'Admin';
+      this.currentUser = await CACHE_STORE.getUser().get();
+      this.isAdmin = this.currentUser.type === 'Admin';
 
       // Load the discussion data
       this.discussion = await this.discussionCache.get();
@@ -125,6 +127,9 @@ export class DiscussionView extends View {
     $(this.participantPane, 'hr', '', {});
     $(this.participantPane, 'div', 'participant-list', {}, (q) => {
       this.discussion?.participants.forEach((participant) => {
+        if (participant.userId === this.currentUser?.id) {
+          participant.role = "You";
+        }
         new UserTag(participant).render(q);
       });
     });
@@ -153,6 +158,9 @@ export class DiscussionView extends View {
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
+          if(message.sender.userId === this.currentUser?.id) {
+            message.sender.name = "You";
+          }
           if (this.isResolved || this.isAdmin) {
             // For resolved discussions or admin users, pass empty functions that do nothing
             new MessageComponent(

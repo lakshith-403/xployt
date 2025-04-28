@@ -8,7 +8,7 @@ import * as utils from '@/ui_lib/utils';
 import { CACHE_STORE } from '@/data/cache';
 import { router } from '@/ui_lib/router';
 import { UserType } from '@/data/user';
-import { mapProjectStateToClass } from "@/styles/style.util";
+import { mapProjectStateToClass } from '@/styles/style.util';
 
 export class MainDashboard extends View {
   private pieChartContainer!: HTMLElement;
@@ -129,9 +129,9 @@ export class MainDashboard extends View {
 
     try {
       const recentProjects = await this.loadRecentProjects();
-      const TABLE_HEADERS = ['projectId', 'state', 'title', 'createdAt'];
+      const TABLE_HEADERS = ['projectId', 'state', 'title', 'updatedAt'];
       const table = new CustomTable({
-        content: utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'createdAt']),
+        content: utils.filterObjectsByFields(recentProjects.stats, ['projectId', 'state', 'title', 'updatedAt']),
         headers: TABLE_HEADERS,
         className: 'table-users py-1 mb-4',
         options: {
@@ -141,8 +141,8 @@ export class MainDashboard extends View {
           },
           cellClassName: '',
           cellClassNames: {
-            1: mapProjectStateToClass
-          }
+            1: mapProjectStateToClass,
+          },
         },
       });
       table.render(this.recentProjectsContainer);

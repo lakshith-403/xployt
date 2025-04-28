@@ -1,12 +1,14 @@
-import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
-import { View, ViewHandler } from '../ui_lib/view';
-import { IconButton } from '../components/button/icon.button';
-import { Button, ButtonType } from '../components/button/base';
-import { CollapsibleBase } from '../components/Collapsible/collap.base';
-import { CACHE_STORE } from '../data/cache';
+import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
+import { View, ViewHandler } from '@/ui_lib/view';
+import { IconButton } from '@/components/button/icon.button';
+import { Button, ButtonType } from '@/components/button/base';
+import { CollapsibleBase } from '@/components/Collapsible/collap.base';
+import { CACHE_STORE } from '@/data/cache';
 import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
 import { FormTextField } from '@/components/text_field/form.text_field';
+import { FileInputBase } from '@components/input_file/input.file';
+import { TagInput } from '@/components/text_field/tagInput/tagInput';
 
 export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
@@ -31,10 +33,10 @@ export class ProfileView extends View {
   private companyNameField: FormTextField;
 
   // Hacker fields
-  private skillSetContainer: Quark | null = null;
-  private skillSetFields: FormTextField[] = [];
   private skillSetValues: string[] = [];
   private linkedInField: FormTextField;
+  private certificateField: FileInputBase;
+  private skillsInput: TagInput;
 
   constructor() {
     super();
@@ -59,6 +61,27 @@ export class ProfileView extends View {
 
     // Hacker fields
     this.linkedInField = new FormTextField({ label: 'LinkedIn Profile', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedIn' });
+
+    this.certificateField = new FileInputBase({
+      label: 'Certificates',
+      accept: '.pdf,.jpg,.jpeg,.png',
+      multiple: true,
+      name: 'certificates'
+    });
+
+    this.skillsInput = new TagInput({
+      label: '',
+      placeholder: 'Enter your skills',
+      name: 'skills',
+      suggestions: hackerSkillsTags,
+      hideLabel: true,
+      onChange: (tags: string[]) => {
+        this.skillSetValues = [];
+        this.skillSetValues.push(...tags);
+      },
+
+    });
+
   }
 
   private async loadProfile() {
@@ -72,15 +95,8 @@ export class ProfileView extends View {
       // Ensure skillSet is properly initialized for Hackers
       if (this.profile.role === 'Hacker') {
         console.log('Raw skillSet from backend:', this.profile.skillSet);
-        // Handle both array and string formats
-        if (typeof this.profile.skillSet === 'string') {
-          this.skillSetValues = [this.profile.skillSet];
-        } else if (Array.isArray(this.profile.skillSet)) {
-          this.skillSetValues = [...this.profile.skillSet];
-        } else {
-          this.skillSetValues = [];
-        }
-        console.log('Processed skillSet values:', this.skillSetValues);
+        this.skillsInput.removeAllTags();
+        this.skillsInput.addTags(this.profile.skillSet);
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -131,79 +147,8 @@ export class ProfileView extends View {
         this.companyNameField.setValue(this.profile.companyName || '');
       } else if (this.profile.role === 'Hacker') {
         this.linkedInField.setValue(this.profile.linkedIn || '');
-        if (this.profile.skillSet) {
-          this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
-          this.updateSkillSetFields();
-        }
       }
     }
-  }
-
-  private updateSkillSetFields() {
-    if (this.skillSetContainer && this.profile.role === 'Hacker') {
-      console.log('Updating skill fields with values:', this.skillSetValues);
-
-      // Clear existing fields
-      this.skillSetContainer.innerHTML = '';
-      this.skillSetFields = [];
-
-      // Create fields for existing skills
-      if (Array.isArray(this.skillSetValues) && this.skillSetValues.length > 0) {
-        console.log('Creating fields for skills:', this.skillSetValues);
-        this.skillSetValues.forEach((skill, index) => {
-          if (skill && skill.trim() !== '') {
-            this.addSkillField(this.skillSetContainer!, skill, index);
-          }
-        });
-      } else {
-        console.log('No skills to display');
-        $(this.skillSetContainer, 'div', 'skill-field-container', {}, (q) => {
-          $(q, 'p', 'text-center', {}, 'No skills added yet');
-        });
-      }
-
-      // Add button for new skill
-      $(this.skillSetContainer, 'div', 'add-skill-button-container', {}, (q) => {
-        new Button({
-          label: 'Add Skill',
-          type: ButtonType.SECONDARY,
-          onClick: () => {
-            this.skillSetValues.push('');
-            this.addSkillField(this.skillSetContainer!, '', this.skillSetValues.length - 1);
-          },
-        }).render(q);
-      });
-    }
-  }
-
-  private addSkillField(container: Quark, value: string, index: number) {
-    console.log('Adding skill field with value:', value, 'at index:', index);
-    $(container, 'div', 'skill-field-container', {}, (q) => {
-      const skillField = new FormTextField({
-        label: `Skill ${index + 1}`,
-        placeholder: 'Your skill',
-        value: value,
-      });
-      
-      console.log('Skill field created with value:', value);
-
-      $(q, 'div', 'skill-field-row', {}, (q) => {
-        skillField.render(q);
-
-        $(q, 'div', 'remove-skill-button', {}, (q) => {
-          new IconButton({
-            label: '',
-            icon: 'fa fa-trash',
-            onClick: () => {
-              this.skillSetValues.splice(index, 1);
-              this.updateSkillSetFields();
-            },
-          }).render(q);
-        });
-      });
-
-      this.skillSetFields.push(skillField);
-    });
   }
 
   private async saveChanges() {
@@ -252,13 +197,8 @@ export class ProfileView extends View {
       } else if (this.profile.role === 'Client') {
         profileData.companyName = this.companyNameField.getValue();
       } else if (this.profile.role === 'Hacker') {
-        // Update skillSet values from fields
-        this.skillSetFields.forEach((field, index) => {
-          this.skillSetValues[index] = field.getValue();
-        });
-
         // Filter out empty skills
-        profileData.skillSet = this.skillSetValues.filter((skill) => skill.trim() !== '');
+        profileData.skillSet = this.skillsInput.getSelectedTags();
         profileData.linkedIn = this.linkedInField.getValue();
       }
 
@@ -267,12 +207,34 @@ export class ProfileView extends View {
       // Get required name from profile if not in fields
       profileData.name = this.profile.name; // Keep original name
 
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      // Add profile data as a JSON string
+      const profileJson = JSON.stringify(profileData);
+      formData.append('profile', profileJson);
+
+      // Add certificate files if they exist
+      const certificateFiles = this.certificateField.getFiles();
+      if (certificateFiles.length > 0) {
+        certificateFiles.forEach((file: File, index: number) => {
+          formData.append('certificates', file);
+        });
+      }
+
       // Send update request with explicit debug options
       try {
         console.log(`Sending PUT request to /api/new-profile/${user.id}`);
-        const response = await NETWORK.put(`/api/new-profile/${user.id}`, profileData, {
+        console.log('FormData contents:', {
+          profile: profileJson,
+          files: certificateFiles.map(f => f.name)
+        });
+        
+        const response = await NETWORK.put(`/api/new-profile/${user.id}`, formData, {
           handleError: true,
           throwError: true,
+          dataTransferType: 'multipart/form-data',
+          showLoading: true
         });
 
         console.log('Profile update response:', response);
@@ -281,8 +243,6 @@ export class ProfileView extends View {
         await this.loadProfile();
         // Force refresh of skill fields
         if (this.profile.role === 'Hacker') {
-          this.skillSetValues = Array.isArray(this.profile.skillSet) ? this.profile.skillSet : [];
-          this.updateSkillSetFields();
         }
         alert('Profile updated successfully!');
       } catch (networkError: any) {
@@ -404,25 +364,17 @@ export class ProfileView extends View {
 
                 $(q, 'h3', '', {}, 'Skills');
                 $(q, 'div', 'skill-set-container', {}, (q) => {
-                  this.skillSetContainer = q;
-                  // Initialize skill fields with existing values
-                  if (this.profile.skillSet) {
-                    console.log('Skill set from profile:', this.profile.skillSet);
-                    // Handle both array and string formats
-                    if (typeof this.profile.skillSet === 'string') {
-                      this.skillSetValues = [this.profile.skillSet];
-                    } else if (Array.isArray(this.profile.skillSet)) {
-                      this.skillSetValues = [...this.profile.skillSet];
-                    } else {
-                      this.skillSetValues = [];
-                    }
-                    console.log('Processed skill set values:', this.skillSetValues);
-                    this.updateSkillSetFields();
-                  }
+                  this.skillsInput.render(q);
                 });
+
                 // Add LinkedIn field for hackers
                 $(q, 'div', 'linkedin-field', {}, (q) => {
                   this.linkedInField.render(q);
+                });
+
+                // Add certificate upload field
+                $(q, 'div', 'certificate-field', {}, (q) => {
+                  this.certificateField.render(q);
                 });
               });
             }
@@ -466,5 +418,23 @@ export class ProfileView extends View {
     this.updateFields();
   }
 }
+
+export const hackerSkillsTags = [
+  'Web Security',
+  'Network Security',
+  'API Testing',
+  'Mobile Security',
+  'Cloud Security',
+  'OWASP Top 10',
+  'Application Security',
+  'Code Review',
+  'DevSecOps',
+  'IoT Security',
+  'Hardware Testing',
+  'Firmware Analysis',
+  'Smart Contract Security',
+  'Blockchain',
+  'DeFi',
+];
 
 export const profileViewHandler = new ViewHandler('', ProfileView);

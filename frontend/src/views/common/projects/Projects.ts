@@ -11,7 +11,7 @@ import { FormButton } from '@/components/button/form.button';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
 import { excludeFieldsFromObjects } from '@/ui_lib/utils';
-import { mapProjectStateToClass } from "@/styles/style.util";
+import { mapProjectStateToClass } from '@/styles/style.util';
 
 export default class ProjectsView extends View {
   private params: { projectId: string };
@@ -54,7 +54,7 @@ export default class ProjectsView extends View {
         cellClassName: 'cursor-pointer',
         cellClassNames: {
           1: mapProjectStateToClass,
-          2: () => 'width-fit w-min-20'
+          2: () => 'width-fit w-min-20',
         },
         falseKeys: [],
         noDataMessage: 'No projects to show',
@@ -65,7 +65,7 @@ export default class ProjectsView extends View {
       },
     });
 
-    $(collapsible.getContent(), 'div', 'filter-bar', {}, (q) => {
+    $(collapsible.getContent(), 'div', 'filter-bar py-1', {}, (q) => {
       $(q, 'span', 'filter-bar-title', {}, 'Filter:');
       const checkboxManager = new CheckboxManager(filterOptions, (checkboxValues) => {
         table.updateRows(checkboxValues);

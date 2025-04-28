@@ -35,7 +35,8 @@ interface Step {
 }
 
 interface formState {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   mobile: string;
   country: string;
@@ -63,7 +64,8 @@ interface formState {
 
 class ValidatorApplication extends View {
   private formState: formState = {
-    name: 'Geetha Savith',
+    firstName: 'Geetha',
+    lastName: 'Savith',
     email: 'geetha@gmail.com',
     mobile: '9876543210',
     country: 'India',
@@ -91,17 +93,6 @@ class ValidatorApplication extends View {
 
   private prepareFiles(): void {
     console.log('File list', this.files);
-    // this.formState.certificates = this.files[0].map((file) => {
-    //   console.log('Preparing cert', file);
-    //   const id = crypto.randomUUID();
-    //   return {
-    //     id,
-    //     name: file.name,
-    //     url: `${id}.${file.name.split('.').pop()}`,
-    //   } as ReportAttachment;
-    // });
-
-    // console.log('Prepared certs', this.formState.certificates);
 
     if (this.files.length > 0 && this.files[1].length > 0) {
       this.formState.cvProcessed = this.files[1].map((file) => {
@@ -181,7 +172,8 @@ class ValidatorApplication extends View {
         title: 'Project Details',
         step: new ProjectDetails(),
         stateUsed: {
-          name: 'required',
+          firstName: 'required',
+          lastName: 'required',
           email: 'required',
           mobile: 'required',
           country: 'required',
@@ -212,12 +204,13 @@ class ValidatorApplication extends View {
     ];
 
     const validationSchema: ValidationSchema = {
-      name: 'string|2',
+      firstName: 'single-word',
+      lastName: 'single-word',
       email: 'email',
-      mobile: 'string',
+      mobile: 'tel',
       country: 'string',
       linkedin: 'url',
-      dateOfBirth: 'date',
+      dateOfBirth: 'date|past',
       skills: 'string|comma',
       certificates: 'string',
       cv: 'ignore',
