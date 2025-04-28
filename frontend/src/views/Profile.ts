@@ -66,7 +66,7 @@ export class ProfileView extends View {
       label: 'Certificates',
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
-      name: 'certificates'
+      name: 'certificates',
     });
 
     this.skillsInput = new TagInput({
@@ -79,9 +79,7 @@ export class ProfileView extends View {
         this.skillSetValues = [];
         this.skillSetValues.push(...tags);
       },
-
     });
-
   }
 
   private async loadProfile() {
@@ -209,7 +207,7 @@ export class ProfileView extends View {
 
       // Create FormData for file upload
       const formData = new FormData();
-      
+
       // Add profile data as a JSON string
       const profileJson = JSON.stringify(profileData);
       formData.append('profile', profileJson);
@@ -224,17 +222,17 @@ export class ProfileView extends View {
 
       // Send update request with explicit debug options
       try {
-        console.log(`Sending PUT request to /api/new-profile/${user.id}`);
+        console.log(`Sending post request to /api/new-profile/${user.id}`);
         console.log('FormData contents:', {
           profile: profileJson,
-          files: certificateFiles.map(f => f.name)
+          files: certificateFiles.map((f) => f.name),
         });
-        
-        const response = await NETWORK.put(`/api/new-profile/${user.id}`, formData, {
+
+        const response = await NETWORK.post(`/api/new-profile/${user.id}`, formData, {
           handleError: true,
           throwError: true,
           dataTransferType: 'multipart/form-data',
-          showLoading: true
+          showLoading: true,
         });
 
         console.log('Profile update response:', response);
