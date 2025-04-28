@@ -7,7 +7,7 @@ import { CACHE_STORE } from '@/data/cache';
 import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
 import { FormTextField } from '@/components/text_field/form.text_field';
-import { FileInputBase } from '../components/input_file/input.file';
+import { FileInputBase } from '@components/input_file/input.file';
 import { TagInput } from '@/components/text_field/tagInput/tagInput';
 
 export class ProfileView extends View {
@@ -68,7 +68,8 @@ export class ProfileView extends View {
       label: 'Certificates',
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
-      name: 'certificates'
+      name: 'certificates', // Fixed missing comma
+    });
 
     this.skillsInput = new TagInput({
       label: '',

@@ -71,21 +71,38 @@ export class ProjectTeamCache extends CacheObject<ProjectTeam>{
     }
 }
 
+export interface AssignedUser {
+    userId: string;
+    name: string;
+    email: string;
+}
+
 interface AssignedUserResponse {
-    data: PublicUser;
+    data: AssignedUser[];
     is_successful: boolean;
     error?: string;
     trace?: string;
 }
 
-export class AssignedUserCache extends CacheObject<PublicUser>{
+export class AssignedUser {
+    userId: string;
+    name: string;
+    email: string;
+    constructor(user: AssignedUser) {
+        this.userId = user.userId;
+        this.name = user.name;
+        this.email = user.email;
+    }
+}
+
+export class AssignedUserCache extends CacheObject<AssignedUser[]>{
 
     constructor() {
         super();
     }
 
-    async load(requiredRole: string, projectId: string, userId: string): Promise<PublicUser> {
-        console.log(`Loading assigned user ${userId} of project ${projectId}`);
+    async load(requiredRole: string, projectId: string, userId: string): Promise<AssignedUser[]> {
+        console.log(`Loading assigned user for ${userId} of project ${projectId}`);
         let res: AssignedUserResponse;
 
         try {
@@ -101,6 +118,13 @@ export class AssignedUserCache extends CacheObject<PublicUser>{
             throw new DataFailure('load assigned user', res.error ?? '');
         }
 
-        return new PublicUser({...res.data});
+        if (!res.data || res.data.length === 0) {
+            console.error('No assigned user found');
+            throw new DataFailure('load assigned user', 'No assigned user found');
+        }
+
+        console.log()
+
+        return res.data.map(user => new AssignedUser(user));
     }
 }
