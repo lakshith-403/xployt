@@ -184,6 +184,15 @@ class Network {
     return this.handleRequest('PUT', url, data, options);
   }
 
+  /**
+   * Sends a DELETE request to the server.
+   *
+   * @param {string} url - The URL endpoint for the request.
+   * @param {any} [options] - Additional options for the request.
+   * @param {boolean} [options.successCallback] - A callback function to be called if the request is successful.
+   * @param {string} [options.elementId] - The ID of the element to show a local loading screen.
+   * @returns {Promise<any>} A promise that resolves with the response data.
+   */
   public async delete(url: string, options: any = {}): Promise<any> {
     return this.handleRequest('DELETE', url, {}, options);
   }
