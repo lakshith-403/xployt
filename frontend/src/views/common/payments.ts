@@ -52,7 +52,7 @@ export class PaymentView extends View {
 
       q.innerHTML = '';
 
-      $(q, 'div', 'payments-container', {}, (q) => {
+      $(q, 'div', 'payments-container mt-8', {}, (q) => {
         $(q, 'div', 'payments-header', {}, (q) => {
           $(q, 'h1', '', {}, 'Payment Management');
 

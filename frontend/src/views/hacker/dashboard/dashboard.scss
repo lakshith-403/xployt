@@ -1,7 +1,8 @@
 .hacker-dashboard{
   padding: 2rem;
   max-width: 75rem;
-  margin: auto;
+  margin-inline: auto;
+  margin-top: 8rem;
   .summary{
     display: flex;
     flex-direction: row;
@@ -11,5 +12,6 @@
 
   .card {
     gap: 0npm run start;
+    width: fit-content;
   }
 }

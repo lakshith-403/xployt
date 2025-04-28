@@ -68,9 +68,9 @@ class Router {
   public router = async () => {
     let pathFound = false;
     const path = window.location.pathname + window.location.search;
-    console.log('current route', this.currentRoute);
+    // console.log('current route', this.currentRoute);
     for (const routeHandler of this.routeHandlers) {
-      console.log('checking route:', routeHandler.route);
+      // console.log('checking route:', routeHandler.route);
       if (routeHandler.doesMatch(path)) {
         console.log('rendering route matched:', routeHandler.route);
         try {

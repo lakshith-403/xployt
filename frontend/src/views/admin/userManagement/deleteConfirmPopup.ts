@@ -12,12 +12,14 @@ export class DeleteConfirmPopup {
   private user: any;
   private userType: string;
   private popup: PopupLite;
+  private renderFunction: () => Promise<void>;
 
-  constructor(params: { userId: string; user: any; userType: string }) {
+  constructor(params: { userId: string; user: any; userType: string; renderFunction: () => Promise<void> }) {
     this.userId = params.userId;
     this.user = params.user;
     this.userType = params.userType;
     this.popup = new PopupLite();
+    this.renderFunction = params.renderFunction;
   }
 
   async render(parent: HTMLElement): Promise<void> {
@@ -60,7 +62,10 @@ export class DeleteConfirmPopup {
         '.modal-message': 'User deleted successfully',
       });
       ModalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
+        NETWORK.invalidateCache('/api/admin/userManagement/ProjectLead');
+        NETWORK.invalidateCache('/api/admin/userManagement/Validator');
         this.popup.close();
+        this.renderFunction();
       });
       console.log('deleting user: ', this.userId);
     } catch (error: any) {
