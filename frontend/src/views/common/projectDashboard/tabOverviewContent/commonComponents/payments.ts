@@ -74,7 +74,7 @@ export class OverviewPayments {
               noDataMessage: 'No payment levels configured',
               cellClassName: 'd-flex justify-content-center align-items-center',
               cellClassNames: {
-                3: 'd-flex justify-content-center align-items-center text-small',
+                3: 'd-flex w-min-8 justify-content-center align-items-center text-small',
               },
             },
           }).render(q);

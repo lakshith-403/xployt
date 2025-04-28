@@ -11,8 +11,6 @@ import { router } from "@ui_lib/router";
 export default class BasicInfoComponent {
   private currentUser: User = {} as User;
   private project: Project;
-  private assignedUserId: (string | undefined)[] = [];
-  private assignedUserCache = new AssignedUserCache();
 
   constructor(project: Project) {
     this.project = project;
@@ -26,18 +24,6 @@ export default class BasicInfoComponent {
     }
   }
 
-  async loadAssignedUser(): Promise<void> {
-    try {
-      const role = this.currentUser.type === 'Hacker' ? 'validator' : 'hacker';
-      console.log("Trying to get assigned user for:");
-      console.log(role)
-      const assignedUser: AssignedUser[] = (await this.assignedUserCache.load(role, this.project.projectId.toString(), this.currentUser.id));
-      this.assignedUserId = assignedUser.map(user => user.userId?.toString()) ?? [];
-    } catch (error) {
-      console.error('Failed to load assigned user:', error);
-    }
-  }
-
   async render(q: Quark): Promise<void> {
     console.log(this.project.projectId, this.project.state);
 
@@ -46,77 +32,95 @@ export default class BasicInfoComponent {
     await this.loadCurrentUser();
     loading.hide();
 
-    $(q, 'div', '', {id: 'basic-info'}, async (q) => {
-      $(q, 'div', 'section-content', {}, async (q) => {
-        $(q, 'div', '', {}, (q) => {
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Client');
-            $(q, 'p', 'value', {}, this.project.clientId);
+    $(q, 'div', 'project-dashboard', {}, (q) => {
+      $(q, 'div', 'dashboard-content', {}, (q) => {
+        // Left Column - Project Information
+        $(q, 'div', 'dashboard-column project-details', {}, (q) => {
+          // Project Information Card
+          $(q, 'div', 'dashboard-card project-info-card', {}, (q) => {
+            $(q, 'h2', 'card-title', {}, (q) => {
+              $(q, 'i', 'fa fa-info-circle card-icon', {});
+              $(q, 'span', '', {}, 'Project Information');
+            });
+
+            $(q, 'div', 'date-content', {}, (q) => {
+                $(q, 'span', '', {}, (q) => {
+                  $(q, 'p', 'key', {}, 'Start Date');
+                  $(q, 'p', 'value', {}, this.project.startDate);
+                });
+                $(q, 'span', '', {}, (q) => {
+                  $(q, 'p', 'key', {}, 'End Date');
+                  $(q, 'p', 'value', {}, this.project.endDate);
+                });
+            });
           });
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Access Link');
-            $(q, 'a', 'key link', {href: '#', target: '_blank'}, (q) => {
-              $(q, 'p', 'value', {}, 'www.example.com');
+
+          $(q, 'hr', 'section-divider', {});
+
+          // Scope Card
+          $(q, 'div', 'dashboard-card scopes-card', {}, (q) => {
+            $(q, 'h2', 'card-title', {}, (q) => {
+              $(q, 'i', 'fa fa-list card-icon', {});
+              $(q, 'span', '', {}, 'Rules and Scope');
+            });
+
+            $(q, 'div', 'card-content', {}, (q) => {
+              $(q, 'ul', 'scope-list', {}, (q) => {
+                if (this.project.scope && this.project.scope.length > 0) {
+                  this.project.scope.forEach((rule) => {
+                    $(q, 'li', '', {}, rule);
+                  });
+                } else {
+                  $(q, 'li', '', {}, 'No scope rules specified');
+                }
+              });
             });
           });
         });
-        $(q, 'div', '', {}, (q) => {
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'Start Date');
-            $(q, 'p', 'value', {}, this.project.startDate);
-          });
-          $(q, 'span', '', {}, (q) => {
-            $(q, 'p', 'key', {}, 'End Date');
-            $(q, 'p', 'value', {}, this.project.endDate);
-          });
-        });
-        $(q, 'div', '', {}, async (q) => {
-          if (this.currentUser.type !== 'ProjectLead') {
-            await new UserCard(
-              this.project.leadId,
-              'lead',
-              'card',
-              'Project Lead',
-              {
-                highLightKeys: [ 'email' ],
-                highlightClassName: 'text-light-green',
-                showKeys: [ 'name', 'email' ],
-                callback: () => {
-                  router.navigateTo('/user-info/' + this.project.leadId);
-                }
-              }
-            ).render(q);
-          }
 
-          console.error("Trying to get assigned user for:");
-          console.log(this.currentUser.type);
+        // Right Column - Lead and Assigned User Information
+        $(q, 'div', 'dashboard-column actions-column', {}, (q) => {
+          $(q, 'div', 'dashboard-card', {}, (q) => {
+            $(q, 'h2', 'card-title', {}, (q) => {
+              $(q, 'i', 'card-icon fa fa-user', {});
+              $(q, 'span', '', {}, 'Team Details');
+            });
 
-          if ((this.currentUser.type === 'Hacker') || this.currentUser.type === 'Validator') {
-            loading.show();
-            console.log("Trying tp get assigned user for:" ,this.currentUser);
-            await this.loadAssignedUser();
-            loading.hide();
-
-            for (const userId of this.assignedUserId) {
-
-              if (userId) {
+            $(q, 'div', 'user-card-container', {}, async (q) => {
+              if (this.project.leadId) {
                 await new UserCard(
-                  userId,
-                  this.currentUser.type === 'Hacker' ? 'validator' : 'hacker',
+                  this.project.leadId,
+                  'lead',
                   'card',
-                  this.currentUser.type === 'Hacker' ? 'Assigned Validator' : 'Assigned Hacker',
+                  'Project Lead',
                   {
-                    highLightKeys: [ 'email' ],
+                    highLightKeys: ['email'],
                     highlightClassName: 'text-light-green',
-                    showKeys: [ 'name', 'email' ],
+                    showKeys: ['name', 'email'],
                     callback: () => {
-                      router.navigateTo('/user-info/' + userId);
-                    }
+                      router.navigateTo('/user-info/' + this.project.leadId);
+                    },
                   }
                 ).render(q);
               }
-            }
-          }
+              if(this.project.clientId){
+                await new UserCard(
+                  this.project.clientId,
+                  'client',
+                  'card',
+                  'Client',
+                  {
+                    highLightKeys: ['email'],
+                    highlightClassName: 'text-light-green',
+                    showKeys: ['name', 'email'],
+                    callback: () => {
+                      router.navigateTo('/user-info/' + this.project.clientId);
+                    },
+                  }
+                ).render(q);
+              }
+            });
+          });
         });
       });
     });
