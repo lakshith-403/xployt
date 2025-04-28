@@ -324,6 +324,8 @@ class ClientSignUp extends View {
               }
 
               const response = await NETWORK.post('/api/clientRegister', formData, {
+                showLoading: true,
+                handleError: true,
                 successCallback: (response: any) => {
                   console.log('Registration successful:', response);
                   setContent(modalAlertOnlyOK, {
@@ -333,33 +335,6 @@ class ClientSignUp extends View {
                   modalManager.show('alertOnlyOK', modalAlertOnlyOK, true).then(() => {
                     router.navigateTo('/login');
                   });
-                },
-                errorCallback: (error: any) => {
-                  console.error('Registration failed:', error);
-                  console.error('Error details:', {
-                    status: error.status,
-                    statusText: error.statusText,
-                    data: error.data,
-                    message: error.message
-                  });
-
-                  let errorMessage = 'Registration failed. Please try again.';
-                  
-                  if (error.data) {
-                    if (typeof error.data === 'string') {
-                      errorMessage = error.data;
-                    } else if (error.data.message) {
-                      errorMessage = error.data.message;
-                    } else if (error.data.error) {
-                      errorMessage = error.data.error;
-                    } else if (error.data.required) {
-                      errorMessage = `Missing required fields: ${error.data.required.join(', ')}`;
-                    }
-                  } else if (error.message) {
-                    errorMessage = error.message;
-                  }
-                  
-                  this.updateErrorMessage(errorMessage);
                 }
               });
 
