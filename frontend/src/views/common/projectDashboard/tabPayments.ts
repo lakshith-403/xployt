@@ -184,6 +184,7 @@ export default class Payments {
       headers: headers,
       className: 'reports-payment-table w-100',
       options: {
+        clickable: false,
         noDataMessage: 'No reports available',
         cellClassName: 'd-flex justify-content-center align-items-center',
         cellClassNames: {

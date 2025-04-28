@@ -93,7 +93,7 @@ export class LoginView extends View {
           new Button({
             label: 'Sign up',
             type: ButtonType.SECONDARY,
-            onClick: () => router.navigateTo('/register'),
+            onClick: () => router.navigateTo('/newsignup'),
           }).render(q);
         });
       });

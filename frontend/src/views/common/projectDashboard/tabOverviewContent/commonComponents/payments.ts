@@ -70,6 +70,7 @@ export class OverviewPayments {
             options: {
               filteredField: 'severity',
               falseKeys: [],
+              clickable: false,
               noDataMessage: 'No payment levels configured',
               cellClassName: 'd-flex justify-content-center align-items-center',
               cellClassNames: {

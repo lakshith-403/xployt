@@ -211,3 +211,17 @@ CREATE TABLE Policies (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- System Earnings table
+CREATE TABLE SystemEarnings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reportId INT NOT NULL,
+    clientId INT NOT NULL,
+    hackerId INT NOT NULL,
+    amount DECIMAL(10, 2),
+    description TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reportId) REFERENCES BugReports(reportId),
+    FOREIGN KEY (clientId) REFERENCES Users(userId),
+    FOREIGN KEY (hackerId) REFERENCES Users(userId)
+);

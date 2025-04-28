@@ -68,8 +68,7 @@ export class ProfileView extends View {
       label: 'Certificates',
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
-      name: 'certificates', // Fixed missing comma
-    });
+      name: 'certificates'
 
     this.skillsInput = new TagInput({
       label: '',
