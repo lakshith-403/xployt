@@ -93,7 +93,7 @@ class ProjectConfigForm extends View {
         { severity: high, funding: highFunding, name: 'High' },
         { severity: medium, funding: mediumFunding, name: 'Medium' },
         { severity: low, funding: lowFunding, name: 'Low' },
-        { severity: informative, funding: informativeFunding, name: 'Informative' },
+        { severity: informative, funding: informativeFunding, name: 'Informational' },
       ];
 
       let atLeastOnePairFilled = false;
