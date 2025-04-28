@@ -133,6 +133,7 @@ class projectDashboardView extends View {
           $(q, 'span', 'status-text', {}, this.projectInfo.state);
         });
       });
+      $(q, 'span', 'project-description title-container', {}, this.projectInfo.description);
       $(q, 'div', 'info', {}, (q) => {
         tabsComponent.render(q);
       });

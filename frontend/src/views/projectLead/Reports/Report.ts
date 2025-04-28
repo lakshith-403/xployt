@@ -75,7 +75,7 @@ class ReportsView extends View {
     await this.loadReports();
     q.innerHTML = '';
 
-    $(q, 'div', 'd-flex flex-column container', {}, (q) => {
+    $(q, 'div', 'd-flex flex-column container mt-8', {}, (q) => {
       $(q, 'div', 'd-flex flex-column container p-4', {}, (q) => {
         const pendingReports = this.reports.filter((report: any) => ['Pending'].includes(report.status));
         // console.log(pendingReports);
