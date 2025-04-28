@@ -33,11 +33,13 @@ export default class Hacker {
       this.project = await this.projectCache.get(false, this.projectId);
       this.currentUser = await CACHE_STORE.getUser().get();
       console.log('Hacker: Project Info', this.project);
-      const response = await NETWORK.get(`/api/hacker/reportStatus/${this.projectId}/${this.currentUser.id}`, {
-        localLoading: true,
-        elementId: 'action-buttons',
-      });
-      this.hackerReportStatus = response.data.hackerInfo.status;
+      if (this.currentUser.type === 'Hacker') {
+        const response = await NETWORK.get(`/api/hacker/reportStatus/${this.projectId}/${this.currentUser.id}`, {
+          localLoading: true,
+          elementId: 'action-buttons',
+        });
+        this.hackerReportStatus = response.data.hackerInfo.status;
+      }
     } catch (error) {
       console.error('Failed to load project data', error);
     }
@@ -169,26 +171,28 @@ export default class Hacker {
             $(q, 'div', 'card-content', {}, (q) => {
               $(q, 'div', 'action-buttons', {}, (q) => {
                 $(q, 'div', 'action-button-container', {}, (q) => {
-                  new IconButton({
-                    icon: 'fa fa-plus',
-                    label: 'Create Report',
-                    className: this.project.state !== 'Active' || this.hackerReportStatus === 'Kicked' ? 'cursor-not-allowed disabled' : '',
-                    onClick: () => {
-                      if (this.project.state === 'Active' && this.hackerReportStatus !== 'Kicked') {
-                        const url = '/hacker/new-report/' + this.projectId;
-                        router.navigateTo(url);
-                      } else {
-                        setContent(modalAlertOnlyOK, {
-                          '.modal-title': 'Alert',
-                          '.modal-message':
-                            this.hackerReportStatus === 'Kicked'
-                              ? 'You are not allowed to create reports because you have been kicked from the project'
-                              : 'You can only create reports for active projects',
-                        });
-                        modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
-                      }
-                    },
-                  }).render(q);
+                  if (this.currentUser.type === 'Hacker') {
+                    new IconButton({
+                      icon: 'fa fa-plus',
+                      label: 'Create Report',
+                      className: this.project.state !== 'Active' || this.hackerReportStatus === 'Kicked' ? 'cursor-not-allowed disabled' : '',
+                      onClick: () => {
+                        if (this.project.state === 'Active' && this.hackerReportStatus !== 'Kicked') {
+                          const url = '/hacker/new-report/' + this.projectId;
+                          router.navigateTo(url);
+                        } else {
+                          setContent(modalAlertOnlyOK, {
+                            '.modal-title': 'Alert',
+                            '.modal-message':
+                              this.hackerReportStatus === 'Kicked'
+                                ? 'You are not allowed to create reports because you have been kicked from the project'
+                                : 'You can only create reports for active projects',
+                          });
+                          modalManager.show('alertOnlyOK', modalAlertOnlyOK, true);
+                        }
+                      },
+                    }).render(q);
+                  }
                 });
               });
             });
