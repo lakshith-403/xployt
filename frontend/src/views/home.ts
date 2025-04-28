@@ -17,14 +17,14 @@ class HomeView extends View {
     this.clientButton = new Button({
       label: 'Submit a Project',
       onClick: () => {
-        router.navigateTo('/client');
+        router.navigateTo('/home/client');
       },
     });
     this.hackerButton = new Button({
       label: 'Start Hacking',
       type: ButtonType.SECONDARY,
       onClick: () => {
-        router.navigateTo('/hacker');
+        router.navigateTo('/home/hacker');
       },
     });
     this.dashboardButton = new Button({
@@ -41,7 +41,7 @@ class HomeView extends View {
     let buttonComp: Quark;
     $(q, 'div', '', { id: 'home' }, (q) => {
       $(q, 'div', 'home-section', {}, (q) => {
-        $(q, 'h1', '', {}, 'Security Through Collaboration');
+        $(q, 'h1', '', {}, 'Secureing the Future. One Bug at a Time');
         $(q, 'p', '', {}, 'Collaborate. Protect. Strengthen your systems.');
         buttonComp = $(q, 'span', 'home-buttons', {}, (q) => {
           this.hackerButton.render(q);

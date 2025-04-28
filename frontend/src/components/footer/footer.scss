@@ -1,5 +1,6 @@
 .footer {
   --icon-size: 2rem;
+  --footer-transition: 0.3s ease;
   height: var(--footer-height);
   display: flex;
   flex-direction: column;
@@ -7,6 +8,8 @@
   background-color: var(--background-secondary);
   color: var(--color-primary);
   padding: 0 7rem;
+  position: relative;
+  overflow: hidden;
 
   .footer-top {
     display: flex;
@@ -23,8 +26,14 @@
       gap: 2rem;
 
       .footer-logo {
-        width: 6rem;
+        width: 6.5rem;
         height: auto;
+        transition: transform var(--footer-transition);
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.05);
+        }
       }
       .icons {
         display: flex;
@@ -48,6 +57,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all var(--footer-transition);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
           }
         }
       }

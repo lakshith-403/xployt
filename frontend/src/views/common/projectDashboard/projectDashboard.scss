@@ -1,18 +1,9 @@
 .projectDashboard {
   padding: 2rem 0;
+  margin-top: 5rem;
   --title-size: 2.2rem;
   width: 100%;
-  .project-title {
-    font-size: var(--title-size);
-    font-weight: 600;
-    margin-bottom: 1rem;
-    margin-left: 20%;
-  }
-  .project-number {
-    font-size: var(--title-size);
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
+
   .info {
     display: flex;
     flex-direction: column;
@@ -20,5 +11,84 @@
     align-items: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
+  }
+
+  .title-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-wrap: nowrap;
+    margin-inline: 8rem;
+
+    .title-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      width: fit-content;
+    }
+
+    .project-title {
+      font-size: var(--title-size);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+    .project-number {
+      font-size: var(--title-size);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+  }
+
+  $status-colors: (
+          'unconfigured': #3498db,
+          'configured': #9b59b6,
+          'pending': #f39c12,
+          'active': #27ae60,
+          'review': #e67e22,
+          'completed': #2ecc71,
+          'closed': #e74c3c
+  );
+
+  .project-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    width: fit-content;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: currentColor;
+      animation: pulse 2s infinite;
+
+      @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+        70% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+      }
+    }
+
+    // Generate status-specific styles
+    @each $status, $color in $status-colors {
+      &.project-status-#{$status} {
+        background-color: rgba($color, 0.15);
+        color: $color;
+        border: 1px solid rgba($color, 0.3);
+      }
+    }
   }
 }

@@ -30,7 +30,7 @@ const yearRegex = /^\d{4}$/; // Matches a four-digit year
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Matches a valid email address
 
-const urlRegex = /^(https?:\/\/)?[^\s/$.?#].[^\s]*$/; // Matches a valid URL
+const urlRegex = /^(https?:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/; // Matches a valid URL
 
 const commaWithStringRegex = /^(?!,)(?!.*,$)([a-zA-Z0-9& _-]+(,\s*|,\s*|,\s*|,\s*)?)*$/; // Matches a comma-separated list of strings that do not start or end with a comma
 
@@ -56,9 +56,8 @@ const allowedExtensions = ['txt', 'csv', 'xlsx', 'pdf', 'log', 'json', 'py', 'sh
 const allowedExtensionsCert = ['png', 'hiec', 'jpg', 'jpeg', 'pdf'];
 
 export const isValidFileType = (file: File, strict: boolean): boolean => {
-
   const extension = file.name.split('.').pop()?.toLowerCase() || '';
-  if(strict){
+  if (strict) {
     return allowedExtensionsCert.includes(extension) && isValidFileSize(file);
   } else {
     return allowedExtensions.includes(extension) && isValidFileSizeStrict(file);
@@ -66,14 +65,14 @@ export const isValidFileType = (file: File, strict: boolean): boolean => {
 };
 
 export const isValidFileSize = (file: File): boolean => {
-    const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
-    return file.size <= maxSizeInBytes;
-}
+  const maxSizeInBytes = 100 * 1024 * 1024; // 100 MB
+  return file.size <= maxSizeInBytes;
+};
 
 export const isValidFileSizeStrict = (file: File): boolean => {
   const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB
   return file.size <= maxSizeInBytes;
-}
+};
 
 export function validateField(key: string, value: any, expectedType: string | ((formState: any) => string)): { result: boolean; message: string } {
   // Check if expectedType is a function
@@ -86,7 +85,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a string
   if (expectedType === 'string') {
-    console.log('checking string: ', key, value);
+    // console.log('checking string: ', key, value);
     if (!stringRegex.test(value)) {
       return { result: false, message: `{${key} must be a string}` };
     }
@@ -94,7 +93,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a string(strict)
   if (expectedType === 'string-strict') {
-    console.log('checking string-strict: ', key, value);
+    // console.log('checking string-strict: ', key, value);
     if (!stringStrictRegex.test(value)) {
       return { result: false, message: `{${key} must be strictly a string}` };
     }
@@ -103,7 +102,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
   // Verifying a date
   if (expectedType === 'date') {
     const dateValidation = isValidDate(value);
-    console.log('checking date: ', key, value);
+    // console.log('checking date: ', key, value);
     if (!dateValidation.result) {
       return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
     }
@@ -111,7 +110,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   if (expectedType === 'date|future') {
     const dateValidation = isValidDate(value);
-    console.log('checking date: ', key, value);
+    // console.log('checking date: ', key, value);
     if (!dateValidation.result) {
       return { result: false, message: `${key} is an invalid date: ${dateValidation.message}` };
     }
@@ -128,7 +127,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying an email
   if (expectedType === 'email') {
-    console.log('checking email: ', key, value);
+    // console.log('checking email: ', key, value);
     if (!emailRegex.test(value)) {
       return { result: false, message: `${key} must be a valid email address` };
     }
@@ -136,11 +135,11 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying an array of strings
   if (expectedType === 'array|string') {
-    console.log('checking array|string: ', key, value);
+    // console.log('checking array|string: ', key, value);
     if (!Array.isArray(value)) {
-      console.log('array|string');
-      console.log(key);
-      console.log(value);
+      // console.log('array|string');
+      // console.log(key);
+      // console.log(value);
       return { result: false, message: `${key} must be an array` };
     } else {
       for (const item of value) {
@@ -152,11 +151,11 @@ export function validateField(key: string, value: any, expectedType: string | ((
   }
 
   if (expectedType === 'object|string') {
-    console.log('checking object|string: ', key, value);
+    // console.log('checking object|string: ', key, value);
     if (typeof value !== 'object') {
-      console.log('object|string');
-      console.log(key);
-      console.log(value);
+      // console.log('object|string');
+      // console.log(key);
+      // console.log(value);
       return { result: false, message: `${key} must be an object` };
     } else {
       for (const item of Object.values(value)) {
@@ -169,7 +168,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying an array of strings(strict)
   if (expectedType === 'array|string-strict') {
-    console.log('checking array|string-strict: ', key, value);
+    // console.log('checking array|string-strict: ', key, value);
     if (!Array.isArray(value)) {
       return { result: false, message: `${key} must be an array` };
     } else {
@@ -183,7 +182,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a number
   if (expectedType === 'number') {
-    console.log('checking number: ', key, value);
+    // console.log('checking number: ', key, value);
     if (!numberRegex.test(value)) {
       return { result: false, message: `${key} must be a number` };
     }
@@ -191,12 +190,14 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a number or null
   if (expectedType === 'number|null') {
-    console.log('checking number|null: ', key, value);
+    // console.log('checking number|null: ', key, value);
     if (!numberRegex.test(value) && value !== null && value !== '') {
       return { result: false, message: `${key} must be a number or null` };
     }
   }
-
+  if (expectedType === 'ignore') {
+    return { result: true, message: '' };
+  }
   // // Verifying a positive number or null
   // if (expectedType === 'positive-number|null') {
   //   console.log('checking positive-number|null: ', key, value);
@@ -212,37 +213,39 @@ export function validateField(key: string, value: any, expectedType: string | ((
 
   // Verifying a url
   if (expectedType === 'url') {
-    console.log('checking url: ', key, value);
+    // console.log('checking url: ', key, value);
+    // console.log(urlRegex.test(value));
     if (!urlRegex.test(value)) {
       return { result: false, message: `${key} must be a valid URL` };
     }
+    // console.log('No validation error');
   }
 
   // Verifying a string(2)
 
   if (expectedType === 'string|2') {
-    console.log('checking string|2: ', key, value);
+    // console.log('checking string|2: ', key, value);
     if (!string2Regex.test(value)) {
       return { result: false, message: `${key} must be a string with 2 words` };
     }
   }
 
   if (expectedType === 'string|comma') {
-    console.log('checking string|comma: ', key, value);
+    // console.log('checking string|comma: ', key, value);
     if (!commaWithStringRegex.test(value)) {
       return { result: false, message: `${key} must be a comma seperated list` };
     }
   }
 
   if (expectedType === 'file') {
-    console.log('checking file type: ', key, value);
+    // console.log('checking file type: ', key, value);
     if (!isValidFileType(value, false)) {
       return { result: false, message: `${key} must be a valid file type` };
     }
   }
 
   if (expectedType === 'file-strict') {
-    console.log('checking file type: ', key, value);
+    // console.log('checking file type: ', key, value);
     if (!isValidFileType(value, true)) {
       return { result: false, message: `${key} must be a valid file type` };
     }

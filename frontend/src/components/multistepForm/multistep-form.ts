@@ -2,7 +2,6 @@ import { QuarkFunction as $, Quark } from '../../ui_lib/quark';
 import { ButtonType } from '../button/base';
 import { FormButton } from '../button/form.button';
 import { validateField, validateFormState } from './validationUtils';
-// import { validateField } from './validationUtils';
 import './multistep-form.scss';
 import ModalManager, { setContent } from '../ModalManager/ModalManager';
 import { modalAlertOnlyOK } from '@/main';
@@ -25,7 +24,8 @@ export interface ValidationSchema {
     | 'number|null'
     | 'string|comma'
     | 'date|future'
-      | 'file-strict'
+    | 'file-strict'
+    | 'ignore'
     | ((formState: any) => string);
 }
 
@@ -71,6 +71,7 @@ class MultistepForm {
 
   private validateCurrentTab(): boolean {
     console.log('validateCurrentTab', this.activeTabIndex);
+    console.log('formState', this.formState);
     const currentStep = this.steps[this.activeTabIndex];
     let errorMessages: string[] = [];
 
@@ -84,7 +85,7 @@ class MultistepForm {
         !(Array.isArray(value) && value.length === 0) &&
         !(typeof value === 'object' && value !== null && Object.values(value).every((v) => !v))
       ) {
-        console.log('validateField', key, value);
+        // console.log('validateField', key, value);
         const validation = validateField(key, value, this.validationSchema[key]);
         if (!validation.result) {
           errorMessages.push(validation.message);

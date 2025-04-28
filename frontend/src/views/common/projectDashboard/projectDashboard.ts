@@ -46,7 +46,7 @@ class projectDashboardView extends View {
       const currentUser = await CACHE_STORE.getUser().get();
       const response = await NETWORK.get(`/api/single-project/${this.params.projectId}?role=${currentUser.type}`, { showLoading: true, handleError: true, throwError: true });
       console.log('response: ', response.data);
-      this.projectInfo = response.data;
+      this.projectInfo = response.data.project;
       this.projectTitle = response.data.project.title;
     } catch (error) {
       console.error('Failed to load project data:', error);
@@ -57,7 +57,7 @@ class projectDashboardView extends View {
     const currentUser = await CACHE_STORE.getUser().get();
     this.userId = currentUser.id;
 
-    const overviewTab = new OverviewTab(this.params.projectId);
+    const overviewTab = new OverviewTab(this.params.projectId, () => this.rerender());
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
@@ -68,12 +68,6 @@ class projectDashboardView extends View {
 
     const commonTabs = [
       {
-        title: 'Reports',
-        render: (q: Quark) => {
-          reportsTab.render(q);
-        },
-      },
-      {
         title: 'Overview',
         render: (q: Quark) => {
           overviewTab.render(q);
@@ -83,6 +77,12 @@ class projectDashboardView extends View {
         title: 'Team',
         render: (q: Quark) => {
           teamTab.render(q);
+        },
+      },
+      {
+        title: 'Reports',
+        render: (q: Quark) => {
+          reportsTab.render(q);
         },
       },
       {
@@ -123,8 +123,16 @@ class projectDashboardView extends View {
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
-      $(q, 'span', 'project-title', {}, this.projectTitle);
-      $(q, 'span', 'project-number', {}, ' - #' + this.params.projectId);
+      $(q, 'span', 'title-container', {}, (q) => {
+        $(q, 'span', 'title-info', {}, (q) => {
+          $(q, 'span', 'project-title', {}, this.projectTitle);
+          $(q, 'span', 'project-number', {}, ' - #' + this.params.projectId);
+        })
+        $(q, 'span', `project-status project-status-${this.projectInfo.state.toLowerCase()}`, {}, (q) => {
+          $(q, 'span', 'status-indicator', {});
+          $(q, 'span', 'status-text', {}, this.projectInfo.state);
+        });
+      });
       $(q, 'div', 'info', {}, (q) => {
         tabsComponent.render(q);
       });

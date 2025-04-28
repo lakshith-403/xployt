@@ -62,9 +62,14 @@ import { vulnReportReviewViewHandler } from '@views/common/ReportReview/ReportRe
 import { editReportViewHandler } from '@views/hacker/VulnerabilityReport/EditReport';
 import { adminReportsViewHandler } from '@views/admin/Report';
 import { paymentViewHandler } from './views/common/payments';
-import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
 import { privacyPolicyViewHandler } from '@views/policies/PrivacyPolicy';
 import { userAgreementViewHandler } from '@views/policies/UserAgreement';
+import { leadReportFormViewHandler } from '@views/projectLead/leadReport/leadReportForm';
+import { signupViewHandler } from '@views/Signup';
+import { clientSignUpViewHandler } from '@views/client/signUp';
+import { passwordResetViewHandler } from '@views/PasswordReset';
+import { hackerSignUpViewHandler } from '@views/hacker/hackerSignUp';
+import { systemEarningsViewHandler } from '@views/admin/earnings/SystemEarnings';
 
 // Generic Alerts : Can be used anywhere
 export const modalAlertOnlyCancel = convertToDom(alertOnlyCancel);
@@ -85,6 +90,7 @@ ModalManager.includeModal('alertForErrors', {
 class TopNavigationView implements NavigationView {
   baseURL: string = '';
   buttonContainer!: Quark;
+  notificationContainer!: Quark;
   userType!: Quark;
 
   willUpdate: () => void = () => {};
@@ -94,13 +100,11 @@ class TopNavigationView implements NavigationView {
     q.innerHTML = '';
     const logo = $(q, 'img', 'icon-image', { src: './../assets/xployt-logo.png' });
     logo.onclick = () => router.navigateTo('/');
+
     $(q, 'div', 'buttons', {}, (q) => {
       this.userType = $(q, 'span', 'user-type text-light-green', {}, '');
-
+      this.notificationContainer = $(q, 'span', '', {}, (q) => {});
       $(q, 'button', '', { onclick: () => router.navigateTo('/') }, 'Home');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
-      $(q, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
 
       this.buttonContainer = $(q, 'span', '', {}, (q) => {});
     });
@@ -115,8 +119,10 @@ class TopNavigationView implements NavigationView {
         // console.log(user);
         // @ts-ignore
         this.buttonContainer.innerHTML = '';
+        this.notificationContainer.innerHTML = '';
         if (user.type != 'Guest') {
-          new Notifications(this.buttonContainer, user.id).render();
+          new Notifications(this.notificationContainer, user.id).render();
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/dashboard') }, 'Dashboard');
           new Button({
             label: 'Sign Out',
             onClick: () => {
@@ -133,18 +139,13 @@ class TopNavigationView implements NavigationView {
             },
           }).render(this.buttonContainer);
         } else {
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/hacker') }, 'Hackers');
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/validator') }, 'Validators');
+          $(this.buttonContainer, 'button', '', { onclick: () => router.navigateTo('/home/client') }, 'Organizations');
           new Button({
             label: 'Sign In',
             onClick: () => {
               router.navigateTo('/login');
-              this.renderButtons();
-            },
-          }).render(this.buttonContainer);
-
-          new Button({
-            label: 'Admin Sign In',
-            onClick: () => {
-              router.navigateTo('/adminLogin');
               this.renderButtons();
             },
           }).render(this.buttonContainer);
@@ -156,8 +157,10 @@ class TopNavigationView implements NavigationView {
 const HomeRouteHandler = new RouteHandler('/', [homeViewHandler], undefined, false, false, true);
 
 const LoginRouteHandler = new RouteHandler('/login', [loginViewHandler], undefined, true, true);
+const PasswordResetRouteHandler = new RouteHandler('/reset-password', [passwordResetViewHandler], undefined, true, true);
 const AdminLoginRouteHandler = new RouteHandler('/adminLogin', [adminLoginViewHandler], undefined, true, true);
 const RegisterRouteHandler = new RouteHandler('/register', [registerViewHandler], undefined, true);
+const NewSignupRouteHandler = new RouteHandler('/newsignup', [signupViewHandler], undefined, false);
 
 const LandingRouteHandlers = new RouteHandler(
   '/home/',
@@ -180,9 +183,10 @@ const CommonRouteHandlers = new RouteHandler(
   true
 );
 
-const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
+// const ValidatorRouteHandlers = new RouteHandler('/validator', [], new SidebarView('/', HomeSidebar), false, false, false, true);
 
 const HackerRouteHandlers = new RouteHandler('/hacker', [vulnReportViewHandler, editReportViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
+const HackerRegisterRouteHandlers = new RouteHandler('/register', [hackerSignUpViewHandler, clientSignUpViewHandler], undefined, false, false, false, false);
 
 const ClientRouteHandlers = new RouteHandler('/client', [projectRequestFormViewHandler, clientHackerInvitationsViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
 
@@ -199,12 +203,14 @@ const AdminRouteHandlers = new RouteHandler(
     adminProjectsViewHandler,
     adminReportsViewHandler,
     userProfileForAdminViewHandler,
+    systemEarningsViewHandler,
   ],
   new SidebarView('/', AdminSidebar),
   false,
   false,
   false,
-  false
+  true,
+  ['Admin']
 );
 
 const TestRouteHandlers = new RouteHandler('/test', [styleGuideViewHandler], new SidebarView('/', HomeSidebar), false, false, false, true);
@@ -234,14 +240,16 @@ router.setTopNavigationView(new TopNavigationView());
 router.addRouteHandler(HomeRouteHandler);
 router.addRouteHandler(RegisterRouteHandler);
 router.addRouteHandler(LoginRouteHandler);
+router.addRouteHandler(PasswordResetRouteHandler);
 router.addRouteHandler(AdminLoginRouteHandler);
+router.addRouteHandler(NewSignupRouteHandler);
 router.addRouteHandler(LandingRouteHandlers);
 router.addRouteHandler(ValidatorApplicationRouteHandler);
 
 router.addRouteHandler(CommonRouteHandlers);
 router.addRouteHandler(TestRouteHandlers);
 
-router.addRouteHandler(ValidatorRouteHandlers);
+// router.addRouteHandler(ValidatorRouteHandlers);
 router.addRouteHandler(HackerRouteHandlers);
 router.addRouteHandler(ClientRouteHandlers);
 router.addRouteHandler(ProjectLeadRouteHandlers);
@@ -253,3 +261,4 @@ router.addRouteHandler(UserViewHandlers);
 router.addRouteHandler(ReportRouteHandler);
 router.addRouteHandler(ComplaintRouteHandler);
 router.addRouteHandler(ProjectLeadRouteHandlersWithSidebar);
+router.addRouteHandler(HackerRegisterRouteHandlers);

@@ -1,5 +1,4 @@
 .tabs-container {
-  width: 70%;
   min-width: 800px;
   padding: 0 3rem;
 
@@ -20,5 +19,8 @@
         box-shadow: 0 1px 0 0 var(--color-primary);
       }
     }
+  }
+  .tabs-content{
+    width: 100%;
   }
 }

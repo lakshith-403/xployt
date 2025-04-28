@@ -11,10 +11,12 @@ export class Footer {
 
   async render(q: Quark) {
     this.user = await CACHE_STORE.getUser().get();
+    q.innerHTML = '';
     $(q, 'div', 'footer', {}, (q) => {
       $(q, 'div', 'footer-top', {}, (q) => {
         $(q, 'div', 'content-left', {}, (q) => {
-          $(q, 'img', 'footer-logo', {src: './../assets/xployt-logo.png', alt: 'logo'}, '');
+          $(q, 'img', 'footer-logo', {src: './../assets/xployt-logo.png', alt: 'logo'}, '')
+              .addEventListener('click', () => router.navigateTo('/'));
           $(q, 'div', 'icons', {}, (q) => {
             new IconButton({
               icon: 'fa-brands fa-instagram',

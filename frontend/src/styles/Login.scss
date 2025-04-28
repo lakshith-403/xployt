@@ -5,20 +5,28 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: var(--dark-gray);
+  background: linear-gradient(-135deg, var(--dark-gray) 0%, #101311 100%);
   gap: 30px;
 
   .login-icon-image {
     cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
   .login-left {
-    width: min(300px, 40%);
+    width: min(500px, 40%);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 20px;
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.8s ease forwards;
 
     .login-icon-image {
       width: 200px;
@@ -28,9 +36,10 @@
 
     .login-description {
       color: var(--light-gray);
-      font-size: 0.8rem;
-      font-weight: 100;
+      font-size: 1rem;
+      font-weight: 500;
       text-align: left;
+
     }
   }
 
@@ -41,6 +50,16 @@
     align-items: center;
     gap: 20px;
     width: min(400px, 40%);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.2s forwards;
 
     .label {
       font-size: 0.8rem;
@@ -52,6 +71,18 @@
 
     .text-field-container {
       width: 100%;
+
+      input {
+        transition: all 0.3s ease;
+        width: 100%;
+        color: #ffffff;
+
+        &:focus {
+          border-color: rgba(0, 71, 58, 0.6);
+          box-shadow: 0 0 0 3px rgba(0, 71, 58, 0.2);
+          outline: none;
+        }
+      }
     }
 
     .login-button-container {
@@ -59,6 +90,22 @@
 
       button {
         margin-bottom: 10px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+
+          &::before {
+            left: 100%;
+          }
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
       }
     }
 
@@ -88,7 +135,7 @@
       width: 100%;
 
       .login-icon-image {
-        margin-left: auto;
+        margin: 0 auto;
       }
 
       .login-description {
@@ -101,6 +148,7 @@
 
     .login-title {
       font-size: 2em; /* Adjust title size for mobile */
+      margin: 0;
     }
 
     .login-description {

@@ -1,0 +1,121 @@
+.system-earnings-container {
+  padding: 20px;
+
+  h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .filter-container {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+
+    .date-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      span {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .date-inputs {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+
+        label {
+          margin-right: 5px;
+        }
+
+        input[type='date'] {
+          padding: 8px;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          padding: 8px 15px;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
+          margin-left: 10px;
+
+          &.btn-primary {
+            background-color: #4a90e2;
+            color: white;
+
+            &:hover {
+              background-color: #357abd;
+            }
+          }
+
+          &.btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+
+            &:hover {
+              background-color: #e4e4e4;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .summary-container {
+    background-color: #e8f4fd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+
+    .total-summary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      h3 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .total-amount {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c7be5;
+        margin-bottom: 5px;
+      }
+
+      .date-range {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  .table-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 300px;
+
+    .earnings-table {
+      width: 100%;
+
+      .table-header-cell {
+        font-weight: bold;
+      }
+    }
+  }
+}

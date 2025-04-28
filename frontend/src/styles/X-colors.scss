@@ -49,15 +49,15 @@
 
 // Background color borders
 $border-types: (
-  'primary': var(--background-primary),
-  'secondary': var(--background-secondary),
-  'tertiary': var(--background-tertiery),
+        'primary': var(--background-primary),
+        'secondary': var(--background-secondary),
+        'tertiary': var(--background-tertiery),
 );
 
 $border-sizes: (
-  'extra-thin': 1px,
-  'thin': 3px,
-  'thick': 6px,
+        'extra-thin': 1px,
+        'thin': 3px,
+        'thick': 6px,
 );
 
 @each $type, $color in $border-types {
@@ -70,8 +70,8 @@ $border-sizes: (
 
 // Text color borders
 $text-border-types: (
-  'text-primary': var(--color-primary),
-  'text-secondary': var(--color-secondary),
+        'text-primary': var(--color-primary),
+        'text-secondary': var(--color-secondary),
 );
 
 @each $type, $color in $text-border-types {
@@ -139,3 +139,52 @@ $text-border-types: (
   border-color: var(--background-tertiery) !important;
   transition: border-color 0.3s ease;
 }
+
+
+// state color pallet
+.severity{
+  width: 8rem;
+  padding: 0.5rem !important;
+  margin-block: 0.3rem;
+  border-radius: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.CRITICAL {
+  background-color: #c84242;
+}
+.HIGH {
+  background-color: #e36e53;
+}
+.MEDIUM {
+  background-color: #c78a26;
+}
+.LOW {
+  background-color: #2a8847;
+}
+.UNKNOWN {
+  background-color: #4b8284;
+}
+.INFORMATIONAL {
+  background-color: #4f6b6c;
+}
+
+//.CRITICAL {
+//  background-color: #c13030; /* Deeper red for better contrast with white text */
+//}
+//.HIGH {
+//  background-color: #d15a38; /* Darker orange-red for improved readability */
+//}
+//.MEDIUM {
+//  background-color: #c78a26; /* Rich amber that supports white text */
+//}
+//.LOW {
+//  background-color: #1a7a3c; /* Darker green for proper contrast */
+//}
+//.UNKNOWN {
+//  background-color: #2d7a7c; /* Deeper teal that works well with white text */
+//}
+//.INFORMATIONAL {
+//  background-color: #3a5a9a; /* Darker blue for better white text visibility */
+//}

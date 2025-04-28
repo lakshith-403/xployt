@@ -30,7 +30,7 @@ import { Quark, QuarkFunction as $ } from '@ui_lib/quark';
           this.inputField.addEventListener('input', () => this.handleInputChange());
 
           // Confirm button
-          this.confirmButton = $(q, 'button', 'confirm-button', {}, 'Confirm') as HTMLButtonElement;
+          this.confirmButton = $(q, 'button button-primary', 'confirm-button', {}, 'Confirm') as HTMLButtonElement;
           this.confirmButton.disabled = true;
 
           this.confirmButton.addEventListener('click', (e) => {

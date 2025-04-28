@@ -59,7 +59,7 @@ export class LoginView extends View {
         const loginIcon = $(q, 'img', 'login-icon-image', { src: 'assets/xployt-logo.png' });
         loginIcon.onclick = () => router.navigateTo('/');
 
-        $(q, 'p', 'login-description', {}, '');
+        $(q, 'p', 'login-description', {}, 'Your gateway to ethical hacking and cybersecurity collaboration.');
       });
       $(q, 'div', 'login-container', {}, (q) => {
         $(q, 'h1', 'login-title', {}, 'Sign in');
@@ -67,14 +67,25 @@ export class LoginView extends View {
         this.emailField.render(q);
         this.passwordField.render(q);
 
-        // $(q, 'div', 'spaced-row', {}, (q) => {
-        //   $(q, 'div', 'remember-me', {}, (q) => {
-        //     $(q, 'input', '', { type: 'checkbox', id: 'rememberMe' });
-        //     $(q, 'label', '', { for: 'rememberMe' }, 'Remember me');
-        //   });
+        $(q, 'div', 'spaced-row', {}, (q) => {
+          $(q, 'div', '', {}, (q) => {
+            // Empty div for spacing
+          });
 
-        //   $(q, 'a', 'label', {}, 'Forgot password?');
-        // });
+          $(
+            q,
+            'a',
+            'forgot-password-link',
+            {
+              href: '#',
+              onclick: (e: MouseEvent) => {
+                e.preventDefault();
+                router.navigateTo('/reset-password');
+              },
+            },
+            'Forgot password?'
+          );
+        });
 
         $(q, 'div', 'login-button-container', {}, (q) => {
           this.loginButton.render(q);
@@ -108,14 +119,11 @@ export class LoginView extends View {
       .then((user) => {
         console.log('User logged in:', user);
 
-        // Method 1: Using a promise
-        // ModalManager.show('loginAlert', modalElement, true).then(() => {
-        //   console.log('ModalManager.show resolved');
-        // });
-        router.navigateTo('/dashboard');
-
-        // Method 2 : Basic modal
-        // ModalManager.show('loginAlert', modalElement);
+        if (user.type === 'Admin') {
+          router.navigateTo('/admin');
+        } else {
+          router.navigateTo('/dashboard');
+        }
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {

@@ -80,7 +80,7 @@ class Network {
     });
   }
 
-  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback', 'localLoading', 'elementId']; // Added new options
+  private recognizedOptions = ['showLoading', 'handleError', 'throwError', 'showSuccess', 'successCallback', 'localLoading', 'elementId', 'dataTransferType']; // Added new options
 
   private normalizeOptions(options: any): {
     showLoading: boolean;
@@ -90,6 +90,7 @@ class Network {
     successCallback: () => void;
     localLoading: boolean;
     elementId: string | null;
+    dataTransferType: string;
   } {
     const defaultOptions = {
       showLoading: true,
@@ -99,6 +100,7 @@ class Network {
       successCallback: () => {},
       localLoading: false,
       elementId: null,
+      dataTransferType: 'application/json',
     };
 
     // Check if any unrecognized option is set
@@ -140,9 +142,13 @@ class Network {
     }
 
     try {
-      const response = await this.sendHttpRequest(method, url, data, 'application/json');
+      const response = await this.sendHttpRequest(method, url, data, normalizedOptions.dataTransferType);
       if (normalizedOptions.showSuccess) {
         UIManager.showSuccessModal(response.title, response.message, normalizedOptions.successCallback);
+      }
+
+      if (normalizedOptions.successCallback && !normalizedOptions.showSuccess) {
+        normalizedOptions.successCallback();
       }
       return response;
     } catch (error: any) {

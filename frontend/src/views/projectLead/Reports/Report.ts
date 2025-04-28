@@ -54,6 +54,10 @@ class ReportsView extends View {
         callback: (report) => {
           router.navigateTo(`/reports/vulnerability/${report.projectId}/${report.reportId}`);
         },
+        cellClassNames: {
+          4: 'text-small',
+          5: 'text-small',
+        },
         orderKeys: ['reportId', 'projectId', 'severity', 'title', 'vulnerabilityType', 'createdAt'],
       },
     });

@@ -95,14 +95,6 @@ export class AdminLoginView extends View {
       .then((user) => {
         console.log('User logged in:', user);
         router.navigateTo('/admin');
-
-        // Method 1: Using a promise
-        // ModalManager.show('adminLoginAlert', modalElement, true).then(() => {
-        //   console.log('ModalManager.show resolved');
-        // });
-
-        // Method 2 : Basic modal
-        // ModalManager.show('loginAlert', modalElement);
       })
       .catch((error) => {
         if (error instanceof NetworkError && error.statusCode === 401) {

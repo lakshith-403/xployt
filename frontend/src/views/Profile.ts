@@ -1,12 +1,14 @@
-import { Quark, QuarkFunction as $ } from '../ui_lib/quark';
-import { View, ViewHandler } from '../ui_lib/view';
-import { TextField } from '../components/text_field/base';
-import { IconButton } from '../components/button/icon.button';
-import { Button, ButtonType } from '../components/button/base';
-import { CollapsibleBase } from '../components/Collapsible/collap.base';
-import { CACHE_STORE } from '../data/cache';
+import { Quark, QuarkFunction as $ } from '@/ui_lib/quark';
+import { View, ViewHandler } from '@/ui_lib/view';
+import { IconButton } from '@/components/button/icon.button';
+import { Button, ButtonType } from '@/components/button/base';
+import { CollapsibleBase } from '@/components/Collapsible/collap.base';
+import { CACHE_STORE } from '@/data/cache';
 import NETWORK from '@/data/network/network';
 import { router } from '@/ui_lib/router';
+import { FormTextField } from '@/components/text_field/form.text_field';
+import { FileInputBase } from '../components/input_file/input.file';
+import { TagInput } from '@/components/text_field/tagInput/tagInput';
 
 export class ProfileView extends View {
   private userInfoCollapsible: CollapsibleBase;
@@ -14,47 +16,87 @@ export class ProfileView extends View {
 
   private profile!: any;
   // Common fields
-  private emailField: TextField;
-  private phoneField: TextField;
-  private firstNameField: TextField;
-  private lastNameField: TextField;
-  private dobField: TextField;
-  
+  private emailField: FormTextField;
+  private phoneField: FormTextField;
+  private firstNameField: FormTextField;
+  private lastNameField: FormTextField;
+  private dobField: FormTextField;
+  private usernameField: FormTextField;
+
   // Role-specific fields
   // Validator/ProjectLead fields
+<<<<<<< HEAD
   private skillsField: TextField;
   private experienceField: TextField;
   private cvIDField: TextField;
   private referenceField: TextField;
   
+=======
+  private skillsField: FormTextField;
+  private experienceField: FormTextField;
+  private cvLinkField: FormTextField;
+  private referenceField: FormTextField;
+
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
   // Client fields
-  private companyNameField: TextField;
-  
+  private companyNameField: FormTextField;
+
   // Hacker fields
-  private skillSetContainer: Quark | null = null;
-  private skillSetFields: TextField[] = [];
   private skillSetValues: string[] = [];
+  private linkedInField: FormTextField;
+  private certificateField: FileInputBase;
+  private skillsInput: TagInput;
 
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
     this.roleSpecificCollapsible = new CollapsibleBase('Role-Specific Info', 'role-specific-info');
-    
+
     // Common fields
-    this.emailField = new TextField({ label: 'Email', type: 'email' });
-    this.phoneField = new TextField({ label: 'Phone Number', type: 'tel' });
-    this.firstNameField = new TextField({ label: 'First Name' });
-    this.lastNameField = new TextField({ label: 'Last Name' });
-    this.dobField = new TextField({ label: 'Date of Birth', type: 'date' });
-    
+    this.emailField = new FormTextField({ label: 'Email', type: 'email' });
+    this.phoneField = new FormTextField({ label: 'Phone Number', type: 'tel' });
+    this.firstNameField = new FormTextField({ label: 'First Name' });
+    this.lastNameField = new FormTextField({ label: 'Last Name' });
+    this.dobField = new FormTextField({ label: 'Date of Birth', type: 'date' });
+    this.usernameField = new FormTextField({ label: 'Username', placeholder: 'Enter your username', name: 'username' });
+
     // Client fields
-    this.companyNameField = new TextField({ label: 'Company Name' });
-    
+    this.companyNameField = new FormTextField({ label: 'Company Name' });
+
     // Validator/ProjectLead fields
+<<<<<<< HEAD
     this.skillsField = new TextField({ label: 'Skills' });
     this.experienceField = new TextField({ label: 'Experience' });
     this.cvIDField = new TextField({ label: 'CV Link' });
     this.referenceField = new TextField({ label: 'References' });
+=======
+    this.skillsField = new FormTextField({ label: 'Skills' });
+    this.experienceField = new FormTextField({ label: 'Experience' });
+    this.cvLinkField = new FormTextField({ label: 'CV Link' });
+    this.referenceField = new FormTextField({ label: 'References' });
+
+    // Hacker fields
+    this.linkedInField = new FormTextField({ label: 'LinkedIn Profile', placeholder: 'Enter your LinkedIn profile URL', name: 'linkedIn' });
+
+    this.certificateField = new FileInputBase({
+      label: 'Certificates',
+      accept: '.pdf,.jpg,.jpeg,.png',
+      multiple: true,
+      name: 'certificates'
+
+    this.skillsInput = new TagInput({
+      label: '',
+      placeholder: 'Enter your skills',
+      name: 'skills',
+      suggestions: hackerSkillsTags,
+      hideLabel: true,
+      onChange: (tags: string[]) => {
+        this.skillSetValues = [];
+        this.skillSetValues.push(...tags);
+      },
+
+    });
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
   }
 
   private async loadProfile() {
@@ -63,21 +105,27 @@ export class ProfileView extends View {
       const response = await NETWORK.get(`/api/new-profile/${user.id}`);
       this.profile = response.data.profile;
 
-      console.log('ProfileView: Loaded profile:', this.profile);
+      console.log('ProfileView: Raw profile data:', this.profile);
+
+      // Ensure skillSet is properly initialized for Hackers
+      if (this.profile.role === 'Hacker') {
+        console.log('Raw skillSet from backend:', this.profile.skillSet);
+        this.skillsInput.removeAllTags();
+        this.skillsInput.addTags(this.profile.skillSet);
+      }
     } catch (error) {
       console.error('Error loading profile:', error);
-      // alert('Error loading profile:' + error);
     }
   }
 
   private formatDate(dateStr: string): string {
     if (!dateStr) return '';
-    
+
     try {
       // Handle ISO date format or database date format (YYYY-MM-DD)
       const date = new Date(dateStr);
       if (isNaN(date.getTime())) return dateStr; // Return original if invalid
-      
+
       // Format to YYYY-MM-DD for input type="date"
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -92,18 +140,19 @@ export class ProfileView extends View {
   private updateFields() {
     if (this.profile) {
       console.log('ProfileView: Updating fields with profile:', this.profile);
-      
+
       // Update common fields
       this.emailField.setValue(this.profile.email || '');
+      this.usernameField.setValue(this.profile.username || '');
       this.phoneField.setValue(this.profile.phone || '');
       this.firstNameField.setValue(this.profile.firstName || '');
       this.lastNameField.setValue(this.profile.lastName || '');
-      
+
       // Format the date before setting
       const formattedDate = this.formatDate(this.profile.dob);
       console.log('Formatted date:', formattedDate, 'Original:', this.profile.dob);
       this.dobField.setValue(formattedDate);
-      
+
       // Update role-specific fields
       if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
         this.skillsField.setValue(this.profile.skills || '');
@@ -113,6 +162,7 @@ export class ProfileView extends View {
       } else if (this.profile.role === 'Client') {
         this.companyNameField.setValue(this.profile.companyName || '');
       } else if (this.profile.role === 'Hacker') {
+<<<<<<< HEAD
         // Make sure we have a valid skillSet array
         if (this.profile.skillSet) {
           // Ensure skillSet is always an array
@@ -195,17 +245,23 @@ export class ProfileView extends View {
       this.skillSetFields.push(skillField);
     });
   }
+=======
+        this.linkedInField.setValue(this.profile.linkedIn || '');
+      }
+    }
+  }
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
 
   private async saveChanges() {
     try {
       const user = await CACHE_STORE.getUser().get();
-      
+
       console.log('Save changes clicked');
-      
+
       // Format date properly for the backend
       let dobValue = this.dobField.getValue();
       console.log('Original DOB value:', dobValue);
-      
+
       if (dobValue) {
         try {
           // Ensure date is in YYYY-MM-DD format
@@ -223,16 +279,17 @@ export class ProfileView extends View {
           console.error('Error formatting date:', e);
         }
       }
-      
+
       // Collect common field data
       const profileData: any = {
         email: this.emailField.getValue(),
+        username: this.usernameField.getValue(),
         phone: this.phoneField.getValue(),
         firstName: this.firstNameField.getValue(),
         lastName: this.lastNameField.getValue(),
-        dob: dobValue
+        dob: dobValue,
       };
-      
+
       // Add role-specific data
       if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
         profileData.skills = this.skillsField.getValue();
@@ -242,32 +299,53 @@ export class ProfileView extends View {
       } else if (this.profile.role === 'Client') {
         profileData.companyName = this.companyNameField.getValue();
       } else if (this.profile.role === 'Hacker') {
-        // Update skillSet values from fields
-        this.skillSetFields.forEach((field, index) => {
-          this.skillSetValues[index] = field.getValue();
-        });
-        
         // Filter out empty skills
-        profileData.skillSet = this.skillSetValues.filter(skill => skill.trim() !== '');
+        profileData.skillSet = this.skillsInput.getSelectedTags();
+        profileData.linkedIn = this.linkedInField.getValue();
       }
-      
+
       console.log('Sending profile data:', JSON.stringify(profileData, null, 2));
-      
+
       // Get required name from profile if not in fields
-      profileData.name = this.profile.name;  // Keep original name
+      profileData.name = this.profile.name; // Keep original name
+
+      // Create FormData for file upload
+      const formData = new FormData();
       
+      // Add profile data as a JSON string
+      const profileJson = JSON.stringify(profileData);
+      formData.append('profile', profileJson);
+
+      // Add certificate files if they exist
+      const certificateFiles = this.certificateField.getFiles();
+      if (certificateFiles.length > 0) {
+        certificateFiles.forEach((file: File, index: number) => {
+          formData.append('certificates', file);
+        });
+      }
+
       // Send update request with explicit debug options
       try {
         console.log(`Sending PUT request to /api/new-profile/${user.id}`);
-        const response = await NETWORK.put(`/api/new-profile/${user.id}`, profileData, {
-          handleError: true,
-          throwError: true
+        console.log('FormData contents:', {
+          profile: profileJson,
+          files: certificateFiles.map(f => f.name)
         });
         
+        const response = await NETWORK.put(`/api/new-profile/${user.id}`, formData, {
+          handleError: true,
+          throwError: true,
+          dataTransferType: 'multipart/form-data',
+          showLoading: true
+        });
+
         console.log('Profile update response:', response);
-        
-        // Reload profile after update
+
+        // Reload profile and force UI update
         await this.loadProfile();
+        // Force refresh of skill fields
+        if (this.profile.role === 'Hacker') {
+        }
         alert('Profile updated successfully!');
       } catch (networkError: any) {
         console.error('Network error details:', networkError);
@@ -290,20 +368,21 @@ export class ProfileView extends View {
       }
     } catch (error) {
       console.error('Error saving profile:', error);
-      
+
       // Try to extract more details from the error
       if (error instanceof Error) {
         console.error('Error name:', error.name);
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
       }
-      
+
       alert('Error saving profile: ' + error);
-    } 
+    }
   }
 
   public async render(q: Quark): Promise<void> {
     q.innerHTML = '';
+<<<<<<< HEAD
     
     try {
       await this.loadProfile();
@@ -312,11 +391,51 @@ export class ProfileView extends View {
         console.error('Profile not loaded');
         $(q, 'div', 'error-message', {}, 'Error loading profile. Please try again later.');
         return;
+=======
+    // First load the profile data
+    await this.loadProfile();
+
+    // Then create the UI structure
+    this.createUIStructure(q);
+  }
+
+  // Separate UI creation into its own method
+  private createUIStructure(q: Quark): void {
+    q.innerHTML = '';
+    $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
+      // Header row
+      $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
+        $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
+        $(q, 'div', 'position-relative w-30', {}, (q) => {
+          $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
+            src: this.profile?.profilePicture || 'assets/avatar.png',
+            alt: '',
+          });
+          $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
+            new IconButton({
+              label: '',
+              icon: 'fa fa-camera',
+              onClick: async () => {
+                console.log('Change profile picture');
+              },
+            }).render(q);
+          });
+        });
+      });
+
+      // User role display
+      if (this.profile?.role) {
+        $(q, 'div', 'user-role', {}, (q) => {
+          $(q, 'span', 'role-label', {}, 'Role: ');
+          $(q, 'span', 'role-value', {}, this.profile.role);
+        });
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
       }
       
       console.log('Rendering profile with data:', this.profile);
       q.innerHTML = '';
 
+<<<<<<< HEAD
       $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
         // Header row
         $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
@@ -335,11 +454,26 @@ export class ProfileView extends View {
                 },
               }).render(q);
             });
+=======
+      // Render collapsibles
+      $(q, 'div', 'w-100 d-flex flex-column align-items-center', {}, (q) => {
+        // User Info Section
+        this.userInfoCollapsible.render(q);
+        $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
+          $(q, 'div', 'profile-details', {}, (q) => {
+            this.emailField.render(q);
+            this.usernameField.render(q);
+            this.phoneField.render(q);
+            this.firstNameField.render(q);
+            this.lastNameField.render(q);
+            this.dobField.render(q);
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
           });
         });
 
         // User role display
         if (this.profile?.role) {
+<<<<<<< HEAD
           $(q, 'div', 'user-role', {}, (q) => {
             $(q, 'span', 'role-label', {}, 'Role: ');
             $(q, 'span', 'role-value', {}, this.profile.role);
@@ -402,6 +536,71 @@ export class ProfileView extends View {
           });
 
           new Button({
+=======
+          this.roleSpecificCollapsible.render(q);
+          $(this.roleSpecificCollapsible.content!, 'div', 'role-specific-content', {}, (q) => {
+            if (this.profile.role === 'Validator' || this.profile.role === 'ProjectLead') {
+              $(q, 'div', 'validator-project-lead-details', {}, (q) => {
+                this.skillsField.render(q);
+                this.experienceField.render(q);
+                this.cvLinkField.render(q);
+                this.referenceField.render(q);
+              });
+            } else if (this.profile.role === 'Client') {
+              $(q, 'div', 'client-details', {}, (q) => {
+                $(q, 'h3', '', {}, 'Client Information');
+                this.companyNameField.render(q);
+              });
+            } else if (this.profile.role === 'Hacker') {
+              console.log('Rendering hacker section with skills:', this.skillSetValues);
+              $(q, 'div', 'hacker-details', {}, (q) => {
+                // Add Blast Points display
+                $(q, 'div', 'blast-points-container', {}, (q) => {
+                  $(q, 'h3', '', {}, 'Blast Points');
+                  $(q, 'div', 'blast-points-value', {}, (q) => {
+                    const blastPoints = this.profile.blastPoints !== undefined ? this.profile.blastPoints : 0;
+                    console.log('Displaying blast points:', blastPoints);
+                    $(q, 'span', 'points', {}, blastPoints.toString());
+                  });
+                });
+
+                $(q, 'h3', '', {}, 'Skills');
+                $(q, 'div', 'skill-set-container', {}, (q) => {
+                  this.skillsInput.render(q);
+                });
+
+                // Add LinkedIn field for hackers
+                $(q, 'div', 'linkedin-field', {}, (q) => {
+                  this.linkedInField.render(q);
+                });
+
+                // Add certificate upload field
+                $(q, 'div', 'certificate-field', {}, (q) => {
+                  this.certificateField.render(q);
+                });
+              });
+            }
+            this.updateFields();
+          });
+        }
+        $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
+          new Button({
+            label: 'Change Password',
+            type: ButtonType.SECONDARY,
+            onClick: () => router.navigateTo('/reset-password'),
+          }).render(q);
+
+          // Save button
+          $(q, 'div', 'save-button-container', {}, (q) => {
+            new Button({
+              label: 'Save Changes',
+              type: ButtonType.PRIMARY,
+              onClick: () => this.saveChanges(),
+            }).render(q);
+          });
+
+          new Button({
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
             label: 'Logout',
             type: ButtonType.SECONDARY,
             onClick: () => {
@@ -411,13 +610,38 @@ export class ProfileView extends View {
           }).render(q);
         });
       });
+<<<<<<< HEAD
       
       this.updateFields();
     } catch (error) {
       console.error('Error rendering profile:', error);
       $(q, 'div', 'error-message', {}, 'Error rendering profile. Please try again later.');
     }
+=======
+    });
+
+    // Update other fields after UI structure is created
+    this.updateFields();
+>>>>>>> d79fb2f0e21a8fdb522a914e03e7672f74512309
   }
 }
+
+export const hackerSkillsTags = [
+  'Web Security',
+  'Network Security',
+  'API Testing',
+  'Mobile Security',
+  'Cloud Security',
+  'OWASP Top 10',
+  'Application Security',
+  'Code Review',
+  'DevSecOps',
+  'IoT Security',
+  'Hardware Testing',
+  'Firmware Analysis',
+  'Smart Contract Security',
+  'Blockchain',
+  'DeFi',
+];
 
 export const profileViewHandler = new ViewHandler('', ProfileView);
