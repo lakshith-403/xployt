@@ -137,8 +137,8 @@ export class UIManager {
       '.modal-title': 'Error',
       '.modal-message': `Failed to ${method} ${url}: ${error.message ?? 'N/A'} `,
       '.modal-data': error.data ?? 'Data not available',
-      '.modal-servletClass': error.servlet ?? 'Servlet not available',
-      '.modal-url': error.url ?? 'URL not available',
+      // '.modal-servletClass': error.servlet ?? 'Servlet not available',
+      // '.modal-url': error.url ?? 'URL not available',
     });
     ModalManager.show('alertForErrors', modalAlertForErrors);
   }
