@@ -38,6 +38,9 @@ export class ProfileView extends View {
   private certificateField: FileInputBase;
   private skillsInput: TagInput;
 
+  // Profile picture handling
+  private profilePictureFile: File | null = null;
+
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
@@ -89,6 +92,7 @@ export class ProfileView extends View {
       this.profile = response.data.profile;
 
       console.log('ProfileView: Raw profile data:', this.profile);
+      console.log('Profile picture URL:', this.profile?.profilePicture);
 
       // Ensure skillSet is properly initialized for Hackers
       if (this.profile.role === 'Hacker') {
@@ -147,6 +151,31 @@ export class ProfileView extends View {
         this.linkedInField.setValue(this.profile.linkedIn || '');
       }
     }
+  }
+
+  private handleProfilePictureSelect(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+
+    input.onchange = (event) => {
+      const files = (event.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        this.profilePictureFile = files[0];
+
+        // Show preview of selected image
+        const imgElement = document.querySelector('.profile-image') as HTMLImageElement;
+        if (imgElement) {
+          imgElement.src = URL.createObjectURL(this.profilePictureFile);
+          console.log('Profile picture preview updated');
+        }
+      }
+    };
+
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
   }
 
   private async saveChanges() {
@@ -212,6 +241,12 @@ export class ProfileView extends View {
       const profileJson = JSON.stringify(profileData);
       formData.append('profile', profileJson);
 
+      // Add profile picture if one was selected
+      if (this.profilePictureFile) {
+        formData.append('profilePicture', this.profilePictureFile);
+        console.log('Adding profile picture to form data:', this.profilePictureFile.name);
+      }
+
       // Add certificate files if they exist
       const certificateFiles = this.certificateField.getFiles();
       if (certificateFiles.length > 0) {
@@ -225,6 +260,7 @@ export class ProfileView extends View {
         console.log(`Sending post request to /api/new-profile/${user.id}`);
         console.log('FormData contents:', {
           profile: profileJson,
+          profilePicture: this.profilePictureFile ? this.profilePictureFile.name : 'none',
           files: certificateFiles.map((f) => f.name),
         });
 
@@ -236,6 +272,9 @@ export class ProfileView extends View {
         });
 
         console.log('Profile update response:', response);
+
+        // Reset profile picture file after successful upload
+        this.profilePictureFile = null;
 
         // Reload profile and force UI update
         await this.loadProfile();
@@ -293,17 +332,18 @@ export class ProfileView extends View {
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
         $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
         $(q, 'div', 'position-relative w-30', {}, (q) => {
-          $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
-            src: this.profile?.profilePicture || 'assets/avatar.png',
+          let img = $(q, 'img', 'rounded-3 bg-secondary position-absolute profile-image fit-cover', {
+            src: this.profile?.profilePicture ? `http://localhost:8080/uploads/${this.profile.profilePicture}` : 'assets/avatar.png',
             alt: '',
           });
+          img.style.width = '300px';
+          img.style.height = '300px';
+          console.log('Profile image src:', this.profile?.profilePicture ? `/uploads/${this.profile.profilePicture}` : 'assets/avatar.png');
           $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
             new IconButton({
               label: '',
               icon: 'fa fa-camera',
-              onClick: async () => {
-                console.log('Change profile picture');
-              },
+              onClick: () => this.handleProfilePictureSelect(),
             }).render(q);
           });
         });
