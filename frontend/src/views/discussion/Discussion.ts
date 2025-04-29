@@ -12,7 +12,7 @@ import { MessageComponent } from './MessageComp';
 import { router } from '@/ui_lib/router';
 import NETWORK from '@/data/network/network';
 import { ProjectDiscussionCache } from '@/data/discussion/cache/project_discussion';
-import { User } from "@data/user";
+import { User } from '@data/user';
 
 export class DiscussionView extends View {
   private readonly discussionId: string;
@@ -22,6 +22,7 @@ export class DiscussionView extends View {
   private attachmentsPane!: Quark;
   private messagesPane!: Quark;
   private titleElem!: Quark;
+  private descriptionElem!: Quark;
   private loader: Loader;
   private selectedFiles: File[] = [];
   private attachedFileContainer!: Quark;
@@ -47,6 +48,7 @@ export class DiscussionView extends View {
   async render(q: Quark): Promise<void> {
     $(q, 'div', 'discussion-view', {}, (q) => {
       this.titleElem = $(q, 'h1', '', {}, '');
+      this.descriptionElem = $(q, 'div', 'discussion-description', {}, '');
       $(q, 'div', 'main-pain', {}, (q) => {
         this.messagesPane = $(q, 'div', 'messages-pane', {}, (q) => {});
         $(q, 'div', 'right-pane', {}, (q) => {
@@ -105,6 +107,12 @@ export class DiscussionView extends View {
 
       console.log('Complaint status response:', response);
 
+      // Display notes if available
+      if (response.notes) {
+        this.descriptionElem.innerHTML = '';
+        $(this.descriptionElem, 'h3', 'complaint-notes', {}, response.notes);
+      }
+
       if (response.resolved) {
         this.isResolved = response.resolved;
         console.log(`Discussion ${this.discussionId} resolved status:`, this.isResolved);
@@ -128,7 +136,7 @@ export class DiscussionView extends View {
     $(this.participantPane, 'div', 'participant-list', {}, (q) => {
       this.discussion?.participants.forEach((participant) => {
         if (participant.userId === this.currentUser?.id) {
-          participant.role = "You";
+          participant.role = 'You';
         }
         new UserTag(participant).render(q);
       });
@@ -158,8 +166,8 @@ export class DiscussionView extends View {
       this.discussion?.messages
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
         .forEach((message) => {
-          if(message.sender.userId === this.currentUser?.id) {
-            message.sender.name = "You";
+          if (message.sender.userId === this.currentUser?.id) {
+            message.sender.name = 'You';
           }
           if (this.isResolved || this.isAdmin) {
             // For resolved discussions or admin users, pass empty functions that do nothing

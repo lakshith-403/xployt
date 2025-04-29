@@ -421,3 +421,18 @@ label {
     }
   }
 }
+
+.complaint-form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+
+  .title {
+    margin-bottom: 2rem;
+  }
+
+  .text-area-label {
+    min-width: 8rem !important;
+    width: 8rem !important;
+  }
+}

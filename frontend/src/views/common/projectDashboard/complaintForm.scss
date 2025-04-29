@@ -7,6 +7,11 @@
     margin-bottom: 2rem;
   }
 
+  .text-area-label {
+    min-width: 8rem !important;
+    width: 8rem !important;
+  }
+
   .form-container {
     display: flex;
     flex-direction: column;
