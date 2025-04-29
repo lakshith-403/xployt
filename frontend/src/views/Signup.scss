@@ -43,44 +43,26 @@
         &.hacker-column {
           background-color: #e6f3ff;
           border: 1px solid #b3d7ff;
-          
+
           h2 {
             color: #0066cc;
           }
-          
+
           p {
             color: #4d4d4d;
-          }
-          
-          button {
-            background-color: #0066cc;
-            color: white;
-            
-            &:hover {
-              background-color: #0052a3;
-            }
           }
         }
 
         &.client-column {
           background-color: #f0f7e6;
           border: 1px solid #d4e6b3;
-          
+
           h2 {
             color: #2e7d32;
           }
-          
+
           p {
             color: #4d4d4d;
-          }
-          
-          button {
-            background-color: #2e7d32;
-            color: white;
-            
-            &:hover {
-              background-color: #1b5e20;
-            }
           }
         }
 

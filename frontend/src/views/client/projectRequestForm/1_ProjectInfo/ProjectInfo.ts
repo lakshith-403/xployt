@@ -61,7 +61,7 @@ class ProjectInfo implements Step {
     description: new FormTextField({ label: 'Description *', placeholder: 'Enter your description', name: 'description' }),
     url: new FormTextField({ label: 'URL *', placeholder: 'Enter your URL', name: 'url' }),
     technicalStack: new FormTextField({
-      label: 'Technical Stack *',
+      label: 'Technical Stack*',
       placeholder: 'Enter your technical stack as a comma separated list (e.g. "React, Node.js, MongoDB")',
       name: 'technicalStack',
     }),

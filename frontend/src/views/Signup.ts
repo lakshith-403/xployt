@@ -32,7 +32,7 @@ class SignupView extends View {
         $(q, 'p', '', {}, 'Join our community as either a security expert or a client.');
 
         // Create two columns
-        $(q, 'div', 'signup-columns d-flex flex-row justify-content-around h-100 align-items-center', {}, (q) => {
+        $(q, 'div', 'signup-columns d-flex flex-row justify-content-around h-40 align-items-center', {}, (q) => {
           // Left column for Hacker
           $(q, 'div', 'signup-column hacker-column', {}, (q) => {
             $(q, 'h2', '', {}, 'Security Expert');

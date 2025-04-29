@@ -256,7 +256,7 @@ label {
 }
 
 .forgot-password-link {
-  color: var(--light-green);
+  color: #4caf50;
   text-decoration: none;
   font-size: 0.9rem;
 }
@@ -419,20 +419,5 @@ label {
         color: #666;
       }
     }
-  }
-}
-
-.complaint-form {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-
-  .title {
-    margin-bottom: 2rem;
-  }
-
-  .text-area-label {
-    min-width: 8rem !important;
-    width: 8rem !important;
   }
 }

@@ -52,7 +52,7 @@ export class UserProfileView extends View {
       return;
     }
 
-    $(q, 'div', 'profile-view', {}, (q) => {
+    $(q, 'div', 'profile-view mt-8', {}, (q) => {
       // Header row
       $(q, 'div', 'profile-header', {}, (q) => {
         $(q, 'h1', '', {}, `${this.profile?.name || 'User'}'s Profile`);
