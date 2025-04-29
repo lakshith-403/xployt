@@ -332,14 +332,14 @@ export class ProfileView extends View {
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
         $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
         $(q, 'div', 'position-relative w-30', {}, (q) => {
-          let img = $(q, 'img', 'rounded-3 bg-secondary position-absolute profile-image fit-cover', {
+          let img = $(q, 'img', 'rounded-3 bg-secondary profile-image fit-cover', {
             src: this.profile?.profilePicture ? `http://localhost:8080/uploads/${this.profile.profilePicture}` : 'assets/avatar.png',
             alt: '',
           });
-          img.style.width = '300px';
-          img.style.height = '300px';
+          img.style.width = '100%';
+          img.style.height = '100%';
           console.log('Profile image src:', this.profile?.profilePicture ? `/uploads/${this.profile.profilePicture}` : 'assets/avatar.png');
-          $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
+          $(q, 'div', 'top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
             new IconButton({
               label: '',
               icon: 'fa fa-camera',
