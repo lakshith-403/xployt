@@ -100,7 +100,7 @@ export class UserProfileView extends View {
             switch (this.profile?.role?.toLowerCase()) {
               case 'validator':
               case 'projectlead':
-                selectedFields2 = [...selectedFields2, 'skills', 'experience', 'reference'];
+                selectedFields2 = [...selectedFields2, 'skills', 'experience', 'cvId', 'reference'];
                 break;
               case 'hacker':
                 selectedFields2 = [...selectedFields2, 'skills'];
