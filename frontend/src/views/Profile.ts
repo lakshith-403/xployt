@@ -327,7 +327,7 @@ export class ProfileView extends View {
   // Separate UI creation into its own method
   private createUIStructure(q: Quark): void {
     q.innerHTML = '';
-    $(q, 'div', 'bg-primary container-lg mx-auto my-5', {}, (q) => {
+    $(q, 'div', 'bg-primary container-lg mx-auto my-10', {}, (q) => {
       // Header row
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
         $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
