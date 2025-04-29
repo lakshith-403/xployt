@@ -73,7 +73,7 @@ export class UserProfileView extends View {
         $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
           $(q, 'span', 'text-light-green', {}, 'User Info');
           $(q, 'div', 'py-1 px-2', {}, (q) => {
-            const selectedFields1 = ['firstName', 'lastName', 'phone', 'email', 'dob'];
+            const selectedFields1 = ['firstName', 'lastName', 'phone', 'email'];
             selectedFields1.forEach((key) => {
               if (key in this.profile) {
                 $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
@@ -100,7 +100,7 @@ export class UserProfileView extends View {
             switch (this.profile?.role?.toLowerCase()) {
               case 'validator':
               case 'projectlead':
-                selectedFields2 = [...selectedFields2, 'skills', 'experience', 'cvId', 'reference'];
+                selectedFields2 = [...selectedFields2, 'skills', 'experience', 'reference'];
                 break;
               case 'hacker':
                 selectedFields2 = [...selectedFields2, 'skills'];
@@ -144,9 +144,9 @@ export class UserProfileView extends View {
   private formatFieldLabel(key: string): string {
     // Convert camelCase to Title Case with spaces
 
-    if (key === 'dob') {
-      return 'Date of Birth:';
-    }
+    // if (key === 'dob') {
+    //   return 'Date of Birth:';
+    // }
 
     if (key === 'linkedIn') {
       return 'LinkedIn:';

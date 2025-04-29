@@ -7,6 +7,7 @@ import { Project } from '@data/common/cache/project.cache';
 import { HackerInvitationsCache } from '@data/hacker/cache/hacker.invitations.cache';
 import ModalManager, { setContent } from "@components/ModalManager/ModalManager";
 import { modalAlertForErrors, modalAlertOnlyOK } from "@main";
+import { OverviewPayments } from "@views/common/projectDashboard/tabOverviewContent/commonComponents/payments";
 
 export class InvitationPopup {
   private projectInfo: Project;
@@ -29,6 +30,7 @@ export class InvitationPopup {
         '.modal-message': 'You have successfully accepted the invitation.',
       });
       ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+      window.location.reload(); // Refresh the window
     } catch (error) {
       console.error('Failed to accept invitation:', error);
       setContent(modalAlertForErrors, {
@@ -47,6 +49,7 @@ export class InvitationPopup {
         '.modal-message': 'You have successfully rejected the invitation.',
       });
       ModalManager.show('alertOnlyOK', modalAlertOnlyOK);
+      window.location.reload(); // Refresh the window
     } catch (error) {
       console.error('Failed to reject invitation:', error);
       setContent(modalAlertForErrors, {
@@ -72,30 +75,31 @@ export class InvitationPopup {
           new BasicInfoComponent(this.projectInfo).render(q);
         });
 
-        $(q, 'h3', '', {}, 'Rules and Scope');
-        $(q, 'ul', '', {}, (q) => {
-          this.projectInfo.scope.forEach((rule) => {
-            $(q, 'li', '', {}, rule);
+        $(q, 'div', 'bottom-container', {}, (q) => {
+          $(q, 'div', 'card-content', {}, (q) => {
+            new OverviewPayments(this.projectInfo.projectId.toString(), 'Hacker', this.hackerId).render(q);
           });
-        });
-        $(q, 'div', 'buttons', {}, (q) => {
-          new IconButton({
-            type: ButtonType.PRIMARY,
-            icon: 'fa-solid fa-check',
-            label: 'Accept Invitation',
-            onClick: () => {
-              this.acceptInvitation();
-            },
-          }).render(q);
-          new IconButton({
-            type: ButtonType.TERTIARY,
-            icon: 'fa-solid fa-times',
-            label: 'Reject Invitation',
-            onClick: () => {
-              this.rejectInvitation();
-            },
-          }).render(q);
-        });
+
+          $(q, 'div', 'buttons', {}, (q) => {
+            new IconButton({
+              type: ButtonType.PRIMARY,
+              icon: 'fa-solid fa-check',
+              label: 'Accept Invitation',
+              onClick: () => {
+                this.acceptInvitation();
+              },
+            }).render(q);
+            new IconButton({
+              type: ButtonType.TERTIARY,
+              icon: 'fa-solid fa-times',
+              label: 'Reject Invitation',
+              onClick: () => {
+                this.rejectInvitation();
+              },
+            }).render(q);
+          });
+        })
+
       });
     });
 

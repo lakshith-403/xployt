@@ -4,13 +4,32 @@
 
   .content {
     padding: 2rem;
+    max-height: 500px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* For Firefox: makes the scrollbar thinner */
+    scrollbar-color: var(--primary-color) var(--background-secondary); /* Custom scrollbar colors */
+
+    /* For Webkit-based browsers (Chrome, Edge, Safari) */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--background-secondary);
+    }
   }
 
   .buttons {
     display: flex;
-    justify-content: left;
+    flex-direction: column;
+    justify-content: center;
     gap: 2rem;
-    margin-top: 4rem;
+    padding-right: 2rem;
 
     button {
       padding: 1rem 2rem;
@@ -23,5 +42,25 @@
         opacity: 80%;
       }
     }
+  }
+
+  .bottom-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+
+    .text-highlight {
+      color: var(--light-green);
+      font-weight: 600;
+    }
+  }
+}
+
+.invitations{
+  .popup-content{
+    margin-block: auto;
+    margin-inline: 20rem;
   }
 }

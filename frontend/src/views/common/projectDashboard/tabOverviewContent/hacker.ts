@@ -252,7 +252,6 @@ export default class Hacker {
                   $(q, 'i', 'card-icon fa fa-money-bill-wave', {});
                   $(q, 'span', '', {}, 'Payments');
                 });
-
                 $(q, 'div', 'card-content', {}, (q) => {
                   new OverviewPayments(this.projectId, 'Hacker', this.currentUser.id).render(q);
                 });
