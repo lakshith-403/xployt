@@ -21,7 +21,6 @@ export class ProfileView extends View {
   private firstNameField: FormTextField;
   private lastNameField: FormTextField;
   private dobField: FormTextField;
-  private usernameField: FormTextField;
 
   // Role-specific fields
   // Validator/ProjectLead fields
@@ -39,6 +38,9 @@ export class ProfileView extends View {
   private certificateField: FileInputBase;
   private skillsInput: TagInput;
 
+  // Profile picture handling
+  private profilePictureFile: File | null = null;
+
   constructor() {
     super();
     this.userInfoCollapsible = new CollapsibleBase('User Info', 'user-info');
@@ -50,7 +52,6 @@ export class ProfileView extends View {
     this.firstNameField = new FormTextField({ label: 'First Name' });
     this.lastNameField = new FormTextField({ label: 'Last Name' });
     this.dobField = new FormTextField({ label: 'Date of Birth', type: 'date' });
-    this.usernameField = new FormTextField({ label: 'Username', placeholder: 'Enter your username', name: 'username' });
 
     // Client fields
     this.companyNameField = new FormTextField({ label: 'Company Name' });
@@ -68,7 +69,7 @@ export class ProfileView extends View {
       label: 'Certificates',
       accept: '.pdf,.jpg,.jpeg,.png',
       multiple: true,
-      name: 'certificates'
+      name: 'certificates',
     });
 
     this.skillsInput = new TagInput({
@@ -81,9 +82,7 @@ export class ProfileView extends View {
         this.skillSetValues = [];
         this.skillSetValues.push(...tags);
       },
-
     });
-
   }
 
   private async loadProfile() {
@@ -93,6 +92,7 @@ export class ProfileView extends View {
       this.profile = response.data.profile;
 
       console.log('ProfileView: Raw profile data:', this.profile);
+      console.log('Profile picture URL:', this.profile?.profilePicture);
 
       // Ensure skillSet is properly initialized for Hackers
       if (this.profile.role === 'Hacker') {
@@ -130,7 +130,6 @@ export class ProfileView extends View {
 
       // Update common fields
       this.emailField.setValue(this.profile.email || '');
-      this.usernameField.setValue(this.profile.username || '');
       this.phoneField.setValue(this.profile.phone || '');
       this.firstNameField.setValue(this.profile.firstName || '');
       this.lastNameField.setValue(this.profile.lastName || '');
@@ -152,6 +151,31 @@ export class ProfileView extends View {
         this.linkedInField.setValue(this.profile.linkedIn || '');
       }
     }
+  }
+
+  private handleProfilePictureSelect(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+
+    input.onchange = (event) => {
+      const files = (event.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        this.profilePictureFile = files[0];
+
+        // Show preview of selected image
+        const imgElement = document.querySelector('.profile-image') as HTMLImageElement;
+        if (imgElement) {
+          imgElement.src = URL.createObjectURL(this.profilePictureFile);
+          console.log('Profile picture preview updated');
+        }
+      }
+    };
+
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
   }
 
   private async saveChanges() {
@@ -185,7 +209,6 @@ export class ProfileView extends View {
       // Collect common field data
       const profileData: any = {
         email: this.emailField.getValue(),
-        username: this.usernameField.getValue(),
         phone: this.phoneField.getValue(),
         firstName: this.firstNameField.getValue(),
         lastName: this.lastNameField.getValue(),
@@ -213,10 +236,16 @@ export class ProfileView extends View {
 
       // Create FormData for file upload
       const formData = new FormData();
-      
+
       // Add profile data as a JSON string
       const profileJson = JSON.stringify(profileData);
       formData.append('profile', profileJson);
+
+      // Add profile picture if one was selected
+      if (this.profilePictureFile) {
+        formData.append('profilePicture', this.profilePictureFile);
+        console.log('Adding profile picture to form data:', this.profilePictureFile.name);
+      }
 
       // Add certificate files if they exist
       const certificateFiles = this.certificateField.getFiles();
@@ -228,20 +257,24 @@ export class ProfileView extends View {
 
       // Send update request with explicit debug options
       try {
-        console.log(`Sending PUT request to /api/new-profile/${user.id}`);
+        console.log(`Sending post request to /api/new-profile/${user.id}`);
         console.log('FormData contents:', {
           profile: profileJson,
-          files: certificateFiles.map(f => f.name)
+          profilePicture: this.profilePictureFile ? this.profilePictureFile.name : 'none',
+          files: certificateFiles.map((f) => f.name),
         });
-        
-        const response = await NETWORK.put(`/api/new-profile/${user.id}`, formData, {
+
+        const response = await NETWORK.post(`/api/new-profile/${user.id}`, formData, {
           handleError: true,
           throwError: true,
           dataTransferType: 'multipart/form-data',
-          showLoading: true
+          showLoading: true,
         });
 
         console.log('Profile update response:', response);
+
+        // Reset profile picture file after successful upload
+        this.profilePictureFile = null;
 
         // Reload profile and force UI update
         await this.loadProfile();
@@ -299,17 +332,18 @@ export class ProfileView extends View {
       $(q, 'div', 'd-flex justify-content-between align-items-center mb-4', {}, (q) => {
         $(q, 'h1', 'heading-1 text-primary', {}, `Hello ${this.profile?.name || 'User'}!`);
         $(q, 'div', 'position-relative w-30', {}, (q) => {
-          $(q, 'img', 'w-100 hp-100 rounded-3 bg-secondary position-absolute', {
-            src: this.profile?.profilePicture || 'assets/avatar.png',
+          let img = $(q, 'img', 'rounded-3 bg-secondary profile-image fit-cover', {
+            src: this.profile?.profilePicture ? `http://localhost:8080/uploads/${this.profile.profilePicture}` : 'assets/avatar.png',
             alt: '',
           });
-          $(q, 'div', 'position-absolute top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
+          img.style.width = '100%';
+          img.style.height = '100%';
+          console.log('Profile image src:', this.profile?.profilePicture ? `/uploads/${this.profile.profilePicture}` : 'assets/avatar.png');
+          $(q, 'div', 'top-0 left-0 w-100 hp-100 d-flex justify-content-center align-items-center filter-brightness-70', {}, (q) => {
             new IconButton({
               label: '',
               icon: 'fa fa-camera',
-              onClick: async () => {
-                console.log('Change profile picture');
-              },
+              onClick: () => this.handleProfilePictureSelect(),
             }).render(q);
           });
         });
@@ -330,7 +364,6 @@ export class ProfileView extends View {
         $(this.userInfoCollapsible.content!, 'div', 'user-info-content', {}, (q) => {
           $(q, 'div', 'profile-details', {}, (q) => {
             this.emailField.render(q);
-            this.usernameField.render(q);
             this.phoneField.render(q);
             this.firstNameField.render(q);
             this.lastNameField.render(q);
@@ -386,30 +419,35 @@ export class ProfileView extends View {
             this.updateFields();
           });
         }
-        $(q, 'div', 'd-flex justify-content-end gap-2', {}, (q) => {
-          new Button({
-            label: 'Change Password',
-            type: ButtonType.SECONDARY,
-            onClick: () => router.navigateTo('/reset-password'),
-          }).render(q);
 
-          // Save button
-          $(q, 'div', 'save-button-container', {}, (q) => {
+        // Action buttons section
+        $(q, 'div', 'action-buttons', {}, (q) => {
+          // Left side buttons
+          $(q, 'div', 'left-buttons', {}, (q) => {
+            new Button({
+              label: 'Change Password',
+              type: ButtonType.SECONDARY,
+              onClick: () => router.navigateTo('/reset-password'),
+            }).render(q);
+          });
+
+          // Right side buttons
+          $(q, 'div', 'right-buttons', {}, (q) => {
             new Button({
               label: 'Save Changes',
               type: ButtonType.PRIMARY,
               onClick: () => this.saveChanges(),
             }).render(q);
-          });
 
-          new Button({
-            label: 'Logout',
-            type: ButtonType.SECONDARY,
-            onClick: () => {
-              CACHE_STORE.getUser().signOut();
-              router.navigateTo('/');
-            },
-          }).render(q);
+            new Button({
+              label: 'Logout',
+              type: ButtonType.SECONDARY,
+              onClick: () => {
+                CACHE_STORE.getUser().signOut();
+                router.navigateTo('/');
+              },
+            }).render(q);
+          });
         });
       });
     });

@@ -127,7 +127,7 @@ class projectDashboardView extends View {
         $(q, 'span', 'title-info', {}, (q) => {
           $(q, 'span', 'project-title', {}, this.projectTitle);
           $(q, 'span', 'project-number', {}, ' - #' + this.params.projectId);
-        })
+        });
         $(q, 'span', `project-status project-status-${this.projectInfo.state.toLowerCase()}`, {}, (q) => {
           $(q, 'span', 'status-indicator', {});
           $(q, 'span', 'status-text', {}, this.projectInfo.state);

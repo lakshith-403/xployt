@@ -64,11 +64,16 @@ export class UserProfileView extends View {
         });
       });
 
+      $(q, 'span', `role-status role-status-${this.profile.role.toLowerCase()} mx-2 my-1`, {}, (q) => {
+        $(q, 'span', 'role-indicator', {});
+        $(q, 'span', 'role-text', {}, this.profile.role);
+      });
+
       $(q, 'div', 'd-flex flex-column gap-1', {}, (q) => {
         $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
           $(q, 'span', 'text-light-green', {}, 'User Info');
           $(q, 'div', 'py-1 px-2', {}, (q) => {
-            const selectedFields1 = ['username', 'firstName', 'lastName', 'phone'];
+            const selectedFields1 = ['firstName', 'lastName', 'phone', 'email'];
             selectedFields1.forEach((key) => {
               if (key in this.profile) {
                 $(q, 'div', 'd-flex flex-row gap-1', {}, (q) => {
@@ -89,7 +94,7 @@ export class UserProfileView extends View {
         $(q, 'div', 'bg-secondary rounded-3 py-1 px-2', {}, (q) => {
           $(q, 'span', 'text-light-green', {}, 'Additional Info');
           $(q, 'div', 'py-1 px-2', {}, (q) => {
-            let selectedFields2 = [''];
+            let selectedFields2 = ['linkedIn'];
 
             // Add role-specific fields
             switch (this.profile?.role?.toLowerCase()) {
@@ -99,6 +104,9 @@ export class UserProfileView extends View {
                 break;
               case 'hacker':
                 selectedFields2 = [...selectedFields2, 'skills'];
+                break;
+              case 'client':
+                selectedFields2 = [...selectedFields2, 'companyName'];
                 break;
             }
 
@@ -111,7 +119,18 @@ export class UserProfileView extends View {
                     'span',
                     'field-value',
                     {},
-                    this.profile[key] === null || this.profile[key] === '' ? 'Data not available' : typeof this.profile[key] === 'number' ? this.profile[key].toString() : this.profile[key]
+                    (() => {
+                      if (this.profile[key] === null || this.profile[key] === '') {
+                        return 'Data not available';
+                      }
+                      if (typeof this.profile[key] === 'number') {
+                        return this.profile[key].toString();
+                      }
+                      if (['linkedIn'].includes(key)) {
+                        return $(q, 'a', 'text-light-green font-underline', { href: this.profile[key], target: '_blank' }, this.profile[key]);
+                      }
+                      return this.profile[key];
+                    })()
                   );
                 });
               }
@@ -124,6 +143,15 @@ export class UserProfileView extends View {
 
   private formatFieldLabel(key: string): string {
     // Convert camelCase to Title Case with spaces
+
+    // if (key === 'dob') {
+    //   return 'Date of Birth:';
+    // }
+
+    if (key === 'linkedIn') {
+      return 'LinkedIn:';
+    }
+
     return (
       key
         .replace(/([A-Z])/g, ' $1')

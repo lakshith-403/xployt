@@ -11,10 +11,11 @@ import { CACHE_STORE } from '@data/cache';
 import { ProjectTeamCache, ProjectTeam } from '@data/common/cache/projectTeam.cache';
 import LoadingScreen from '@components/loadingScreen/loadingScreen';
 import { Checkbox } from '@/components/checkboxManager/checkbox';
+import { TextAreaBase } from '@/components/test_area/textArea.base';
 
 class ComplaintForm extends View {
   private titleField: FormTextField;
-  private notesField: FormTextField;
+  private notesField: TextAreaBase;
   private projectId: string;
   private projectTeam: ProjectTeam = {} as ProjectTeam;
   private readonly projectTeamCache: ProjectTeamCache;
@@ -32,11 +33,10 @@ class ComplaintForm extends View {
       name: 'title',
     });
 
-    this.notesField = new FormTextField({
+    this.notesField = new TextAreaBase({
       label: 'Notes',
       placeholder: 'Enter complaint details',
       name: 'notes',
-      type: 'textarea',
     });
   }
 

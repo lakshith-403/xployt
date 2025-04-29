@@ -80,16 +80,16 @@ export default class ProjectsView extends View {
 
     q.innerHTML = '';
     $(q, 'div', 'd-flex flex-column container p-4 mt-8', {}, (q) => {
-      if (this.user.type === 'Client') {
-        $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
-          const button = new FormButton({
-            label: 'Add Project',
-            onClick: () => router.navigateTo('/client/project-request'),
-            type: ButtonType.PRIMARY,
-          });
-          button.render(q);
-        });
-      }
+      // if (this.user.type === 'Client') {
+      //   $(q, 'div', 'button-container d-flex justify-content-end container-md px-6 mb-3', {}, (q) => {
+      //     const button = new FormButton({
+      //       label: 'Add Project',
+      //       onClick: () => router.navigateTo('/client/project-request'),
+      //       type: ButtonType.PRIMARY,
+      //     });
+      //     button.render(q);
+      //   });
+      // }
 
       const pendingProjects = this.projects.filter((project) => ['Active', 'Unconfigured', 'Pending', 'Configured', 'Review', 'Closed'].includes(project.state));
       const completedProjects = this.projects.filter(({ state }) => ['Completed', 'Rejected'].includes(state));

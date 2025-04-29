@@ -32,11 +32,6 @@ class ClientSignUp extends View {
       name: 'password',
       type: 'password',
     }),
-    username: new FormTextField({
-      label: 'Username',
-      placeholder: 'Enter your username',
-      name: 'username',
-    }),
     firstName: new FormTextField({
       label: 'First Name',
       placeholder: 'Enter your first name',
@@ -70,24 +65,92 @@ class ClientSignUp extends View {
     })
   };
 
-  private validateField(fieldName: string): boolean {
+  private validateField(fieldName: string): { isValid: boolean; message: string } {
     const field = this.fields[fieldName];
     const value = field.getValue();
 
-    // if (field.props.required && !value) {
-    //   return false;
-    // }
+    if (!value) {
+      return { 
+        isValid: false, 
+        message: `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required` 
+      };
+    }
 
-    if (fieldName === 'email' && value) {
+    if (fieldName === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(value);
+      if (!emailRegex.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Please enter a valid email address' 
+        };
+      }
     }
 
-    if (fieldName === 'password' && value) {
-      return value.length >= 8;
+    if (fieldName === 'password') {
+      if (value.length < 8) {
+        return { 
+          isValid: false, 
+          message: 'Password must be at least 8 characters long' 
+        };
+      }
+      if (!/[A-Z]/.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Password must contain at least one uppercase letter' 
+        };
+      }
+      if (!/[a-z]/.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Password must contain at least one lowercase letter' 
+        };
+      }
+      if (!/[0-9]/.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Password must contain at least one number' 
+        };
+      }
     }
 
-    return true;
+    if (fieldName === 'phone') {
+      const phoneRegex = /^\+?[\d\s-]{10,}$/;
+      if (!phoneRegex.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Please enter a valid phone number (minimum 10 digits)' 
+        };
+      }
+    }
+
+    if (fieldName === 'dob') {
+      const date = new Date(value);
+      const today = new Date();
+      if (isNaN(date.getTime())) {
+        return { 
+          isValid: false, 
+          message: 'Please enter a valid date' 
+        };
+      }
+      if (date > today) {
+        return { 
+          isValid: false, 
+          message: 'Date of birth cannot be in the future' 
+        };
+      }
+    }
+
+    if (fieldName === 'linkedIn' && value) {
+      const linkedInRegex = /^https?:\/\/(www\.)?linkedin\.com\/in\/[\w-]+\/?$/;
+      if (!linkedInRegex.test(value)) {
+        return { 
+          isValid: false, 
+          message: 'Please enter a valid LinkedIn profile URL' 
+        };
+      }
+    }
+
+    return { isValid: true, message: '' };
   }
 
   private updateErrorMessage(message: string): void {
@@ -137,10 +200,6 @@ class ClientSignUp extends View {
 
           $(q, 'div', 'form-row', {}, (q) => {
             $(q, 'div', 'form-field', {}, (q) => {
-              this.fields.username.render(q);
-            });
-
-            $(q, 'div', 'form-field', {}, (q) => {
               this.fields.dob.render(q);
             });
           });
@@ -187,7 +246,6 @@ class ClientSignUp extends View {
         $(q, 'div', 'terms', {}, (q) => {
           $(q, 'p', '', {}, 'By signing up, you agree to our ');
           $(q, 'a', '', { href: '/terms' }, 'Terms of Service');
-          // $(q, ' and ');
           $(q, 'a', '', { href: '/privacy' }, 'Privacy Policy');
         });
 
@@ -196,20 +254,45 @@ class ClientSignUp extends View {
           onClick: async () => {
             if (this.isLoading) return;
 
-            const requiredFields = ['email', 'password', 'username', 'firstName', 'lastName', 'phone', 'dob'];
-            const invalidFields = requiredFields.filter(field => !this.validateField(field));
+            const requiredFields = ['email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
+            let firstInvalidField = '';
+            let errorMessage = '';
 
-            if (invalidFields.length > 0) {
-              this.updateErrorMessage('Please fill in all required fields correctly.');
+            // Check each required field
+            for (const field of requiredFields) {
+              const validation = this.validateField(field);
+              if (!validation.isValid) {
+                firstInvalidField = field;
+                errorMessage = validation.message;
+                break;
+              }
+            }
 
-              // Highlight the first invalid field
-              const firstInvalidField = invalidFields[0];
+            // Check optional fields if they have values
+            if (!errorMessage) {
+              const optionalFields = ['linkedIn'];
+              for (const field of optionalFields) {
+                const value = this.fields[field].getValue();
+                if (value) {
+                  const validation = this.validateField(field);
+                  if (!validation.isValid) {
+                    firstInvalidField = field;
+                    errorMessage = validation.message;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (errorMessage) {
+              this.updateErrorMessage(errorMessage);
+              
+              // Highlight the invalid field
               const fieldElement = document.querySelector(`[name="${firstInvalidField}"]`) as HTMLElement;
               if (fieldElement) {
                 fieldElement.focus();
                 fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }
-
               return;
             }
 
@@ -217,18 +300,34 @@ class ClientSignUp extends View {
             this.toggleLoading(true);
 
             try {
-              const response = await NETWORK.post('/api/clientRegister', {
-                email: this.fields.email.getValue(),
-                password: this.fields.password.getValue(),
-                username: this.fields.username.getValue(),
-                firstName: this.fields.firstName.getValue(),
-                lastName: this.fields.lastName.getValue(),
-                phone: this.fields.phone.getValue(),
-                dob: this.fields.dob.getValue(),
-                linkedIn: this.fields.linkedIn.getValue(),
-                companyName: this.fields.companyName.getValue(),
-              }, {
-                successCallback: () => {
+              // Validate all fields before sending
+              const formData = {
+                email: this.fields.email.getValue().trim(),
+                password: this.fields.password.getValue().trim(),
+                firstName: this.fields.firstName.getValue().trim(),
+                lastName: this.fields.lastName.getValue().trim(),
+                phone: this.fields.phone.getValue().trim(),
+                dob: this.fields.dob.getValue().trim(),
+                companyName: this.fields.companyName.getValue()?.trim() || '',
+                linkedIn: this.fields.linkedIn.getValue()?.trim() || ''
+              };
+
+              // Log the data being sent
+              console.log('Sending registration data:', formData);
+
+              // Validate required fields
+              const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+
+              if (missingFields.length > 0) {
+                this.updateErrorMessage(`Missing required fields: ${missingFields.join(', ')}`);
+                return;
+              }
+
+              const response = await NETWORK.post('/api/clientRegister', formData, {
+                showLoading: true,
+                handleError: true,
+                successCallback: (response: any) => {
+                  console.log('Registration successful:', response);
                   setContent(modalAlertOnlyOK, {
                     '.modal-title': 'Success',
                     '.modal-message': 'Your account has been created successfully! Redirecting to login...'
@@ -239,9 +338,32 @@ class ClientSignUp extends View {
                 }
               });
 
-            } catch (error) {
+            } catch (error: any) {
               console.error('Registration failed:', error);
-              this.updateErrorMessage('Registration failed. Please check your information and try again.');
+              console.error('Error details:', {
+                status: error.status,
+                statusText: error.statusText,
+                data: error.data,
+                message: error.message
+              });
+
+              let errorMessage = 'Registration failed. Please try again.';
+              
+              if (error.data) {
+                if (typeof error.data === 'string') {
+                  errorMessage = error.data;
+                } else if (error.data.message) {
+                  errorMessage = error.data.message;
+                } else if (error.data.error) {
+                  errorMessage = error.data.error;
+                } else if (error.data.required) {
+                  errorMessage = `Missing required fields: ${error.data.required.join(', ')}`;
+                }
+              } else if (error.message) {
+                errorMessage = error.message;
+              }
+              
+              this.updateErrorMessage(errorMessage);
             } finally {
               this.toggleLoading(false);
             }

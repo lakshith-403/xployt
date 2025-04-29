@@ -43,7 +43,7 @@ export class MessageComponent {
           }
         });
 
-        $(q, 'div', `message-header                  ${this.message.sender.name == "You" ? "light-green-bg" : "dark-green-bg"}`, {}, (q) => {
+        $(q, 'div', `message-header                  ${this.message.sender.name == 'You' ? 'light-green-bg' : 'dark-green-bg'}`, {}, (q) => {
           if (this.message.type === 'text') {
             $(q, 'span', 'sender-name', {}, this.message.sender.name);
           } else {

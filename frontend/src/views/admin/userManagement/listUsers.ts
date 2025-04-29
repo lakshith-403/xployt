@@ -39,7 +39,14 @@ export class ListUsers extends View {
         try {
           // console.log(`User Info for ${user.userId}:`, user);
           const popupElement = new InfoPopup({ userId: user.userId, user: user, userType: type });
-          const deleteConfirmPopup = new DeleteConfirmPopup({ userId: user.userId, user: user, userType: type });
+          const deleteConfirmPopup = new DeleteConfirmPopup({
+            userId: user.userId,
+            user: user,
+            userType: type,
+            renderFunction: async () => {
+              await this.rerender();
+            },
+          });
           const userData = {
             id: user.userId,
             Name: user.name,

@@ -18,7 +18,7 @@ ModalManager.includeModal('validateErrorModal', {
 
 const numberRegex = /^\d+$/; // Matches only numbers
 
-const stringRegex = /^[a-zA-Z0-9& ]*$/; // Matches letters and numbers
+const stringRegex = /^[\s\S]*$/; // Matches letters and numbers
 
 const string2Regex = /^[a-zA-Z0-9]+ [a-zA-Z0-9]+$/; // Matches letters and numbers
 
@@ -178,7 +178,7 @@ export function validateField(key: string, value: any, expectedType: string | ((
   }
 
   if (expectedType === 'object|string') {
-    // console.log('checking object|string: ', key, value);
+    console.log('checking object|string: ', key, value);
     if (typeof value !== 'object') {
       // console.log('object|string');
       // console.log(key);

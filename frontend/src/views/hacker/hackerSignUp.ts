@@ -16,6 +16,8 @@ class HackerSignUp extends View {
   private availableSkills: { id: number; skill: string }[] = [];
   private certificateField: FileInputBase;
   private skillsInput: TagInput;
+  private errorMessage: string = '';
+  private isLoading: boolean = false;
 
   constructor() {
     super();
@@ -80,17 +82,17 @@ class HackerSignUp extends View {
       type: 'password',
     }),
     firstName: new FormTextField({
-      label: 'First Name',
+      label: 'First Name *',
       placeholder: 'Enter your first name',
       name: 'firstName',
     }),
     lastName: new FormTextField({
-      label: 'Last Name',
+      label: 'Last Name *',
       placeholder: 'Enter your last name',
       name: 'lastName',
     }),
     phone: new FormTextField({
-      label: 'Phone Number',
+      label: 'Phone Number *',
       placeholder: 'Enter your phone number',
       name: 'phone',
     }),
@@ -100,7 +102,7 @@ class HackerSignUp extends View {
       name: 'companyName',
     }),
     dob: new FormTextField({
-      label: 'Date of Birth',
+      label: 'Date of Birth *',
       placeholder: 'YYYY-MM-DD',
       name: 'dob',
       type: 'date',
@@ -112,9 +114,69 @@ class HackerSignUp extends View {
     }),
   };
 
+  private validateField(fieldName: string): boolean {
+    const field = this.fields[fieldName];
+    const value = field.getValue();
+
+    if (fieldName === 'email' && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    }
+
+    if (fieldName === 'password' && value) {
+      // Password must be at least 8 characters long and contain at least one number and one letter
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      return passwordRegex.test(value);
+    }
+
+    if (fieldName === 'phone' && value) {
+      // Basic phone number validation (can be adjusted based on requirements)
+      const phoneRegex = /^\+?[\d\s-]{10,}$/;
+      return phoneRegex.test(value);
+    }
+
+    if (fieldName === 'dob' && value) {
+      // Validate date format and ensure it's not in the future
+      const date = new Date(value);
+      const today = new Date();
+      return !isNaN(date.getTime()) && date <= today;
+    }
+
+    if (fieldName === 'linkedIn' && value) {
+      // Basic LinkedIn URL validation
+      const linkedInRegex = /^https?:\/\/(www\.)?linkedin\.com\/in\/[\w-]+\/?$/;
+      return linkedInRegex.test(value);
+    }
+
+    return true;
+  }
+
+  private updateErrorMessage(message: string): void {
+    this.errorMessage = message;
+    const errorElement = document.querySelector('.error-message');
+    if (errorElement) {
+      if (message) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      } else {
+        errorElement.classList.add('hidden');
+      }
+    }
+  }
+
+  private toggleLoading(isLoading: boolean): void {
+    this.isLoading = isLoading;
+    const button = document.querySelector('.submit-button button') as HTMLButtonElement;
+    if (button) {
+      button.disabled = isLoading;
+      button.textContent = isLoading ? 'Processing...' : 'Sign Up';
+    }
+  }
+
   render(q: Quark): void {
     $(q, 'div', 'hacker-signup', {}, (q) => {
       $(q, 'h1', '', {}, 'Hacker Sign Up');
+      $(q, 'div', 'error-message hidden', {}, this.errorMessage);
       $(q, 'div', 'form-field', {}, (q) => {
         this.fields.email.render(q);
       });
@@ -151,19 +213,31 @@ class HackerSignUp extends View {
       new Button({
         label: 'Sign Up',
         onClick: async () => {
-          const requiredFields = ['email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
-          const emptyFields = requiredFields.filter((field) => !this.fields[field].getValue());
+          if (this.isLoading) return;
 
-          if (emptyFields.length > 0) {
-            setContent(modalAlertOnlyOK, {
-              '.modal-title': 'Error',
-              '.modal-message': 'Failed to sign up. Please fill in all the fields.',
-            });
-            modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+          const requiredFields = ['email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
+          const invalidFields = requiredFields.filter(field => !this.validateField(field));
+
+          if (invalidFields.length > 0) {
+            this.updateErrorMessage('Please fill in all required fields correctly.');
+            
+            // Highlight the first invalid field
+            const firstInvalidField = invalidFields[0];
+            const fieldElement = document.querySelector(`[name="${firstInvalidField}"]`) as HTMLElement;
+            if (fieldElement) {
+              fieldElement.focus();
+              fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
           }
 
-          console.log('Submitting with skills:', this.skills);
+          if (this.skills.length === 0) {
+            this.updateErrorMessage('Please select at least one skill.');
+            return;
+          }
+
+          this.updateErrorMessage('');
+          this.toggleLoading(true);
 
           try {
             const formData = new FormData();
@@ -198,11 +272,9 @@ class HackerSignUp extends View {
             });
           } catch (error) {
             console.error('Registration failed:', error);
-            setContent(modalAlertOnlyOK, {
-              '.modal-title': 'Error',
-              '.modal-message': 'Registration failed. Please try again.',
-            });
-            modalManager.show('alertOnlyOK', modalAlertOnlyOK);
+            this.updateErrorMessage('Registration failed. Please try again.');
+          } finally {
+            this.toggleLoading(false);
           }
         },
       }).render(q);
