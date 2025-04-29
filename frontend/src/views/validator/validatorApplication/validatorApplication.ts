@@ -64,21 +64,21 @@ interface formState {
 
 class ValidatorApplication extends View {
   private formState: formState = {
-    firstName: 'Geetha',
-    lastName: 'Savith',
-    email: 'geetha@gmail.com',
-    mobile: '9876543210',
-    country: 'India',
-    linkedin: 'https://www.linkedin.com/in/geetha/',
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobile: '',
+    country: '',
+    linkedin: '',
     dateOfBirth: {
-      day: '1',
-      month: '1',
-      year: '1990',
+      day: '',
+      month: '',
+      year: '',
     },
     skills: '',
     references: '',
     relevantExperience: '',
-    areaOfExpertise: ['Data Science', 'Machine Learning'],
+    areaOfExpertise: [],
     termsAndConditions: {
       0: true,
       1: true,
