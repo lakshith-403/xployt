@@ -9,7 +9,7 @@ import PaymentsTab from './tabPayments';
 import NETWORK from '@/data/network/network';
 import { CACHE_STORE } from '@/data/cache';
 import ReportsTab from './tabReports';
-import TabSettings from '@views/common/projectDashboard/TabSettings';
+// import TabSettings from '@views/common/projectDashboard/TabSettings';
 import ComplaintsTab from './tabComplaints';
 class projectDashboardView extends View {
   params: { projectId: string };
@@ -61,7 +61,7 @@ class projectDashboardView extends View {
     const discussionTab = new DiscussionTab(this.params.projectId);
     const teamTab = new TeamTab(this.params.projectId);
     const reportsTab = new ReportsTab(this.params.projectId);
-    const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
+    // const settingsTab = currentUser.type === 'Client' ? new TabSettings(this.params.projectId) : null;
     const complaintsTab = new ComplaintsTab(this.params.projectId);
 
     const tabs = [];
@@ -112,14 +112,14 @@ class projectDashboardView extends View {
       });
     }
 
-    if (currentUser.type === 'Client') {
-      tabs.push({
-        title: 'Settings',
-        render: (q: Quark) => {
-          settingsTab?.render(q);
-        },
-      });
-    }
+    // if (currentUser.type === 'Client') {
+    //   tabs.push({
+    //     title: 'Settings',
+    //     render: (q: Quark) => {
+    //       settingsTab?.render(q);
+    //     },
+    //   });
+    // }
 
     const tabsComponent = new Tabs(tabs);
     $(q, 'div', 'projectDashboard', {}, (q) => {
